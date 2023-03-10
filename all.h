@@ -1,29 +1,32 @@
-#ifndef ALL_H
-#define ALL_H
+#ifndef INCLUDED_ALL
+#define INCLUDED_ALL
 
-//必要なインクルードファイル
+//******************************************************************************
+//
+//
+//      all.h
+//
+//
+//******************************************************************************
+
+//------< インクルード >---------------------------------------------------------
 #include "../GameLib/game_lib.h"
+#include "../GameLib/input_manager.h"
+#include "../GameLib/obj2d_data.h"
+#include "../GameLib/depth_stencil.h"
 
-//共通で使われるヘッダー
+#include "work.h"
+#include "user.h"
 #include "common.h"
-#include "audio.h"
-#include "tool.h"
-#include "game_start.h"
-#include "combo_list.h"	//共通で使われるか怪しい
-#include "game_end.h"
+#include "obj2d.h"
+#include "sprite_data.h"
 
-//個々のヘッダーファイルは下の方へ
-#include "scene_game.h"
-#include "scene_title.h"
-#include "scene_result.h"
-#include "rule.h"
 #include "player.h"
-#include "food.h"
-#include "belt.h"
-#include "test.h"
 
-//using ディレクティブ
-using namespace GameLib;
-using namespace input;
+#include "scene.h"
+#include "game.h"
+#include "title.h"
 
-#endif	//ALL_H 
+//******************************************************************************
+
+#endif // !INCLUDED_ALL

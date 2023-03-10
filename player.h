@@ -1,27 +1,63 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef INCLUDED_PLAYER
+#define INCLUDED_PLAYER
 
-#define SCORE_TEXT_SIZE 8
+//******************************************************************************
+//
+//
+//      Player.h
+//
+//
+//******************************************************************************
 
-//プレイヤーの向き
-enum DIRECTION {
-	player_flont = 0,		//0,前
-	player_left	,			//1,左
-	player_right			//2,右
+//==============================================================================
+//
+//      移動アルゴリズム
+//
+//==============================================================================
 
+// プレイヤー操作クラス
+class Player : public MoveAlg
+{
+public:
+    void move(OBJ2D* obj);
 };
 
-extern float player_direction;	//向き(0:正面,1:左,2:右)
+// 移動アルゴリズムの実体
+EXTERN Player player;
 
-//関数プロトタイプ宣言
-void player_init();
-void player_deinit();
-void player_update();
-void player_render();
+//==============================================================================
+//
+//      消去アルゴリズム
+//
+//==============================================================================
 
-void cool_down();	//クールダウン処理
-void player_control();	//PLが自機を操作する関数
-void stomach_gauge();	//空腹ゲージ(胃)
-void score_disp();	//スコア表示
+// 消去アルゴリズム
+class ErasePlayer : public EraseAlg
+{
+    void erase(OBJ2D* obj);
+};
 
-#endif
+// 消去アルゴリズムの実体
+//EXTERN ErasePlayer      erasePlayer;
+
+//==============================================================================
+//
+//      PlayerManagerクラス
+//
+//==============================================================================
+class PlayerManager : public OBJ2DManager
+{
+public:
+    static constexpr float PLAYER_MOVE = 4.0f;
+
+public:
+    //OBJ2DManagerクラスのものが呼び出されれば良いので、下記オーバーライドは不要である
+
+    //void init();    // 初期化
+    //void update();  // 更新
+    //void draw();    // 描画
+};
+
+//------< ワーク用 >-------------------------------------------------------------
+
+#endif // !INCLUDED_PLAYER
