@@ -189,3 +189,8 @@ void score_disp() {
 }
 
 // ’Ç‰Á‰¼
+
+void Flower()
+{
+
+}
