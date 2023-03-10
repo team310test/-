@@ -189,6 +189,7 @@ void score_disp() {
 }
 
 // í«â¡âº
+// çXÇ…í«â¡
 void test()
 {
 
