@@ -1,5 +1,7 @@
 #include "all.h"
 
+// 111111
+
 int player_state;
 int player_timer;
 int player_timer_num;	//ˆê‚Â‘O‚Ìtimer‚Ì’l
