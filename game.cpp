@@ -76,18 +76,7 @@ void Game::update()
         obj2dManager()->init();
 
         // プレイヤーを追加する
-        player_ = obj2dManager()->add(new OBJ2D(
-            new Renderer, 
-            new Collider, 
-            bg(), 
-            new ActorComponent, 
-            nullptr, 
-            nullptr
-        ), 
-            &normalPlayerBehavior, 
-            VECTOR2(500, 500)
-        );
-        player_->zOrder_ = 3;
+        setPlayer(obj2dManager(), bg());
 
         bg()->init(player_); // BGの初期化
 
@@ -123,7 +112,7 @@ void Game::update()
 void Game::draw()
 {
     // 画面クリア
-    GameLib::clear(VECTOR4(0, 0, 0, 1));
+    GameLib::clear(VECTOR4(0, 1, 0, 1));
 
     bg()->drawBack();     // 背景の描画
 

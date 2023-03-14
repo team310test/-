@@ -54,6 +54,24 @@ namespace
     };
 }
 
+void setPlayer(OBJ2DManager* obj2dManager, BG* bg) 
+{
+    const VECTOR2 pos = { 500,500 };
+
+    OBJ2D* player = new OBJ2D(
+        new Renderer,
+        new Collider,
+        bg,
+        new ActorComponent,
+        nullptr,
+        nullptr
+    );
+
+    player->zOrder_ = 3;
+
+    obj2dManager->add(player, &normalPlayerBehavior, pos);
+}
+
 //******************************************************************************
 //
 //      BasePlayerBehavior
