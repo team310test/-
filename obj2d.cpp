@@ -6,116 +6,102 @@
 //
 //******************************************************************************
 
-//------< インクルード >---------------------------------------------------------
+//------< インクルード >----------------------------------------------------------
 #include "all.h"
 
-using namespace GameLib;
-
-//--------------------------------
+//--------------------------------------------------------------
 //  コンストラクタ
-//--------------------------------
-OBJ2D::OBJ2D()
+//--------------------------------------------------------------
+OBJ2D::OBJ2D(
+    Renderer* renderer,
+    Collider* collider,
+    BG* bg,
+    ActorComponent* actorComponent,
+    ItemComponent* itemComponent, 
+    WeaponComponent* weaponComponent
+)
+    :transform_(new Transform)
+    , renderer_(renderer)
+    , collider_(collider)
+    , bg_(bg)
+    , actorComponent_(actorComponent)
+    , itemComponent_(itemComponent)
+    , weaponComponent_(weaponComponent)
 {
-    clear();
-
-    scale = VECTOR2(1, 1);          // 初期化忘れが無いように（スケールゼロなら何も表示されない）
-    color = VECTOR4(1, 1, 1, 1);    // 初期化忘れが無いように（不透明度ゼロなら何も表示されない）
+    if (transform_) transform_->setOBJ2D(this);
+    if (renderer_) renderer_->setOBJ2D(this);
+    if (collider_) collider_->setOBJ2D(this);
+    if (actorComponent_) actorComponent_->setOBJ2D(this);
+    if (itemComponent_) itemComponent_->setOBJ2D(this);
+    if (weaponComponent_) weaponComponent_->setOBJ2D(this);
 }
 
-//--------------------------------
-//  メンバ変数のクリア
-//--------------------------------
-void OBJ2D::clear()
+//--------------------------------------------------------------
+//  デストラクタ
+//--------------------------------------------------------------
+OBJ2D::~OBJ2D()
 {
-    data = nullptr;
-    anime = {};
-
-    position = VECTOR2(0, 0);
-    scale = VECTOR2(0, 0);
-    angle = 0.0f;
-    color = VECTOR4(0, 0, 0, 0);
-    size = VECTOR2(0, 0);
-
-    mvAlg = nullptr;
-    eraseAlg = nullptr;
-
-    velocity = 0.0f;
-    speed = VECTOR2(0, 0);
-    state = 0;
-    timer = 0;
-
-    param = 0;
-    jumpTimer = 0;
-
-    for (int i = 0; i < 16; i++)
-    {
-        iWork[i] = 0;
-        fWork[i] = 0;
-    }
-
-    hashigoFlag = false;
-    drawHitRectFlag = false;
-    judgeFlag = false;
-    pad[0] = 0;
+    safe_delete(transform_);
+    safe_delete(weaponComponent_);
+    safe_delete(itemComponent_);
+    safe_delete(actorComponent_);
+    safe_delete(collider_);
+    safe_delete(renderer_);
 }
 
-//--------------------------------
+//--------------------------------------------------------------
 //  移動
-//--------------------------------
+//--------------------------------------------------------------
 void OBJ2D::move()
 {
-    if (mvAlg) mvAlg->move(this);                   // 移動アルゴリズムが存在すれば、moveメソッドを呼ぶ
-    if (eraseAlg) eraseAlg->erase(this);            // 消去アルゴリズムが存在すれば、eraseメソッドを呼ぶ
+    if (behavior_) behavior_->move(this);
+    if (eraser_) eraser_->erase(this);
 }
 
-//--------------------------------
+//--------------------------------------------------------------
 //  描画
-//--------------------------------
-void OBJ2D::draw()
+//--------------------------------------------------------------
+void Renderer::draw()
 {
-    if (data)                                       // OBJ2Dのdataメンバにスプライトデータがあれば
+    if (data_)
     {
-        data->draw(position, scale, angle, color);  // dataのdrawメソッドでスプライトを描画する
-
-
-        GameLib::primitive::circle(
-            position,
-            5.0f,
-            scale,
-            angle,
-            VECTOR4(1,1,1,1)
-        ); 
+        data_->draw(obj_->transform_->position_,
+            obj_->transform_->scale_, obj_->transform_->rotation_, color_);  // dataのdrawメソッドでスプライトを描画する
     }
 }
 
-//--------------------------------
+//--------------------------------------------------------------
 //  アニメーション更新
-//--------------------------------
+//--------------------------------------------------------------
 //  戻り値：true  アニメが先頭に戻る瞬間
 //        :false それ以外
-//--------------------------------
-bool OBJ2D::animeUpdate(AnimeData* animeData)
+//--------------------------------------------------------------
+bool Renderer::animeUpdate()
 {
-    if (animeData == nullptr) assert(!"animeUpdate関数でAnimeDataがnullptr");
-
-    if (anime.pPrev != animeData)           // アニメデータが切り替わったとき
+    if (animeData_ == nullptr)
     {
-        anime.pPrev = animeData;
-        anime.patNum = 0;	                // 先頭から再生
-        anime.frame = 0;
+        assert(!"animeUpdate関数でAnimeDataがnullptr");
+        return false;
     }
 
-    animeData += anime.patNum;
-    data = animeData->data;                 // 現在のパターン番号に該当する画像を設定
-
-    anime.frame++;
-    if (anime.frame >= animeData->frame)    // 設定フレーム数表示したら
+    if (anime_.pPrev != animeData_)         // アニメデータが切り替わったとき
     {
-        anime.frame = 0;
-        anime.patNum++;                     // 次のパターンへ
-        if ((animeData + 1)->frame < 0)     // 終了コードのとき
+        anime_.pPrev = animeData_;
+        anime_.patNum = 0;	                // 先頭から再生
+        anime_.frame = 0;
+    }
+
+    animeData_ += anime_.patNum;
+    data_ = animeData_->data;               // 現在のパターン番号に該当する画像を設定
+
+    anime_.frame++;
+    if (anime_.frame >= animeData_->frame)  // 設定フレーム数表示したら
+    {
+        anime_.frame = 0;
+        anime_.patNum++;                    // 次のパターンへ
+        if ((animeData_ + 1)->frame < 0)    // 終了コードのとき
         {
-            anime.patNum = 0;               // 先頭へ戻る
+            anime_.patNum = 0;              // 先頭へ戻る
             return true;
         }
     }
@@ -131,74 +117,184 @@ bool OBJ2D::animeUpdate(AnimeData* animeData)
 //
 //******************************************************************************
 
-//--------------------------------
+//--------------------------------------------------------------
 //  初期化
-//--------------------------------
+//--------------------------------------------------------------
 void OBJ2DManager::init()
 {
     //リストのOBJ2Dを全てクリアする
-    objList.clear();
+    objList_.clear();
 }
 
-//--------------------------------
+//--------------------------------------------------------------
 //  リストへ追加
-//--------------------------------
-OBJ2D* OBJ2DManager::add(MoveAlg* mvAlg, const VECTOR2& pos)
+//--------------------------------------------------------------
+OBJ2D* OBJ2DManager::add(OBJ2D* obj, Behavior* behavior, const VECTOR2& pos)
 {
-    OBJ2D obj;                          // OBJ2Dを定義する
-    obj.mvAlg = mvAlg;                  // mvAlgに引数のmvalgを代入
-    obj.position = pos;                 // positionに引数のposを代入
-    obj.scale = VECTOR2(1, 1);          // スケールは等倍
-    obj.color = VECTOR4(1, 1, 1, 1);    // 色は白（不透明度1.0f）
+    obj->behavior_ = behavior;           // behavior_に引数のbehaviorを代入
+    obj->transform_->position_ = pos;                // position_に引数のposを代入
 
-    //objList.emplace_back(obj);             // リストにobjを追加する
-    objList.push_back(obj);             // リストにobjを追加する
-    return &(*objList.rbegin());        // 今追加したobjのアドレスを返す（何かで使えるように）
+    objList_.emplace_back(obj);            // リストにobjを追加する
+    return obj;       // 今追加したobjのアドレスを返す（何かで使えるように）
 }
 
-//--------------------------------
+OBJ2D* OBJ2DManager::insert(std::list<OBJ2D*>::iterator& iter, OBJ2D* obj, Behavior* behavior, const VECTOR2& pos)
+{
+    obj->behavior_ = behavior;           // behavior_に引数のbehaviorを代入
+    obj->transform_->position_ = pos;                // position_に引数のposを代入
+
+    //objList_.emplace_back(obj);            // リストにobjを追加する
+    objList_.insert(iter, obj);
+    return obj;       // 今追加したobjのアドレスを返す（何かで使えるように）
+
+}
+
+//--------------------------------------------------------------
 //  更新
-//--------------------------------
+//--------------------------------------------------------------
 void OBJ2DManager::update()
 {
     // 移動
-    for (auto& it : objList)            // objListの全ての要素をループし、itという名前で各要素にアクセス
+    for (auto& obj : objList_)   // objListの全ての要素をループし、itという名前で各要素にアクセス
     {
-        it.move();                      // itのmoveメソッドを呼ぶ
+        obj->move();              // itのmoveメソッドを呼ぶ
     }
 
-    // 空ノードの削除（今は気にしなくて良い）
-    auto it = objList.begin();
-    while (it != objList.end())
+    // 空ノードの削除
+    auto iter = objList_.begin();
+    while (iter != objList_.end())
     {
-        if (it->mvAlg)
+        if ((*iter)->behavior_)
         {
-            it++;
+            iter++;
         }
         else
         {
-            it = objList.erase(it);
+            safe_delete(*iter);
+            iter = objList_.erase(iter);
         }
     }
 }
 
-
-//--------------------------------
+//--------------------------------------------------------------
 //  描画
-//--------------------------------
+//--------------------------------------------------------------
+bool predFunc(OBJ2D* obj1, OBJ2D* obj2)
+{
+    return obj1->zOrder_ < obj2->zOrder_;
+}
+
 void OBJ2DManager::draw()
 {
-    for (auto& it : objList)            // objListの全ての要素をループし、itという名前で各要素にアクセス 
+    constexpr float LIMIT = 256.0f;
+
+    Game::instance()->obj2dManager()->getList()->sort([](OBJ2D* obj1, OBJ2D* obj2)->bool {
+        return obj1->zOrder_ < obj2->zOrder_;
+        });
+
+    for (auto& obj : objList_)
     {
-        it.draw();                      // itのdrawメソッドを呼ぶ
+        const VECTOR2 screenPos = obj->transform_->position_;
+        if (screenPos.x < -LIMIT ||
+            screenPos.x > GameLib::window::getWidth() + LIMIT ||
+            screenPos.y < -LIMIT ||
+            screenPos.y > GameLib::window::getHeight() + LIMIT)
+            continue;
+
+        obj->renderer_->draw();
+
+        obj->collider_->draw();
     }
 }
 
-//--------------------------------
+//--------------------------------------------------------------
 //  デストラクタ
-//--------------------------------
+//--------------------------------------------------------------
 OBJ2DManager::~OBJ2DManager()
 {
-    //リストのOBJ2Dを全てクリアする
-    objList.clear();
+    // メモリを解放する
+    for (auto& obj : objList_)
+    {
+        safe_delete(obj);
+    }
+
+    // リストのOBJ2Dを全てクリアする
+    objList_.clear();
+}
+
+void Collider::draw()
+{
+    if (isDrawHitRect_)
+    {
+        VECTOR2 pos = VECTOR2(hitBox_.left, hitBox_.top);
+        VECTOR2 size = { hitBox_.right - hitBox_.left, hitBox_.bottom - hitBox_.top };
+        VECTOR2 center{ 0, 0 };
+        VECTOR4 blue{ 0,0,1,0.5f };
+        GameLib::primitive::rect(pos, size, center, 0, blue);
+    }
+
+    if (isDrawAttackRect_)
+    {
+        VECTOR2 pos = VECTOR2(attackBox_.left, attackBox_.top);
+        VECTOR2 size = { attackBox_.right - attackBox_.left, attackBox_.bottom - attackBox_.top };
+        VECTOR2 center{ 0, 0 };
+        VECTOR4 red{ 1,0,0,0.5f };
+        GameLib::primitive::rect(pos, size, center, 0, red);
+    }
+}
+
+void Collider::calcHitBox(const GameLib::fRECT& rc)
+{
+    hitBox_ = {
+        obj_->transform_->position_.x + rc.left, 
+        obj_->transform_->position_.y + rc.top, 
+        obj_->transform_->position_.x + rc.right, 
+        obj_->transform_->position_.y + rc.bottom 
+    };
+}
+
+void Collider::calcAttackBox(const GameLib::fRECT& rc)
+{
+    attackBox_ = {
+        obj_->transform_->position_.x + rc.left, 
+        obj_->transform_->position_.y + rc.top, 
+        obj_->transform_->position_.x + rc.right, 
+        obj_->transform_->position_.y + rc.bottom
+    };
+}
+
+bool Collider::hitCheck(Collider* other)
+{
+    if (attackBox_.right < other->hitBox_.left ||
+        attackBox_.left > other->hitBox_.right ||
+        attackBox_.bottom < other->hitBox_.top ||
+        attackBox_.top > other->hitBox_.bottom) return false;
+
+    return true;
+}
+
+bool Collider::hitCheck(OBJ2D* obj)
+{
+    return hitCheck(obj->collider_);
+}
+
+void ActorComponent::damaged()
+{
+    // ダメージタイマーが1以上なら return
+    if (damageTimer_ <= 0) return;
+
+    padTrg_ = 0;
+    padState_ = 0;
+    --damageTimer_;
+}
+
+void ActorComponent::muteki()
+{
+    if (mutekiTimer_ <= 0)return;
+
+    VECTOR4 color = obj_->renderer_->color_;
+    color.w = mutekiTimer_ & 0x01 ? 1.0f : 0.0f;
+    obj_->renderer_->color_ = color;
+
+    --mutekiTimer_;
 }

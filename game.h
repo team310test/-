@@ -1,5 +1,4 @@
-#ifndef INCLUDED_GAME
-#define	INCLUDED_GAME
+#pragma once
 
 //******************************************************************************
 //
@@ -17,31 +16,45 @@
 
 class Game : public Scene
 {
-public:
-    // クラス内での定数の定義の仕方
-    // int型であればconstで良いが、それ以外はconstexprを使用する
-    static constexpr float GROUND_POS_Y = 640.0f;
+private:
+    OBJ2DManager*   obj2dManager_;
+    BG*             bg_;
+    bool            isPaused_;
+    OBJ2D*          player_;
+    static Game     instance_;
+
+    bool            isGameOver_;
+    int             gameOverTimer_;
 
 public:
-    static Game* instance() { return &instance_; }
+    static Game* instance()         { return &instance_; }
 
-    void init();
-    void deinit();
-    void update();
-    void draw();
+    OBJ2DManager* obj2dManager()    { return obj2dManager_; }
+    BG* bg()                        { return bg_; }
 
-    // ゲッターは後ろに_をつけない
-    PlayerManager*      playerManager()     { return playerManager_; }
+    void init() override;
+    void deinit() override;
+    void update() override;
+    void draw() override;
+
+    void setGameOver()
+    {
+        isGameOver_ = true;
+        gameOverTimer_ = 60;
+    }
+    bool isGameOver() const { return isGameOver_; }
 
 private:
-    bool                isPaused;
+    Game()
+        :obj2dManager_(nullptr)
+        , bg_(nullptr)
+        , isPaused_(false)
+        , player_(nullptr) {}
+    Game(const Game&) = delete; // = delete コピーコンストラクタが存在しないことを明示
 
-    // メンバ変数は後ろに_をつける
-    PlayerManager*      playerManager_;
-
-    static Game instance_;
+    void judge();
+    void gameOverProc();
 };
 
 //******************************************************************************
 
-#endif // !INCLUDED_GAME

@@ -1,5 +1,4 @@
-#ifndef INCLUDED_PLAYER
-#define INCLUDED_PLAYER
+#pragma once
 
 //******************************************************************************
 //
@@ -15,15 +14,28 @@
 //
 //==============================================================================
 
-// プレイヤー操作クラス
-class Player : public MoveAlg
+class BasePlayerBehavior : public ActorBehavior
 {
-public:
-    void move(OBJ2D* obj);
+private:
+    void init(OBJ2D* obj) const override;
+    void moveX(OBJ2D* obj) const;
+    OBJ_TYPE getType() const override { return OBJ_TYPE::PLAYER; }
+    OBJ_TYPE getAttackType() const override { return OBJ_TYPE::ENEMY; }
+    void hit(OBJ2D*, OBJ2D*) const override;
+
+    bool isAlive(OBJ2D* obj) const;
+    void damageProc(OBJ2D* obj) const override;
 };
 
-// 移動アルゴリズムの実体
-EXTERN Player player;
+class NormalPlayerBehavior : public BasePlayerBehavior
+{
+public:
+    NormalPlayerBehavior();
+private:
+    void moveY(OBJ2D* obj) const override;
+    void attack(OBJ2D* obj) const override;
+};
+EXTERN NormalPlayerBehavior normalPlayerBehavior;
 
 //==============================================================================
 //
@@ -32,32 +44,8 @@ EXTERN Player player;
 //==============================================================================
 
 // 消去アルゴリズム
-class ErasePlayer : public EraseAlg
+class ErasePlayer : public Eraser
 {
-    void erase(OBJ2D* obj);
+    void erase(OBJ2D* obj) const;
 };
-
-// 消去アルゴリズムの実体
-//EXTERN ErasePlayer      erasePlayer;
-
-//==============================================================================
-//
-//      PlayerManagerクラス
-//
-//==============================================================================
-class PlayerManager : public OBJ2DManager
-{
-public:
-    static constexpr float PLAYER_MOVE = 4.0f;
-
-public:
-    //OBJ2DManagerクラスのものが呼び出されれば良いので、下記オーバーライドは不要である
-
-    //void init();    // 初期化
-    //void update();  // 更新
-    //void draw();    // 描画
-};
-
-//------< ワーク用 >-------------------------------------------------------------
-
-#endif // !INCLUDED_PLAYER
+EXTERN ErasePlayer erasePlayer;

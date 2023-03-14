@@ -1,5 +1,4 @@
-#ifndef INCLUDED_ALL
-#define INCLUDED_ALL
+#pragma once
 
 //******************************************************************************
 //
@@ -21,6 +20,9 @@
 #include "obj2d.h"
 #include "sprite_data.h"
 
+#include "bg.h"
+#include "weapon.h"
+#include "actor.h"
 #include "player.h"
 
 #include "scene.h"
@@ -28,5 +30,3 @@
 #include "title.h"
 
 //******************************************************************************
-
-#endif // !INCLUDED_ALL

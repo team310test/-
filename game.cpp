@@ -9,129 +9,163 @@
 //------< インクルード >---------------------------------------------------------
 #include "all.h"
 
-//------< using >---------------------------------------------------------------
-using namespace GameLib;
-
 //------< 変数 >----------------------------------------------------------------
 Game Game::instance_;
 
-//--------------------------------
+//--------------------------------------------------------------
 //  初期化処理
-//--------------------------------
+//--------------------------------------------------------------
 void Game::init()
 {
     Scene::init();	    // 基底クラスのinitを呼ぶ
 
-    playerManager_      = new PlayerManager;
+    obj2dManager_   = new OBJ2DManager;
+    bg_             = new BG;
 
-    isPaused = false;   // ポーズフラグの初期化
+    isPaused_ = false;   // ポーズフラグの初期化
+
+    isGameOver_ = false;
 }
 
-//--------------------------------
+//--------------------------------------------------------------
 //  終了処理
-//--------------------------------
+//--------------------------------------------------------------
 void Game::deinit()
 {
     // 各マネージャの解放
-    safe_delete(playerManager_);
+    safe_delete(bg_);
+    safe_delete(obj2dManager_);
 
     // テクスチャの解放
-    texture::releaseAll();
+    GameLib::texture::releaseAll();
 
     // 音楽のクリア
-    music::clear();
+    GameLib::music::clear();
 }
 
-//--------------------------------
+//--------------------------------------------------------------
 //  更新処理
-//--------------------------------
+//--------------------------------------------------------------
 void Game::update()
 {
-    using namespace input;
-
     // ソフトリセット
-    if ((STATE(0) & PAD_SELECT) &&  // 0コンのセレクトボタンが押されている状態で
-        (TRG(0) & PAD_START))       // 0コンのスタートボタンが押された瞬間
+    if ((GameLib::input::STATE(0) & GameLib::input::PAD_SELECT) &&  // 0コンのセレクトボタンが押されている状態で
+        (GameLib::input::TRG(0) & GameLib::input::PAD_START))       // 0コンのスタートボタンが押された瞬間
     {
         changeScene(Title::instance());   // タイトルシーンに切り替える
         return;
     }
 
-    // デバッグ文字列表示
-    debug::setString("state:%d", state);
-    debug::setString("timer:%d", timer);
-
     // ポーズ処理
-    if (TRG(0) & PAD_START)
-        isPaused = !isPaused;       // 0コンのスタートボタンが押されたらポーズ状態が反転
-    if (isPaused) return;           // この時点でポーズ中ならリターン
+    if (GameLib::input::TRG(0) & GameLib::input::PAD_START)
+        isPaused_ = !isPaused_;       // 0コンのスタートボタンが押されたらポーズ状態が反転
+    if (isPaused_) return;           // この時点でポーズ中ならリターン
 
-    switch (state)
+    switch (state_)
     {
     case 0:
         //////// 初期設定 ////////
+        timer_ = 0;
 
-        timer = 0;
-        GameLib::setBlendMode(Blender::BS_ALPHA);   // 通常のアルファ処理
+        GameLib::setBlendMode(GameLib::Blender::BS_ALPHA);   // 通常のアルファ処理
 
         // テクスチャの読み込み
-        texture::load(loadTexture);
+        GameLib::texture::load(loadTexture);
 
         // プレイヤーマネージャの初期化
-        playerManager()->init();
+        obj2dManager()->init();
 
-        // プレイヤー（自分で操作）を追加する
-        playerManager()->add(&player, VECTOR2(window::getWidth() / 2, window::getHeight() / 2));
+        // プレイヤーを追加する
+        player_ = obj2dManager()->add(new OBJ2D(
+            new Renderer, 
+            new Collider, 
+            bg(), 
+            new ActorComponent, 
+            nullptr, 
+            nullptr
+        ), 
+            &normalPlayerBehavior, 
+            VECTOR2(500, 500)
+        );
+        player_->zOrder_ = 3;
 
-        state++;    // 初期化処理の終了
+        bg()->init(player_); // BGの初期化
 
-        /*fallthrough*/     // case 1:の処理も同時に行う必要があるため、わざとbreak;を記述していない
+        state_++;    // 初期化処理の終了
+        /*fallthrough*/
 
     case 1:
         //////// 通常時の処理 ////////
 
-        timer++;
+        // オブジェクトの更新
+        obj2dManager()->update();
 
-        // プレイヤーの更新
-        playerManager()->update();
+        // ゲームオーバーの処理
+        if (isGameOver())
+        {
+            gameOverProc();
+            break;
+        }
+
+        bg()->update();   // BGの更新
+
+        judge();
+
+        timer_++;
 
         break;
     }
 }
 
-//--------------------------------
+//--------------------------------------------------------------
 //  描画処理
-//--------------------------------
+//--------------------------------------------------------------
 void Game::draw()
 {
     // 画面クリア
     GameLib::clear(VECTOR4(0, 0, 0, 1));
 
-#if 2
-    //******************************************************************************
-    // TODO:02 地面の描画
-    //------------------------------------------------------------------------------
-    /*
-    課題）
-        地面を描画しなさい
+    bg()->drawBack();     // 背景の描画
 
-    ヒント）
-        0, GROUND_POS_Yから、幅 window::getWidth()、高さ window::getHeight() - GROUND_POS_Yの
-        矩形を描画しなさい。色は背景色以外であれば、何色でも良い。
-    */
-    //******************************************************************************
-#endif
-
-    const VECTOR2 pos{ 0,Game::GROUND_POS_Y };
-    const VECTOR2 size{ window::getWidth(), window::getHeight() - GROUND_POS_Y };
-    const VECTOR2 pivot{ 0.0f,0.0f };
-    const VECTOR4 color{ 0.0f, 1.0f, 0.0f, 1.0f };
-
-    //TODO_02 地面の描画
-    primitive::rect(pos, size,pivot, 0, color);
-
-    // プレイヤーの描画
-    playerManager()->draw();
+    // オブジェクトの描画
+    obj2dManager()->draw();
 }
 
+void Game::judge()
+{
+    for (auto& src : *obj2dManager_->getList())
+    {
+        if (src->behavior_ == nullptr) continue;
+        if (src->collider_->judgeFlag_ == false) continue;
+
+        for (auto& dst : *obj2dManager_->getList())
+        {
+            if (src == dst) continue;
+            if (src->behavior_ == nullptr) break;
+            if (src->collider_->judgeFlag_ == false) break;
+            if (dst->behavior_ == nullptr) continue;
+            if (dst->collider_->judgeFlag_ == false) continue;
+
+            // srcの攻撃タイプとdstのタイプが一致しなければcontinue;
+            if (src->behavior_->getAttackType() != dst->behavior_->getType())
+                continue;
+
+            // あたり判定を行う
+            if (src->collider_->hitCheck(dst))
+            {
+                // あたった場合の処理
+                src->behavior_->hit(src, dst);
+            }
+        }
+    }
+}
+
+void Game::gameOverProc()
+{
+    gameOverTimer_--;
+    if (gameOverTimer_ <= 0)
+    {
+        changeScene(Title::instance());
+    }
+}
 //******************************************************************************

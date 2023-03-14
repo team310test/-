@@ -1,5 +1,4 @@
-#ifndef INCLUDED_TITLE
-#define	INCLUDED_TITLE
+#pragma once
 
 //******************************************************************************
 //
@@ -17,16 +16,19 @@
 
 class Title : public Scene
 {
-public:
-    static Title* instance() { return &instance_; }
+private:
+	static Title instance_;
 
-	void update();
-	void draw();
+public:
+	static Title* instance() { return &instance_; }
+
+	void update() override;
+	void draw() override;
 
 private:
-    static Title instance_;
+	Title() {}
+	Title(const Title&) = delete;
 };
 
 //******************************************************************************
 
-#endif // !INCLUDED_TITLE
