@@ -181,12 +181,12 @@ NormalPlayerBehavior::NormalPlayerBehavior()
     param_.ANIME_LEFT = animePlayer_Left;
 
     param_.SIZE = VECTOR2(48 / 2, 128 - 16);
-    param_.HIT_BOX = { -20, -104, 20, -20 };
-    param_.ATTACK_BOX = { -20, -20, 20, 0 };
+    param_.HIT_BOX = { -48, -128, 48, 0 };
+    param_.ATTACK_BOX = { -48, -128, 48, 0 };
 
     // 速度関連のパラメータ
-    param_.ACCEL_X = 1.0f;
-    param_.ACCEL_Y = 1.0f;
+    param_.ACCEL_X = 8.0f;
+    param_.ACCEL_Y = 8.0f;
     param_.SPEED_X_MAX = 8.0f;
     param_.SPEED_Y_MAX = 8.0f;
     param_.JUMP_POWER_Y = -12.0f;

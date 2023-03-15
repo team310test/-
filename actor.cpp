@@ -46,8 +46,6 @@ void ActorBehavior::move(OBJ2D* obj) const
 
     case 1:
         //////// �ʏ펞 ////////
-        if (!isAlive(obj))
-            break;
         damageProc(obj);
         moveY(obj);
         moveX(obj);

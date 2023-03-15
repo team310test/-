@@ -39,6 +39,17 @@ private:
 };
 EXTERN NormalEnemyBehavior normalEnemyBehavior;
 
+class ItemEnemyBehavior : public BaseEnemyBehavior
+{
+public:
+    ItemEnemyBehavior();
+private:
+    void moveY(OBJ2D* obj) const override;
+    void moveX(OBJ2D* obj) const override;
+    void attack(OBJ2D* obj) const override;
+};
+EXTERN ItemEnemyBehavior itemEnemyBehavior;
+
 //==============================================================================
 //
 //      Á‹ƒAƒ‹ƒSƒŠƒYƒ€
@@ -51,3 +62,9 @@ class EraseEnemy : public Eraser
     void erase(OBJ2D* obj) const;
 };
 EXTERN EraseEnemy eraseEnemy;
+
+class EraseItem : public Eraser
+{
+    void erase(OBJ2D* obj) const;
+};
+EXTERN EraseItem eraseItem;
