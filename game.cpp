@@ -78,6 +78,9 @@ void Game::update()
         // プレイヤーを追加する
         setPlayer(obj2dManager(), bg());
 
+        // エネミーを追加する
+        setEnemy(obj2dManager(), bg());
+
         bg()->init(player_); // BGの初期化
 
         state_++;    // 初期化処理の終了

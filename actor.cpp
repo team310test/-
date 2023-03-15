@@ -62,8 +62,3 @@ void ActorBehavior::move(OBJ2D* obj) const
     // アニメーション更新
     if (obj->renderer_->animeData_) obj->renderer_->animeUpdate();
 }
-
-void ActorBehavior::areaCheck(OBJ2D* obj) const
-{
-    // 画面外へいけないようにする(仮)
-}

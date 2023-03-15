@@ -15,7 +15,7 @@
 //
 //******************************************************************************
 
-//------< プレイヤーのアニメデータ >----------------------------------------------
+//------< プレイヤーのアニメデータ(仮) >----------------------------------------------
 namespace
 {   // ※このデータは長いので、Visual Studioの機能で閉じられるようにnamespaceを分けている
 
@@ -121,12 +121,6 @@ void BasePlayerBehavior::moveX(OBJ2D* obj) const
 
 void BasePlayerBehavior::hit(OBJ2D* src, OBJ2D* dst) const
 {
-    // 自機の攻撃領域(top) が敵の食らい領域(top)より上側になければ　return;
-    if (src->collider_->attackBox_.top
-        > dst->collider_->hitBox_.top) return;
-    // srcの速度が下向きでなければ return
-    if (src->transform_->velocity_.y < 0)return;
-
     // 敵のHPを減らす
     dst->actorComponent_->hp_ -= getParam()->ATTACK_POWER;
 }
@@ -150,9 +144,31 @@ void BasePlayerBehavior::damageProc(OBJ2D* obj) const
     obj->actorComponent_->muteki();
 }
 
+void BasePlayerBehavior::areaCheck(OBJ2D* obj) const
+{
+    // 仮
+    if (obj->transform_->position_.x < obj->collider_->size_.x)
+    {
+        obj->transform_->position_.x = obj->collider_->size_.x;
+    }
+    if (obj->transform_->position_.x > BG::WINDOW_W - obj->collider_->size_.x)
+    {
+        obj->transform_->position_.x = BG::WINDOW_W - obj->collider_->size_.x;
+    }
+
+    if (obj->transform_->position_.y < obj->collider_->size_.y)
+    {
+        obj->transform_->position_.y = obj->collider_->size_.y;
+    }
+    if (obj->transform_->position_.y > BG::WINDOW_H)
+    {
+        obj->transform_->position_.y = BG::WINDOW_H;
+    }
+}
+
 //******************************************************************************
 //
-//      WalkPlayerBehavior
+//      NormalPlayerBehavior
 //
 //******************************************************************************
 
