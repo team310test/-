@@ -21,38 +21,68 @@ namespace
 
     //------< プレイヤーのアニメデータ >------------------------------------------
     //上方向
-    GameLib::AnimeData animePlayer_Up[] = {
-        { &sprPlayer_Up0, 10 },
-        { &sprPlayer_Up1, 10 },
-        { &sprPlayer_Up2, 10 },
-        { &sprPlayer_Up1, 10 },
+    GameLib::AnimeData sprPlayer_Up[] = {
+        { &sprEnemey_test, 10 },
+        //{ &sprPlayer_test, 10 },
         { nullptr, -1 },// 終了フラグ
     };
     //右方向
-    GameLib::AnimeData animePlayer_Right[] = {
-        { &sprPlayer_Right0, 10 },
-        { &sprPlayer_Right1, 10 },
-        { &sprPlayer_Right2, 10 },
-        { &sprPlayer_Right1, 10 },
+    GameLib::AnimeData sprPlayer_Right[] = {
+        { &sprEnemey_test, 10 },
+        //{ &sprPlayer_test, 10 },
         { nullptr, -1 },// 終了フラグ
     };
     //下方向
-    GameLib::AnimeData animePlayer_Down[] = {
-        { &sprPlayer_Down0, 10 },
-        { &sprPlayer_Down1, 10 },
-        { &sprPlayer_Down2, 10 },
-        { &sprPlayer_Down1, 10 },
+    GameLib::AnimeData sprPlayer_Down[] = {
+        { &sprEnemey_test, 10 },
+        //{ &sprPlayer_test, 10 },
         { nullptr, -1 },// 終了フラグ
     };
     //左方向
-    GameLib::AnimeData animePlayer_Left[] = {
-        { &sprPlayer_Left0, 10 },
-        { &sprPlayer_Left1, 10 },
-        { &sprPlayer_Left2, 10 },
-        { &sprPlayer_Left1, 10 },
+    GameLib::AnimeData sprPlayer_Left[] = {
+        { &sprEnemey_test, 10 },
+        //{ &sprPlayer_test, 10 },
         { nullptr, -1 },// 終了フラグ
     };
 }
+
+//namespace
+//{   // ※このデータは長いので、Visual Studioの機能で閉じられるようにnamespaceを分けている
+//
+//    //------< プレイヤーのアニメデータ >------------------------------------------
+//    //上方向
+//    GameLib::AnimeData animeEnemey_Up[] = {
+//        { &sprPlayer_Up0, 10 },
+//        { &sprPlayer_Up1, 10 },
+//        { &sprPlayer_Up2, 10 },
+//        { &sprPlayer_Up1, 10 },
+//        { nullptr, -1 },// 終了フラグ
+//    };
+//    //右方向
+//    GameLib::AnimeData animeEnemey_Right[] = {
+//        { &sprPlayer_Right0, 10 },
+//        { &sprPlayer_Right1, 10 },
+//        { &sprPlayer_Right2, 10 },
+//        { &sprPlayer_Right1, 10 },
+//        { nullptr, -1 },// 終了フラグ
+//    };
+//    //下方向
+//    GameLib::AnimeData animeEnemey_Down[] = {
+//        { &sprPlayer_Down0, 10 },
+//        { &sprPlayer_Down1, 10 },
+//        { &sprPlayer_Down2, 10 },
+//        { &sprPlayer_Down1, 10 },
+//        { nullptr, -1 },// 終了フラグ
+//    };
+//    //左方向
+//    GameLib::AnimeData animeEnemey_Left[] = {
+//        { &sprPlayer_Left0, 10 },
+//        { &sprPlayer_Left1, 10 },
+//        { &sprPlayer_Left2, 10 },
+//        { &sprPlayer_Left1, 10 },
+//        { nullptr, -1 },// 終了フラグ
+//    };
+//}
 
 void setPlayer(OBJ2DManager* obj2dManager, BG* bg) 
 {
@@ -175,14 +205,14 @@ void BasePlayerBehavior::areaCheck(OBJ2D* obj) const
 NormalPlayerBehavior::NormalPlayerBehavior()
 {
     // アニメーション
-    param_.ANIME_UP = animePlayer_Up;
-    param_.ANIME_RIGHT = animePlayer_Right;
-    param_.ANIME_DOWN = animePlayer_Down;
-    param_.ANIME_LEFT = animePlayer_Left;
+    param_.ANIME_UP = sprPlayer_Up;
+    param_.ANIME_RIGHT = sprPlayer_Right;
+    param_.ANIME_DOWN = sprPlayer_Down;
+    param_.ANIME_LEFT = sprPlayer_Left;
 
     param_.SIZE = VECTOR2(48 / 2, 128 - 16);
-    param_.HIT_BOX = { -48, -128, 48, 0 };
-    param_.ATTACK_BOX = { -48, -128, 48, 0 };
+    param_.HIT_BOX = { -100, -200, 100 , 0 };
+    param_.ATTACK_BOX = { -100 , -200, 100 , 0 };
 
     // 速度関連のパラメータ
     param_.ACCEL_X = 8.0f;

@@ -43,6 +43,8 @@ void Game::deinit()
     GameLib::music::clear();
 }
 
+int num = 2;
+
 //--------------------------------------------------------------
 //  更新処理
 //--------------------------------------------------------------
@@ -57,9 +59,9 @@ void Game::update()
     }
 
     // ポーズ処理
-    if (GameLib::input::TRG(0) & GameLib::input::PAD_START)
-        isPaused_ = !isPaused_;       // 0コンのスタートボタンが押されたらポーズ状態が反転
-    if (isPaused_) return;           // この時点でポーズ中ならリターン
+    //if (GameLib::input::TRG(0) & GameLib::input::PAD_START)
+    //    isPaused_ = !isPaused_;       // 0コンのスタートボタンが押されたらポーズ状態が反転
+    //if (isPaused_) return;           // この時点でポーズ中ならリターン
 
     switch (state_)
     {
@@ -88,6 +90,15 @@ void Game::update()
 
     case 1:
         //////// 通常時の処理 ////////
+
+        // 敵追加
+        if (GameLib::input::TRG(0) & GameLib::input::PAD_START)
+        {
+            addEnemy(obj2dManager(), bg());
+            num++;
+        }
+
+        GameLib::debug::setString("num:%d", num);
 
         // オブジェクトの更新
         obj2dManager()->update();

@@ -72,7 +72,7 @@ void SceneManager::execute(Scene* scene)
 {
     using namespace GameLib;
 
-    bool isFullScreen = false;	// フルスクリーンにするならtrueに変える
+    bool isFullScreen = true;	// フルスクリーンにするならtrueに変える
                                 //（Releaseモードのみ）
 
     // ゲームライブラリの初期化処理

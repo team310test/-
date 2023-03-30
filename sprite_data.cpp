@@ -13,7 +13,10 @@
 // 2D画像ロードデータ
 GameLib::LoadTexture loadTexture[] = {
     { TEXNO::PLAYER,      L"./Data/Images/player.png",    1U },// プレイヤー(仮)
+    { TEXNO::PLAYERT,      L"./Data/Images/player(test).png",    1U },// プレイヤー(仮)
+    { TEXNO::PLAYER2,      L"./Data/Images/a.png",    1U },// 200*200
     { TEXNO::SHOT,        L"./Data/Images/weapon.png",    1U },// ショット(仮)
+    { TEXNO::ENEMY,        L"./Data/Images/enemy(test).png",    1U },// エネミー(仮)
     { -1, nullptr }	// 終了フラグ
 };
 
@@ -42,9 +45,13 @@ GameLib::SpriteData sprPlayer_Left0 = SPRITE_BOTTOM(TEXNO::PLAYER, 96 * 0, 128 *
 GameLib::SpriteData sprPlayer_Left1 = SPRITE_BOTTOM(TEXNO::PLAYER, 96 * 1, 128 * 3, 96, 128);
 GameLib::SpriteData sprPlayer_Left2 = SPRITE_BOTTOM(TEXNO::PLAYER, 96 * 2, 128 * 3, 96, 128);
 
+GameLib::SpriteData sprPlayer_test = SPRITE_BOTTOM(TEXNO::PLAYERT,64 * 0, 128 * 0, 128, 128);
+
 //------< アイテム >-------------------------------------------------------------
 
 //------< 敵 >------------------------------------------------------------------
+//GameLib::SpriteData sprEnemey_test = SPRITE_BOTTOM(TEXNO::ENEMY, 0, 0, 128, 128);
+GameLib::SpriteData sprEnemey_test = SPRITE_BOTTOM(TEXNO::PLAYER2, 0, 0, 200, 200);
 
 //------< ショット >----------------------------------------------------------------
 GameLib::SpriteData sprWeapon_Sword = SPRITE_BOTTOM(TEXNO::SHOT, 128 * 0, 0, 128, 128);

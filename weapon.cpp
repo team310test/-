@@ -42,12 +42,12 @@ ShurikenBehavior::ShurikenBehavior()
 void ShurikenBehavior::update(OBJ2D* obj) const
 {
     // ˆÊ’u‚É‘¬“x‚ð‘«‚·
-    bool xFlip = obj->weaponComponent_->xFlip_;
+    bool xFlip = false;
     obj->transform_->velocity_ = { xFlip ? -getParam()->SPEED_X : getParam()->SPEED_X, 0 };
     obj->transform_->position_ += obj->transform_->velocity_;
 
     // ‰ñ“]‚ð‰Á‚¦‚é
-    obj->transform_->rotation_ += xFlip ? -getParam()->ROT_SPEED : getParam()->ROT_SPEED;
+    //obj->transform_->rotation_ += xFlip ? -getParam()->ROT_SPEED : getParam()->ROT_SPEED;
 }
 
 void ShurikenBehavior::calcAttackBox(OBJ2D* obj) const
@@ -69,9 +69,9 @@ void ShurikenEraser::erase(OBJ2D* obj) const
     const VECTOR2* pos = &obj->transform_->position_;
 
     const float leftLimit = size->x;
-    const float rightLimit = BG::CLIENT_W + size->x;
+    const float rightLimit = BG::WINDOW_W + size->x;
     const float topLimit = size->y;
-    const float bottomLimit = BG::CLIENT_H + size->y;
+    const float bottomLimit = BG::WINDOW_H + size->y;
 
     if (pos->x < leftLimit ||
         pos->x > rightLimit ||

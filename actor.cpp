@@ -46,6 +46,8 @@ void ActorBehavior::move(OBJ2D* obj) const
 
     case 1:
         //////// 通常時 ////////
+        
+
         damageProc(obj);
         moveY(obj);
         moveX(obj);
@@ -58,5 +60,8 @@ void ActorBehavior::move(OBJ2D* obj) const
     obj->collider_->calcAttackBox(getParam()->ATTACK_BOX);
 
     // アニメーション更新
-    if (obj->renderer_->animeData_) obj->renderer_->animeUpdate();
+    obj->renderer_->animeData_ = getParam()->ANIME_LEFT;
+
+    if (obj->renderer_->animeData_) 
+        obj->renderer_->animeUpdate();
 }

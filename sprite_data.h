@@ -15,8 +15,11 @@ enum TEXNO
 {
     // ÉQÅ[ÉÄ
     PLAYER,
+    PLAYERT,
+    PLAYER2,
+    PLAYER3,
     BACK,
-    ENEMY0,
+    ENEMY,
     SHOT,
 };
 
@@ -43,6 +46,8 @@ extern GameLib::SpriteData sprPlayer_Left0;
 extern GameLib::SpriteData sprPlayer_Left1;
 extern GameLib::SpriteData sprPlayer_Left2;
 
+extern GameLib::SpriteData sprPlayer_test;
+
 //------< ÉAÉCÉeÉÄ >-------------------------------------------------------------
 
 extern GameLib::SpriteData sprItem_Sword;
@@ -50,6 +55,9 @@ extern GameLib::SpriteData sprItem_Key;
 extern GameLib::SpriteData sprItem_Orb;
 
 //------< ìG >------------------------------------------------------------------
+
+extern GameLib::SpriteData sprEnemey_test;
+extern GameLib::SpriteData sprPlayer_test;
 
 // Enemy0
 extern GameLib::SpriteData sprEnemy0_Up0;

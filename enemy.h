@@ -10,6 +10,8 @@
 
 void setEnemy(OBJ2DManager* obj2dManager, BG* bg);
 
+void addEnemy(OBJ2DManager* obj2dManager, BG* bg);
+
 //==============================================================================
 //
 //      ˆÚ“®ƒAƒ‹ƒSƒŠƒYƒ€
@@ -44,6 +46,8 @@ class ItemEnemyBehavior : public BaseEnemyBehavior
 public:
     ItemEnemyBehavior();
 private:
+    OBJ_TYPE getType() const override { return OBJ_TYPE::TYPE_NULL; }
+    void hit(OBJ2D*, OBJ2D*) const override;
     void moveY(OBJ2D* obj) const override;
     void moveX(OBJ2D* obj) const override;
     void attack(OBJ2D* obj) const override;

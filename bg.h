@@ -18,8 +18,8 @@ class BG
 {
 public:
     //------< 定数 >------------------------------------------------------------
-    static const int WINDOW_W = 1280;                   // ウインドウの幅
-    static const int WINDOW_H = 720;                    // ウインドウの高さ
+    static const int WINDOW_W = 1920;                   // ウインドウの幅
+    static const int WINDOW_H = 1080;                    // ウインドウの高さ
     static const int CLIENT_W = 1280;                   // クライアント領域の幅
     static const int CLIENT_H = 720;                    // クライアント領域の高さ
 

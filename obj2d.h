@@ -18,6 +18,7 @@ class OBJ2D;
 
 enum class OBJ_TYPE
 {
+    TYPE_NULL = -1,
     PLAYER = 0, 
     ITEM, 
     ENEMY, 
