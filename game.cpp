@@ -68,6 +68,7 @@ void Game::update()
     case 0:
         //////// 初期設定 ////////
         timer_ = 0;
+        num = 2;
 
         GameLib::setBlendMode(GameLib::Blender::BS_ALPHA);   // 通常のアルファ処理
 
@@ -126,7 +127,7 @@ void Game::update()
 void Game::draw()
 {
     // 画面クリア
-    GameLib::clear(VECTOR4(0, 1, 0, 1));
+    GameLib::clear(VECTOR4(0.6f, 0.4f, 0.3f, 1));
 
     bg()->drawBack();     // 背景の描画
 

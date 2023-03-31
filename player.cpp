@@ -211,7 +211,8 @@ NormalPlayerBehavior::NormalPlayerBehavior()
     param_.ANIME_LEFT = sprPlayer_Left;
 
     param_.SIZE = VECTOR2(48 / 2, 128 - 16);
-    param_.HIT_BOX = { -50, -175, 50, -75 };
+    param_.HIT_BOX = { -75, -200, 75, -50 };
+    //param_.HIT_BOX = { -50, -175, 50, -75 };
     param_.ATTACK_BOX = param_.HIT_BOX;
 
     // 速度関連のパラメータ
