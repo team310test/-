@@ -8,20 +8,22 @@
 //
 //******************************************************************************
 
-void setPlayer(OBJ2DManager* obj2dManager, BG* bg);
+void setEnemy(OBJ2DManager* obj2dManager, BG* bg);
+
+void addEnemy(OBJ2DManager* obj2dManager, BG* bg);
 
 //==============================================================================
 //
 //      移動アルゴリズム
 //
 //==============================================================================
-class BasePlayerBehavior : public ActorBehavior
+class BaseEnemyBehavior : public ActorBehavior
 {
 private:
     void init(OBJ2D* obj) const override;
     void moveX(OBJ2D* obj) const;
-    OBJ_TYPE getType() const override { return OBJ_TYPE::PLAYER; }
-    OBJ_TYPE getAttackType() const override { return OBJ_TYPE::ENEMY; }
+    OBJ_TYPE getType() const override { return OBJ_TYPE::ENEMY; }
+    OBJ_TYPE getAttackType() const override { return OBJ_TYPE::PLAYER; }
     void hit(OBJ2D*, OBJ2D*) const override;
 
     bool isAlive(OBJ2D* obj) const;
@@ -29,15 +31,28 @@ private:
     void areaCheck(OBJ2D* obj) const;
 };
 
-class NormalPlayerBehavior : public BasePlayerBehavior
+class NormalEnemyBehavior : public BaseEnemyBehavior
 {
-public:
-    NormalPlayerBehavior();
+public:    
+    NormalEnemyBehavior();
 private:
     void moveY(OBJ2D* obj) const override;
     void attack(OBJ2D* obj) const override;
 };
-EXTERN NormalPlayerBehavior normalPlayerBehavior;
+EXTERN NormalEnemyBehavior normalEnemyBehavior;
+
+class ItemEnemyBehavior : public BaseEnemyBehavior
+{
+public:
+    ItemEnemyBehavior();
+private:
+    OBJ_TYPE getType() const override { return OBJ_TYPE::TYPE_NULL; }
+    void hit(OBJ2D*, OBJ2D*) const override;
+    void moveY(OBJ2D* obj) const override;
+    void moveX(OBJ2D* obj) const override;
+    void attack(OBJ2D* obj) const override;
+};
+EXTERN ItemEnemyBehavior itemEnemyBehavior;
 
 //==============================================================================
 //
@@ -46,8 +61,14 @@ EXTERN NormalPlayerBehavior normalPlayerBehavior;
 //==============================================================================
 
 // 消去アルゴリズム
-class ErasePlayer : public Eraser
+class EraseEnemy : public Eraser
 {
     void erase(OBJ2D* obj) const;
 };
-EXTERN ErasePlayer erasePlayer;
+EXTERN EraseEnemy eraseEnemy;
+
+class EraseItem : public Eraser
+{
+    void erase(OBJ2D* obj) const;
+};
+EXTERN EraseItem eraseItem;

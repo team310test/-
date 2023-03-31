@@ -1,203 +1,324 @@
+//******************************************************************************
+//
+//
+//      プレイヤークラス
+//
+//
+//******************************************************************************
+
+//------< インクルード >---------------------------------------------------------
 #include "all.h"
 
-// 111111
+//******************************************************************************
+//
+//      プレイヤー移動処理
+//
+//******************************************************************************
 
-int player_state;
-int player_timer;
-int player_timer_num;	//一つ前のtimerの値
+//------< プレイヤーのアニメデータ(仮) >----------------------------------------------
+namespace
+{   // ※このデータは長いので、Visual Studioの機能で閉じられるようにnamespaceを分けている
 
-Sprite* player_Image;	//自機画像
-Sprite* stomach;		//空腹ゲージ(胃)
-float player_direction;	//向き(0:正面,1:左,2:右)
-float player_anime;	//アニメーション(現状2コマ)
-bool coolDown;	//クールダウン中(true)	キー操作受け付けなくなる
-
-//スコア表示
-int calorie;		//取得したカロリーを保存する変数
-int hungerGauge;
-
-//初期設定
-void player_init() {
-	player_state = 0;
-	player_timer = 0;
-	player_timer_num = 0;
-
-	player_direction = 0;
-	player_anime = 0;
-	coolDown = false;
-
-	calorie = 0;
+    //------< プレイヤーのアニメデータ >------------------------------------------
+    //上方向
+    GameLib::AnimeData sprPlayer_Up[] = {
+        { &sprEnemey_test, 10 },
+        //{ &sprPlayer_test, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
+    //右方向
+    GameLib::AnimeData sprPlayer_Right[] = {
+        { &sprEnemey_test, 10 },
+        //{ &sprPlayer_test, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
+    //下方向
+    GameLib::AnimeData sprPlayer_Down[] = {
+        { &sprEnemey_test, 10 },
+        //{ &sprPlayer_test, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
+    //左方向
+    GameLib::AnimeData sprPlayer_Left[] = {
+        { &sprEnemey_test, 10 },
+        //{ &sprPlayer_test, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
 }
 
-//削除
-void player_deinit() {
-	safe_delete(player_Image);
-	safe_delete(stomach);
-}
+//namespace
+//{   // ※このデータは長いので、Visual Studioの機能で閉じられるようにnamespaceを分けている
+//
+//    //------< プレイヤーのアニメデータ >------------------------------------------
+//    //上方向
+//    GameLib::AnimeData animeEnemey_Up[] = {
+//        { &sprPlayer_Up0, 10 },
+//        { &sprPlayer_Up1, 10 },
+//        { &sprPlayer_Up2, 10 },
+//        { &sprPlayer_Up1, 10 },
+//        { nullptr, -1 },// 終了フラグ
+//    };
+//    //右方向
+//    GameLib::AnimeData animeEnemey_Right[] = {
+//        { &sprPlayer_Right0, 10 },
+//        { &sprPlayer_Right1, 10 },
+//        { &sprPlayer_Right2, 10 },
+//        { &sprPlayer_Right1, 10 },
+//        { nullptr, -1 },// 終了フラグ
+//    };
+//    //下方向
+//    GameLib::AnimeData animeEnemey_Down[] = {
+//        { &sprPlayer_Down0, 10 },
+//        { &sprPlayer_Down1, 10 },
+//        { &sprPlayer_Down2, 10 },
+//        { &sprPlayer_Down1, 10 },
+//        { nullptr, -1 },// 終了フラグ
+//    };
+//    //左方向
+//    GameLib::AnimeData animeEnemey_Left[] = {
+//        { &sprPlayer_Left0, 10 },
+//        { &sprPlayer_Left1, 10 },
+//        { &sprPlayer_Left2, 10 },
+//        { &sprPlayer_Left1, 10 },
+//        { nullptr, -1 },// 終了フラグ
+//    };
+//}
 
-//更新処理
-void player_update() {
-
-	switch (player_state) {
-	case 0:
-		////////  初期設定  ////////
-
-		player_Image = sprite_load(L"./Data/Images/player.png");
-		stomach = sprite_load(L"./Data/Images/stomach.png");
-		player_state++;
-		/*fallthrough*/
-
-	case 1:
-		////////  パラメータ設定  ////////
-		GameLib::setBlendMode(Blender::BS_ALPHA);
-		player_state++;
-		/*fallthrough*/
-	case 2:
-		////////  通常時  ////////
-
-		stomach_gauge();	//胃ゲージ(空腹ゲージ)処理
-
-		//クールダウンでなければ(coolDownがfalseであれば)
-		if (!coolDown) {
-			//プレイヤーの操作
-			player_control();
-		}
-		else {
-			cool_down();	//クールダウン処理
-		}
-
-		break;
-	}
-	player_timer++;
-	debug::setString("player_timer:%d", player_timer);
-}
-
-//描画処理
-void player_render() {
-	//自機
-	sprite_render(player_Image,									//ポインタ
-		SCREEN_W / 2, SCREEN_H,									//座標
-		1, 1,													//表示ケール
-		player_anime * PLAYER_SIZE_X, player_direction * PLAYER_SIZE_Y,//元画像位置
-		PLAYER_SIZE_X, PLAYER_SIZE_Y,							//元画像サイズ
-		PLAYER_SIZE_X / 2, PLAYER_SIZE_Y,						//基準点
-		ToRadian(0),											//角度
-		1, 1, 1, 1);											//色彩、透明度
-
-	//胃(空)
-	sprite_render(stomach,										//ポインタ
-		SCREEN_W - STOMACH_SIZE_X, STOMACH_SIZE_Y,				//座標
-		1, 1,													//表示ケール
-		0,0,													//元画像位置
-		STOMACH_SIZE_X, STOMACH_SIZE_Y,							//元画像サイズ
-		STOMACH_SIZE_X / 2, STOMACH_SIZE_Y / 2,					//基準点
-		ToRadian(0),											//角度
-		1, 1, 1, 1);											//色彩、透明度
-
-		//胃
-	sprite_render(stomach,										//ポインタ
-		SCREEN_W - STOMACH_SIZE_X, STOMACH_SIZE_Y,			//座標
-		1, 1,													//表示ケール
-		STOMACH_SIZE_X, 0,					//元画像位置
-		STOMACH_SIZE_X, STOMACH_SIZE_Y*((float)hungerGauge*0.01),					//元画像サイズ
-		STOMACH_SIZE_X / 2, STOMACH_SIZE_Y / 2,													//基準
-		ToRadian(180),											//角度
-		1, 1, 1, 1);											//色彩、透明度										//色彩、透明度
-}
-
-//自機の操作
-void player_control() {
-
-	//右						(右が押されていて　かつ　左が押されていない)
-	if ((STATE(0) & PAD_RIGHT) && !(STATE(0) & PAD_LEFT)) {
-		player_direction = player_right;
-	}
-	//左						(左がおされていて　かつ　右がおされていない)
-	else if ((STATE(0) & PAD_LEFT) && !(STATE(0) & PAD_RIGHT)) {
-		player_direction = player_left;
-	}
-	//何も押されていない
-	else {
-		player_direction = player_flont;
-	}
-
-}
-
-
-//胃ゲージ(空腹ゲージ)		マックスになるとクールダウン
-void stomach_gauge() {
-	if (hungerGauge >= 100) {
-		player_direction = player_flont;//正面を向かせる
-		player_anime = 1;	
-		coolDown = true;	//クールダウン状態に(trueにする)
-	}
-}
-
-//クールダウン処理
-void cool_down() {
-	static int cooldawn_state = 0;	
-	
-	//待機時間
-	if (cooldawn_state == 0) {
-		player_timer_num = player_timer;
-		cooldawn_state++;
-	}
-	else if (cooldawn_state == 1) {
-		
-		if (player_timer - player_timer_num > 30) 
-			cooldawn_state++;
-	}
-	//ゲージ減少
-	else if (cooldawn_state == 2) {
-		//0以下になるまで引く
-		if (hungerGauge > 0) {
-			hungerGauge--;
-		}
-		else {
-			//0より小さくなったら0に戻す
-			if (hungerGauge < 0)hungerGauge == 0;
-			cooldawn_state++;
-		}
-	}
-	//待機時間
-	else if (cooldawn_state == 3) {
-		player_timer_num = player_timer;
-		cooldawn_state++;
-	}
-	else if (cooldawn_state == 4) {
-		if (player_timer - player_timer_num > 30) {
-			player_anime = 0;
-			coolDown = false;	//クールダウン状態解除(falseにする)
-			cooldawn_state = 0;
-			cooldawn_state = 0;
-		}
-	}
-}
-
-//スコア表示
-void score_disp() {
-
-	//「calorie」表示
-	//text_out(3,"calorie:", 0, 0, SCORE_TEXT_SIZE, SCORE_TEXT_SIZE, 0, 0, 0, 1);
-
-	//カロリー背景
-	primitive::rect(0, 0, SCORE_TEXT_SIZE * 12 * 5, SCORE_TEXT_SIZE * 12,
-		0,0,ToRadian(0),1,1,0,1);
-	
-	//カロリー(数値)表示
-	text_out(3, std::to_string(calorie),0,0,
-		SCORE_TEXT_SIZE, SCORE_TEXT_SIZE,0,0,0,1);
-
-}
-
-// 追加仮
-// 更に追加
-void test()
+void setPlayer(OBJ2DManager* obj2dManager, BG* bg) 
 {
+    const VECTOR2 pos = { 500,500 };
 
+    OBJ2D* player = new OBJ2D(
+        new Renderer,
+        new Collider,
+        bg,
+        new ActorComponent,
+        nullptr,
+        nullptr
+    );
+
+    player->zOrder_ = 3;
+
+    obj2dManager->add(player, &normalPlayerBehavior, pos);
 }
 
-void Flower()
-{
+//******************************************************************************
+//
+//      BasePlayerBehavior
+//
+//******************************************************************************
 
+void BasePlayerBehavior::init(OBJ2D* obj) const
+{
+    obj->collider_->judgeFlag_ = true;
+    obj->collider_->isDrawHitRect_ = true;
+    obj->collider_->isDrawAttackRect_ = true;
+
+    obj->eraser_ = &erasePlayer;
+}
+
+void BasePlayerBehavior::moveX(OBJ2D* obj) const
+{
+    // 左右入力の取り出し
+    switch (obj->actorComponent_->padState_ & (GameLib::input::PAD_LEFT | GameLib::input::PAD_RIGHT))
+    {
+    case GameLib::input::PAD_LEFT:  // 左だけが押されている場合
+        obj->transform_->velocity_.x -= getParam()->ACCEL_X;
+        obj->renderer_->animeData_ = getParam()->ANIME_LEFT;
+        obj->actorComponent_->xFlip_ = true;
+        break;
+    case GameLib::input::PAD_RIGHT: // 右だけが押されている場合
+        obj->transform_->velocity_.x += getParam()->ACCEL_X;
+        obj->renderer_->animeData_ = getParam()->ANIME_RIGHT;
+        obj->actorComponent_->xFlip_ = false;
+        break;
+    default:        // どちらも押されていないか相殺されている場合
+        if (obj->transform_->velocity_.x > 0)
+        {
+            obj->transform_->velocity_.x -= getParam()->ACCEL_X / 2;
+            if (obj->transform_->velocity_.x < 0) obj->transform_->velocity_.x = 0;
+        }
+        if (obj->transform_->velocity_.x < 0)
+        {
+            obj->transform_->velocity_.x += getParam()->ACCEL_X / 2;
+            if (obj->transform_->velocity_.x > 0) obj->transform_->velocity_.x = 0;
+        }
+        break;
+    }
+
+    ActorBehavior::moveX(obj);
+}
+
+void BasePlayerBehavior::hit(OBJ2D* src, OBJ2D* dst) const
+{
+    // 敵のHPを減らす
+    dst->actorComponent_->hp_ -= getParam()->ATTACK_POWER;
+}
+
+bool BasePlayerBehavior::isAlive(OBJ2D*) const
+{
+    return true;    // 生存している（仮）
+}
+
+void BasePlayerBehavior::damageProc(OBJ2D* obj) const
+{
+    // 入力処理
+
+    obj->actorComponent_->padTrg_ = GameLib::input::TRG(0);
+    obj->actorComponent_->padState_ = GameLib::input::STATE(0);
+
+    // ダメージ処理
+    obj->actorComponent_->damaged();
+
+    // 無敵処理
+    obj->actorComponent_->muteki();
+}
+
+void BasePlayerBehavior::areaCheck(OBJ2D* obj) const
+{
+    // 仮
+    if (obj->transform_->position_.x < obj->collider_->size_.x)
+    {
+        obj->transform_->position_.x = obj->collider_->size_.x;
+    }
+    if (obj->transform_->position_.x > BG::WINDOW_W - obj->collider_->size_.x)
+    {
+        obj->transform_->position_.x = BG::WINDOW_W - obj->collider_->size_.x;
+    }
+
+    if (obj->transform_->position_.y < obj->collider_->size_.y)
+    {
+        obj->transform_->position_.y = obj->collider_->size_.y;
+    }
+    if (obj->transform_->position_.y > BG::WINDOW_H)
+    {
+        obj->transform_->position_.y = BG::WINDOW_H;
+    }
+}
+
+//******************************************************************************
+//
+//      NormalPlayerBehavior
+//
+//******************************************************************************
+
+NormalPlayerBehavior::NormalPlayerBehavior()
+{
+    // アニメーション
+    param_.ANIME_UP = sprPlayer_Up;
+    param_.ANIME_RIGHT = sprPlayer_Right;
+    param_.ANIME_DOWN = sprPlayer_Down;
+    param_.ANIME_LEFT = sprPlayer_Left;
+
+    param_.SIZE = VECTOR2(48 / 2, 128 - 16);
+    param_.HIT_BOX = { -50, -175, 50, -75 };
+    param_.ATTACK_BOX = param_.HIT_BOX;
+
+    // 速度関連のパラメータ
+    param_.ACCEL_X = 8.0f;
+    param_.ACCEL_Y = 8.0f;
+    param_.SPEED_X_MAX = 8.0f;
+    param_.SPEED_Y_MAX = 8.0f;
+    param_.JUMP_POWER_Y = -12.0f;
+}
+
+void NormalPlayerBehavior::moveY(OBJ2D* obj) const
+{
+    // 左右入力の取り出し
+    switch (obj->actorComponent_->padState_ & (GameLib::input::PAD_UP | GameLib::input::PAD_DOWN))
+    {
+    case GameLib::input::PAD_UP:  // 上だけが押されている場合
+        obj->transform_->velocity_.y -= getParam()->ACCEL_Y;
+        break;
+    case GameLib::input::PAD_DOWN: // 下だけが押されている場合
+        obj->transform_->velocity_.y += getParam()->ACCEL_Y;
+        obj->renderer_->animeData_ = obj->renderer_->animeData_;
+        break;
+    default:        // どちらも押されていないか相殺されている場合
+        if (obj->transform_->velocity_.y > 0)
+        {
+            obj->transform_->velocity_.y -= getParam()->ACCEL_Y / 2;
+            if (obj->transform_->velocity_.y < 0) obj->transform_->velocity_.y = 0;
+        }
+        if (obj->transform_->velocity_.y < 0)
+        {
+            obj->transform_->velocity_.y += getParam()->ACCEL_Y / 2;
+            if (obj->transform_->velocity_.y > 0) obj->transform_->velocity_.y = 0;
+        }
+        break;
+    }
+
+    BasePlayerBehavior::moveY(obj);
+}
+
+void NormalPlayerBehavior::attack(OBJ2D* obj) const
+{
+    // プレイヤーを指すiteratorを取得する
+    auto objList = Game::instance()->obj2dManager()->getList();
+    std::list<OBJ2D*>::iterator iter = objList->begin();
+    for (; iter != objList->end(); ++iter)
+    {
+        if ((*iter)->behavior_ == nullptr) { continue; }
+        if ((*iter)->behavior_->getType() == OBJ_TYPE::PLAYER) 
+        {
+            break; 
+        }
+    }
+
+    obj->actorComponent_->attackTimer_--;
+
+    if (obj->actorComponent_->padTrg_ & GameLib::input::PAD_TRG3 &&
+        obj->actorComponent_->attackTimer_ <= 0)
+    {
+        const VECTOR2 pos = obj->transform_->position_ + VECTOR2(0, -48);
+        OBJ2D* shuriken = Game::instance()->obj2dManager()->add(
+            new OBJ2D(
+                new Renderer, 
+                new Collider, 
+                obj->bg_, 
+                nullptr, 
+                nullptr, 
+                new WeaponComponent
+            ), 
+            &shurikenBehavior, 
+            pos
+        );
+        shuriken->zOrder_ = 2;
+        shuriken->weaponComponent_->parent_ = obj;
+        obj->actorComponent_->attackTimer_ = 10;
+    }
+
+    if (obj->actorComponent_->padTrg_ & GameLib::input::PAD_TRG2 &&
+        obj->actorComponent_->attackTimer_ <= 0)
+    {
+        const VECTOR2 pos = obj->transform_->position_ + VECTOR2(0, -48);
+        OBJ2D* sword = Game::instance()->obj2dManager()->add(
+            new OBJ2D(
+                new Renderer, 
+                new Collider, 
+                obj->bg_, 
+                nullptr, 
+                nullptr, 
+                new WeaponComponent
+            ), 
+            &swordBehavior, 
+            pos
+        );
+        sword->zOrder_ = 2;
+        sword->weaponComponent_->parent_ = obj;
+        obj->actorComponent_->attackTimer_ = 15;
+    }
+}
+
+//--------------------------------------------------------------
+//  消去
+//--------------------------------------------------------------
+void ErasePlayer::erase(OBJ2D* obj) const
+{
+    // 消去サンプル
+    //if (obj->transform_->position_.y > BG::HEIGHT + obj->collider_->size_.y)
+    //{
+    //    Game::instance()->setGameOver();
+    //    obj->behavior_ = nullptr;
+    //}
 }
