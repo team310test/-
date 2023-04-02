@@ -47,7 +47,11 @@ void ActorBehavior::move(OBJ2D* obj) const
     case 1:
         //////// ’ÊíŽž ////////
         
-
+        if (isShrink)
+        {
+            shrink(obj);    // ‰æ‘œk¬
+            //break;
+        }
         damageProc(obj);
         moveY(obj);
         moveX(obj);
@@ -64,4 +68,13 @@ void ActorBehavior::move(OBJ2D* obj) const
 
     if (obj->renderer_->animeData_) 
         obj->renderer_->animeUpdate();
+}
+
+bool Behavior::isShrink = false;
+
+// k¬ŠÖ”
+void Behavior::shrink(OBJ2D* obj) const
+{
+    obj->transform_->scale_.x *= 0.9f;
+    obj->transform_->scale_.y *= 0.9f;
 }

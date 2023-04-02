@@ -21,7 +21,7 @@ private:
     void init(OBJ2D* obj) const override;
     void moveX(OBJ2D* obj) const;
     OBJ_TYPE getType() const override { return OBJ_TYPE::PLAYER; }
-    OBJ_TYPE getAttackType() const override { return OBJ_TYPE::ENEMY; }
+    OBJ_TYPE getAttackType() const override { return OBJ_TYPE::ITEM; }
     void hit(OBJ2D*, OBJ2D*) const override;
 
     bool isAlive(OBJ2D* obj) const;

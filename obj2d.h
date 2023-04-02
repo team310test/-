@@ -18,7 +18,7 @@ class OBJ2D;
 
 enum class OBJ_TYPE
 {
-    TYPE_NULL = -1,
+    null = -1,
     PLAYER = 0, 
     ITEM, 
     ENEMY, 
@@ -36,6 +36,9 @@ public:
     virtual OBJ_TYPE getType() const = 0;
     virtual OBJ_TYPE getAttackType() const = 0;
     virtual void hit(OBJ2D* src, OBJ2D* dst) const = 0;
+
+    static bool isShrink;
+    void shrink(OBJ2D*)const;
 };
 
 // 消去アルゴリズムクラス（抽象クラス）

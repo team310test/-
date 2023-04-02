@@ -246,20 +246,20 @@ void Collider::draw()
 void Collider::calcHitBox(const GameLib::fRECT& rc)
 {
     hitBox_ = {
-        obj_->transform_->position_.x + rc.left, 
-        obj_->transform_->position_.y + rc.top, 
-        obj_->transform_->position_.x + rc.right, 
-        obj_->transform_->position_.y + rc.bottom 
+        obj_->transform_->position_.x + rc.left * obj_->transform_->scale_.x,
+        obj_->transform_->position_.y + rc.top * obj_->transform_->scale_.y,
+        obj_->transform_->position_.x + rc.right * obj_->transform_->scale_.x,
+        obj_->transform_->position_.y + rc.bottom * obj_->transform_->scale_.y
     };
 }
 
 void Collider::calcAttackBox(const GameLib::fRECT& rc)
 {
     attackBox_ = {
-        obj_->transform_->position_.x + rc.left, 
-        obj_->transform_->position_.y + rc.top, 
-        obj_->transform_->position_.x + rc.right, 
-        obj_->transform_->position_.y + rc.bottom
+        obj_->transform_->position_.x + rc.left * obj_->transform_->scale_.x,
+        obj_->transform_->position_.y + rc.top * obj_->transform_->scale_.y,
+        obj_->transform_->position_.x + rc.right * obj_->transform_->scale_.x,
+        obj_->transform_->position_.y + rc.bottom * obj_->transform_->scale_.y
     };
 }
 

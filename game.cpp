@@ -43,7 +43,6 @@ void Game::deinit()
     GameLib::music::clear();
 }
 
-int num = 2;
 
 //--------------------------------------------------------------
 //  更新処理
@@ -95,10 +94,14 @@ void Game::update()
         if (GameLib::input::TRG(0) & GameLib::input::PAD_START)
         {
             addEnemy(obj2dManager(), bg());
-            num++;
         }
 
-        GameLib::debug::setString("num:%d", num);
+        // [Z]で縮小
+        if (Behavior::isShrink) Behavior::isShrink = false;
+        if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG1)
+        {
+            Behavior::isShrink = true;
+        }
 
         // オブジェクトの更新
         obj2dManager()->update();
