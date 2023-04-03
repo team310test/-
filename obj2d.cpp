@@ -203,8 +203,7 @@ void OBJ2DManager::draw()
 
         obj->renderer_->draw();
 
-        //obj->collider_->draw();
-
+        obj->collider_->draw();
     }
 }
 
@@ -247,20 +246,28 @@ void Collider::draw()
 void Collider::calcHitBox(const GameLib::fRECT& rc)
 {
     hitBox_ = {
-        obj_->transform_->position_.x + rc.left, 
-        obj_->transform_->position_.y + rc.top, 
-        obj_->transform_->position_.x + rc.right, 
-        obj_->transform_->position_.y + rc.bottom 
+        //obj_->transform_->position_.x + rc.left, 
+        //obj_->transform_->position_.y + rc.top, 
+        //obj_->transform_->position_.x + rc.right, 
+        //obj_->transform_->position_.y + rc.bottom 
+        obj_->transform_->position_.x + rc.left * obj_->transform_->scale_.x,
+        obj_->transform_->position_.y + rc.top * obj_->transform_->scale_.y,
+        obj_->transform_->position_.x + rc.right * obj_->transform_->scale_.x,
+        obj_->transform_->position_.y + rc.bottom * obj_->transform_->scale_.y
     };
 }
 
 void Collider::calcAttackBox(const GameLib::fRECT& rc)
 {
     attackBox_ = {
-        obj_->transform_->position_.x + rc.left, 
-        obj_->transform_->position_.y + rc.top, 
-        obj_->transform_->position_.x + rc.right, 
-        obj_->transform_->position_.y + rc.bottom
+        //obj_->transform_->position_.x + rc.left, 
+        //obj_->transform_->position_.y + rc.top, 
+        //obj_->transform_->position_.x + rc.right, 
+        //obj_->transform_->position_.y + rc.bottom
+        obj_->transform_->position_.x + rc.left * obj_->transform_->scale_.x,
+        obj_->transform_->position_.y + rc.top * obj_->transform_->scale_.y,
+        obj_->transform_->position_.x + rc.right * obj_->transform_->scale_.x,
+        obj_->transform_->position_.y + rc.bottom * obj_->transform_->scale_.y
     };
 }
 
@@ -293,9 +300,13 @@ void ActorComponent::muteki()
 {
     if (mutekiTimer_ <= 0)return;
 
-    VECTOR4 color = obj_->renderer_->color_;
+    //VECTOR4 color = obj_->renderer_->color_;
+    //color.w = mutekiTimer_ & 0x01 ? 1.0f : 0.0f;
+    //obj_->renderer_->color_ = color;
+
+    VECTOR4 color = obj->renderer_->color_;
     color.w = mutekiTimer_ & 0x01 ? 1.0f : 0.0f;
-    obj_->renderer_->color_ = color;
+    obj->renderer_->color_ = color;
 
     --mutekiTimer_;
 }

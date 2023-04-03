@@ -17,6 +17,7 @@ GameLib::LoadTexture loadTexture[] = {
     { TEXNO::PLAYER2,      L"./Data/Images/Weapon1.png",    1U },// 250*250
     { TEXNO::SHOT,        L"./Data/Images/weapon.png",    1U },// ショット(仮)
     //{ TEXNO::ENEMY,        L"./Data/Images/enemy(test).png",    1U },// エネミー(仮)
+
     { -1, nullptr }	// 終了フラグ
 };
 

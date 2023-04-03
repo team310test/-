@@ -98,8 +98,29 @@ void setPlayer(OBJ2DManager* obj2dManager, BG* bg)
     );
 
     player->zOrder_ = 3;
+    player->actorComponent_->parent_ = player;
 
     obj2dManager->add(player, &normalPlayerBehavior, pos);
+}
+
+// 仮
+void setCursor(OBJ2DManager* obj2dManager, BG* bg)
+{
+    const VECTOR2 pos = { 100,100 };
+
+    OBJ2D* cursor = new OBJ2D(
+        new Renderer,
+        new Collider,
+        bg,
+        new ActorComponent,
+        nullptr,
+        nullptr
+    );
+
+    cursor->zOrder_ = 3;
+    cursor->actorComponent_->parent_ = cursor;
+
+    obj2dManager->add(cursor, &cursorBehavior, pos);
 }
 
 //******************************************************************************
@@ -153,6 +174,10 @@ void BasePlayerBehavior::hit(OBJ2D* src, OBJ2D* dst) const
 {
     // 敵のHPを減らす
     dst->actorComponent_->hp_ -= getParam()->ATTACK_POWER;
+
+    // 親を保存
+    if (dst->actorComponent_->parent_ == nullptr)
+        dst->actorComponent_->parent_ = src;
 }
 
 bool BasePlayerBehavior::isAlive(OBJ2D*) const
@@ -163,7 +188,6 @@ bool BasePlayerBehavior::isAlive(OBJ2D*) const
 void BasePlayerBehavior::damageProc(OBJ2D* obj) const
 {
     // 入力処理
-
     obj->actorComponent_->padTrg_ = GameLib::input::TRG(0);
     obj->actorComponent_->padState_ = GameLib::input::STATE(0);
 
@@ -271,7 +295,9 @@ void NormalPlayerBehavior::attack(OBJ2D* obj) const
     if (obj->actorComponent_->padTrg_ & GameLib::input::PAD_TRG3 &&
         obj->actorComponent_->attackTimer_ <= 0)
     {
-        const VECTOR2 pos = obj->transform_->position_ + VECTOR2(0, -48);
+//        const VECTOR2 pos = obj->transform_->position_ + VECTOR2(0, -48);
+        const VECTOR2 pos = obj->transform_->position_;
+
         OBJ2D* shuriken = Game::instance()->obj2dManager()->add(
             new OBJ2D(
                 new Renderer, 
@@ -311,6 +337,168 @@ void NormalPlayerBehavior::attack(OBJ2D* obj) const
     }
 }
 
+
+//******************************************************************************
+//
+//      ItemPlayerBehavior
+//
+//******************************************************************************
+ItemPlayerBehavior::ItemPlayerBehavior()
+{
+    // アニメーション
+    param_.ANIME_UP = sprPlayer_Up;
+    param_.ANIME_RIGHT = sprPlayer_Right;
+    param_.ANIME_DOWN = sprPlayer_Down;
+    param_.ANIME_LEFT = sprPlayer_Left;
+
+    param_.SIZE = VECTOR2(48 / 2, 128 - 16);
+    param_.HIT_BOX = { -100, -200, 100 , 0 };
+    param_.ATTACK_BOX = { -100 , -200, 100 , 0 };
+
+    // 速度関連のパラメータ
+    param_.ACCEL_X = 8.0f;
+    param_.ACCEL_Y = 8.0f;
+    param_.SPEED_X_MAX = 8.0f;
+    param_.SPEED_Y_MAX = 8.0f;
+    param_.JUMP_POWER_Y = -12.0f;
+}
+
+void ItemPlayerBehavior::moveY(OBJ2D* obj) const
+{
+    // 左右入力の取り出し
+    switch (obj->actorComponent_->padState_ & (GameLib::input::PAD_UP | GameLib::input::PAD_DOWN))
+    {
+    case GameLib::input::PAD_UP:  // 上だけが押されている場合
+        obj->transform_->velocity_.y -= getParam()->ACCEL_Y;
+        break;
+    case GameLib::input::PAD_DOWN: // 下だけが押されている場合
+        obj->transform_->velocity_.y += getParam()->ACCEL_Y;
+        obj->renderer_->animeData_ = obj->renderer_->animeData_;
+        break;
+    default:        // どちらも押されていないか相殺されている場合
+        if (obj->transform_->velocity_.y > 0)
+        {
+            obj->transform_->velocity_.y -= getParam()->ACCEL_Y / 2;
+            if (obj->transform_->velocity_.y < 0) obj->transform_->velocity_.y = 0;
+        }
+        if (obj->transform_->velocity_.y < 0)
+        {
+            obj->transform_->velocity_.y += getParam()->ACCEL_Y / 2;
+            if (obj->transform_->velocity_.y > 0) obj->transform_->velocity_.y = 0;
+        }
+        break;
+    }
+
+    BasePlayerBehavior::moveY(obj);
+}
+
+void ItemPlayerBehavior::attack(OBJ2D* obj) const
+{
+    // プレイヤーを指すiteratorを取得する
+    auto objList = Game::instance()->obj2dManager()->getList();
+    std::list<OBJ2D*>::iterator iter = objList->begin();
+    for (; iter != objList->end(); ++iter)
+    {
+        if ((*iter)->behavior_ == nullptr) { continue; }
+        if ((*iter)->behavior_->getType() == OBJ_TYPE::PLAYER)
+        {
+            break;
+        }
+    }
+
+    obj->actorComponent_->attackTimer_--;
+
+    if (obj->actorComponent_->padTrg_ & GameLib::input::PAD_TRG3 &&
+        obj->actorComponent_->attackTimer_ <= 0)
+    {
+        const VECTOR2 pos = obj->transform_->position_ + VECTOR2(0, -48);
+        OBJ2D* shuriken = Game::instance()->obj2dManager()->add(
+            new OBJ2D(
+                new Renderer,
+                new Collider,
+                obj->bg_,
+                nullptr,
+                nullptr,
+                new WeaponComponent
+            ),
+            &shurikenBehavior,
+            pos
+        );
+        shuriken->zOrder_ = 2;
+        shuriken->weaponComponent_->parent_ = obj;
+        obj->actorComponent_->attackTimer_ = 10;
+    }
+
+    if (obj->actorComponent_->padTrg_ & GameLib::input::PAD_TRG2 &&
+        obj->actorComponent_->attackTimer_ <= 0)
+    {
+        const VECTOR2 pos = obj->transform_->position_ + VECTOR2(0, -48);
+        OBJ2D* sword = Game::instance()->obj2dManager()->add(
+            new OBJ2D(
+                new Renderer,
+                new Collider,
+                obj->bg_,
+                nullptr,
+                nullptr,
+                new WeaponComponent
+            ),
+            &swordBehavior,
+            pos
+        );
+        sword->zOrder_ = 2;
+        sword->weaponComponent_->parent_ = obj;
+        obj->actorComponent_->attackTimer_ = 15;
+    }
+}
+
+// 縮小関数(仮)
+void ItemPlayerBehavior::shrink(OBJ2D* obj) const
+{
+    hitCheck(obj);
+
+    Behavior::shrink(obj);
+}
+
+// org自機の方へ移動(仮)
+void ItemPlayerBehavior::contact(OBJ2D* src,OBJ2D* dst) const
+{
+    VECTOR2 vecPlayer = {
+        dst->transform_->position_.x - src->transform_->position_.x,
+        dst->transform_->position_.y - src->transform_->position_.y
+    };
+
+    float cross = src->transform_->velocity_.x * vecPlayer.y - src->transform_->velocity_.y * vecPlayer.x;
+
+    static float rot = 3.14f;
+
+    if (cross > 0) rot += 0.025f;
+    if (cross < 0) rot -= 0.025f;
+
+    src->transform_->velocity_.x = 1 * cosf(rot);
+    src->transform_->velocity_.y = 1 * sinf(rot);
+
+    ActorBehavior::moveX(src);
+    BasePlayerBehavior::moveY(src);
+    
+    src->collider_->calcHitBox(getParam()->HIT_BOX);
+    src->collider_->calcAttackBox(getParam()->ATTACK_BOX);
+}
+
+// org自機と接触しているか判定(仮)
+void ItemPlayerBehavior::hitCheck(OBJ2D* obj) const 
+{
+    if (!obj->collider_->isShrink_) return;
+
+    // メインの自機のデータ
+    //OBJ2D* main = obj->actorComponent_->obj_;
+
+    //while (1)
+    //{
+    //    if (main->collider_->hitCheck(obj->collider_)) break;
+    //    contact(obj,main);
+    //}
+}
+
 //--------------------------------------------------------------
 //  消去
 //--------------------------------------------------------------
@@ -322,4 +510,60 @@ void ErasePlayer::erase(OBJ2D* obj) const
     //    Game::instance()->setGameOver();
     //    obj->behavior_ = nullptr;
     //}
+
+    if (!obj->actorComponent_->parent_->behavior_)
+    {
+        auto iter = Game::instance()->obj2dManager()->getList()->begin();
+        for (; *iter != nullptr; ++iter)
+        {
+            if(obj->collider_->hitCheck(*iter))
+            {
+                obj->actorComponent_->parent_ = *iter;
+                break;
+            }
+        }
+
+        if (!obj->actorComponent_->parent_->behavior_);
+            obj->behavior_ = nullptr;
+    }
+}
+
+// カーソル(仮)
+CursorBehavior::CursorBehavior()
+{
+    param_.SIZE = VECTOR2( 5, 5);
+    param_.HIT_BOX = { -5, -5, 5 , 5 };
+    param_.ATTACK_BOX = { -5, -5, 5 , 5 };
+
+    // 速度関連のパラメータ
+    param_.ACCEL_X = 8.0f;
+    param_.ACCEL_Y = 8.0f;
+    param_.SPEED_X_MAX = 8.0f;
+    param_.SPEED_Y_MAX = 8.0f;
+    param_.JUMP_POWER_Y = -12.0f;
+}
+
+// カーソルの座標取得
+VECTOR2 getCursorPoint()
+{
+    static POINT point_;
+
+    GetCursorPos(&point_);
+    ScreenToClient(GetActiveWindow(), &point_);
+
+    VECTOR2 pos = { static_cast<float>(point_.x), static_cast<float>(point_.y) };
+    return pos;
+}
+
+void CursorBehavior::hit(OBJ2D* src, OBJ2D* dst) const
+{
+    if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG4)
+    {
+        dst->behavior_ = nullptr;
+    }
+}
+
+void CursorBehavior::damageProc(OBJ2D* obj) const
+{
+    obj->transform_->position_ = getCursorPoint();
 }

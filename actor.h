@@ -41,4 +41,5 @@ private:
 
     virtual bool isAlive(OBJ2D*) const = 0;
     virtual void damageProc(OBJ2D*) const {}  // ƒ_ƒ[ƒWˆ—
+
 };

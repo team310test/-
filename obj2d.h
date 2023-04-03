@@ -18,12 +18,13 @@ class OBJ2D;
 
 enum class OBJ_TYPE
 {
-    TYPE_NULL = -1,
+    //TYPE_NULL = -1,
+    null = -1,
     PLAYER = 0, 
     ITEM, 
     ENEMY, 
     WEAPON, 
-    MAX,
+    MAX, 
 };
 
 //==============================================================================
@@ -36,6 +37,8 @@ public:
     virtual OBJ_TYPE getType() const = 0;
     virtual OBJ_TYPE getAttackType() const = 0;
     virtual void hit(OBJ2D* src, OBJ2D* dst) const = 0;
+
+    virtual void shrink(OBJ2D*) const;
 };
 
 // 消去アルゴリズムクラス（抽象クラス）
@@ -125,6 +128,9 @@ public:
     bool isDrawHitRect_;
     bool isDrawAttackRect_;
 
+    bool isShrink_;
+    VECTOR2 targetScale_;
+
     Collider()
         :size_()
         , judgeFlag_()
@@ -132,6 +138,9 @@ public:
         , isDrawAttackRect_()
         , hitBox_()
         , attackBox_()
+
+        , isShrink_()
+        , targetScale_()
     {
     }
 
@@ -158,6 +167,9 @@ public:
     int padTrg_;
     int padState_;
 
+    OBJ2D* parent_;
+    OBJ2D* obj;
+
     ActorComponent()
         :xFlip_(false)
         , pad_()
@@ -167,6 +179,9 @@ public:
         , mutekiTimer_(0)
         , padTrg_(0)
         , padState_(0)
+
+        , obj(nullptr)
+        , parent_(nullptr)
     {
     }
     void flip() { xFlip_ = !xFlip_; }

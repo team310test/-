@@ -81,6 +81,9 @@ void Game::update()
         // プレイヤーを追加する
         setPlayer(obj2dManager(), bg());
 
+        // カーソル追加(仮)
+        setCursor(obj2dManager(), bg());
+
         // エネミーを追加する
         setEnemy(obj2dManager(), bg());
 
@@ -101,6 +104,7 @@ void Game::update()
 
         GameLib::debug::setString("num:%d", num);
 
+        
         // オブジェクトの更新
         obj2dManager()->update();
 

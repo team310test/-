@@ -230,7 +230,8 @@ void EraseItem::erase(OBJ2D* obj) const
 {
     if (!obj->actorComponent_->isAlive())
     {
-        obj->behavior_ = &normalPlayerBehavior;
+        //obj->behavior_ = &normalPlayerBehavior;
+        obj->behavior_ = &itemPlayerBehavior;
         obj->eraser_ = &erasePlayer;
     }
 }
