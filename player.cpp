@@ -98,6 +98,7 @@ void setPlayer(OBJ2DManager* obj2dManager, BG* bg)
     );
 
     player->zOrder_ = 3;
+    player->actorComponent_->parent_ = player;
 
     obj2dManager->add(player, &normalPlayerBehavior, pos);
 }
@@ -107,7 +108,7 @@ void setCursor(OBJ2DManager* obj2dManager, BG* bg)
 {
     const VECTOR2 pos = { 100,100 };
 
-    OBJ2D* player = new OBJ2D(
+    OBJ2D* cursor = new OBJ2D(
         new Renderer,
         new Collider,
         bg,
@@ -116,9 +117,10 @@ void setCursor(OBJ2DManager* obj2dManager, BG* bg)
         nullptr
     );
 
-    player->zOrder_ = 3;
+    cursor->zOrder_ = 3;
+    cursor->actorComponent_->parent_ = cursor;
 
-    obj2dManager->add(player, &cursorBehavior, pos);
+    obj2dManager->add(cursor, &cursorBehavior, pos);
 }
 
 //******************************************************************************
@@ -174,7 +176,8 @@ void BasePlayerBehavior::hit(OBJ2D* src, OBJ2D* dst) const
     dst->actorComponent_->hp_ -= getParam()->ATTACK_POWER;
 
     // 親を保存
-    dst->actorComponent_->parent_ = src;
+    if (dst->actorComponent_->parent_ == nullptr)
+        dst->actorComponent_->parent_ = src;
 }
 
 bool BasePlayerBehavior::isAlive(OBJ2D*) const
@@ -497,18 +500,29 @@ void ItemPlayerBehavior::hitCheck(OBJ2D* obj) const
 //--------------------------------------------------------------
 void ErasePlayer::erase(OBJ2D* obj) const
 {
-    if (obj->actorComponent_->parent_ == nullptr)
+    if (!obj->actorComponent_->parent_->behavior_)
     {
-        obj->behavior_ = nullptr;
+        auto iter = Game::instance()->obj2dManager()->getList()->begin();
+        for (; *iter != nullptr; ++iter)
+        {
+            if(obj->collider_->hitCheck(*iter))
+            {
+                obj->actorComponent_->parent_ = *iter;
+                break;
+            }
+        }
+
+        if (!obj->actorComponent_->parent_->behavior_);
+            obj->behavior_ = nullptr;
     }
 }
 
 // カーソル(仮)
 CursorBehavior::CursorBehavior()
 {
-    param_.SIZE = VECTOR2( 1, 1);
-    param_.HIT_BOX = { -1, -1, 1 , 1 };
-    param_.ATTACK_BOX = { -1, -1, 1 , 1 };
+    param_.SIZE = VECTOR2( 5, 5);
+    param_.HIT_BOX = { -5, -5, 5 , 5 };
+    param_.ATTACK_BOX = { -5, -5, 5 , 5 };
 
     // 速度関連のパラメータ
     param_.ACCEL_X = 8.0f;
@@ -530,10 +544,15 @@ VECTOR2 getCursorPoint()
     return pos;
 }
 
+void CursorBehavior::hit(OBJ2D* src, OBJ2D* dst) const
+{
+    if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG4)
+    {
+        dst->behavior_ = nullptr;
+    }
+}
+
 void CursorBehavior::damageProc(OBJ2D* obj) const
 {
     obj->transform_->position_ = getCursorPoint();
-
-    GameLib::debug::setString("Y:%f", obj->transform_->position_.y);
-    GameLib::debug::setString("X:%f", obj->transform_->position_.x);
 }

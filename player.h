@@ -61,6 +61,10 @@ class CursorBehavior : public BasePlayerBehavior
 public:
     CursorBehavior();
 private:
+    OBJ_TYPE getType() const override { return OBJ_TYPE::MAX; }
+    OBJ_TYPE getAttackType() const override { return OBJ_TYPE::PLAYER; }
+    void hit(OBJ2D*, OBJ2D*) const override;
+
     void damageProc(OBJ2D*) const override;
 };
 EXTERN CursorBehavior cursorBehavior;

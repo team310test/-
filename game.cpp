@@ -80,7 +80,7 @@ void Game::update()
         setPlayer(obj2dManager(), bg());
 
         // カーソル追加(仮)
-        //setCursor(obj2dManager(), bg());
+        setCursor(obj2dManager(), bg());
 
         // エネミーを追加する
         setEnemy(obj2dManager(), bg());
@@ -98,7 +98,7 @@ void Game::update()
         {
             addEnemy(obj2dManager(), bg());
         }
-
+        
         // オブジェクトの更新
         obj2dManager()->update();
 
