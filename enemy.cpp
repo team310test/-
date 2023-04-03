@@ -61,9 +61,10 @@ void setEnemy(OBJ2DManager* obj2dManager, BG* bg)
 
 void addEnemy(OBJ2DManager* obj2dManager, BG* bg)
 {
-    const VECTOR2 pos = 
-    { static_cast<float>(rand() % BG::WINDOW_W) + 128
-        ,static_cast<float>(rand() % BG::WINDOW_H) };
+    const VECTOR2 pos = { 
+        static_cast<float>(rand() % BG::WINDOW_W) + 1500,
+        static_cast<float>(rand() % BG::WINDOW_H) 
+    };
 
     OBJ2D* enemy = new OBJ2D(
         new Renderer,

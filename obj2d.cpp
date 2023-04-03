@@ -202,8 +202,9 @@ void OBJ2DManager::draw()
             continue;
 
         obj->renderer_->draw();
-
+        
         obj->collider_->draw();
+
     }
 }
 

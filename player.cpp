@@ -175,9 +175,11 @@ void BasePlayerBehavior::hit(OBJ2D* src, OBJ2D* dst) const
     // 敵のHPを減らす
     dst->actorComponent_->hp_ -= getParam()->ATTACK_POWER;
 
-    // 親を保存
-    if (dst->actorComponent_->parent_ == nullptr)
-        dst->actorComponent_->parent_ = src;
+    if (!src->actorComponent_->parent_) return; // もし自分が親、または親持ちでないか、
+    if (dst->actorComponent_->parent_) return;  // 相手が親を持っていない場合はcontinue;
+    
+    dst->actorComponent_->parent_ = src;        // 親を保存
+    
 }
 
 bool BasePlayerBehavior::isAlive(OBJ2D*) const
@@ -295,8 +297,7 @@ void NormalPlayerBehavior::attack(OBJ2D* obj) const
     if (obj->actorComponent_->padTrg_ & GameLib::input::PAD_TRG3 &&
         obj->actorComponent_->attackTimer_ <= 0)
     {
-//        const VECTOR2 pos = obj->transform_->position_ + VECTOR2(0, -48);
-        const VECTOR2 pos = obj->transform_->position_;
+        const VECTOR2 pos = obj->transform_->position_ + VECTOR2(0, -120);
 
         OBJ2D* shuriken = Game::instance()->obj2dManager()->add(
             new OBJ2D(
@@ -352,8 +353,10 @@ ItemPlayerBehavior::ItemPlayerBehavior()
     param_.ANIME_LEFT = sprPlayer_Left;
 
     param_.SIZE = VECTOR2(48 / 2, 128 - 16);
-    param_.HIT_BOX = { -100, -200, 100 , 0 };
-    param_.ATTACK_BOX = { -100 , -200, 100 , 0 };
+    param_.HIT_BOX = { -75, -200, 75, -50 };
+    //param_.HIT_BOX = { -50, -175, 50, -75 };
+    param_.ATTACK_BOX = param_.HIT_BOX;
+
 
     // 速度関連のパラメータ
     param_.ACCEL_X = 8.0f;
@@ -411,7 +414,7 @@ void ItemPlayerBehavior::attack(OBJ2D* obj) const
     if (obj->actorComponent_->padTrg_ & GameLib::input::PAD_TRG3 &&
         obj->actorComponent_->attackTimer_ <= 0)
     {
-        const VECTOR2 pos = obj->transform_->position_ + VECTOR2(0, -48);
+        const VECTOR2 pos = obj->transform_->position_ + VECTOR2(0, -120);
         OBJ2D* shuriken = Game::instance()->obj2dManager()->add(
             new OBJ2D(
                 new Renderer,
@@ -499,9 +502,14 @@ void ItemPlayerBehavior::hitCheck(OBJ2D* obj) const
     //}
 }
 
+
 //--------------------------------------------------------------
 //  消去
 //--------------------------------------------------------------
+
+// 親探し(ナシだと壊れた時の爽快感がある)
+// #define USE_FIND_PARENT
+
 void ErasePlayer::erase(OBJ2D* obj) const
 {
     // 消去サンプル
@@ -511,21 +519,29 @@ void ErasePlayer::erase(OBJ2D* obj) const
     //    obj->behavior_ = nullptr;
     //}
 
-    if (!obj->actorComponent_->parent_->behavior_)
-    {
-        auto iter = Game::instance()->obj2dManager()->getList()->begin();
-        for (; *iter != nullptr; ++iter)
-        {
-            if(obj->collider_->hitCheck(*iter))
-            {
-                obj->actorComponent_->parent_ = *iter;
-                break;
-            }
-        }
+    if (obj->actorComponent_->parent_->behavior_) return;   // もし自分の親が存在するならreturn
 
-        if (!obj->actorComponent_->parent_->behavior_);
-            obj->behavior_ = nullptr;
+#ifdef USE_FIND_PARENT
+
+    // 新しい親を探す
+    for (auto& dst : *Game::instance()->obj2dManager()->getList())
+    {
+　      if (!dst->behavior_) continue;                      // 相手が存在しなければcontinue;
+        if (obj == dst) continue;                           // 相手が自分ならcontinue;
+        if (!dst->actorComponent_->parent_) continue;       // 相手が親を持っていなければcontinue;
+        if (obj == dst->actorComponent_->parent_) continue; // 相手が自分の子ならcontinue;
+
+        if (!obj->collider_->hitCheck(dst->collider_)) continue; // 相手が接触していなければcontinue;
+
+        obj->actorComponent_->parent_ = dst;                // 相手を親にする
+
+        return;                                             // 親が見つかっているのでreturn
     }
+#endif
+
+    // 親が見つからなかった場合
+    obj->actorComponent_->parent_ = nullptr; // 親情報をリセット
+    obj->behavior_ = nullptr;                // 自分を消去
 }
 
 // カーソル(仮)
@@ -557,7 +573,8 @@ VECTOR2 getCursorPoint()
 
 void CursorBehavior::hit(OBJ2D* src, OBJ2D* dst) const
 {
-    if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG4)
+    if ( (GameLib::input::TRG(0) & GameLib::input::PAD_TRG4) ||
+         (GetAsyncKeyState(VK_LBUTTON) & 1) )
     {
         dst->behavior_ = nullptr;
     }

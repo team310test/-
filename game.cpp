@@ -89,9 +89,8 @@ void Game::update()
 
         bg()->init(player_); // BG‚Ì‰Šú‰»
 
-        state_++;    // ‰Šú‰»ˆ—‚ÌI—¹
+        ++state_;    // ‰Šú‰»ˆ—‚ÌI—¹
         /*fallthrough*/
-
     case 1:
         //////// ’Êí‚Ìˆ— ////////
 
@@ -99,7 +98,7 @@ void Game::update()
         if (GameLib::input::STATE(0) & GameLib::input::PAD_START)
         {
             addEnemy(obj2dManager(), bg());
-            num++;
+            ++num;
         }
 
         GameLib::debug::setString("num:%d", num);
@@ -119,8 +118,7 @@ void Game::update()
 
         judge();
 
-        timer_++;
-
+        ++timer_;
         break;
     }
 }
