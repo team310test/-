@@ -292,9 +292,9 @@ void ActorComponent::muteki()
 {
     if (mutekiTimer_ <= 0)return;
 
-    VECTOR4 color = obj_->renderer_->color_;
+    VECTOR4 color = obj->renderer_->color_;
     color.w = mutekiTimer_ & 0x01 ? 1.0f : 0.0f;
-    obj_->renderer_->color_ = color;
+    obj->renderer_->color_ = color;
 
     --mutekiTimer_;
 }

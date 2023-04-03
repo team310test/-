@@ -102,6 +102,25 @@ void setPlayer(OBJ2DManager* obj2dManager, BG* bg)
     obj2dManager->add(player, &normalPlayerBehavior, pos);
 }
 
+// 仮
+void setCursor(OBJ2DManager* obj2dManager, BG* bg)
+{
+    const VECTOR2 pos = { 100,100 };
+
+    OBJ2D* player = new OBJ2D(
+        new Renderer,
+        new Collider,
+        bg,
+        new ActorComponent,
+        nullptr,
+        nullptr
+    );
+
+    player->zOrder_ = 3;
+
+    obj2dManager->add(player, &cursorBehavior, pos);
+}
+
 //******************************************************************************
 //
 //      BasePlayerBehavior
@@ -154,8 +173,8 @@ void BasePlayerBehavior::hit(OBJ2D* src, OBJ2D* dst) const
     // 敵のHPを減らす
     dst->actorComponent_->hp_ -= getParam()->ATTACK_POWER;
 
-    // 攻撃元を保存
-    dst->actorComponent_->obj_ = src;
+    // 親を保存
+    dst->actorComponent_->parent_ = src;
 }
 
 bool BasePlayerBehavior::isAlive(OBJ2D*) const
@@ -464,13 +483,13 @@ void ItemPlayerBehavior::hitCheck(OBJ2D* obj) const
     if (!obj->collider_->isShrink_) return;
 
     // メインの自機のデータ
-    OBJ2D* main = obj->actorComponent_->obj_;
+    //OBJ2D* main = obj->actorComponent_->obj_;
 
-    while (1)
-    {
-        if (main->collider_->hitCheck(obj->collider_)) break;
-        contact(obj,main);
-    }
+    //while (1)
+    //{
+    //    if (main->collider_->hitCheck(obj->collider_)) break;
+    //    contact(obj,main);
+    //}
 }
 
 //--------------------------------------------------------------
@@ -478,10 +497,43 @@ void ItemPlayerBehavior::hitCheck(OBJ2D* obj) const
 //--------------------------------------------------------------
 void ErasePlayer::erase(OBJ2D* obj) const
 {
-    // 消去サンプル
-    //if (obj->transform_->position_.y > BG::HEIGHT + obj->collider_->size_.y)
-    //{
-    //    Game::instance()->setGameOver();
-    //    obj->behavior_ = nullptr;
-    //}
+    if (obj->actorComponent_->parent_ == nullptr)
+    {
+        obj->behavior_ = nullptr;
+    }
+}
+
+// カーソル(仮)
+CursorBehavior::CursorBehavior()
+{
+    param_.SIZE = VECTOR2( 1, 1);
+    param_.HIT_BOX = { -1, -1, 1 , 1 };
+    param_.ATTACK_BOX = { -1, -1, 1 , 1 };
+
+    // 速度関連のパラメータ
+    param_.ACCEL_X = 8.0f;
+    param_.ACCEL_Y = 8.0f;
+    param_.SPEED_X_MAX = 8.0f;
+    param_.SPEED_Y_MAX = 8.0f;
+    param_.JUMP_POWER_Y = -12.0f;
+}
+
+// カーソルの座標取得
+VECTOR2 getCursorPoint()
+{
+    static POINT point_;
+
+    GetCursorPos(&point_);
+    ScreenToClient(GetActiveWindow(), &point_);
+
+    VECTOR2 pos = { static_cast<float>(point_.x), static_cast<float>(point_.y) };
+    return pos;
+}
+
+void CursorBehavior::damageProc(OBJ2D* obj) const
+{
+    obj->transform_->position_ = getCursorPoint();
+
+    GameLib::debug::setString("Y:%f", obj->transform_->position_.y);
+    GameLib::debug::setString("X:%f", obj->transform_->position_.x);
 }

@@ -47,7 +47,7 @@ void ActorBehavior::move(OBJ2D* obj) const
     case 1:
         //////// ’Êí ////////
         damageProc(obj);
-        shrink(obj);    // ‰æ‘œk¬
+        //shrink(obj);    // ‰æ‘œk¬
 
         moveY(obj);
         moveX(obj);

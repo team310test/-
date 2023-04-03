@@ -79,6 +79,9 @@ void Game::update()
         // プレイヤーを追加する
         setPlayer(obj2dManager(), bg());
 
+        // カーソル追加(仮)
+        //setCursor(obj2dManager(), bg());
+
         // エネミーを追加する
         setEnemy(obj2dManager(), bg());
 
@@ -94,11 +97,6 @@ void Game::update()
         if (GameLib::input::TRG(0) & GameLib::input::PAD_START)
         {
             addEnemy(obj2dManager(), bg());
-        }
-
-        // [Z]で縮小
-        if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG1)
-        {
         }
 
         // オブジェクトの更新

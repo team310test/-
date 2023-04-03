@@ -165,7 +165,8 @@ public:
     int padTrg_;
     int padState_;
 
-    OBJ2D* obj_;
+    OBJ2D* parent_;
+    OBJ2D* obj;
 
     ActorComponent()
         :xFlip_(false)
@@ -176,7 +177,8 @@ public:
         , mutekiTimer_(0)
         , padTrg_(0)
         , padState_(0)
-        , obj_(nullptr)
+        , obj(nullptr)
+        , parent_(nullptr)
     {
     }
     void flip() { xFlip_ = !xFlip_; }

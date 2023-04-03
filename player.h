@@ -10,6 +10,8 @@
 
 void setPlayer(OBJ2DManager* obj2dManager, BG* bg);
 
+void setCursor(OBJ2DManager* obj2dManager, BG* bg);
+
 //==============================================================================
 //
 //      ˆÚ“®ƒAƒ‹ƒSƒŠƒYƒ€
@@ -53,6 +55,15 @@ private:
     void hitCheck(OBJ2D*) const;  // org©‹@‚ÆÚG‚µ‚Ä‚¢‚é‚©”»’è(‰¼)
 };
 EXTERN ItemPlayerBehavior itemPlayerBehavior;
+
+class CursorBehavior : public BasePlayerBehavior
+{
+public:
+    CursorBehavior();
+private:
+    void damageProc(OBJ2D*) const override;
+};
+EXTERN CursorBehavior cursorBehavior;
 
 //==============================================================================
 //
