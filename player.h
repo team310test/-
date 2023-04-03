@@ -39,6 +39,21 @@ private:
 };
 EXTERN NormalPlayerBehavior normalPlayerBehavior;
 
+
+class ItemPlayerBehavior : public BasePlayerBehavior
+{
+public:
+    ItemPlayerBehavior();
+private:
+    void moveY(OBJ2D* obj) const override;
+    void attack(OBJ2D* obj) const override;
+
+    void shrink(OBJ2D*) const override;
+    void contact(OBJ2D*,OBJ2D*) const;   // org自機の方へ移動(仮)
+    void hitCheck(OBJ2D*) const;  // org自機と接触しているか判定(仮)
+};
+EXTERN ItemPlayerBehavior itemPlayerBehavior;
+
 //==============================================================================
 //
 //      消去アルゴリズム

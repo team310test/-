@@ -46,13 +46,9 @@ void ActorBehavior::move(OBJ2D* obj) const
 
     case 1:
         //////// ’ÊíŽž ////////
-        
-        if (isShrink)
-        {
-            shrink(obj);    // ‰æ‘œk¬
-            //break;
-        }
         damageProc(obj);
+        shrink(obj);    // ‰æ‘œk¬
+
         moveY(obj);
         moveX(obj);
         areaCheck(obj);
@@ -70,11 +66,43 @@ void ActorBehavior::move(OBJ2D* obj) const
         obj->renderer_->animeUpdate();
 }
 
-bool Behavior::isShrink = false;
+// k¬’†‚©‚Ì”»’è
+bool ShrinkJudge(OBJ2D* obj,VECTOR2 targetScale)
+{
+    if (obj->collider_->targetScale_.x == 0 ||
+        obj->collider_->targetScale_.y == 0)
+        return false;
 
+    if (obj->transform_->scale_.x > targetScale.x)
+        return true;
+    if (obj->transform_->scale_.x > targetScale.y)
+        return true;
+
+    return false;
+}
 // k¬ŠÖ”
 void Behavior::shrink(OBJ2D* obj) const
 {
-    obj->transform_->scale_.x *= 0.9f;
-    obj->transform_->scale_.y *= 0.9f;
+    // [Z]‚Åk¬
+    if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG1)   
+    { 
+        obj->collider_->targetScale_.x = obj->transform_->scale_.x * 0.9f;
+        obj->collider_->targetScale_.y = obj->transform_->scale_.y * 0.9f;
+
+        obj->collider_->isShrink_ = true;
+        obj->actorComponent_->padTrg_ = 0;
+        obj->actorComponent_->padState_ = 0;
+    }
+    
+    if(ShrinkJudge(obj, obj->collider_->targetScale_))
+    {
+        obj->transform_->scale_.x -= 0.01f * obj->transform_->scale_.x;
+        obj->transform_->scale_.y -= 0.01f * obj->transform_->scale_.y;
+    }
+    else
+    {
+        obj->collider_->isShrink_ = false;
+        obj->actorComponent_->padTrg_ = GameLib::input::TRG(0);
+        obj->actorComponent_->padState_ = GameLib::input::STATE(0);
+    }
 }

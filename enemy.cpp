@@ -100,7 +100,7 @@ void BaseEnemyBehavior::moveX(OBJ2D* obj) const
 {
     // ’¼üˆÚ“®(‰¼)
     obj->transform_->velocity_.x -= getParam()->ACCEL_X;
-
+    
     ActorBehavior::moveX(obj);
 }
 
@@ -230,7 +230,7 @@ void EraseItem::erase(OBJ2D* obj) const
 {
     if (!obj->actorComponent_->isAlive())
     {
-        obj->behavior_ = &normalPlayerBehavior;
+        obj->behavior_ = &itemPlayerBehavior;
         obj->eraser_ = &erasePlayer;
     }
 }

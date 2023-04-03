@@ -7,7 +7,7 @@ void BaseWeaponBehavior::move(OBJ2D* obj) const
     case 0:
         //////// 初期設定 ////////
         obj->renderer_->data_ = getParam()->SPR_WEAPON;
-        obj->transform_->scale_ = getParam()->SCALE;
+        obj->transform_->scale_ = obj->weaponComponent_->parent_->transform_->scale_;
         obj->eraser_ = getParam()->ERASER;
         obj->collider_->judgeFlag_ = true;      // あたり判定を行う
         obj->collider_->isDrawAttackRect_ = true;  // あたり判定の領域を描画する（デバッグ用）

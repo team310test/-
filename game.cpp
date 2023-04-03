@@ -97,10 +97,8 @@ void Game::update()
         }
 
         // [Z]で縮小
-        if (Behavior::isShrink) Behavior::isShrink = false;
         if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG1)
         {
-            Behavior::isShrink = true;
         }
 
         // オブジェクトの更新
