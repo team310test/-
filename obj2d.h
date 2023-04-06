@@ -168,6 +168,9 @@ public:
     OBJ2D* parent_;
     OBJ2D* obj;
 
+    static int playerNum;
+    int No;
+
     ActorComponent()
         :xFlip_(false)
         , pad_()
@@ -179,6 +182,8 @@ public:
         , padState_(0)
         , obj(nullptr)
         , parent_(nullptr)
+
+        , No(1)
     {
     }
     void flip() { xFlip_ = !xFlip_; }

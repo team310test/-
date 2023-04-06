@@ -226,11 +226,40 @@ void EraseEnemy::erase(OBJ2D* obj) const
     }
 }
 
+// ItemPlayer‚Ì’Ç‰Á
+void addItemPlayer(OBJ2D* obj)
+{
+    OBJ2D* item = new OBJ2D(
+        new Renderer(*obj->renderer_),
+        new Collider(*obj->collider_),
+        Game::instance()->bg(),
+        new ActorComponent(*obj->actorComponent_),
+        nullptr,
+        nullptr
+    );
+
+    item->zOrder_ = 3;
+
+    ActorComponent::playerNum++;
+    item->actorComponent_->No = ActorComponent::playerNum;
+
+    Game::instance()->obj2dManager()->add(item, &itemPlayerBehavior,
+        obj->transform_->position_);
+}
+
 void EraseItem::erase(OBJ2D* obj) const
 {
     if (!obj->actorComponent_->isAlive())
     {
-        obj->behavior_ = &itemPlayerBehavior;
-        obj->eraser_ = &erasePlayer;
+        addItemPlayer(obj);
+        obj->behavior_ = nullptr;
+
+        //obj->behavior_ = &itemPlayerBehavior;
+        //obj->eraser_ = &erasePlayer;
     }
+
+    //if (obj->transform_->position_.x < 0)
+    //{
+    //    obj->behavior_ = nullptr;
+    //}
 }

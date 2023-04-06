@@ -100,6 +100,8 @@ void setPlayer(OBJ2DManager* obj2dManager, BG* bg)
     player->zOrder_ = 3;
     player->actorComponent_->parent_ = player;
 
+    player->actorComponent_->No = ActorComponent::playerNum;
+
     obj2dManager->add(player, &normalPlayerBehavior, pos);
 }
 
@@ -117,7 +119,7 @@ void setCursor(OBJ2DManager* obj2dManager, BG* bg)
         nullptr
     );
 
-    cursor->zOrder_ = 3;
+    cursor->zOrder_ = 4;
     cursor->actorComponent_->parent_ = cursor;
 
     obj2dManager->add(cursor, &cursorBehavior, pos);
@@ -196,6 +198,13 @@ void BasePlayerBehavior::damageProc(OBJ2D* obj) const
 
     // –³“Gˆ—
     obj->actorComponent_->muteki();
+
+    //if (GameLib::input::STATE(0) & GameLib::input::PAD_TRG2)
+    if (obj->actorComponent_->parent_->actorComponent_ != nullptr)
+    {
+        GameLib::debug::setString("No:%d¨[%d]", obj->actorComponent_->No,
+            obj->actorComponent_->parent_->actorComponent_->No);
+    }
 }
 
 void BasePlayerBehavior::areaCheck(OBJ2D* obj) const
@@ -500,19 +509,20 @@ void ItemPlayerBehavior::hitCheck(OBJ2D* obj) const
 //--------------------------------------------------------------
 void ErasePlayer::erase(OBJ2D* obj) const
 {
-    if (!obj->actorComponent_->parent_->behavior_)
+    // e‚Ìbehavior‚ª‚È‚¯‚ê‚Î
+    if (obj->actorComponent_->parent_->behavior_ == nullptr)
     {
-        auto iter = Game::instance()->obj2dManager()->getList()->begin();
-        for (; *iter != nullptr; ++iter)
+        // 
+        for (auto& iter : *(Game::instance()->obj2dManager()->getList()))
         {
-            if(obj->collider_->hitCheck(*iter))
+            if(obj->collider_->hitCheck(iter->collider_))
             {
-                obj->actorComponent_->parent_ = *iter;
+                obj->actorComponent_->parent_ = iter;
                 break;
             }
         }
 
-        if (!obj->actorComponent_->parent_->behavior_);
+        if (obj->actorComponent_->parent_->behavior_ == nullptr)
             obj->behavior_ = nullptr;
     }
 }
