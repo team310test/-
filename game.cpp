@@ -94,7 +94,7 @@ void Game::update()
         //////// ’Êí‚Ìˆ— ////////
 
         // “G’Ç‰Á
-        if (GameLib::input::TRG(0) & GameLib::input::PAD_START)
+        if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG2)
         {
             addEnemy(obj2dManager(), bg());
         }

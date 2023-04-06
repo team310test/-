@@ -59,11 +59,25 @@ void setEnemy(OBJ2DManager* obj2dManager, BG* bg)
     obj2dManager->add(enemy, &normalEnemyBehavior, pos);
 }
 
+// カーソルの座標取得
+VECTOR2 getCursorPoint2()
+{
+    static POINT point_;
+
+    GetCursorPos(&point_);
+    ScreenToClient(GetActiveWindow(), &point_);
+
+    VECTOR2 pos = { static_cast<float>(point_.x), static_cast<float>(point_.y) };
+    return pos;
+}
+
 void addEnemy(OBJ2DManager* obj2dManager, BG* bg)
 {
-    const VECTOR2 pos = 
-    { static_cast<float>(rand() % BG::WINDOW_W) + 128
-        ,static_cast<float>(rand() % BG::WINDOW_H) };
+    const VECTOR2 pos = getCursorPoint2();
+
+    //const VECTOR2 pos = 
+    //{ static_cast<float>(rand() % BG::WINDOW_W) + 128
+    //    ,static_cast<float>(rand() % BG::WINDOW_H) };
 
     OBJ2D* enemy = new OBJ2D(
         new Renderer,
@@ -76,7 +90,8 @@ void addEnemy(OBJ2DManager* obj2dManager, BG* bg)
 
     enemy->zOrder_ = 3;
 
-    obj2dManager->add(enemy, &normalEnemyBehavior, pos);
+    obj2dManager->add(enemy, &itemEnemyBehavior, pos);
+    //obj2dManager->add(enemy, &normalEnemyBehavior, pos);
 }
 
 //******************************************************************************
@@ -99,7 +114,7 @@ void BaseEnemyBehavior::init(OBJ2D* obj) const
 void BaseEnemyBehavior::moveX(OBJ2D* obj) const
 {
     // 直線移動(仮)
-    obj->transform_->velocity_.x -= getParam()->ACCEL_X;
+    //obj->transform_->velocity_.x -= getParam()->ACCEL_X;
     
     ActorBehavior::moveX(obj);
 }

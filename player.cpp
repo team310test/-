@@ -320,27 +320,6 @@ void NormalPlayerBehavior::attack(OBJ2D* obj) const
         shuriken->weaponComponent_->parent_ = obj;
         obj->actorComponent_->attackTimer_ = 10;
     }
-
-    if (obj->actorComponent_->padTrg_ & GameLib::input::PAD_TRG2 &&
-        obj->actorComponent_->attackTimer_ <= 0)
-    {
-        const VECTOR2 pos = obj->transform_->position_ + VECTOR2(0, -48);
-        OBJ2D* sword = Game::instance()->obj2dManager()->add(
-            new OBJ2D(
-                new Renderer, 
-                new Collider, 
-                obj->bg_, 
-                nullptr, 
-                nullptr, 
-                new WeaponComponent
-            ), 
-            &swordBehavior, 
-            pos
-        );
-        sword->zOrder_ = 2;
-        sword->weaponComponent_->parent_ = obj;
-        obj->actorComponent_->attackTimer_ = 15;
-    }
 }
 
 //******************************************************************************
@@ -433,27 +412,6 @@ void ItemPlayerBehavior::attack(OBJ2D* obj) const
         shuriken->weaponComponent_->parent_ = obj;
         obj->actorComponent_->attackTimer_ = 10;
     }
-
-    if (obj->actorComponent_->padTrg_ & GameLib::input::PAD_TRG2 &&
-        obj->actorComponent_->attackTimer_ <= 0)
-    {
-        const VECTOR2 pos = obj->transform_->position_ + VECTOR2(0, -48);
-        OBJ2D* sword = Game::instance()->obj2dManager()->add(
-            new OBJ2D(
-                new Renderer,
-                new Collider,
-                obj->bg_,
-                nullptr,
-                nullptr,
-                new WeaponComponent
-            ),
-            &swordBehavior,
-            pos
-        );
-        sword->zOrder_ = 2;
-        sword->weaponComponent_->parent_ = obj;
-        obj->actorComponent_->attackTimer_ = 15;
-    }
 }
 
 // 縮小関数(仮)
@@ -510,21 +468,28 @@ void ItemPlayerBehavior::hitCheck(OBJ2D* obj) const
 void ErasePlayer::erase(OBJ2D* obj) const
 {
     // 親のbehaviorがなければ
-    if (obj->actorComponent_->parent_->behavior_ == nullptr)
+    if (obj->actorComponent_->parent_->behavior_) return;
+    
+    for (auto& iter : *(Game::instance()->obj2dManager()->getList()))
     {
-        // 
-        for (auto& iter : *(Game::instance()->obj2dManager()->getList()))
-        {
-            if(obj->collider_->hitCheck(iter->collider_))
-            {
-                obj->actorComponent_->parent_ = iter;
-                break;
-            }
-        }
+        // behaviorがなければ
+        if (!iter->behavior_) continue;
+        // 自分なら
+        if (obj == iter) continue;
+        //　親を持っていなければ
+        if (!iter->actorComponent_->parent_) continue;
+        // 親が自分なら
+        if (obj == iter->actorComponent_->parent_) continue;
+        // あたっていなければ
+        if (!obj->collider_->hitCheck(iter->collider_)) continue;
 
-        if (obj->actorComponent_->parent_->behavior_ == nullptr)
-            obj->behavior_ = nullptr;
+        // 親を変更する
+        obj->actorComponent_->parent_ = iter;
+        return;
     }
+
+    obj->actorComponent_->parent_ = nullptr;
+    obj->behavior_ = nullptr;
 }
 
 // カーソル(仮)
