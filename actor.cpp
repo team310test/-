@@ -47,7 +47,7 @@ void ActorBehavior::move(OBJ2D* obj) const
     case 1:
         //////// ’ÊíŽž ////////
         damageProc(obj);
-        //shrink(obj);    // ‰æ‘œk¬
+        shrink(obj);    // ‰æ‘œk¬
 
         moveY(obj);
         moveX(obj);
@@ -96,8 +96,8 @@ void Behavior::shrink(OBJ2D* obj) const
     
     if(ShrinkJudge(obj, obj->collider_->targetScale_))
     {
-        obj->transform_->scale_.x -= 0.01f * obj->transform_->scale_.x;
-        obj->transform_->scale_.y -= 0.01f * obj->transform_->scale_.y;
+        obj->transform_->scale_.x -= 0.01f;
+        obj->transform_->scale_.y -= 0.01f;
     }
     else
     {

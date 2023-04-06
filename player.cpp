@@ -200,11 +200,15 @@ void BasePlayerBehavior::damageProc(OBJ2D* obj) const
     obj->actorComponent_->muteki();
 
     //if (GameLib::input::STATE(0) & GameLib::input::PAD_TRG2)
-    if (obj->actorComponent_->parent_->actorComponent_ != nullptr)
-    {
-        GameLib::debug::setString("No:%d→[%d]", obj->actorComponent_->No,
-            obj->actorComponent_->parent_->actorComponent_->No);
-    }
+    //if (obj->actorComponent_->parent_->behavior_ != nullptr)
+    //{
+    //    GameLib::debug::setString("No:%d→[%d]", obj->actorComponent_->No,
+    //        obj->actorComponent_->parent_->actorComponent_->No);
+    //}
+    //else
+    //{
+    //    GameLib::debug::setString("No:%d→[×]", obj->actorComponent_->No);
+    //}
 }
 
 void BasePlayerBehavior::areaCheck(OBJ2D* obj) const
@@ -423,28 +427,20 @@ void ItemPlayerBehavior::shrink(OBJ2D* obj) const
 }
 
 // org自機の方へ移動(仮)
-void ItemPlayerBehavior::contact(OBJ2D* src,OBJ2D* dst) const
+void ItemPlayerBehavior::contact(OBJ2D* obj,OBJ2D* orgObj) const
 {
-    VECTOR2 vecPlayer = {
-        dst->transform_->position_.x - src->transform_->position_.x,
-        dst->transform_->position_.y - src->transform_->position_.y
-    };
+    float dx = orgObj->transform_->position_.x - obj->transform_->position_.x;
+    float dy = orgObj->transform_->position_.y - obj->transform_->position_.y;
 
-    float cross = src->transform_->velocity_.x * vecPlayer.y - src->transform_->velocity_.y * vecPlayer.x;
+    float dist = sqrtf(dx * dx + dy * dy);
 
-    static float rot = 3.14f;
+    obj->transform_->velocity_ = { dx / dist * 10.0f,dy / dist * 10.0f };
 
-    if (cross > 0) rot += 0.025f;
-    if (cross < 0) rot -= 0.025f;
+    BasePlayerBehavior::moveY(obj);
+    ActorBehavior::moveX(obj);
 
-    src->transform_->velocity_.x = 1 * cosf(rot);
-    src->transform_->velocity_.y = 1 * sinf(rot);
-
-    ActorBehavior::moveX(src);
-    BasePlayerBehavior::moveY(src);
-    
-    src->collider_->calcHitBox(getParam()->HIT_BOX);
-    src->collider_->calcAttackBox(getParam()->ATTACK_BOX);
+    obj->collider_->calcHitBox(getParam()->HIT_BOX);
+    obj->collider_->calcAttackBox(getParam()->ATTACK_BOX);
 }
 
 // org自機と接触しているか判定(仮)
@@ -453,13 +449,12 @@ void ItemPlayerBehavior::hitCheck(OBJ2D* obj) const
     if (!obj->collider_->isShrink_) return;
 
     // メインの自機のデータ
-    //OBJ2D* main = obj->actorComponent_->obj_;
+    OBJ2D* main = obj->actorComponent_->parent_;
 
-    //while (1)
-    //{
-    //    if (main->collider_->hitCheck(obj->collider_)) break;
-    //    contact(obj,main);
-    //}
+    while (!main->collider_->hitCheck(obj->collider_))
+    {
+        contact(obj, main);
+    }
 }
 
 //--------------------------------------------------------------
@@ -467,19 +462,20 @@ void ItemPlayerBehavior::hitCheck(OBJ2D* obj) const
 //--------------------------------------------------------------
 void ErasePlayer::erase(OBJ2D* obj) const
 {
-    // 親のbehaviorがなければ
+    // 親のbehaviorがあれば かつ　削除待ちでないなら
     if (obj->actorComponent_->parent_->behavior_) return;
     
     for (auto& iter : *(Game::instance()->obj2dManager()->getList()))
     {
         // behaviorがなければ
         if (!iter->behavior_) continue;
-        // 自分なら
+        // 相手が自分なら
         if (obj == iter) continue;
         //　親を持っていなければ
         if (!iter->actorComponent_->parent_) continue;
         // 親が自分なら
         if (obj == iter->actorComponent_->parent_) continue;
+
         // あたっていなければ
         if (!obj->collider_->hitCheck(iter->collider_)) continue;
 
@@ -488,8 +484,8 @@ void ErasePlayer::erase(OBJ2D* obj) const
         return;
     }
 
-    obj->actorComponent_->parent_ = nullptr;
     obj->behavior_ = nullptr;
+    obj->actorComponent_->parent_ = nullptr;
 }
 
 // カーソル(仮)
