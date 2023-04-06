@@ -79,7 +79,7 @@ void Game::update()
         obj2dManager()->init();
 
         // プレイヤーを追加する
-        setPlayer(obj2dManager(), bg());
+        setPlayer(obj2dManager(), bg(), true);
 
         // カーソル追加(仮)
         setCursor(obj2dManager(), bg());
@@ -95,7 +95,7 @@ void Game::update()
         //////// 通常時の処理 ////////
 
         // 敵追加
-        if (GameLib::input::STATE(0) & GameLib::input::PAD_START)
+        if (GameLib::input::TRG(0) & GameLib::input::PAD_START)
         {
             addEnemy(obj2dManager(), bg());
             ++num;

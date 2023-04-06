@@ -20,13 +20,13 @@ private:
     OBJ2DManager*   obj2dManager_;
     BG*             bg_;
     bool            isPaused_;
-    OBJ2D*          player_;
     static Game     instance_;
 
     bool            isGameOver_;
     int             gameOverTimer_;
 
 public:
+    OBJ2D*          player_;
     static Game* instance()         { return &instance_; }
 
     OBJ2DManager* obj2dManager()    { return obj2dManager_; }

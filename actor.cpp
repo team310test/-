@@ -68,89 +68,58 @@ void ActorBehavior::move(OBJ2D* obj) const
 }
 
 // 縮小中かの判定
-bool ShrinkJudge(OBJ2D* obj,VECTOR2 targetScale)
-{
-    //if (obj->collider_->targetScale_.x == 0 ||
-    //    obj->collider_->targetScale_.y == 0)
-    //    return false;
-
-    //if (obj->transform_->scale_.x > targetScale.x)
-    //    return true;
-    //if (obj->transform_->scale_.x > targetScale.y)
-    //    return true;
-
-    return false;
-}
+//bool ShrinkJudge(OBJ2D* obj,VECTOR2 targetScale)
+//{
+//    if (obj->collider_->targetScale_.x == 0 ||
+//        obj->collider_->targetScale_.y == 0)
+//        return false;
+//
+//    if (obj->transform_->scale_.x > targetScale.x)
+//        return true;
+//    if (obj->transform_->scale_.x > targetScale.y)
+//        return true;
+//
+//    return false;
+//}
 
 // 縮小関数
-static const float divideValue = 0.9f;                 // scaleを割る値
-static const VECTOR2 shrinkValue = { -0.01f, -0.01f }; // 縮小する値
-
+static const float divideValue = 0.5f;     // scaleを割る値(最終的なscaleの大きさに影響)
+static const float shrinkValue = -0.0025f; // 縮小する値(縮小速度に影響)
 void Behavior::shrink(OBJ2D* obj) const
 {
-    if (obj->behavior_ != &normalPlayerBehavior &&
-        obj->behavior_ != &itemPlayerBehavior) return;
-    static VECTOR2 endScale{}; // 最終的なscaleの大きさ
-
-    VECTOR2* currentScale = &obj->transform_->scale_;   // 現在のscale
-    bool* isShrink        = &obj->collider_->isShrink_; // 縮小しているか判定
+    VECTOR2* currentScale = &obj->transform_->scale_;      // 現在のscale
+    VECTOR2* targetScale = &obj->collider_->targetScale_;  // 最終的に目指すscale 
+    bool* isShrink = &obj->collider_->isShrink_;           // 縮小しているか判定
 
 
-    if ((GameLib::input::TRG(0) & GameLib::input::PAD_TRG1) && // Zで縮小
-        *isShrink == false)                                    // Shrinkしていなければ
+    if ((GameLib::input::TRG(0) & GameLib::input::PAD_TRG1) &&  // Zを押したとき
+        *isShrink == false)                                     // Shrinkしていなければ
     {
-        endScale  = *currentScale * divideValue; // 現在のscaleの?分の?を最終目標に設定
-        *isShrink = true;                        // Shrink開始
+        *targetScale = (*currentScale) * divideValue;           // 現在のscaleの?分の?を最終目標に設定
+        *isShrink = true;                                       // Shrink開始
     }
+
 
     if (*isShrink == false) return; // Shrinkしていなければreturn
-    
-    //const VECTOR2 corePos = Game::instance()->getPlayer() ? 
-    //                        Game::instance()->getPlayer()->transform_->position_ :
-    //                        VECTOR2(0,0); // 本体の位置    
-    VECTOR2* pos = &obj->transform_->position_;          // objの位置
-    const VECTOR2 corePos = obj->actorComponent_->parent_ ?
-                            obj->actorComponent_->parent_->transform_->position_:
-        *pos;
 
-    const VECTOR2 d  = { *pos - corePos };               // 本体の位置からobjの位置を引くことでobjから本体へ向かうベクトルができる
-    const float dist = sqrtf(d.x * d.x * + d.y * d.y);    // 平方根を計算
-    const VECTOR2 velocity = { d.x / dist * 0.1f, d.y / dist * 0.1f }; // 速度が完成
-
-    *pos += velocity;
 
     // Shrink中の場合
-    if (currentScale->x > endScale.x) // 最終目標より現在のscaleが大きければ
+    if (currentScale->x > targetScale->x) // 最終目標より現在のscaleが大きければ
     {
-        *currentScale += shrinkValue; // 縮小
-
-        if (currentScale->x <= endScale.x) // 最終目標と同じか、それより小さくなったら
-        {
-            *currentScale = endScale; // 値を修正
-            *isShrink     = false;     // Shrink終了
-        }
+        *currentScale += {                // 縮小
+            shrinkValue * obj->transform_->scale_.x, 
+            shrinkValue * obj->transform_->scale_.y
+        };  
+        if (currentScale->x < targetScale->x)  *currentScale = *targetScale; // 最終目標より小さくなったら値を修正
     }
-    
 
-    //// [Z]で縮小
-    //if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG1)
-    //{ 
-    //    obj->collider_->targetScale_.x = obj->transform_->scale_.x * 0.9f;
-    //    obj->collider_->targetScale_.y = obj->transform_->scale_.y * 0.9f;
-    //    obj->collider_->isShrink_ = true;
-    //    obj->actorComponent_->padTrg_ = 0;
-    //    obj->actorComponent_->padState_ = 0;
-    //}
-    //
-    //if(ShrinkJudge(obj, obj->collider_->targetScale_))
-    //{
-    //    obj->transform_->scale_.x -= 0.01f * obj->transform_->scale_.x;
-    //    obj->transform_->scale_.y -= 0.01f * obj->transform_->scale_.y;
-    //}
-    //else
-    //{
-    //    obj->collider_->isShrink_ = false;
-    //    obj->actorComponent_->padTrg_ = GameLib::input::TRG(0);
-    //    obj->actorComponent_->padState_ = GameLib::input::STATE(0);
-    //}
+    // 目標を達成した場合
+    if (currentScale->x == targetScale->x)
+    {
+        *isShrink = false;           // Shrink終了
+       
+        //obj->actorComponent_->padTrg_ = GameLib::input::TRG(0);
+        //obj->actorComponent_->padState_ = GameLib::input::STATE(0);
+    }
+
 }

@@ -86,7 +86,7 @@ public:
 
     Transform()
         :position_()
-        , scale_({ 1,1 })
+        , scale_(1, 1)
         , rotation_()
         , velocity_()
     {
@@ -170,6 +170,9 @@ public:
     OBJ2D* parent_;
     OBJ2D* obj;
 
+    static int playerNum;
+    int No;
+
     ActorComponent()
         :xFlip_(false)
         , pad_()
@@ -182,6 +185,8 @@ public:
 
         , obj(nullptr)
         , parent_(nullptr)
+
+        , No(1)
     {
     }
     void flip() { xFlip_ = !xFlip_; }

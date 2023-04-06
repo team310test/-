@@ -84,7 +84,7 @@ namespace
 //    };
 //}
 
-void setPlayer(OBJ2DManager* obj2dManager, BG* bg) 
+void setPlayer(OBJ2DManager* obj2dManager, BG* bg)
 {
     const VECTOR2 pos = { 500,500 };
 
@@ -100,7 +100,29 @@ void setPlayer(OBJ2DManager* obj2dManager, BG* bg)
     player->zOrder_ = 3;
     player->actorComponent_->parent_ = player;
 
+    player->actorComponent_->No = ActorComponent::playerNum;
+
     obj2dManager->add(player, &normalPlayerBehavior, pos);
+}
+void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool mainPlayer)
+{
+    const VECTOR2 pos = { 500,500 };
+
+    OBJ2D* player = new OBJ2D(
+        new Renderer,
+        new Collider,
+        bg,
+        new ActorComponent,
+        nullptr,
+        nullptr
+    );
+
+    player->zOrder_ = 3;
+    player->actorComponent_->parent_ = player;
+
+    player->actorComponent_->No = ActorComponent::playerNum;
+
+    Game::instance()->player_ = obj2dManager->add(player, &normalPlayerBehavior, pos);
 }
 
 // 仮
@@ -117,7 +139,7 @@ void setCursor(OBJ2DManager* obj2dManager, BG* bg)
         nullptr
     );
 
-    cursor->zOrder_ = 3;
+    cursor->zOrder_ = 4;
     cursor->actorComponent_->parent_ = cursor;
 
     obj2dManager->add(cursor, &cursorBehavior, pos);
@@ -198,6 +220,17 @@ void BasePlayerBehavior::damageProc(OBJ2D* obj) const
 
     // 無敵処理
     obj->actorComponent_->muteki();
+
+    //if (GameLib::input::STATE(0) & GameLib::input::PAD_TRG2)
+    //if (obj->actorComponent_->parent_->behavior_ != nullptr)
+    //{
+    //    GameLib::debug::setString("No:%d→[%d]", obj->actorComponent_->No,
+    //        obj->actorComponent_->parent_->actorComponent_->No);
+    //}
+    //else
+    //{
+    //    GameLib::debug::setString("No:%d→[×]", obj->actorComponent_->No);
+    //}
 }
 
 void BasePlayerBehavior::areaCheck(OBJ2D* obj) const
@@ -315,27 +348,6 @@ void NormalPlayerBehavior::attack(OBJ2D* obj) const
         shuriken->weaponComponent_->parent_ = obj;
         obj->actorComponent_->attackTimer_ = 10;
     }
-
-    if (obj->actorComponent_->padTrg_ & GameLib::input::PAD_TRG2 &&
-        obj->actorComponent_->attackTimer_ <= 0)
-    {
-        const VECTOR2 pos = obj->transform_->position_ + VECTOR2(0, -48);
-        OBJ2D* sword = Game::instance()->obj2dManager()->add(
-            new OBJ2D(
-                new Renderer, 
-                new Collider, 
-                obj->bg_, 
-                nullptr, 
-                nullptr, 
-                new WeaponComponent
-            ), 
-            &swordBehavior, 
-            pos
-        );
-        sword->zOrder_ = 2;
-        sword->weaponComponent_->parent_ = obj;
-        obj->actorComponent_->attackTimer_ = 15;
-    }
 }
 
 
@@ -431,75 +443,78 @@ void ItemPlayerBehavior::attack(OBJ2D* obj) const
         shuriken->weaponComponent_->parent_ = obj;
         obj->actorComponent_->attackTimer_ = 10;
     }
-
-    if (obj->actorComponent_->padTrg_ & GameLib::input::PAD_TRG2 &&
-        obj->actorComponent_->attackTimer_ <= 0)
-    {
-        const VECTOR2 pos = obj->transform_->position_ + VECTOR2(0, -48);
-        OBJ2D* sword = Game::instance()->obj2dManager()->add(
-            new OBJ2D(
-                new Renderer,
-                new Collider,
-                obj->bg_,
-                nullptr,
-                nullptr,
-                new WeaponComponent
-            ),
-            &swordBehavior,
-            pos
-        );
-        sword->zOrder_ = 2;
-        sword->weaponComponent_->parent_ = obj;
-        obj->actorComponent_->attackTimer_ = 15;
-    }
 }
 
 // 縮小関数(仮)
-void ItemPlayerBehavior::shrink(OBJ2D* obj) const
+void BasePlayerBehavior::shrink(OBJ2D* obj) const
 {
-    hitCheck(obj);
-
     Behavior::shrink(obj);
+    hitCheck(obj); // org自機と接触しているか判定
+
 }
 
 // org自機の方へ移動(仮)
-void ItemPlayerBehavior::contact(OBJ2D* src,OBJ2D* dst) const
-{
-    VECTOR2 vecPlayer = {
-        dst->transform_->position_.x - src->transform_->position_.x,
-        dst->transform_->position_.y - src->transform_->position_.y
+static const float defaultVelocity = 0.25f; // 元になる速度
+void BasePlayerBehavior::contact(OBJ2D* obj, OBJ2D* orgObj) const
+{    
+#if 0
+    float dx = orgObj->transform_->position_.x - obj->transform_->position_.x;
+    float dy = orgObj->transform_->position_.y - obj->transform_->position_.y;
+
+    float dist = sqrtf(dx * dx + dy * dy);
+    obj->transform_->velocity_ = { 
+        (dx / dist) * (3.0f / obj->transform_->scale_.x),
+        (dy / dist) * (3.0f / obj->transform_->scale_.y)
     };
 
-    float cross = src->transform_->velocity_.x * vecPlayer.y - src->transform_->velocity_.y * vecPlayer.x;
+#else
+    const VECTOR2 mainPos = Game::instance()->player_->transform_->position_; // 自機本体の位置
+    const VECTOR2 objPos  = obj->transform_->position_;                       // objの位置
 
-    static float rot = 3.14f;
+    const VECTOR2 d  = { mainPos - objPos };                // objから自機本体へ向かうベクトル
+    const float dist = sqrtf( (d.x * d.x) + (d.y * d.y) );  // objから自機本体までの距離
 
-    if (cross > 0) rot += 0.025f;
-    if (cross < 0) rot -= 0.025f;
+    float addVelocity = 0.0f;                               // objのvelocityに足す速度
+    float num = 0.0f;                                       // for分のiみたいな役割
+    while (1)
+    {
+        // objから自機本体までの距離によって速度を上昇させる
+        // (距離が遠すぎるとobjが自機本体に追いつけないため)
+        if ((dist >=  50.0f * num && dist <=  50.0f * (num + 1.0f)) ||  // ±0から±50、±50から±100、±100から±150...
+            (dist <= -50.0f * num && dist >= -50.0f * (num + 1.0f)))
+        {
+            addVelocity = (num != 0) ? defaultVelocity * num : 0.1f;    // ±0から±50までの距離はnumが0なので0.1fを代入
+            break; // 代入したのでbreak;
+        }
 
-    src->transform_->velocity_.x = 1 * cosf(rot);
-    src->transform_->velocity_.y = 1 * sinf(rot);
+        ++num; // numを加算していく
+    }
 
-    ActorBehavior::moveX(src);
-    BasePlayerBehavior::moveY(src);
-    
-    src->collider_->calcHitBox(getParam()->HIT_BOX);
-    src->collider_->calcAttackBox(getParam()->ATTACK_BOX);
+    obj->transform_->velocity_ = {
+        (d.x / dist) * (addVelocity / obj->transform_->scale_.x), // scaleが小さくなった時に速度が落ちないようscaleで割る
+        (d.y / dist) * (addVelocity / obj->transform_->scale_.y)
+    };
+
+#endif
+
+    BasePlayerBehavior::moveY(obj);
+    ActorBehavior::moveX(obj);
+
+    //obj->collider_->calcHitBox(getParam()->HIT_BOX);
+    //obj->collider_->calcAttackBox(getParam()->ATTACK_BOX);
 }
 
 // org自機と接触しているか判定(仮)
-void ItemPlayerBehavior::hitCheck(OBJ2D* obj) const 
+void BasePlayerBehavior::hitCheck(OBJ2D* obj) const
 {
     if (!obj->collider_->isShrink_) return;
 
-    // メインの自機のデータ
-    //OBJ2D* main = obj->actorComponent_->obj_;
+    OBJ2D* main = obj->actorComponent_->parent_; // メインの自機のデータ
 
-    //while (1)
-    //{
-    //    if (main->collider_->hitCheck(obj->collider_)) break;
-    //    contact(obj,main);
-    //}
+    //while (!main->collider_->hitCheck(obj->collider_))
+    if (main->collider_->hitCheck(obj->collider_)) return;
+
+    contact(obj, main); // 自機本体にパーツが向かっていく処理
 }
 
 
@@ -508,8 +523,7 @@ void ItemPlayerBehavior::hitCheck(OBJ2D* obj) const
 //--------------------------------------------------------------
 
 // 親探し(ナシだと壊れた時の爽快感がある)
-// #define USE_FIND_PARENT
-
+#define USE_FIND_PARENT
 void ErasePlayer::erase(OBJ2D* obj) const
 {
     // 消去サンプル
@@ -522,11 +536,10 @@ void ErasePlayer::erase(OBJ2D* obj) const
     if (obj->actorComponent_->parent_->behavior_) return;   // もし自分の親が存在するならreturn
 
 #ifdef USE_FIND_PARENT
-
     // 新しい親を探す
     for (auto& dst : *Game::instance()->obj2dManager()->getList())
     {
-　      if (!dst->behavior_) continue;                      // 相手が存在しなければcontinue;
+        if (!dst->behavior_) continue;                      // 相手が存在しなければcontinue;
         if (obj == dst) continue;                           // 相手が自分ならcontinue;
         if (!dst->actorComponent_->parent_) continue;       // 相手が親を持っていなければcontinue;
         if (obj == dst->actorComponent_->parent_) continue; // 相手が自分の子ならcontinue;
