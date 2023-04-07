@@ -38,7 +38,7 @@ public:
     virtual OBJ_TYPE getAttackType() const = 0;
     virtual void hit(OBJ2D* src, OBJ2D* dst) const = 0;
 
-    virtual void shrink(OBJ2D*) const;
+    virtual void shrink(OBJ2D*) const;  // 縮小関数
 };
 
 // 消去アルゴリズムクラス（抽象クラス）

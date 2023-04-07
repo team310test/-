@@ -67,24 +67,10 @@ void ActorBehavior::move(OBJ2D* obj) const
         obj->renderer_->animeUpdate();
 }
 
-// 縮小中かの判定
-//bool ShrinkJudge(OBJ2D* obj,VECTOR2 targetScale)
-//{
-//    if (obj->collider_->targetScale_.x == 0 ||
-//        obj->collider_->targetScale_.y == 0)
-//        return false;
-//
-//    if (obj->transform_->scale_.x > targetScale.x)
-//        return true;
-//    if (obj->transform_->scale_.x > targetScale.y)
-//        return true;
-//
-//    return false;
-//}
 
 // 縮小関数
-static const float divideValue = 0.5f;     // scaleを割る値(最終的なscaleの大きさに影響)
-static const float shrinkValue = -0.0025f; // 縮小する値(縮小速度に影響)
+static const float shrinkVelocity = -0.0025f; // 縮小する速度(縮小の速さに影響)
+static const float divideValue    = 0.5f;     // scaleを割る値(最終的なscaleの大きさに影響)
 void Behavior::shrink(OBJ2D* obj) const
 {
     VECTOR2* currentScale = &obj->transform_->scale_;      // 現在のscale
@@ -99,7 +85,6 @@ void Behavior::shrink(OBJ2D* obj) const
         *isShrink = true;                                       // Shrink開始
     }
 
-
     if (*isShrink == false) return; // Shrinkしていなければreturn
 
 
@@ -107,8 +92,8 @@ void Behavior::shrink(OBJ2D* obj) const
     if (currentScale->x > targetScale->x) // 最終目標より現在のscaleが大きければ
     {
         *currentScale += {                // 縮小
-            shrinkValue * obj->transform_->scale_.x, 
-            shrinkValue * obj->transform_->scale_.y
+            shrinkVelocity * obj->transform_->scale_.x, 
+            shrinkVelocity * obj->transform_->scale_.y
         };  
         if (currentScale->x < targetScale->x)  *currentScale = *targetScale; // 最終目標より小さくなったら値を修正
     }

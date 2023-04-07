@@ -84,7 +84,7 @@ namespace
 //    };
 //}
 
-void setPlayer(OBJ2DManager* obj2dManager, BG* bg)
+void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer) // trueならこのobjをplayer_に代入する
 {
     const VECTOR2 pos = { 500,500 };
 
@@ -102,27 +102,14 @@ void setPlayer(OBJ2DManager* obj2dManager, BG* bg)
 
     player->actorComponent_->No = ActorComponent::playerNum;
 
-    obj2dManager->add(player, &normalPlayerBehavior, pos);
-}
-void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool mainPlayer)
-{
-    const VECTOR2 pos = { 500,500 };
-
-    OBJ2D* player = new OBJ2D(
-        new Renderer,
-        new Collider,
-        bg,
-        new ActorComponent,
-        nullptr,
-        nullptr
-    );
-
-    player->zOrder_ = 3;
-    player->actorComponent_->parent_ = player;
-
-    player->actorComponent_->No = ActorComponent::playerNum;
-
-    Game::instance()->player_ = obj2dManager->add(player, &normalPlayerBehavior, pos);
+    if (makeOrgPlayer) 
+    {
+        Game::instance()->player_ = obj2dManager->add(player, &normalPlayerBehavior, pos); 
+    }
+    else
+    {
+        obj2dManager->add(player, &normalPlayerBehavior, pos);
+    }
 }
 
 // 仮
@@ -445,37 +432,42 @@ void ItemPlayerBehavior::attack(OBJ2D* obj) const
     }
 }
 
-// 縮小関数(仮)
-void BasePlayerBehavior::shrink(OBJ2D* obj) const
+// パーツの縮小関数
+void ItemPlayerBehavior::shrink(OBJ2D* obj) const
 {
-    Behavior::shrink(obj);
-    hitCheck(obj); // org自機と接触しているか判定
-
+    Behavior::shrink(obj);  // 縮小処理
+    contact(obj);           // 縮小に伴って位置を移動させる処理
 }
 
-// org自機の方へ移動(仮)
-static const float defaultVelocity = 0.25f; // 元になる速度
-void BasePlayerBehavior::contact(OBJ2D* obj, OBJ2D* orgObj) const
+
+// 接触する関数
+void ItemPlayerBehavior::contact(OBJ2D* obj) const
+{
+    if (!obj->collider_->isShrink_) return; // 縮小していなければreturn
+
+    // オリジナル自機の方へ移動する処理
+    contactToOriginal(obj, Game::instance()->player_); 
+
+    OBJ2D* parent = obj->actorComponent_->parent_;              // 自分の親のデータ
+    if (parent->collider_->hitCheck(obj->collider_)) return;    // 親と接触していればreturn
+
+    // 親の方へ移動する処理
+    contactToParent(obj, parent); // (親とくっついていないobjがオリジナル自機に向かって突っ込んでいくのを軽減)
+}
+
+// オリジナル自機の方へ移動(オリジナル自機へ向かう速さに影響)
+static const float defaultVelocity = 0.1f/*0.25f*/; // 元になる速度
+void ItemPlayerBehavior::contactToOriginal(OBJ2D* obj, OBJ2D* original) const
 {    
-#if 0
-    float dx = orgObj->transform_->position_.x - obj->transform_->position_.x;
-    float dy = orgObj->transform_->position_.y - obj->transform_->position_.y;
+    const VECTOR2 orginalPos = original->transform_->position_; // 自機本体の位置
+    const VECTOR2 objPos     = obj->transform_->position_;      // objの位置
 
-    float dist = sqrtf(dx * dx + dy * dy);
-    obj->transform_->velocity_ = { 
-        (dx / dist) * (3.0f / obj->transform_->scale_.x),
-        (dy / dist) * (3.0f / obj->transform_->scale_.y)
-    };
+    const VECTOR2 d  = { orginalPos - objPos };              // objから自機本体へ向かうベクトル
+    const float dist = sqrtf( (d.x * d.x) + (d.y * d.y) );   // objから自機本体までの距離
+                                                             
+    float addVelocity = 0.0f;                                // objのvelocityに足す速度
+    float num = 0.0f;                                        // for分のiみたいな役割
 
-#else
-    const VECTOR2 mainPos = Game::instance()->player_->transform_->position_; // 自機本体の位置
-    const VECTOR2 objPos  = obj->transform_->position_;                       // objの位置
-
-    const VECTOR2 d  = { mainPos - objPos };                // objから自機本体へ向かうベクトル
-    const float dist = sqrtf( (d.x * d.x) + (d.y * d.y) );  // objから自機本体までの距離
-
-    float addVelocity = 0.0f;                               // objのvelocityに足す速度
-    float num = 0.0f;                                       // for分のiみたいな役割
     while (1)
     {
         // objから自機本体までの距離によって速度を上昇させる
@@ -491,11 +483,9 @@ void BasePlayerBehavior::contact(OBJ2D* obj, OBJ2D* orgObj) const
     }
 
     obj->transform_->velocity_ = {
-        (d.x / dist) * (addVelocity / obj->transform_->scale_.x), // scaleが小さくなった時に速度が落ちないようscaleで割る
-        (d.y / dist) * (addVelocity / obj->transform_->scale_.y)
+        (d.x / dist) * (addVelocity/* / obj->transform_->scale_.x*/), // scaleが小さくなった時に速度が落ちないようscaleで割る
+        (d.y / dist) * (addVelocity/* / obj->transform_->scale_.y*/)
     };
-
-#endif
 
     BasePlayerBehavior::moveY(obj);
     ActorBehavior::moveX(obj);
@@ -504,17 +494,26 @@ void BasePlayerBehavior::contact(OBJ2D* obj, OBJ2D* orgObj) const
     //obj->collider_->calcAttackBox(getParam()->ATTACK_BOX);
 }
 
-// org自機と接触しているか判定(仮)
-void BasePlayerBehavior::hitCheck(OBJ2D* obj) const
-{
-    if (!obj->collider_->isShrink_) return;
+// 親の方へ移動
+static const float parentVelocity = 1.0f; // 足す速度(親へ向かう速さに影響)
+void ItemPlayerBehavior::contactToParent(OBJ2D* obj, OBJ2D* parent) const
+{    
+    const VECTOR2 parentPos = parent->transform_->position_;    // 親の位置
+    const VECTOR2 objPos    = obj->transform_->position_;       // objの位置
 
-    OBJ2D* main = obj->actorComponent_->parent_; // メインの自機のデータ
+    const VECTOR2 d  = { parentPos - objPos };               // objから親へ向かうベクトル
+    const float dist = sqrtf( (d.x * d.x) + (d.y * d.y) );   // objから親までの距離
 
-    //while (!main->collider_->hitCheck(obj->collider_))
-    if (main->collider_->hitCheck(obj->collider_)) return;
+    obj->transform_->velocity_ = {
+        (d.x / dist) * (parentVelocity),
+        (d.y / dist) * (parentVelocity)
+    };
 
-    contact(obj, main); // 自機本体にパーツが向かっていく処理
+    BasePlayerBehavior::moveY(obj);
+    ActorBehavior::moveX(obj);
+
+    //obj->collider_->calcHitBox(getParam()->HIT_BOX);
+    //obj->collider_->calcAttackBox(getParam()->ATTACK_BOX);
 }
 
 
@@ -526,13 +525,6 @@ void BasePlayerBehavior::hitCheck(OBJ2D* obj) const
 #define USE_FIND_PARENT
 void ErasePlayer::erase(OBJ2D* obj) const
 {
-    // 消去サンプル
-    //if (obj->transform_->position_.y > BG::HEIGHT + obj->collider_->size_.y)
-    //{
-    //    Game::instance()->setGameOver();
-    //    obj->behavior_ = nullptr;
-    //}
-
     if (obj->actorComponent_->parent_->behavior_) return;   // もし自分の親が存在するならreturn
 
 #ifdef USE_FIND_PARENT

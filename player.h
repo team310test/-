@@ -8,8 +8,7 @@
 //
 //******************************************************************************
 
-void setPlayer(OBJ2DManager* obj2dManager, BG* bg);
-void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool mainPlayer);
+void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer = false);
 
 void setCursor(OBJ2DManager* obj2dManager, BG* bg);
 
@@ -31,10 +30,6 @@ private:
     bool isAlive(OBJ2D* obj) const;
     void damageProc(OBJ2D* obj) const override;
     void areaCheck(OBJ2D* obj) const;
-
-    void shrink(OBJ2D*) const override;
-    void contact(OBJ2D*, OBJ2D*) const;   // org自機の方へ移動(仮)
-    void hitCheck(OBJ2D*) const;  // org自機と接触しているか判定(仮)
 };
 
 class NormalPlayerBehavior : public BasePlayerBehavior
@@ -56,9 +51,10 @@ private:
     void moveY(OBJ2D* obj) const override;
     void attack(OBJ2D* obj) const override;
 
-    //void shrink(OBJ2D*) const override;
-    //void contact(OBJ2D*,OBJ2D*) const;   // org自機の方へ移動(仮)
-    //void hitCheck(OBJ2D*) const;  // org自機と接触しているか判定(仮)
+    void shrink(OBJ2D*) const override;           // 縮小関数
+    void contact(OBJ2D*) const;                   // 縮小に伴って位置を移動させる関数
+    void contactToOriginal(OBJ2D*, OBJ2D*) const; // オリジナル自機に向かって接触しに行く関数
+    void contactToParent(OBJ2D*, OBJ2D*) const;   // 親に向かって接触しに行く関数
 };
 EXTERN ItemPlayerBehavior itemPlayerBehavior;
 

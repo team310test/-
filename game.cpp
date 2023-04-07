@@ -79,7 +79,7 @@ void Game::update()
         obj2dManager()->init();
 
         // プレイヤーを追加する
-        setPlayer(obj2dManager(), bg(), true);
+        setPlayer(obj2dManager(), bg(), true); // trueならこのobjをplayer_に代入する
 
         // カーソル追加(仮)
         setCursor(obj2dManager(), bg());
@@ -102,7 +102,7 @@ void Game::update()
         }
 
         GameLib::debug::setString("num:%d", num);
-
+        GameLib::debug::setString("playerScale:%f", player_->transform_->scale_.x);
         
         // オブジェクトの更新
         obj2dManager()->update();
