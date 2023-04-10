@@ -52,7 +52,8 @@ GameLib::SpriteData sprPlayer_Left2 = SPRITE_BOTTOM(TEXNO::PLAYER, 96 * 2, 128 *
 
 //------< “G >------------------------------------------------------------------
 //GameLib::SpriteData sprEnemey_test = SPRITE_BOTTOM(TEXNO::ENEMY, 0, 0, 128, 128);
-GameLib::SpriteData sprEnemey_test = SPRITE_BOTTOM(TEXNO::PLAYER2, 0, 0, 250, 250);
+//GameLib::SpriteData sprEnemey_test = SPRITE_BOTTOM(TEXNO::PLAYER2, 0, 0, 250, 250);
+GameLib::SpriteData sprEnemey_test = SPRITE_CENTER(TEXNO::PLAYER2, 0, 0, 250, 250);
 
 //------< ƒVƒ‡ƒbƒg >----------------------------------------------------------------
 GameLib::SpriteData sprWeapon_Sword = SPRITE_BOTTOM(TEXNO::SHOT, 128 * 0, 0, 128, 128);

@@ -27,6 +27,7 @@ private:
 
 public:
     OBJ2D*          player_;
+    OBJ2D*          cursor_;
     static Game* instance()         { return &instance_; }
 
     OBJ2DManager* obj2dManager()    { return obj2dManager_; }
@@ -55,5 +56,4 @@ private:
     void judge();
     void gameOverProc();
 };
-
 //******************************************************************************

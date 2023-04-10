@@ -161,8 +161,8 @@ NormalEnemyBehavior::NormalEnemyBehavior()
     param_.ANIME_DOWN = animeEnemey_Down;
     param_.ANIME_LEFT = animeEnemey_Left;
 
-    param_.SIZE = VECTOR2(48 / 2, 128 - 16);
-    param_.HIT_BOX = { -75, -200, 75, -50 };
+    param_.SIZE    = VECTOR2(player_size, player_size);
+    param_.HIT_BOX = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
     //param_.ATTACK_BOX = { -250 / 2, -250, 250 / 2, 0 };
     param_.HP = 1;
 

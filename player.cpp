@@ -84,7 +84,7 @@ namespace
 //    };
 //}
 
-void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer) // trueならこのobjをplayer_に代入する
+void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer = false) // trueならこのobjをplayer_に代入する
 {
     const VECTOR2 pos = { 500,500 };
 
@@ -102,7 +102,7 @@ void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer) // 
 
     player->actorComponent_->No = ActorComponent::playerNum;
 
-    if (makeOrgPlayer) 
+    if (makeOrgPlayer == true) 
     {
         Game::instance()->player_ = obj2dManager->add(player, &normalPlayerBehavior, pos); 
     }
@@ -129,7 +129,7 @@ void setCursor(OBJ2DManager* obj2dManager, BG* bg)
     cursor->zOrder_ = 4;
     cursor->actorComponent_->parent_ = cursor;
 
-    obj2dManager->add(cursor, &cursorBehavior, pos);
+    Game::instance()->cursor_ = obj2dManager->add(cursor, &cursorBehavior, pos);
 }
 
 //******************************************************************************
@@ -251,13 +251,13 @@ void BasePlayerBehavior::areaCheck(OBJ2D* obj) const
 NormalPlayerBehavior::NormalPlayerBehavior()
 {
     // アニメーション
-    param_.ANIME_UP = sprPlayer_Up;
+    param_.ANIME_UP    = sprPlayer_Up;
     param_.ANIME_RIGHT = sprPlayer_Right;
-    param_.ANIME_DOWN = sprPlayer_Down;
-    param_.ANIME_LEFT = sprPlayer_Left;
+    param_.ANIME_DOWN  = sprPlayer_Down;
+    param_.ANIME_LEFT  = sprPlayer_Left;
 
-    param_.SIZE = VECTOR2(48 / 2, 128 - 16);
-    param_.HIT_BOX = { -75, -200, 75, -50 };
+    param_.SIZE    = VECTOR2(player_size, player_size);
+    param_.HIT_BOX = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
     //param_.HIT_BOX = { -50, -175, 50, -75 };
     param_.ATTACK_BOX = param_.HIT_BOX;
 
@@ -317,7 +317,7 @@ void NormalPlayerBehavior::attack(OBJ2D* obj) const
     if (obj->actorComponent_->padTrg_ & GameLib::input::PAD_TRG3 &&
         obj->actorComponent_->attackTimer_ <= 0)
     {
-        const VECTOR2 pos = obj->transform_->position_ + VECTOR2(0, -120);
+        const VECTOR2 pos = obj->transform_->position_/* + VECTOR2(0, -120)*/;
 
         OBJ2D* shuriken = Game::instance()->obj2dManager()->add(
             new OBJ2D(
@@ -351,8 +351,8 @@ ItemPlayerBehavior::ItemPlayerBehavior()
     param_.ANIME_DOWN = sprPlayer_Down;
     param_.ANIME_LEFT = sprPlayer_Left;
 
-    param_.SIZE = VECTOR2(48 / 2, 128 - 16);
-    param_.HIT_BOX = { -75, -200, 75, -50 };
+    param_.SIZE = VECTOR2(player_size, player_size);
+    param_.HIT_BOX = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
     //param_.HIT_BOX = { -50, -175, 50, -75 };
     param_.ATTACK_BOX = param_.HIT_BOX;
 
@@ -456,7 +456,7 @@ void ItemPlayerBehavior::contact(OBJ2D* obj) const
 }
 
 // オリジナル自機の方へ移動(オリジナル自機へ向かう速さに影響)
-static const float defaultVelocity = 0.1f/*0.25f*/; // 元になる速度
+static const float defaultVelocity = 0.085f/*0.25f*/; // 元になる速度
 void ItemPlayerBehavior::contactToOriginal(OBJ2D* obj, OBJ2D* original) const
 {    
     const VECTOR2 orginalPos = original->transform_->position_; // 自機本体の位置
@@ -495,7 +495,7 @@ void ItemPlayerBehavior::contactToOriginal(OBJ2D* obj, OBJ2D* original) const
 }
 
 // 親の方へ移動
-static const float parentVelocity = 1.0f; // 足す速度(親へ向かう速さに影響)
+static const float parentVelocity = 0.75f; // 足す速度(親へ向かう速さに影響)
 void ItemPlayerBehavior::contactToParent(OBJ2D* obj, OBJ2D* parent) const
 {    
     const VECTOR2 parentPos = parent->transform_->position_;    // 親の位置

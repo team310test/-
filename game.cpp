@@ -36,6 +36,8 @@ void Game::deinit()
     safe_delete(bg_);
     safe_delete(obj2dManager_);
 
+    player_ = nullptr;
+
     // テクスチャの解放
     GameLib::texture::releaseAll();
 
@@ -44,6 +46,7 @@ void Game::deinit()
 }
 
 int num = 2;
+int shrinkNum = 0;
 
 //--------------------------------------------------------------
 //  更新処理
@@ -102,8 +105,11 @@ void Game::update()
         }
 
         GameLib::debug::setString("num:%d", num);
-        GameLib::debug::setString("playerScale:%f", player_->transform_->scale_.x);
-        
+        if (player_->transform_) GameLib::debug::setString("playerScale:%f", player_->transform_->scale_.x);
+        GameLib::debug::setString("shrinkNum:%d", shrinkNum);
+
+        if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG1) ++shrinkNum;
+
         // オブジェクトの更新
         obj2dManager()->update();
 

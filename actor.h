@@ -1,5 +1,8 @@
 #pragma once
 
+static constexpr float player_hitBox = 80.0f;
+static constexpr float player_size   = 125.0f;
+
 class ActorBehavior : public Behavior
 {
 protected:

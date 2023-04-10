@@ -207,6 +207,14 @@ void OBJ2DManager::draw()
         
         obj->collider_->draw();
 
+        OBJ2D* cursor = Game::instance()->cursor_;
+        GameLib::primitive::rect(
+            cursor->transform_->position_,
+            cursor->collider_->size_,
+            {0,0},
+            0,
+            {0,0,0,1}
+        );
     }
 }
 

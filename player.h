@@ -8,7 +8,7 @@
 //
 //******************************************************************************
 
-void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer = false);
+void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer);
 
 void setCursor(OBJ2DManager* obj2dManager, BG* bg);
 
