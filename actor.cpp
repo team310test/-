@@ -48,6 +48,8 @@ void ActorBehavior::move(OBJ2D* obj) const
         //////// 通常時 ////////
 
         damageProc(obj);
+
+        startAllShrink(obj); //縮小開始
         shrink(obj);    // 画像縮小
 
         moveY(obj);
@@ -67,30 +69,42 @@ void ActorBehavior::move(OBJ2D* obj) const
         obj->renderer_->animeUpdate();
 }
 
-// 縮小関数
-//static const float shrinkVelocity = -0.0025f; // 縮小する速度(縮小の速さに影響)
-//static const float divideValue    = 0.5f;     // scaleを割る値(最終的なscaleの大きさに影響)
+
+static const float divideValue = 0.5f;     // scaleを割る値(最終的なscaleの大きさに影響)
+
+// すべてのobjのShrinkを開始させる関数
+void Behavior::startAllShrink(OBJ2D* obj) const
+{
+    if (!Collider::isAllShrink_)   return; // Shrinkが開始されていなければreturn
+    if (obj->collider_->isShrink_) return; // objがすでにshrink中ならreturn;
+
+    VECTOR2* currentScale = &obj->transform_->scale_;       // 現在のscale
+    VECTOR2* targetScale = &obj->collider_->targetScale_;  // 最終的に目指すscale 
+    *targetScale = (*currentScale) * divideValue;           // 現在のscaleの?分の?を最終目標に設定
+
+    obj->collider_->isShrink_ = true; // objのshrinkを開始
+}
+
 static const float shrinkVelocity = -0.0025f; // 縮小する速度(縮小の速さに影響)
-static const float divideValue    = 0.5f;     // scaleを割る値(最終的なscaleの大きさに影響)
+
+// 縮小関数
 void Behavior::shrink(OBJ2D* obj) const
 {
+    bool* isShrink = &obj->collider_->isShrink_; // 縮小しているかどうか
+
+    // オリジナル自機でscaleが0.5f以下ならshrinkを強制終了
     if (obj->behavior_ == &normalPlayerBehavior &&
-        obj->transform_->scale_.x < 0.5f) return;
-
-    VECTOR2* currentScale = &obj->transform_->scale_;      // 現在のscale
-    VECTOR2* targetScale = &obj->collider_->targetScale_;  // 最終的に目指すscale 
-    bool* isShrink = &obj->collider_->isShrink_;           // 縮小しているか判定
-
-
-    if ((GameLib::input::TRG(0) & GameLib::input::PAD_TRG1) &&  // Zを押したとき
-        *isShrink == false)                                     // Shrinkしていなければ
+        obj->transform_->scale_.x <= 0.5f)
     {
-        *targetScale = (*currentScale) * divideValue;           // 現在のscaleの?分の?を最終目標に設定
-        *isShrink = true;                                       // Shrink開始
+        *isShrink = false;
+        return; 
     }
 
     if (*isShrink == false) return; // Shrinkしていなければreturn
 
+
+    VECTOR2* currentScale = &obj->transform_->scale_;      // 現在のscale
+    VECTOR2* targetScale  = &obj->collider_->targetScale_; // 最終的に目指すscale 
 
     // Shrink中の場合
     if (currentScale->x > targetScale->x) // 最終目標より現在のscaleが大きければ
@@ -106,9 +120,21 @@ void Behavior::shrink(OBJ2D* obj) const
     if (currentScale->x == targetScale->x)
     {
         *isShrink = false;           // Shrink終了
-       
+
         //obj->actorComponent_->padTrg_ = GameLib::input::TRG(0);
         //obj->actorComponent_->padState_ = GameLib::input::STATE(0);
     }
 
+}
+
+// shrinkしているobjがいるか調べる関数（shrinkしているobjがいたらtrue, いなければfalse）
+bool Behavior::isObjShrink()
+{
+    for (auto& list : *Game::instance()->obj2dManager()->getList())
+    {
+        if (!list->behavior_) continue;              // objが存在していなければcontinue
+        if (list->collider_->isShrink_) return true; // shrinkが終わっていないobjがあればtrue
+    }
+
+    return false; // すべてshrinkが終わっていればfalse
 }

@@ -255,7 +255,7 @@ void addItemPlayer(OBJ2D* obj)
 
     item->zOrder_ = 3;
 
-    ActorComponent::playerNum++;
+    ++ActorComponent::playerNum;
     item->actorComponent_->No = ActorComponent::playerNum;
 
     Game::instance()->obj2dManager()->add(item, &itemPlayerBehavior,
@@ -266,11 +266,12 @@ void EraseItem::erase(OBJ2D* obj) const
 {
     if (!obj->actorComponent_->isAlive())
     {
-        //addItemPlayer(obj);
+        //addItemPlayer(obj); // scale‚ªƒŠƒZƒbƒg‚³‚ê‚Ä‚µ‚Ü‚¤
         //obj->behavior_ = nullptr;
 
         obj->behavior_ = &itemPlayerBehavior;
         obj->eraser_ = &erasePlayer;
+        ++BasePlayerBehavior::plShrinkCount;
     }
 
     //if (obj->transform_->position_.x < 0)

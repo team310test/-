@@ -30,6 +30,9 @@ private:
     bool isAlive(OBJ2D* obj) const;
     void damageProc(OBJ2D* obj) const override;
     void areaCheck(OBJ2D* obj) const;
+
+public:
+    static int plShrinkCount; // 縮小するまでのプレイヤーの数を数える変数
 };
 
 class NormalPlayerBehavior : public BasePlayerBehavior
@@ -39,6 +42,7 @@ public:
 private:
     void moveY(OBJ2D* obj) const override;
     void attack(OBJ2D* obj) const override;
+
 };
 EXTERN NormalPlayerBehavior normalPlayerBehavior;
 
@@ -69,7 +73,8 @@ private:
 
     void damageProc(OBJ2D*) const override;
 
-    void shrink(OBJ2D*) const override {};
+    void startAllShrink(OBJ2D*) const override {} // カーソルは縮小開始しないので｛｝で除外
+    void shrink(OBJ2D*) const override {}         // カーソルは縮小しないので｛｝で除外
 };
 EXTERN CursorBehavior cursorBehavior;
 

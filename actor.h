@@ -39,7 +39,7 @@ private:
     void move(OBJ2D* obj) const override;
 
     virtual void init(OBJ2D*) const = 0;
-    virtual void areaCheck(OBJ2D* obj) const {}
+    virtual void areaCheck(OBJ2D*) const {}
     virtual void attack(OBJ2D*) const {}
 
     virtual bool isAlive(OBJ2D*) const = 0;

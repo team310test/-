@@ -38,7 +38,11 @@ public:
     virtual OBJ_TYPE getAttackType() const = 0;
     virtual void hit(OBJ2D* src, OBJ2D* dst) const = 0;
 
-    virtual void shrink(OBJ2D*) const;  // 縮小関数
+    virtual void startAllShrink(OBJ2D*) const;  // すべてのobjのShrinkを開始させる関数
+    virtual void shrink(OBJ2D*) const;          // 縮小関数
+
+    static bool isObjShrink(); // shrinkしているobjがいるか調べる関数（shrinkしているobjがいたらtrue, いなければfalse）
+
 };
 
 // 消去アルゴリズムクラス（抽象クラス）
@@ -129,6 +133,7 @@ public:
     bool isDrawAttackRect_;
 
     bool isShrink_;
+    static bool isAllShrink_;
     VECTOR2 targetScale_;
 
     Collider()

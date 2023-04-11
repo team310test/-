@@ -9,6 +9,8 @@
 //------< インクルード >---------------------------------------------------------
 #include "all.h"
 
+int BasePlayerBehavior::plShrinkCount = 0;
+
 //******************************************************************************
 //
 //      プレイヤー移動処理
@@ -345,8 +347,9 @@ void NormalPlayerBehavior::attack(OBJ2D* obj) const
 //******************************************************************************
 ItemPlayerBehavior::ItemPlayerBehavior()
 {
+
     // アニメーション
-    param_.ANIME_UP = sprPlayer_Up;
+    param_.ANIME_UP    = sprPlayer_Up;
     param_.ANIME_RIGHT = sprPlayer_Right;
     param_.ANIME_DOWN = sprPlayer_Down;
     param_.ANIME_LEFT = sprPlayer_Left;
@@ -355,7 +358,6 @@ ItemPlayerBehavior::ItemPlayerBehavior()
     param_.HIT_BOX = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
     //param_.HIT_BOX = { -50, -175, 50, -75 };
     param_.ATTACK_BOX = param_.HIT_BOX;
-
 
     // 速度関連のパラメータ
     param_.ACCEL_X = 8.0f;
@@ -456,7 +458,8 @@ void ItemPlayerBehavior::contact(OBJ2D* obj) const
 }
 
 // オリジナル自機の方へ移動(オリジナル自機へ向かう速さに影響)
-static const float defaultVelocity = 0.085f/*0.25f*/; // 元になる速度
+//static const float defaultVelocity = 0.1f; // 元になる速度
+static const float defaultVelocity = 0.085f; // 元になる速度
 void ItemPlayerBehavior::contactToOriginal(OBJ2D* obj, OBJ2D* original) const
 {    
     const VECTOR2 orginalPos = original->transform_->position_; // 自機本体の位置
@@ -495,6 +498,7 @@ void ItemPlayerBehavior::contactToOriginal(OBJ2D* obj, OBJ2D* original) const
 }
 
 // 親の方へ移動
+//static const float parentVelocity = 0.9f; // 足す速度(親へ向かう速さに影響)
 static const float parentVelocity = 0.75f; // 足す速度(親へ向かう速さに影響)
 void ItemPlayerBehavior::contactToParent(OBJ2D* obj, OBJ2D* parent) const
 {    

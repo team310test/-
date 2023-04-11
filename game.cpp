@@ -72,6 +72,7 @@ void Game::update()
         //////// 初期設定 ////////
         timer_ = 0;
         num = 2;
+        BasePlayerBehavior::plShrinkCount = 0;
 
         GameLib::setBlendMode(GameLib::Blender::BS_ALPHA);   // 通常のアルファ処理
 
@@ -107,11 +108,26 @@ void Game::update()
         GameLib::debug::setString("num:%d", num);
         if (player_->transform_) GameLib::debug::setString("playerScale:%f", player_->transform_->scale_.x);
         GameLib::debug::setString("shrinkNum:%d", shrinkNum);
+        GameLib::debug::setString("plShrinkCount:%d", BasePlayerBehavior::plShrinkCount);
 
-        if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG1) ++shrinkNum;
+
+        if (BasePlayerBehavior::plShrinkCount >= 10)     // プレイヤーの数がShrinkの規定数に達していて
+        {
+            if (Collider::isAllShrink_  == false &&       // Shrinkが開始されておらず、
+                Behavior::isObjShrink() == false)         // すべてのobjがshrink中でなければ
+            {
+                Collider::isAllShrink_ = true;           // Shrinkを開始
+                BasePlayerBehavior::plShrinkCount -= 10; // プレイヤーのカウントをリセット
+                ++shrinkNum;
+            }
+        }
 
         // オブジェクトの更新
         obj2dManager()->update();
+
+        // オブジェクトの更新後にShrinkの開始を止める
+        if (Collider::isAllShrink_) Collider::isAllShrink_ = false; 
+
 
         // ゲームオーバーの処理
         if (isGameOver())
