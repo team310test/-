@@ -236,9 +236,9 @@ void BasePlayerBehavior::areaCheck(OBJ2D* obj) const
     {
         obj->transform_->position_.y = obj->collider_->size_.y;
     }
-    if (obj->transform_->position_.y > BG::WINDOW_H)
+    if (obj->transform_->position_.y > BG::WINDOW_H - obj->collider_->size_.y)
     {
-        obj->transform_->position_.y = BG::WINDOW_H;
+        obj->transform_->position_.y = BG::WINDOW_H - obj->collider_->size_.y;
     }
 }
 
@@ -413,7 +413,7 @@ void ItemPlayerBehavior::attack(OBJ2D* obj) const
     if (obj->actorComponent_->padTrg_ & GameLib::input::PAD_TRG3 &&
         obj->actorComponent_->attackTimer_ <= 0)
     {
-        const VECTOR2 pos = obj->transform_->position_ + VECTOR2(0, -120);
+        const VECTOR2 pos = obj->transform_->position_/* + VECTOR2(0, -120)*/;
         OBJ2D* shuriken = Game::instance()->obj2dManager()->add(
             new OBJ2D(
                 new Renderer,

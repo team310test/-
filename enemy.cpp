@@ -73,7 +73,7 @@ VECTOR2 getCursorPoint2()
 
 void addEnemy(OBJ2DManager* obj2dManager, BG* bg)
 {
-    const VECTOR2 pos = getCursorPoint2() + VECTOR2(0, 100);
+    const VECTOR2 pos = getCursorPoint2();
 
     //const VECTOR2 pos = 
     //{ static_cast<float>(rand() % BG::WINDOW_W) + 128
@@ -196,8 +196,8 @@ ItemEnemyBehavior::ItemEnemyBehavior()
     param_.ANIME_DOWN = animeEnemey_Down;
     param_.ANIME_LEFT = animeEnemey_Left;
 
-    param_.SIZE = VECTOR2(48 / 2, 128 - 16);
-    param_.HIT_BOX = { -75, -200, 75, -50 };
+    param_.SIZE = VECTOR2(player_size, player_size);
+    param_.HIT_BOX = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
     param_.ATTACK_BOX = param_.HIT_BOX;
     param_.HP = 1;
 
