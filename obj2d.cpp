@@ -322,3 +322,11 @@ void ActorComponent::muteki()
 
     --mutekiTimer_;
 }
+
+bool ActorComponent::isAliveParent() const
+{
+    if (parent_ == nullptr) return false;
+    if(parent_->actorComponent_->isAlive())
+
+    return true;
+}

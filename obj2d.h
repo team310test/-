@@ -198,6 +198,7 @@ public:
     bool isAlive() const { return hp_ > 0; }
     void damaged();
     void muteki();
+    bool isAliveParent()const;
 };
 
 //----------------------------------------------------------------------

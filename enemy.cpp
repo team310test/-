@@ -41,6 +41,24 @@ namespace
     };
 }
 
+void setSubEnemy(OBJ2DManager* obj2dManager, BG* bg, OBJ2D* parent, VECTOR2 pos)
+{
+    OBJ2D* subEnemy = new OBJ2D(
+        new Renderer,
+        new Collider,
+        bg,
+        new ActorComponent,
+        nullptr,
+        nullptr
+    );
+
+    subEnemy->zOrder_ = 3;
+    // 親を設定
+    subEnemy->actorComponent_->parent_ = parent;
+
+    obj2dManager->add(subEnemy, &normalEnemyBehavior, pos);
+}
+
 void setEnemy(OBJ2DManager* obj2dManager, BG* bg)
 {
     const VECTOR2 pos = { 100,500 };
@@ -55,8 +73,13 @@ void setEnemy(OBJ2DManager* obj2dManager, BG* bg)
     );
 
     enemy->zOrder_ = 3;
+    enemy->actorComponent_->parent_ = enemy;
 
     obj2dManager->add(enemy, &normalEnemyBehavior, pos);
+
+    // サブパーツ
+    setSubEnemy(obj2dManager, bg, enemy, { pos.x,pos.y-150 });
+    setSubEnemy(obj2dManager, bg, enemy, { pos.x,pos.y+150 });
 }
 
 // カーソルの座標取得
@@ -75,10 +98,6 @@ void addEnemy(OBJ2DManager* obj2dManager, BG* bg)
 {
     const VECTOR2 pos = getCursorPoint2();
 
-    //const VECTOR2 pos = 
-    //{ static_cast<float>(rand() % BG::WINDOW_W) + 128
-    //    ,static_cast<float>(rand() % BG::WINDOW_H) };
-
     OBJ2D* enemy = new OBJ2D(
         new Renderer,
         new Collider,
@@ -89,9 +108,13 @@ void addEnemy(OBJ2DManager* obj2dManager, BG* bg)
     );
 
     enemy->zOrder_ = 3;
+    enemy->actorComponent_->parent_ = enemy;
 
-    obj2dManager->add(enemy, &itemEnemyBehavior, pos);
-    //obj2dManager->add(enemy, &normalEnemyBehavior, pos);
+    obj2dManager->add(enemy, &normalEnemyBehavior, pos);
+
+    // サブパーツ
+    setSubEnemy(obj2dManager, bg, enemy, { pos.x,pos.y - 150 });
+    setSubEnemy(obj2dManager, bg, enemy, { pos.x,pos.y + 150 });
 }
 
 //******************************************************************************
@@ -114,7 +137,7 @@ void BaseEnemyBehavior::init(OBJ2D* obj) const
 void BaseEnemyBehavior::moveX(OBJ2D* obj) const
 {
     // 直線移動(仮)
-    //obj->transform_->velocity_.x -= getParam()->ACCEL_X;
+    obj->transform_->velocity_.x -= getParam()->ACCEL_X;
     
     ActorBehavior::moveX(obj);
 }
@@ -214,16 +237,6 @@ void ItemEnemyBehavior::hit(OBJ2D* src, OBJ2D* dst) const
     src->actorComponent_->hp_ = 0;
 }
 
-void ItemEnemyBehavior::moveY(OBJ2D* obj) const
-{
-    BaseEnemyBehavior::moveY(obj);
-}
-
-void ItemEnemyBehavior::moveX(OBJ2D* obj) const
-{
-    ActorBehavior::moveX(obj);
-}
-
 void ItemEnemyBehavior::attack(OBJ2D* obj) const
 {
 }
@@ -233,42 +246,28 @@ void ItemEnemyBehavior::attack(OBJ2D* obj) const
 //--------------------------------------------------------------
 void EraseEnemy::erase(OBJ2D* obj) const
 {
-    if (!obj->actorComponent_->isAlive())
+    // 親が消滅するとアイテム化する
+    if (obj->actorComponent_->parent_->actorComponent_->parent_ == nullptr)
     {
+        obj->actorComponent_->parent_ = nullptr;
         obj->behavior_ = &itemEnemyBehavior;
         obj->actorComponent_->hp_ = 1;
         obj->eraser_ = &eraseItem;
     }
-}
 
-// ItemPlayerの追加
-void addItemPlayer(OBJ2D* obj)
-{
-    OBJ2D* item = new OBJ2D(
-        new Renderer(*obj->renderer_),
-        new Collider(*obj->collider_),
-        Game::instance()->bg(),
-        new ActorComponent(*obj->actorComponent_),
-        nullptr,
-        nullptr
-    );
-
-    item->zOrder_ = 3;
-
-    ++ActorComponent::playerNum;
-    item->actorComponent_->No = ActorComponent::playerNum;
-
-    Game::instance()->obj2dManager()->add(item, &itemPlayerBehavior,
-        obj->transform_->position_);
+    // HPが0以下になると消滅
+    if (!obj->actorComponent_->isAlive())
+    {
+        obj->actorComponent_->parent_ = nullptr;
+        obj->behavior_ = nullptr;
+        return;
+    }
 }
 
 void EraseItem::erase(OBJ2D* obj) const
 {
     if (!obj->actorComponent_->isAlive())
     {
-        //addItemPlayer(obj); // scaleがリセットされてしまう
-        //obj->behavior_ = nullptr;
-
         obj->behavior_ = &itemPlayerBehavior;
         obj->eraser_ = &erasePlayer;
         ++BasePlayerBehavior::plShrinkCount;

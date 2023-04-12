@@ -48,44 +48,6 @@ namespace
     };
 }
 
-//namespace
-//{   // ※このデータは長いので、Visual Studioの機能で閉じられるようにnamespaceを分けている
-//
-//    //------< プレイヤーのアニメデータ >------------------------------------------
-//    //上方向
-//    GameLib::AnimeData animeEnemey_Up[] = {
-//        { &sprPlayer_Up0, 10 },
-//        { &sprPlayer_Up1, 10 },
-//        { &sprPlayer_Up2, 10 },
-//        { &sprPlayer_Up1, 10 },
-//        { nullptr, -1 },// 終了フラグ
-//    };
-//    //右方向
-//    GameLib::AnimeData animeEnemey_Right[] = {
-//        { &sprPlayer_Right0, 10 },
-//        { &sprPlayer_Right1, 10 },
-//        { &sprPlayer_Right2, 10 },
-//        { &sprPlayer_Right1, 10 },
-//        { nullptr, -1 },// 終了フラグ
-//    };
-//    //下方向
-//    GameLib::AnimeData animeEnemey_Down[] = {
-//        { &sprPlayer_Down0, 10 },
-//        { &sprPlayer_Down1, 10 },
-//        { &sprPlayer_Down2, 10 },
-//        { &sprPlayer_Down1, 10 },
-//        { nullptr, -1 },// 終了フラグ
-//    };
-//    //左方向
-//    GameLib::AnimeData animeEnemey_Left[] = {
-//        { &sprPlayer_Left0, 10 },
-//        { &sprPlayer_Left1, 10 },
-//        { &sprPlayer_Left2, 10 },
-//        { &sprPlayer_Left1, 10 },
-//        { nullptr, -1 },// 終了フラグ
-//    };
-//}
-
 void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer = false) // trueならこのobjをplayer_に代入する
 {
     const VECTOR2 pos = { 500,500 };
@@ -440,7 +402,6 @@ void ItemPlayerBehavior::shrink(OBJ2D* obj) const
     Behavior::shrink(obj);  // 縮小処理
     contact(obj);           // 縮小に伴って位置を移動させる処理
 }
-
 
 // 接触する関数
 void ItemPlayerBehavior::contact(OBJ2D* obj) const

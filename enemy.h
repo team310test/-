@@ -50,8 +50,6 @@ private:
     OBJ_TYPE getType() const override { return OBJ_TYPE::ITEM; }
     OBJ_TYPE getAttackType() const override { return OBJ_TYPE::null; }
     void hit(OBJ2D*, OBJ2D*) const override;
-    void moveY(OBJ2D* obj) const override;
-    void moveX(OBJ2D* obj) const override;
     void attack(OBJ2D* obj) const override;
 };
 EXTERN ItemEnemyBehavior itemEnemyBehavior;
