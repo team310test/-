@@ -98,8 +98,8 @@ void Game::update()
     case 1:
         //////// ’Êí‚Ìˆ— ////////
 
-        // “G’Ç‰Á
-        if (GameLib::input::TRG(0) & GameLib::input::PAD_START)
+        // “G’Ç‰Á4
+        if (GameLib::input::STATE(0) & GameLib::input::PAD_TRG2)
         {
             addEnemy(obj2dManager(), bg());
             ++num;

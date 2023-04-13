@@ -31,7 +31,8 @@ protected:
         float JUMP_POWER_Y = 0.0f;
 
         int BOX_NUM = 1;
-        OBJ2D* ERASE = nullptr;
+        Behavior* NEXT_BEHAVIOR = nullptr;
+        Eraser* NEXT_ERASER = nullptr;
     } param_;
     const Param* getParam() const { return &param_; }
 

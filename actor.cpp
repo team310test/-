@@ -39,6 +39,9 @@ void ActorBehavior::move(OBJ2D* obj) const
         };
         obj->actorComponent_->hp_ = getParam()->HP;
 
+        obj->actorComponent_->nextBehavior_ = getParam()->NEXT_BEHAVIOR;
+        obj->actorComponent_->nextEraser_ = getParam()->NEXT_ERASER;
+
         init(obj);
 
         obj->state_++;

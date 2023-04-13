@@ -176,6 +176,8 @@ public:
 
     OBJ2D* parent_;
     OBJ2D* obj;
+    Behavior* nextBehavior_; // ŽŸ‚É•Ï‚í‚éBehavior
+    Eraser* nextEraser_;    // ŽŸ•Ï‚í‚éEraser
 
     static int playerNum;
     int No;
@@ -192,6 +194,9 @@ public:
 
         , obj(nullptr)
         , parent_(nullptr)
+
+        , nextBehavior_(nullptr)
+        , nextEraser_(nullptr)
 
         , No(1)
     {

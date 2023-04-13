@@ -195,24 +195,24 @@ void BasePlayerBehavior::damageProc(OBJ2D* obj) const
 
 void BasePlayerBehavior::areaCheck(OBJ2D* obj) const
 {
-    // 仮
-    if (obj->transform_->position_.x < obj->collider_->size_.x)
-    {
-        obj->transform_->position_.x = obj->collider_->size_.x;
-    }
-    if (obj->transform_->position_.x > BG::WINDOW_W - obj->collider_->size_.x)
-    {
-        obj->transform_->position_.x = BG::WINDOW_W - obj->collider_->size_.x;
-    }
+    //// 仮
+    //if (obj->transform_->position_.x < obj->collider_->size_.x)
+    //{
+    //    obj->transform_->position_.x = obj->collider_->size_.x;
+    //}
+    //if (obj->transform_->position_.x > BG::WINDOW_W - obj->collider_->size_.x)
+    //{
+    //    obj->transform_->position_.x = BG::WINDOW_W - obj->collider_->size_.x;
+    //}
 
-    if (obj->transform_->position_.y < obj->collider_->size_.y)
-    {
-        obj->transform_->position_.y = obj->collider_->size_.y;
-    }
-    if (obj->transform_->position_.y > BG::WINDOW_H - obj->collider_->size_.y)
-    {
-        obj->transform_->position_.y = BG::WINDOW_H - obj->collider_->size_.y;
-    }
+    //if (obj->transform_->position_.y < obj->collider_->size_.y)
+    //{
+    //    obj->transform_->position_.y = obj->collider_->size_.y;
+    //}
+    //if (obj->transform_->position_.y > BG::WINDOW_H - obj->collider_->size_.y)
+    //{
+    //    obj->transform_->position_.y = BG::WINDOW_H - obj->collider_->size_.y;
+    //}
 }
 
 //******************************************************************************
@@ -573,12 +573,11 @@ Parts01PlayerBehavior::Parts01PlayerBehavior()
     param_.ANIME_LEFT = animeParts01;
 
     param_.SIZE = VECTOR2(player_size, player_size);
-    param_.HIT_BOX[0] = { -206, 50, 130, 155 };   // 下長方形
-    param_.HIT_BOX[1] = { -20,-154,206,50 };      // ネジ
-    //param_.HIT_BOX = { -50, -175, 50, -75 };
-    
-    param_.ATTACK_BOX[0] = { -206, 50, 130, 155 };// 下長方形
-    param_.ATTACK_BOX[1] = { -20,-154,206,50 };   // ネジ;
+    param_.HIT_BOX[0] = { -125, 48, 80, 95 };   // 下長方形
+    param_.HIT_BOX[1] = { -10,-95,125,50 };      // ネジ
+
+    param_.ATTACK_BOX[0] = { -125, 48, 80, 95 };   // 下長方形
+    param_.ATTACK_BOX[1] = { -10,-95,125,50 };      // ネジ
 
     // 速度関連のパラメータ
     param_.ACCEL_X = 8.0f;
