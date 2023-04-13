@@ -17,7 +17,7 @@ GameLib::LoadTexture loadTexture[] = {
     { TEXNO::PLAYER2,      L"./Data/Images/Weapon1.png",    1U },// 250*250
     { TEXNO::SHOT,        L"./Data/Images/weapon.png",    1U },// ショット(仮)
     //{ TEXNO::ENEMY,        L"./Data/Images/enemy(test).png",    1U },// エネミー(仮)
-
+    {TEXNO::PARTS01,L"./Data/Images/Lzi.png",    1U},        // パーツ01(Lzi)
     { -1, nullptr }	// 終了フラグ
 };
 
@@ -54,6 +54,7 @@ GameLib::SpriteData sprPlayer_Left2 = SPRITE_BOTTOM(TEXNO::PLAYER, 96 * 2, 128 *
 //GameLib::SpriteData sprEnemey_test = SPRITE_BOTTOM(TEXNO::ENEMY, 0, 0, 128, 128);
 //GameLib::SpriteData sprEnemey_test = SPRITE_BOTTOM(TEXNO::PLAYER2, 0, 0, 250, 250);
 GameLib::SpriteData sprEnemey_test = SPRITE_CENTER(TEXNO::PLAYER2, 0, 0, 250, 250);
+GameLib::SpriteData sprParts01 = SPRITE_CENTER(TEXNO::PARTS01, 0, 0, 413,309 );
 
 //------< ショット >----------------------------------------------------------------
 GameLib::SpriteData sprWeapon_Sword = SPRITE_BOTTOM(TEXNO::SHOT, 128 * 0, 0, 128, 128);

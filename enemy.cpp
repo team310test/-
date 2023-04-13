@@ -39,6 +39,13 @@ namespace
         { &sprEnemey_test, 10 },
         { nullptr, -1 },// 終了フラグ
     };
+
+    //parts01
+    GameLib::AnimeData animeParts01[] = {
+        { &sprParts01, 10 },
+        //{ &sprPlayer_test, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
 }
 
 void setSubEnemy(OBJ2DManager* obj2dManager, BG* bg, OBJ2D* parent, VECTOR2 pos)
@@ -56,7 +63,7 @@ void setSubEnemy(OBJ2DManager* obj2dManager, BG* bg, OBJ2D* parent, VECTOR2 pos)
     // 親を設定
     subEnemy->actorComponent_->parent_ = parent;
 
-    obj2dManager->add(subEnemy, &normalEnemyBehavior, pos);
+    obj2dManager->add(subEnemy, &parts01EnemyBehavior, pos);
 }
 
 void setEnemy(OBJ2DManager* obj2dManager, BG* bg)
@@ -78,8 +85,8 @@ void setEnemy(OBJ2DManager* obj2dManager, BG* bg)
     obj2dManager->add(enemy, &normalEnemyBehavior, pos);
 
     // サブパーツ
-    setSubEnemy(obj2dManager, bg, enemy, { pos.x,pos.y-150 });
-    setSubEnemy(obj2dManager, bg, enemy, { pos.x,pos.y+150 });
+    setSubEnemy(obj2dManager, bg, enemy, { pos.x,pos.y-229 });
+    setSubEnemy(obj2dManager, bg, enemy, { pos.x,pos.y+229 });
 }
 
 // カーソルの座標取得
@@ -113,8 +120,8 @@ void addEnemy(OBJ2DManager* obj2dManager, BG* bg)
     obj2dManager->add(enemy, &normalEnemyBehavior, pos);
 
     // サブパーツ
-    setSubEnemy(obj2dManager, bg, enemy, { pos.x,pos.y - 150 });
-    setSubEnemy(obj2dManager, bg, enemy, { pos.x,pos.y + 150 });
+    setSubEnemy(obj2dManager, bg, enemy, { pos.x,pos.y - 229 });
+    setSubEnemy(obj2dManager, bg, enemy, { pos.x,pos.y + 229 });
 }
 
 //******************************************************************************
@@ -185,7 +192,7 @@ NormalEnemyBehavior::NormalEnemyBehavior()
     param_.ANIME_LEFT = animeEnemey_Left;
 
     param_.SIZE    = VECTOR2(player_size, player_size);
-    param_.HIT_BOX = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
+    param_.HIT_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
     //param_.ATTACK_BOX = { -250 / 2, -250, 250 / 2, 0 };
     param_.HP = 1;
 
@@ -220,8 +227,8 @@ ItemEnemyBehavior::ItemEnemyBehavior()
     param_.ANIME_LEFT = animeEnemey_Left;
 
     param_.SIZE = VECTOR2(player_size, player_size);
-    param_.HIT_BOX = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
-    param_.ATTACK_BOX = param_.HIT_BOX;
+    param_.ATTACK_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
+    param_.HIT_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
     param_.HP = 1;
 
     // 速度関連のパラメータ
@@ -250,7 +257,7 @@ void EraseEnemy::erase(OBJ2D* obj) const
     if (obj->actorComponent_->parent_->actorComponent_->parent_ == nullptr)
     {
         obj->actorComponent_->parent_ = nullptr;
-        obj->behavior_ = &itemEnemyBehavior;
+        obj->behavior_ = &parts01ItemBehavior;
         obj->actorComponent_->hp_ = 1;
         obj->eraser_ = &eraseItem;
     }
@@ -268,7 +275,7 @@ void EraseItem::erase(OBJ2D* obj) const
 {
     if (!obj->actorComponent_->isAlive())
     {
-        obj->behavior_ = &itemPlayerBehavior;
+        obj->behavior_ = &parts01PlayerBehavior;
         obj->eraser_ = &erasePlayer;
         ++BasePlayerBehavior::plShrinkCount;
     }
@@ -277,4 +284,54 @@ void EraseItem::erase(OBJ2D* obj) const
     //{
     //    obj->behavior_ = nullptr;
     //}
+}
+
+// <parts01Enemey(Lzi仮)>
+Parts01EnemyBehavior::Parts01EnemyBehavior()
+{
+    // アニメーション
+    param_.ANIME_UP = animeParts01;
+    param_.ANIME_RIGHT = animeParts01;
+    param_.ANIME_DOWN = animeParts01;
+    param_.ANIME_LEFT = animeParts01;
+
+    param_.SIZE = VECTOR2(player_size, player_size);
+    param_.HIT_BOX[0] = { -206, 50, 130, 155 };   // 下長方形
+    param_.HIT_BOX[1] = { -20,-154,206,50 };      // ネジ
+    //param_.HIT_BOX = { -50, -175, 50, -75 };
+
+    param_.ATTACK_BOX[0] = { -206, 50, 130, 155 };// 下長方形
+    param_.ATTACK_BOX[1] = { -20,-154,206,50 };   // ネジ;
+
+    // 速度関連のパラメータ
+    param_.ACCEL_X = 4.0f;
+    param_.ACCEL_Y = 4.0f;
+    param_.SPEED_X_MAX = 4.0f;
+    param_.SPEED_Y_MAX = 4.0f;
+    param_.JUMP_POWER_Y = -12.0f;
+}
+
+// <parts01Item(Lzi仮)>
+Parts01ItemBehavior::Parts01ItemBehavior()
+{
+    // アニメーション
+    param_.ANIME_UP = animeParts01;
+    param_.ANIME_RIGHT = animeParts01;
+    param_.ANIME_DOWN = animeParts01;
+    param_.ANIME_LEFT = animeParts01;
+
+    param_.SIZE = VECTOR2(player_size, player_size);
+    param_.HIT_BOX[0] = { -206, 50, 130, 155 };   // 下長方形
+    param_.HIT_BOX[1] = { -20,-154,206,50 };      // ネジ
+    //param_.HIT_BOX = { -50, -175, 50, -75 };
+
+    param_.ATTACK_BOX[0] = { -206, 50, 130, 155 };// 下長方形
+    param_.ATTACK_BOX[1] = { -20,-154,206,50 };   // ネジ;
+
+    // 速度関連のパラメータ
+    param_.ACCEL_X = 2.0f;
+    param_.ACCEL_Y = 2.0f;
+    param_.SPEED_X_MAX = 2.0f;
+    param_.SPEED_Y_MAX = 2.0f;
+    param_.JUMP_POWER_Y = -12.0f;
 }

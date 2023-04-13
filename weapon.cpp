@@ -56,7 +56,7 @@ void ShurikenBehavior::update(OBJ2D* obj) const
 void ShurikenBehavior::calcAttackBox(OBJ2D* obj) const
 {
     // UŒ‚”»’è‚ÌŒvŽZ
-    obj->collider_->calcAttackBox(getParam()->ATTACK_BOX);
+    obj->collider_->calcAttackBox(getParam()->ATTACK_BOX,1);
 }
 
 void ShurikenBehavior::hit(OBJ2D* src, OBJ2D* dst) const
@@ -130,7 +130,7 @@ void SwordBehavior::calcAttackBox(OBJ2D* obj) const
             pos.y + getParam()->ATTACK_BOX.top,
             pos.x + getParam()->ATTACK_BOX.right,
             pos.y + getParam()->ATTACK_BOX.bottom
-        }
+        },1
     );
 }
 

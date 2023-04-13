@@ -78,6 +78,15 @@ private:
 };
 EXTERN CursorBehavior cursorBehavior;
 
+// <parts01Player(Lzi‰¼)>
+class Parts01PlayerBehavior : public ItemPlayerBehavior
+{
+public:
+    Parts01PlayerBehavior();
+private:
+};
+EXTERN Parts01PlayerBehavior parts01PlayerBehavior;
+
 //==============================================================================
 //
 //      Á‹ƒAƒ‹ƒSƒŠƒYƒ€

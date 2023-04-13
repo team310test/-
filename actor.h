@@ -17,8 +17,8 @@ protected:
         // ÉTÉCÉY
         VECTOR2 SIZE = { 0, 0 };
         VECTOR2 SCALE = { 1, 1 };
-        GameLib::fRECT HIT_BOX = {};
-        GameLib::fRECT ATTACK_BOX = {};
+        GameLib::fRECT HIT_BOX[Collider::boxMax] = {};
+        GameLib::fRECT ATTACK_BOX[Collider::boxMax] = {};
 
         int HP = 1;
         int ATTACK_POWER = 1;
@@ -29,6 +29,9 @@ protected:
         float SPEED_X_MAX = 0.0f;
         float SPEED_Y_MAX = 0.0f;
         float JUMP_POWER_Y = 0.0f;
+
+        int BOX_NUM = 1;
+        OBJ2D* ERASE = nullptr;
     } param_;
     const Param* getParam() const { return &param_; }
 

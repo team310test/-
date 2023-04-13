@@ -21,6 +21,7 @@ enum TEXNO
     BACK,
     ENEMY,
     SHOT,
+    PARTS01
 };
 
 extern GameLib::LoadTexture loadTexture[];
@@ -58,6 +59,7 @@ extern GameLib::SpriteData sprItem_Orb;
 
 extern GameLib::SpriteData sprEnemey_test;
 extern GameLib::SpriteData sprPlayer_test;
+extern GameLib::SpriteData sprParts01;
 
 // Enemy0
 extern GameLib::SpriteData sprEnemy0_Up0;

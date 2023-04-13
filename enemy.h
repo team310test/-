@@ -54,6 +54,28 @@ private:
 };
 EXTERN ItemEnemyBehavior itemEnemyBehavior;
 
+// <parts01Enemey(Lzi‰¼)>
+class Parts01EnemyBehavior : public BaseEnemyBehavior
+{
+public:
+    Parts01EnemyBehavior();
+private:
+    //void attack(OBJ2D* obj) const override;
+};
+EXTERN Parts01EnemyBehavior parts01EnemyBehavior;
+
+// <parts01Item(Lzi‰¼)>
+class Parts01ItemBehavior : public BaseEnemyBehavior
+{
+public:
+    Parts01ItemBehavior();
+private:
+    OBJ_TYPE getType() const override { return OBJ_TYPE::ITEM; }
+    OBJ_TYPE getAttackType() const override { return OBJ_TYPE::null; }
+};
+EXTERN Parts01ItemBehavior parts01ItemBehavior;
+
+
 //==============================================================================
 //
 //      Á‹ƒAƒ‹ƒSƒŠƒYƒ€

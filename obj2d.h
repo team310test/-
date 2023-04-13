@@ -125,9 +125,11 @@ public:
 class Collider : public Component
 {
 public:
+    static int const boxMax = 2;
+
     VECTOR2 size_;
-    GameLib::fRECT hitBox_;
-    GameLib::fRECT attackBox_;
+    GameLib::fRECT hitBox_[boxMax];
+    GameLib::fRECT attackBox_[boxMax];
     bool judgeFlag_;
     bool isDrawHitRect_;
     bool isDrawAttackRect_;
@@ -150,8 +152,8 @@ public:
     }
 
     void draw() override;
-    void calcHitBox(const GameLib::fRECT& rc);
-    void calcAttackBox(const GameLib::fRECT& rc);
+    void calcHitBox(const GameLib::fRECT& rc , int i);
+    void calcAttackBox(const GameLib::fRECT& rc , int i);
 
     bool hitCheck(Collider* other);
     bool hitCheck(OBJ2D* obj);

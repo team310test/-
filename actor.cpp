@@ -59,8 +59,11 @@ void ActorBehavior::move(OBJ2D* obj) const
         break;
     }
 
-    obj->collider_->calcHitBox(getParam()->HIT_BOX);
-    obj->collider_->calcAttackBox(getParam()->ATTACK_BOX);
+    for (int i = 0; i < Collider::boxMax; ++i)
+        obj->collider_->calcHitBox(getParam()->HIT_BOX[i], i);
+
+    for (int i = 0; i < Collider::boxMax; ++i)
+        obj->collider_->calcAttackBox(getParam()->ATTACK_BOX[i], i);
 
     // アニメーション更新
     obj->renderer_->animeData_ = getParam()->ANIME_LEFT;

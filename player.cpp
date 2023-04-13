@@ -46,6 +46,13 @@ namespace
         //{ &sprPlayer_test, 10 },
         { nullptr, -1 },// 終了フラグ
     };
+
+    //parts01
+    GameLib::AnimeData animeParts01[] = {
+        { &sprParts01, 10 },
+        //{ &sprPlayer_test, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
 }
 
 void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer = false) // trueならこのobjをplayer_に代入する
@@ -68,10 +75,12 @@ void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer = fa
 
     if (makeOrgPlayer == true) 
     {
-        Game::instance()->player_ = obj2dManager->add(player, &normalPlayerBehavior, pos); 
+        //Game::instance()->player_ = obj2dManager->add(player, &normalPlayerBehavior, pos); 
+        Game::instance()->player_ = obj2dManager->add(player, &normalPlayerBehavior, pos);
     }
     else
     {
+        //obj2dManager->add(player, &normalPlayerBehavior, pos);
         obj2dManager->add(player, &normalPlayerBehavior, pos);
     }
 }
@@ -221,9 +230,9 @@ NormalPlayerBehavior::NormalPlayerBehavior()
     param_.ANIME_LEFT  = sprPlayer_Left;
 
     param_.SIZE    = VECTOR2(player_size, player_size);
-    param_.HIT_BOX = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
+    param_.HIT_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
     //param_.HIT_BOX = { -50, -175, 50, -75 };
-    param_.ATTACK_BOX = param_.HIT_BOX;
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
     // 速度関連のパラメータ
     param_.ACCEL_X = 8.0f;
@@ -309,7 +318,6 @@ void NormalPlayerBehavior::attack(OBJ2D* obj) const
 //******************************************************************************
 ItemPlayerBehavior::ItemPlayerBehavior()
 {
-
     // アニメーション
     param_.ANIME_UP    = sprPlayer_Up;
     param_.ANIME_RIGHT = sprPlayer_Right;
@@ -317,9 +325,9 @@ ItemPlayerBehavior::ItemPlayerBehavior()
     param_.ANIME_LEFT = sprPlayer_Left;
 
     param_.SIZE = VECTOR2(player_size, player_size);
-    param_.HIT_BOX = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
+    param_.HIT_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
     //param_.HIT_BOX = { -50, -175, 50, -75 };
-    param_.ATTACK_BOX = param_.HIT_BOX;
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
     // 速度関連のパラメータ
     param_.ACCEL_X = 8.0f;
@@ -518,8 +526,8 @@ void ErasePlayer::erase(OBJ2D* obj) const
 CursorBehavior::CursorBehavior()
 {
     param_.SIZE = VECTOR2( 5, 5);
-    param_.HIT_BOX = { -5, -5, 5 , 5 };
-    param_.ATTACK_BOX = { -5, -5, 5 , 5 };
+    param_.HIT_BOX[0] = { -5, -5, 5 , 5 };
+    param_.ATTACK_BOX[0] = { -5, -5, 5 , 5 };
 
     // 速度関連のパラメータ
     param_.ACCEL_X = 8.0f;
@@ -553,4 +561,29 @@ void CursorBehavior::hit(OBJ2D* src, OBJ2D* dst) const
 void CursorBehavior::damageProc(OBJ2D* obj) const
 {
     obj->transform_->position_ = getCursorPoint();
+}
+
+// <parts01(Lzi仮)>
+Parts01PlayerBehavior::Parts01PlayerBehavior()
+{
+    // アニメーション
+    param_.ANIME_UP = animeParts01;
+    param_.ANIME_RIGHT = animeParts01;
+    param_.ANIME_DOWN = animeParts01;
+    param_.ANIME_LEFT = animeParts01;
+
+    param_.SIZE = VECTOR2(player_size, player_size);
+    param_.HIT_BOX[0] = { -206, 50, 130, 155 };   // 下長方形
+    param_.HIT_BOX[1] = { -20,-154,206,50 };      // ネジ
+    //param_.HIT_BOX = { -50, -175, 50, -75 };
+    
+    param_.ATTACK_BOX[0] = { -206, 50, 130, 155 };// 下長方形
+    param_.ATTACK_BOX[1] = { -20,-154,206,50 };   // ネジ;
+
+    // 速度関連のパラメータ
+    param_.ACCEL_X = 8.0f;
+    param_.ACCEL_Y = 8.0f;
+    param_.SPEED_X_MAX = 8.0f;
+    param_.SPEED_Y_MAX = 8.0f;
+    param_.JUMP_POWER_Y = -12.0f;
 }
