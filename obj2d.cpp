@@ -204,17 +204,29 @@ void OBJ2DManager::draw()
             screenPos.y > GameLib::window::getHeight() + LIMIT)
             continue;
 
-        obj->renderer_->draw();
-        
-        obj->collider_->draw();
 
+        if (obj->transform_->scale_.x > 0.10f) obj->renderer_->draw();
+        
+
+        static bool isDrawHitBox = false; // ヒットボックスを表示するか
+        // 1キーでヒットボックス表示・非表示
+        if (GetAsyncKeyState('1') & 1) 
+        {
+            if (!isDrawHitBox) isDrawHitBox = true;
+            else isDrawHitBox = false;
+        }
+        if (isDrawHitBox) obj->collider_->draw();
+
+
+
+        // カーソルが見づらいのでプリミティブ描画
         OBJ2D* cursor = Game::instance()->cursor_;
         GameLib::primitive::rect(
             cursor->transform_->position_,
-            cursor->collider_->size_,
-            {0,0},
+            { 10,10 },
+            { 0,0 },
             0,
-            {0,0,0,1}
+            { 0,0,0,1 }
         );
     }
 }

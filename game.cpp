@@ -111,7 +111,8 @@ void Game::update()
         GameLib::debug::setString("plShrinkCount:%d", BasePlayerBehavior::plShrinkCount);
 
 
-        if (BasePlayerBehavior::plShrinkCount >= 10)     // プレイヤーの数がShrinkの規定数に達していて
+        if (BasePlayerBehavior::plShrinkCount >= 10 ||
+            GameLib::input::TRG(0) & GameLib::input::PAD_TRG3)     // プレイヤーの数がShrinkの規定数に達していて
         {
             if (Collider::isAllShrink_  == false &&       // Shrinkが開始されておらず、
                 Behavior::isObjShrink() == false)         // すべてのobjがshrink中でなければ

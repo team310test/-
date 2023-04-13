@@ -303,16 +303,16 @@ void NormalPlayerBehavior::moveY(OBJ2D* obj) const
 void NormalPlayerBehavior::attack(OBJ2D* obj) const
 {
     // ƒvƒŒƒCƒ„[‚ğw‚·iterator‚ğæ“¾‚·‚é
-    auto objList = Game::instance()->obj2dManager()->getList();
-    std::list<OBJ2D*>::iterator iter = objList->begin();
-    for (; iter != objList->end(); ++iter)
-    {
-        if ((*iter)->behavior_ == nullptr) { continue; }
-        if ((*iter)->behavior_->getType() == OBJ_TYPE::PLAYER) 
-        {
-            break; 
-        }
-    }
+    //auto objList = Game::instance()->obj2dManager()->getList();
+    //std::list<OBJ2D*>::iterator iter = objList->begin();
+    //for (; iter != objList->end(); ++iter)
+    //{
+    //    if ((*iter)->behavior_ == nullptr) { continue; }
+    //    if ((*iter)->behavior_->getType() == OBJ_TYPE::PLAYER) 
+    //    {
+    //        break; 
+    //    }
+    //}
 
     obj->actorComponent_->attackTimer_--;
 
@@ -470,18 +470,25 @@ void ItemPlayerBehavior::contactToOriginal(OBJ2D* obj, OBJ2D* original) const
                                                              
     float addVelocity = 0.0f;                                // obj‚Ìvelocity‚É‘«‚·‘¬“x
     float num = 0.0f;                                        // for•ª‚Ìi‚İ‚½‚¢‚È–ğŠ„
-
-    while (1)
+    const float copyDist = dist > 0 ? dist : -dist;          //
+    while (true)
     {
-        // obj‚©‚ç©‹@–{‘Ì‚Ü‚Å‚Ì‹——£‚É‚æ‚Á‚Ä‘¬“x‚ğã¸‚³‚¹‚é
-        // (‹——£‚ª‰“‚·‚¬‚é‚Æobj‚ª©‹@–{‘Ì‚É’Ç‚¢‚Â‚¯‚È‚¢‚½‚ß)
-        if ((dist >=  50.0f * num && dist <=  50.0f * (num + 1.0f)) ||  // }0‚©‚ç}50A}50‚©‚ç}100A}100‚©‚ç}150...
-            (dist <= -50.0f * num && dist >= -50.0f * (num + 1.0f)))
+        if (num > 100) // ˆê’èˆÈã”‚ª‘‚¦‚Äshrink‚·‚é‚Æ‚È‚º‚©‰º‚Ìifˆ—‚ÅŒÅ‚Ü‚é‚Ì‚Å‰‹}ˆ’u
         {
-            addVelocity = (num != 0) ? defaultVelocity * num : 0.1f;    // }0‚©‚ç}50‚Ü‚Å‚Ì‹——£‚Ínum‚ª0‚È‚Ì‚Å0.1f‚ğ‘ã“ü
-            break; // ‘ã“ü‚µ‚½‚Ì‚Åbreak;
+            addVelocity = defaultVelocity * num;
+            break;
         }
 
+        // obj‚©‚ç©‹@–{‘Ì‚Ü‚Å‚Ì‹——£‚É‚æ‚Á‚Ä‘¬“x‚ğã¸‚³‚¹‚é
+        // (‹——£‚ª‰“‚·‚¬‚é‚Æobj‚ª©‹@–{‘Ì‚É’Ç‚¢‚Â‚¯‚È‚¢‚½‚ß)
+        if ((copyDist >=  (50.0f * num) && copyDist <=  50.0f * (num + 1.0f)))  // }0‚©‚ç}50A}50‚©‚ç}100A}100‚©‚ç}150...
+        {
+            addVelocity = (num != 0) 
+                        ? defaultVelocity * num 
+                        : 0.1f;    // }0‚©‚ç}50‚Ü‚Å‚Ì‹——£‚Ínum‚ª0‚È‚Ì‚Å0.1f‚ğ‘ã“ü
+
+            break; // ‘ã“ü‚µ‚½‚Ì‚Åbreak;
+        }
         ++num; // num‚ğ‰ÁZ‚µ‚Ä‚¢‚­
     }
 
@@ -499,7 +506,7 @@ void ItemPlayerBehavior::contactToOriginal(OBJ2D* obj, OBJ2D* original) const
 
 // e‚Ì•û‚ÖˆÚ“®
 //static const float parentVelocity = 0.9f; // ‘«‚·‘¬“x(e‚ÖŒü‚©‚¤‘¬‚³‚É‰e‹¿)
-static const float parentVelocity = 0.75f; // ‘«‚·‘¬“x(e‚ÖŒü‚©‚¤‘¬‚³‚É‰e‹¿)
+static const float parentVelocity = 0.5f; // ‘«‚·‘¬“x(e‚ÖŒü‚©‚¤‘¬‚³‚É‰e‹¿)
 void ItemPlayerBehavior::contactToParent(OBJ2D* obj, OBJ2D* parent) const
 {    
     const VECTOR2 parentPos = parent->transform_->position_;    // e‚ÌˆÊ’u

@@ -71,12 +71,12 @@ void ActorBehavior::move(OBJ2D* obj) const
 
 
 static const float divideValue = 0.5f;     // scaleを割る値(最終的なscaleの大きさに影響)
-
 // すべてのobjのShrinkを開始させる関数
 void Behavior::startAllShrink(OBJ2D* obj) const
 {
-    if (!Collider::isAllShrink_)   return; // Shrinkが開始されていなければreturn
-    if (obj->collider_->isShrink_) return; // objがすでにshrink中ならreturn;
+    if (!Collider::isAllShrink_)        return; // Shrinkが開始されていなければreturn
+    if (obj->collider_->isShrink_)      return; // objがすでにshrink中ならreturn
+    if (obj->transform_->scale_.x <= 0) return; // scaleが0以下ならreturn
 
     VECTOR2* currentScale = &obj->transform_->scale_;       // 現在のscale
     VECTOR2* targetScale = &obj->collider_->targetScale_;  // 最終的に目指すscale 
@@ -86,7 +86,6 @@ void Behavior::startAllShrink(OBJ2D* obj) const
 }
 
 static const float shrinkVelocity = -0.0025f; // 縮小する速度(縮小の速さに影響)
-
 // 縮小関数
 void Behavior::shrink(OBJ2D* obj) const
 {

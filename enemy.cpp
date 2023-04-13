@@ -233,6 +233,11 @@ void ItemEnemyBehavior::attack(OBJ2D* obj) const
 //--------------------------------------------------------------
 void EraseEnemy::erase(OBJ2D* obj) const
 {
+    if (obj->transform_->scale_.x <= 0)
+    {
+        obj->behavior_ = nullptr;
+    }
+
     if (!obj->actorComponent_->isAlive())
     {
         obj->behavior_ = &itemEnemyBehavior;
@@ -264,6 +269,11 @@ void addItemPlayer(OBJ2D* obj)
 
 void EraseItem::erase(OBJ2D* obj) const
 {
+    if (obj->transform_->scale_.x <= 0)
+    {
+        obj->behavior_ = nullptr;
+    }
+
     if (!obj->actorComponent_->isAlive())
     {
         //addItemPlayer(obj); // scale‚ªƒŠƒZƒbƒg‚³‚ê‚Ä‚µ‚Ü‚¤
