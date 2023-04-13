@@ -99,7 +99,7 @@ void Game::update()
         //////// 通常時の処理 ////////
 
         // 敵追加4
-        if (GameLib::input::STATE(0) & GameLib::input::PAD_TRG2)
+        if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG2)
         {
             addEnemy(obj2dManager(), bg());
             ++num;
@@ -109,7 +109,6 @@ void Game::update()
         if (player_->transform_) GameLib::debug::setString("playerScale:%f", player_->transform_->scale_.x);
         GameLib::debug::setString("shrinkNum:%d", shrinkNum);
         GameLib::debug::setString("plShrinkCount:%d", BasePlayerBehavior::plShrinkCount);
-
 
         if (BasePlayerBehavior::plShrinkCount >= 10)     // プレイヤーの数がShrinkの規定数に達していて
         {

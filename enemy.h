@@ -53,9 +53,25 @@ private:
 };
 EXTERN ItemEnemyBehavior itemEnemyBehavior;
 
+
+//******************************************************************************
+//      EnemyCore01
+//******************************************************************************
+// エネミー
+class EnemyCore01Behavior : public BaseEnemyBehavior
+{
+public:
+    EnemyCore01Behavior();
+private:
+    //void attack(OBJ2D* obj) const override;
+};
+EXTERN EnemyCore01Behavior enemyCore01Behavior;
+
+
 //******************************************************************************
 //      Turret01
 //******************************************************************************
+// エネミー
 class EnemyTurret01Behavior : public BaseEnemyBehavior
 {
 public:
@@ -64,8 +80,7 @@ private:
     //void attack(OBJ2D* obj) const override;
 };
 EXTERN EnemyTurret01Behavior enemyTurret01Behavior;
-
-// <parts01Item(Lzi仮)>
+// アイテム
 class ItemTurret01Behavior : public BaseEnemyBehavior
 {
 public:
@@ -75,7 +90,6 @@ private:
     OBJ_TYPE getAttackType() const override { return OBJ_TYPE::null; }
 };
 EXTERN ItemTurret01Behavior itemTurret01Behavior;
-
 
 //==============================================================================
 //

@@ -229,11 +229,9 @@ class WeaponComponent : public Component
 {
 public:
     OBJ2D* parent_;  // ‚±‚Ì•Ší‚Ì‚¿å
-    bool xFlip_;    // true c ¶Œü‚« / false c ‰EŒü‚«
 public:
     WeaponComponent()
         :parent_(nullptr)
-        , xFlip_(false)
     {
     }
 };

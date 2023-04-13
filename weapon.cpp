@@ -16,8 +16,7 @@ void BaseWeaponBehavior::move(OBJ2D* obj) const
         obj->collider_->isDrawAttackRect_ = true;  // あたり判定の領域を描画する（デバッグ用）
 
         // 左右の向き、速度を設定（プレイヤーにもxFlip_の設定が必要）
-        obj->weaponComponent_->xFlip_ = obj->weaponComponent_->parent_->renderer_->drawXFlip_;    // 武器の持ち主のxFlip_を武器に設定する
-        obj->transform_->velocity_.x = obj->weaponComponent_->xFlip_ ? -getParam()->SPEED_X : getParam()->SPEED_X;
+        obj->transform_->velocity_.x =  getParam()->SPEED_X;
         obj->transform_->velocity_.y = 0.0f;    // 念のため
 
         obj->state_++;
@@ -33,7 +32,7 @@ void BaseWeaponBehavior::move(OBJ2D* obj) const
 
 NormalShotBehavior::NormalShotBehavior()
 {
-    param_.SPR_WEAPON = &sprWeapon_Shuriken;
+    param_.SPR_WEAPON = &sprWeapon_NormalShot;
     param_.ERASER = &normalShotEraser;
     param_.SPEED_X = 20.0f;
     param_.ATTACK_POWER = 1;

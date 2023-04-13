@@ -15,35 +15,25 @@
 //
 //******************************************************************************
 
-//------< プレイヤーのアニメデータ(仮) >----------------------------------------------
+//------< アニメデータ >----------------------------------------------
 namespace
 {   
-    //------< プレイヤーのアニメデータ >------------------------------------------
+    //------< アニメデータ >------------------------------------------
     //上方向
     GameLib::AnimeData animeEnemey_Up[] = {
         { &sprEnemey_test, 10 },
         { nullptr, -1 },// 終了フラグ
     };
-    //右方向
-    GameLib::AnimeData animeEnemey_Right[] = {
-        { &sprEnemey_test, 10 },
-        { nullptr, -1 },// 終了フラグ
-    };
-    //下方向
-    GameLib::AnimeData animeEnemey_Down[] = {
-    { &sprEnemey_test, 10 },
-        { nullptr, -1 },// 終了フラグ
-    };
-    //左方向
-    GameLib::AnimeData animeEnemey_Left[] = {
-        { &sprEnemey_test, 10 },
-        { nullptr, -1 },// 終了フラグ
-    };
 
-    //parts01
-    GameLib::AnimeData animeParts01[] = {
-        { &sprParts01, 10 },
+    // タレット01
+    GameLib::AnimeData animeTurret01[] = {
+        { &sprPartsTurret01, 10 },
         //{ &sprPlayer_test, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
+    //  コア01
+    GameLib::AnimeData animeCore01[] = {
+        { &sprPartsCore01, 10 },
         { nullptr, -1 },// 終了フラグ
     };
 }
@@ -82,7 +72,7 @@ void setEnemy(OBJ2DManager* obj2dManager, BG* bg)
     enemy->zOrder_ = 3;
     enemy->actorComponent_->parent_ = enemy;
 
-    obj2dManager->add(enemy, &normalEnemyBehavior, pos);
+    obj2dManager->add(enemy, &enemyCore01Behavior, pos);
 
     // サブパーツ
     setSubEnemy(obj2dManager, bg, enemy, { pos.x,pos.y-229 });
@@ -117,7 +107,7 @@ void addEnemy(OBJ2DManager* obj2dManager, BG* bg)
     enemy->zOrder_ = 3;
     enemy->actorComponent_->parent_ = enemy;
 
-    obj2dManager->add(enemy, &normalEnemyBehavior, pos);
+    obj2dManager->add(enemy, &enemyCore01Behavior, pos);
 
     // サブパーツ
     setSubEnemy(obj2dManager, bg, enemy, { pos.x,pos.y - 229 });
@@ -241,6 +231,31 @@ void ItemEnemyBehavior::attack(OBJ2D* obj) const
 {
 }
 
+//******************************************************************************
+//
+//      EnemyCore01
+//
+//******************************************************************************
+EnemyCore01Behavior::EnemyCore01Behavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT = animeCore01;
+
+    param_.SIZE = VECTOR2(player_size, player_size);
+    param_.HIT_BOX[0] = { -125,-125,125,125 };
+
+    param_.ATTACK_BOX[0] = { -125, -125, 125, 125 };
+
+    // 速度関連のパラメータ
+    param_.ACCEL_X = 4.0f;
+    param_.ACCEL_Y = 4.0f;
+    param_.SPEED_X_MAX = 4.0f;
+    param_.SPEED_Y_MAX = 4.0f;
+    param_.JUMP_POWER_Y = -12.0f;
+
+    // 次のBehaviorなし
+}
+
 
 //******************************************************************************
 //
@@ -251,7 +266,7 @@ void ItemEnemyBehavior::attack(OBJ2D* obj) const
 EnemyTurret01Behavior::EnemyTurret01Behavior()
 {
     // アニメーション
-    param_.ANIME_WAIT = animeParts01;
+    param_.ANIME_WAIT = animeTurret01;
 
     param_.SIZE = VECTOR2(player_size, player_size);
     param_.HIT_BOX[0] = { -125, 48, 80, 95 };   // 下長方形
@@ -275,7 +290,7 @@ EnemyTurret01Behavior::EnemyTurret01Behavior()
 ItemTurret01Behavior::ItemTurret01Behavior()
 {
     // アニメーション
-    param_.ANIME_WAIT = animeParts01;
+    param_.ANIME_WAIT = animeTurret01;
 
     param_.SIZE = VECTOR2(player_size, player_size);
     param_.HIT_BOX[0] = { -80, 48, 125, 95 };   // 下長方形
@@ -291,7 +306,6 @@ ItemTurret01Behavior::ItemTurret01Behavior()
     param_.SPEED_Y_MAX = 2.0f;
     param_.JUMP_POWER_Y = -12.0f;
 }
-
 
 //--------------------------------------------------------------
 //  消去

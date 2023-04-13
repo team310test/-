@@ -17,40 +17,20 @@ int BasePlayerBehavior::plShrinkCount = 0;
 //
 //******************************************************************************
 
-//------< プレイヤーのアニメデータ(仮) >----------------------------------------------
+//------< アニメデータ >----------------------------------------------
 namespace
 {   // ※このデータは長いので、Visual Studioの機能で閉じられるようにnamespaceを分けている
 
-    //------< プレイヤーのアニメデータ >------------------------------------------
-    //上方向
-    GameLib::AnimeData sprPlayer_Up[] = {
+    //------< アニメデータ >------------------------------------------
+    // 待機
+    GameLib::AnimeData sprPlayer_Wait[] = {
         { &sprEnemey_test, 10 },
         //{ &sprPlayer_test, 10 },
         { nullptr, -1 },// 終了フラグ
     };
-    //右方向
-    GameLib::AnimeData sprPlayer_Right[] = {
-        { &sprEnemey_test, 10 },
-        //{ &sprPlayer_test, 10 },
-        { nullptr, -1 },// 終了フラグ
-    };
-    //下方向
-    GameLib::AnimeData sprPlayer_Down[] = {
-        { &sprEnemey_test, 10 },
-        //{ &sprPlayer_test, 10 },
-        { nullptr, -1 },// 終了フラグ
-    };
-    //左方向
-    GameLib::AnimeData sprPlayer_Left[] = {
-        { &sprEnemey_test, 10 },
-        //{ &sprPlayer_test, 10 },
-        { nullptr, -1 },// 終了フラグ
-    };
-
-    //parts01
-    GameLib::AnimeData animeParts01[] = {
-        { &sprParts01, 10 },
-        //{ &sprPlayer_test, 10 },
+    //  タレット01
+    GameLib::AnimeData animeTurret01[] = {
+        { &sprPartsTurret01, 10 },
         { nullptr, -1 },// 終了フラグ
     };
 }
@@ -220,7 +200,7 @@ void BasePlayerBehavior::areaCheck(OBJ2D* obj) const
 NormalPlayerBehavior::NormalPlayerBehavior()
 {
     // アニメーション
-    param_.ANIME_WAIT    = sprPlayer_Up;
+    param_.ANIME_WAIT    = sprPlayer_Wait;
 
     param_.SIZE    = VECTOR2(player_size, player_size);
     param_.HIT_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
@@ -312,7 +292,7 @@ void NormalPlayerBehavior::attack(OBJ2D* obj) const
 ItemPlayerBehavior::ItemPlayerBehavior()
 {
     // アニメーション
-    param_.ANIME_WAIT    = sprPlayer_Up;
+    param_.ANIME_WAIT    = sprPlayer_Wait;
 
     param_.SIZE = VECTOR2(player_size, player_size);
     param_.HIT_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
@@ -485,7 +465,7 @@ void ItemPlayerBehavior::contactToParent(OBJ2D* obj, OBJ2D* parent) const
 PlayerTurret01Behavior::PlayerTurret01Behavior()
 {
     // アニメーション
-    param_.ANIME_WAIT = animeParts01;
+    param_.ANIME_WAIT = animeTurret01;
 
     param_.SIZE = VECTOR2(player_size, player_size);
     param_.HIT_BOX[0] = { -80, 48, 125, 95 };   // 下長方形
