@@ -27,39 +27,20 @@ private:
 //----------------------------------------------------------------------
 //  ShurikenBehavior
 //----------------------------------------------------------------------
-class ShurikenBehavior : public BaseWeaponBehavior
+class NormalShotBehavior : public BaseWeaponBehavior
 {
 public:
-    ShurikenBehavior();
+    NormalShotBehavior();
 private:
     void update(OBJ2D* obj) const override;
     void calcAttackBox(OBJ2D* obj) const override;
     void hit(OBJ2D* src, OBJ2D* dst) const override;
 };
-EXTERN ShurikenBehavior shurikenBehavior;
+EXTERN NormalShotBehavior normalShotBehavior;
 
-class ShurikenEraser : public Eraser
+class NormalShotEraser : public Eraser
 {
 private:
     void erase(OBJ2D* obj) const override;
 };
-EXTERN ShurikenEraser shurikenEraser;
-
-class SwordBehavior : public BaseWeaponBehavior
-{
-public:
-    SwordBehavior();
-
-private:
-    void update(OBJ2D* obj) const override;
-    void calcAttackBox(OBJ2D* obj) const override;
-    void hit(OBJ2D* src, OBJ2D* dst) const override;
-};
-EXTERN SwordBehavior swordBehavior;
-
-class SwordEraser : public Eraser
-{
-private:
-    void erase(OBJ2D* obj) const override;
-};
-EXTERN SwordEraser swordEraser;
+EXTERN NormalShotEraser normalShotEraser;

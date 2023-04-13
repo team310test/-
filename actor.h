@@ -9,10 +9,7 @@ protected:
     struct Param
     {
         // アニメーション
-        GameLib::AnimeData* ANIME_UP = nullptr;
-        GameLib::AnimeData* ANIME_RIGHT = nullptr;
-        GameLib::AnimeData* ANIME_DOWN = nullptr;
-        GameLib::AnimeData* ANIME_LEFT = nullptr;
+        GameLib::AnimeData* ANIME_WAIT = nullptr;
 
         // サイズ
         VECTOR2 SIZE = { 0, 0 };

@@ -127,13 +127,9 @@ void BasePlayerBehavior::moveX(OBJ2D* obj) const
     {
     case GameLib::input::PAD_LEFT:  // 左だけが押されている場合
         obj->transform_->velocity_.x -= getParam()->ACCEL_X;
-        obj->renderer_->animeData_ = getParam()->ANIME_LEFT;
-        obj->actorComponent_->xFlip_ = true;
         break;
     case GameLib::input::PAD_RIGHT: // 右だけが押されている場合
         obj->transform_->velocity_.x += getParam()->ACCEL_X;
-        obj->renderer_->animeData_ = getParam()->ANIME_RIGHT;
-        obj->actorComponent_->xFlip_ = false;
         break;
     default:        // どちらも押されていないか相殺されている場合
         if (obj->transform_->velocity_.x > 0)
@@ -224,10 +220,7 @@ void BasePlayerBehavior::areaCheck(OBJ2D* obj) const
 NormalPlayerBehavior::NormalPlayerBehavior()
 {
     // アニメーション
-    param_.ANIME_UP    = sprPlayer_Up;
-    param_.ANIME_RIGHT = sprPlayer_Right;
-    param_.ANIME_DOWN  = sprPlayer_Down;
-    param_.ANIME_LEFT  = sprPlayer_Left;
+    param_.ANIME_WAIT    = sprPlayer_Up;
 
     param_.SIZE    = VECTOR2(player_size, player_size);
     param_.HIT_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
@@ -301,7 +294,7 @@ void NormalPlayerBehavior::attack(OBJ2D* obj) const
                 nullptr, 
                 new WeaponComponent
             ), 
-            &shurikenBehavior, 
+            &normalShotBehavior, 
             pos
         );
         shuriken->zOrder_ = 2;
@@ -319,10 +312,7 @@ void NormalPlayerBehavior::attack(OBJ2D* obj) const
 ItemPlayerBehavior::ItemPlayerBehavior()
 {
     // アニメーション
-    param_.ANIME_UP    = sprPlayer_Up;
-    param_.ANIME_RIGHT = sprPlayer_Right;
-    param_.ANIME_DOWN = sprPlayer_Down;
-    param_.ANIME_LEFT = sprPlayer_Left;
+    param_.ANIME_WAIT    = sprPlayer_Up;
 
     param_.SIZE = VECTOR2(player_size, player_size);
     param_.HIT_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
@@ -395,7 +385,7 @@ void ItemPlayerBehavior::attack(OBJ2D* obj) const
                 nullptr,
                 new WeaponComponent
             ),
-            &shurikenBehavior,
+            &normalShotBehavior,
             pos
         );
         shuriken->zOrder_ = 2;
@@ -489,6 +479,28 @@ void ItemPlayerBehavior::contactToParent(OBJ2D* obj, OBJ2D* parent) const
     //obj->collider_->calcAttackBox(getParam()->ATTACK_BOX);
 }
 
+//******************************************************************************
+//      Turret01
+//******************************************************************************
+PlayerTurret01Behavior::PlayerTurret01Behavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT = animeParts01;
+
+    param_.SIZE = VECTOR2(player_size, player_size);
+    param_.HIT_BOX[0] = { -80, 48, 125, 95 };   // 下長方形
+    param_.HIT_BOX[1] = { -125,-95,10,50 };      // ネジ
+
+    param_.ATTACK_BOX[0] = { -80, 48, 125, 95 };   // 下長方形
+    param_.ATTACK_BOX[1] = { -125,-95,10,50 };      // ネジ
+
+    // 速度関連のパラメータ
+    param_.ACCEL_X = 8.0f;
+    param_.ACCEL_Y = 8.0f;
+    param_.SPEED_X_MAX = 8.0f;
+    param_.SPEED_Y_MAX = 8.0f;
+    param_.JUMP_POWER_Y = -12.0f;
+}
 
 //--------------------------------------------------------------
 //  消去
@@ -561,28 +573,4 @@ void CursorBehavior::hit(OBJ2D* src, OBJ2D* dst) const
 void CursorBehavior::damageProc(OBJ2D* obj) const
 {
     obj->transform_->position_ = getCursorPoint();
-}
-
-// <parts01(Lzi仮)>
-Parts01PlayerBehavior::Parts01PlayerBehavior()
-{
-    // アニメーション
-    param_.ANIME_UP = animeParts01;
-    param_.ANIME_RIGHT = animeParts01;
-    param_.ANIME_DOWN = animeParts01;
-    param_.ANIME_LEFT = animeParts01;
-
-    param_.SIZE = VECTOR2(player_size, player_size);
-    param_.HIT_BOX[0] = { -125, 48, 80, 95 };   // 下長方形
-    param_.HIT_BOX[1] = { -10,-95,125,50 };      // ネジ
-
-    param_.ATTACK_BOX[0] = { -125, 48, 80, 95 };   // 下長方形
-    param_.ATTACK_BOX[1] = { -10,-95,125,50 };      // ネジ
-
-    // 速度関連のパラメータ
-    param_.ACCEL_X = 8.0f;
-    param_.ACCEL_Y = 8.0f;
-    param_.SPEED_X_MAX = 8.0f;
-    param_.SPEED_Y_MAX = 8.0f;
-    param_.JUMP_POWER_Y = -12.0f;
 }

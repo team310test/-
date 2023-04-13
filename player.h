@@ -78,14 +78,16 @@ private:
 };
 EXTERN CursorBehavior cursorBehavior;
 
-// <parts01Player(Lzi‰¼)>
-class Parts01PlayerBehavior : public ItemPlayerBehavior
+//******************************************************************************
+//      Turret01
+//******************************************************************************
+class PlayerTurret01Behavior : public ItemPlayerBehavior
 {
 public:
-    Parts01PlayerBehavior();
+    PlayerTurret01Behavior();
 private:
 };
-EXTERN Parts01PlayerBehavior parts01PlayerBehavior;
+EXTERN PlayerTurret01Behavior playerTurret01Behavior;
 
 //==============================================================================
 //

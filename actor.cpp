@@ -31,7 +31,7 @@ void ActorBehavior::move(OBJ2D* obj) const
     case 0:
         //////// 初期設定 ////////
         // アニメの初期設定
-        obj->renderer_->animeData_ = getParam()->ANIME_RIGHT;
+        obj->renderer_->animeData_ = getParam()->ANIME_WAIT;
         obj->transform_->scale_ = getParam()->SCALE;
         obj->collider_->size_ = {
             getParam()->SIZE.x * getParam()->SCALE.x, 
@@ -69,7 +69,7 @@ void ActorBehavior::move(OBJ2D* obj) const
         obj->collider_->calcAttackBox(getParam()->ATTACK_BOX[i], i);
 
     // アニメーション更新
-    obj->renderer_->animeData_ = getParam()->ANIME_LEFT;
+    obj->renderer_->animeData_ = getParam()->ANIME_WAIT;
 
     if (obj->renderer_->animeData_) 
         obj->renderer_->animeUpdate();

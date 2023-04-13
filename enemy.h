@@ -46,7 +46,6 @@ class ItemEnemyBehavior : public BaseEnemyBehavior
 public:
     ItemEnemyBehavior();
 private:
-    //OBJ_TYPE getType() const override { return OBJ_TYPE::TYPE_NULL; }
     OBJ_TYPE getType() const override { return OBJ_TYPE::ITEM; }
     OBJ_TYPE getAttackType() const override { return OBJ_TYPE::null; }
     void hit(OBJ2D*, OBJ2D*) const override;
@@ -54,26 +53,28 @@ private:
 };
 EXTERN ItemEnemyBehavior itemEnemyBehavior;
 
-// <parts01Enemey(Lzi‰¼)>
-class Parts01EnemyBehavior : public BaseEnemyBehavior
+//******************************************************************************
+//      Turret01
+//******************************************************************************
+class EnemyTurret01Behavior : public BaseEnemyBehavior
 {
 public:
-    Parts01EnemyBehavior();
+    EnemyTurret01Behavior();
 private:
     //void attack(OBJ2D* obj) const override;
 };
-EXTERN Parts01EnemyBehavior parts01EnemyBehavior;
+EXTERN EnemyTurret01Behavior enemyTurret01Behavior;
 
 // <parts01Item(Lzi‰¼)>
-class Parts01ItemBehavior : public BaseEnemyBehavior
+class ItemTurret01Behavior : public BaseEnemyBehavior
 {
 public:
-    Parts01ItemBehavior();
+    ItemTurret01Behavior();
 private:
     OBJ_TYPE getType() const override { return OBJ_TYPE::ITEM; }
     OBJ_TYPE getAttackType() const override { return OBJ_TYPE::null; }
 };
-EXTERN Parts01ItemBehavior parts01ItemBehavior;
+EXTERN ItemTurret01Behavior itemTurret01Behavior;
 
 
 //==============================================================================

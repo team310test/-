@@ -63,7 +63,7 @@ void setSubEnemy(OBJ2DManager* obj2dManager, BG* bg, OBJ2D* parent, VECTOR2 pos)
     // 親を設定
     subEnemy->actorComponent_->parent_ = parent;
 
-    obj2dManager->add(subEnemy, &parts01EnemyBehavior, pos);
+    obj2dManager->add(subEnemy, &enemyTurret01Behavior, pos);
 }
 
 void setEnemy(OBJ2DManager* obj2dManager, BG* bg)
@@ -131,7 +131,7 @@ void addEnemy(OBJ2DManager* obj2dManager, BG* bg)
 //******************************************************************************
 void BaseEnemyBehavior::init(OBJ2D* obj) const
 {
-    obj->renderer_->animeData_ = getParam()->ANIME_LEFT;
+    obj->renderer_->animeData_ = getParam()->ANIME_WAIT;
 
     obj->collider_->judgeFlag_ = true;
     obj->collider_->isDrawHitRect_ = true;
@@ -185,10 +185,7 @@ void BaseEnemyBehavior::areaCheck(OBJ2D* obj) const
 NormalEnemyBehavior::NormalEnemyBehavior()
 {
     // アニメーション
-    param_.ANIME_UP = animeEnemey_Up;
-    param_.ANIME_RIGHT = animeEnemey_Right;
-    param_.ANIME_DOWN = animeEnemey_Down;
-    param_.ANIME_LEFT = animeEnemey_Left;
+    param_.ANIME_WAIT = animeEnemey_Up;
 
     param_.SIZE    = VECTOR2(player_size, player_size);
     param_.HIT_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
@@ -220,10 +217,7 @@ void NormalEnemyBehavior::attack(OBJ2D* obj) const
 ItemEnemyBehavior::ItemEnemyBehavior()
 {
     // アニメーション
-    param_.ANIME_UP = animeEnemey_Up;
-    param_.ANIME_RIGHT = animeEnemey_Right;
-    param_.ANIME_DOWN = animeEnemey_Down;
-    param_.ANIME_LEFT = animeEnemey_Left;
+    param_.ANIME_WAIT = animeEnemey_Up;
 
     param_.SIZE = VECTOR2(player_size, player_size);
     param_.ATTACK_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
@@ -250,17 +244,14 @@ void ItemEnemyBehavior::attack(OBJ2D* obj) const
 
 //******************************************************************************
 //
-//      parts01(Lzi仮)
+//      Turret01
 //
 //******************************************************************************
 // エネミー
-Parts01EnemyBehavior::Parts01EnemyBehavior()
+EnemyTurret01Behavior::EnemyTurret01Behavior()
 {
     // アニメーション
-    param_.ANIME_UP = animeParts01;
-    param_.ANIME_RIGHT = animeParts01;
-    param_.ANIME_DOWN = animeParts01;
-    param_.ANIME_LEFT = animeParts01;
+    param_.ANIME_WAIT = animeParts01;
 
     param_.SIZE = VECTOR2(player_size, player_size);
     param_.HIT_BOX[0] = { -125, 48, 80, 95 };   // 下長方形
@@ -277,24 +268,21 @@ Parts01EnemyBehavior::Parts01EnemyBehavior()
     param_.JUMP_POWER_Y = -12.0f;
 
     // 次のBehavior・Eraser
-    param_.NEXT_BEHAVIOR = &parts01PlayerBehavior;
+    param_.NEXT_BEHAVIOR = &playerTurret01Behavior;
 }
 
 // アイテム
-Parts01ItemBehavior::Parts01ItemBehavior()
+ItemTurret01Behavior::ItemTurret01Behavior()
 {
     // アニメーション
-    param_.ANIME_UP = animeParts01;
-    param_.ANIME_RIGHT = animeParts01;
-    param_.ANIME_DOWN = animeParts01;
-    param_.ANIME_LEFT = animeParts01;
+    param_.ANIME_WAIT = animeParts01;
 
     param_.SIZE = VECTOR2(player_size, player_size);
-    param_.HIT_BOX[0] = { -125, 48, 80, 95 };   // 下長方形
-    param_.HIT_BOX[1] = { -10,-95,125,50 };      // ネジ
+    param_.HIT_BOX[0] = { -80, 48, 125, 95 };   // 下長方形
+    param_.HIT_BOX[1] = { -125,-95,10,50 };      // ネジ
 
-    param_.ATTACK_BOX[0] = { -125, 48, 80, 95 };   // 下長方形
-    param_.ATTACK_BOX[1] = { -10,-95,125,50 };      // ネジ
+    param_.ATTACK_BOX[0] = { -80, 48, 125, 95 };   // 下長方形
+    param_.ATTACK_BOX[1] = { -125,-95,10,50 };      // ネジ
 
     // 速度関連のパラメータ
     param_.ACCEL_X = 2.0f;
@@ -314,9 +302,12 @@ void EraseEnemy::erase(OBJ2D* obj) const
     if (obj->actorComponent_->parent_->actorComponent_->parent_ == nullptr)
     {
         obj->actorComponent_->parent_ = nullptr;
-        obj->behavior_ = &parts01ItemBehavior;
+        obj->behavior_ = &itemTurret01Behavior;
         obj->actorComponent_->hp_ = 1;
         obj->eraser_ = &eraseItem;
+
+        // 反転させる
+        obj->renderer_->flip();
     }
 
     // HPが0以下になると消滅

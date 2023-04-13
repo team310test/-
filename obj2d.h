@@ -107,14 +107,18 @@ public:
     VECTOR4 color_;
     GameLib::Anime anime_;
     GameLib::AnimeData* animeData_;
-
+    bool drawXFlip_;
+    bool pad_[3];
     Renderer()
         :data_()
         , color_({ 1,1,1,1 })
         , anime_()
         , animeData_()
+        , drawXFlip_()
+        , pad_()
     {
     }
+    void flip() { drawXFlip_ = !drawXFlip_; }
     void draw() override;
     bool animeUpdate();
 };
@@ -150,7 +154,6 @@ public:
         , targetScale_()
     {
     }
-
     void draw() override;
     void calcHitBox(const GameLib::fRECT& rc , int i);
     void calcAttackBox(const GameLib::fRECT& rc , int i);
@@ -165,8 +168,6 @@ public:
 class ActorComponent : public Component
 {
 public:
-    bool xFlip_;
-    bool pad_[3];
     int hp_;
     int attackTimer_;
     int damageTimer_;
@@ -183,9 +184,7 @@ public:
     int No;
 
     ActorComponent()
-        :xFlip_(false)
-        , pad_()
-        , hp_(1)
+        :hp_(1)
         , attackTimer_(0)
         , damageTimer_(0)
         , mutekiTimer_(0)
@@ -201,7 +200,6 @@ public:
         , No(1)
     {
     }
-    void flip() { xFlip_ = !xFlip_; }
     bool isAlive() const { return hp_ > 0; }
     void damaged();
     void muteki();

@@ -66,10 +66,13 @@ void OBJ2D::move()
 //--------------------------------------------------------------
 void Renderer::draw()
 {
+    VECTOR2 scale = 
+        drawXFlip_ ? VECTOR2( -obj_->transform_->scale_.x, obj_->transform_->scale_.y) : obj_->transform_->scale_;
+    
     if (data_)
     {
         data_->draw(obj_->transform_->position_,
-            obj_->transform_->scale_, obj_->transform_->rotation_, color_);  // dataのdrawメソッドでスプライトを描画する
+            scale, obj_->transform_->rotation_, color_);  // dataのdrawメソッドでスプライトを描画する
     }
 }
 
