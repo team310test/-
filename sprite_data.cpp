@@ -27,7 +27,7 @@ GameLib::LoadTexture loadTexture[] = {
 
 
 //------< テスト >------------------------------------------------------------------
-GameLib::SpriteData sprEnemey_test = SPRITE_CENTER(TEXNO::PLAYER2, 0, 0, 250, 250);
+GameLib::SpriteData sprEnemey_test = SPRITE_CENTER(TEXNO::TURRET01, 0, 0, 250, 250);
 
 //------< パーツ >------------------------------------------------------------------
 GameLib::SpriteData sprPartsCore01 = SPRITE_CENTER(TEXNO::CORE01, 0, 0, 250,250 );
