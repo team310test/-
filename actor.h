@@ -9,16 +9,13 @@ protected:
     struct Param
     {
         // アニメーション
-        GameLib::AnimeData* ANIME_UP = nullptr;
-        GameLib::AnimeData* ANIME_RIGHT = nullptr;
-        GameLib::AnimeData* ANIME_DOWN = nullptr;
-        GameLib::AnimeData* ANIME_LEFT = nullptr;
+        GameLib::AnimeData* ANIME_WAIT = nullptr;
 
         // サイズ
         VECTOR2 SIZE = { 0, 0 };
         VECTOR2 SCALE = { 1, 1 };
-        GameLib::fRECT HIT_BOX = {};
-        GameLib::fRECT ATTACK_BOX = {};
+        GameLib::fRECT HIT_BOX[Collider::boxMax] = {};
+        GameLib::fRECT ATTACK_BOX[Collider::boxMax] = {};
 
         int HP = 1;
         int ATTACK_POWER = 1;
@@ -29,6 +26,10 @@ protected:
         float SPEED_X_MAX = 0.0f;
         float SPEED_Y_MAX = 0.0f;
         float JUMP_POWER_Y = 0.0f;
+
+        int BOX_NUM = 1;
+        Behavior* NEXT_BEHAVIOR = nullptr;
+        Eraser* NEXT_ERASER = nullptr;
     } param_;
     const Param* getParam() const { return &param_; }
 

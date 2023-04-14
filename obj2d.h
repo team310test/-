@@ -107,14 +107,18 @@ public:
     VECTOR4 color_;
     GameLib::Anime anime_;
     GameLib::AnimeData* animeData_;
-
+    bool drawXFlip_;
+    bool pad_[3];
     Renderer()
         :data_()
         , color_({ 1,1,1,1 })
         , anime_()
         , animeData_()
+        , drawXFlip_()
+        , pad_()
     {
     }
+    void flip() { drawXFlip_ = !drawXFlip_; }
     void draw() override;
     bool animeUpdate();
 };
@@ -125,9 +129,11 @@ public:
 class Collider : public Component
 {
 public:
+    static int const boxMax = 2;
+
     VECTOR2 size_;
-    GameLib::fRECT hitBox_;
-    GameLib::fRECT attackBox_;
+    GameLib::fRECT hitBox_[boxMax];
+    GameLib::fRECT attackBox_[boxMax];
     bool judgeFlag_;
     bool isDrawHitRect_;
     bool isDrawAttackRect_;
@@ -148,10 +154,9 @@ public:
         , targetScale_()
     {
     }
-
     void draw() override;
-    void calcHitBox(const GameLib::fRECT& rc);
-    void calcAttackBox(const GameLib::fRECT& rc);
+    void calcHitBox(const GameLib::fRECT& rc , int i);
+    void calcAttackBox(const GameLib::fRECT& rc , int i);
 
     bool hitCheck(Collider* other);
     bool hitCheck(OBJ2D* obj);
@@ -163,8 +168,6 @@ public:
 class ActorComponent : public Component
 {
 public:
-    bool xFlip_;
-    bool pad_[3];
     int hp_;
     int attackTimer_;
     int damageTimer_;
@@ -174,14 +177,14 @@ public:
 
     OBJ2D* parent_;
     OBJ2D* obj;
+    Behavior* nextBehavior_; // Ÿ‚É•Ï‚í‚éBehavior
+    Eraser* nextEraser_;    // Ÿ•Ï‚í‚éEraser
 
     static int playerNum;
     int No;
 
     ActorComponent()
-        :xFlip_(false)
-        , pad_()
-        , hp_(1)
+        :hp_(1)
         , attackTimer_(0)
         , damageTimer_(0)
         , mutekiTimer_(0)
@@ -191,13 +194,16 @@ public:
         , obj(nullptr)
         , parent_(nullptr)
 
+        , nextBehavior_(nullptr)
+        , nextEraser_(nullptr)
+
         , No(1)
     {
     }
-    void flip() { xFlip_ = !xFlip_; }
     bool isAlive() const { return hp_ > 0; }
     void damaged();
     void muteki();
+    bool isAliveParent()const;
 };
 
 //----------------------------------------------------------------------
@@ -223,11 +229,9 @@ class WeaponComponent : public Component
 {
 public:
     OBJ2D* parent_;  // ‚±‚Ì•Ší‚Ì‚¿å
-    bool xFlip_;    // true c ¶Œü‚« / false c ‰EŒü‚«
 public:
     WeaponComponent()
         :parent_(nullptr)
-        , xFlip_(false)
     {
     }
 };

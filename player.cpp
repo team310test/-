@@ -17,74 +17,23 @@ int BasePlayerBehavior::plShrinkCount = 0;
 //
 //******************************************************************************
 
-//------< プレイヤーのアニメデータ(仮) >----------------------------------------------
+//------< アニメデータ >----------------------------------------------
 namespace
 {   // ※このデータは長いので、Visual Studioの機能で閉じられるようにnamespaceを分けている
 
-    //------< プレイヤーのアニメデータ >------------------------------------------
-    //上方向
-    GameLib::AnimeData sprPlayer_Up[] = {
+    //------< アニメデータ >------------------------------------------
+    // 待機
+    GameLib::AnimeData sprPlayer_Wait[] = {
         { &sprEnemey_test, 10 },
         //{ &sprPlayer_test, 10 },
         { nullptr, -1 },// 終了フラグ
     };
-    //右方向
-    GameLib::AnimeData sprPlayer_Right[] = {
-        { &sprEnemey_test, 10 },
-        //{ &sprPlayer_test, 10 },
-        { nullptr, -1 },// 終了フラグ
-    };
-    //下方向
-    GameLib::AnimeData sprPlayer_Down[] = {
-        { &sprEnemey_test, 10 },
-        //{ &sprPlayer_test, 10 },
-        { nullptr, -1 },// 終了フラグ
-    };
-    //左方向
-    GameLib::AnimeData sprPlayer_Left[] = {
-        { &sprEnemey_test, 10 },
-        //{ &sprPlayer_test, 10 },
+    //  タレット01
+    GameLib::AnimeData animeTurret01[] = {
+        { &sprPartsTurret01, 10 },
         { nullptr, -1 },// 終了フラグ
     };
 }
-
-//namespace
-//{   // ※このデータは長いので、Visual Studioの機能で閉じられるようにnamespaceを分けている
-//
-//    //------< プレイヤーのアニメデータ >------------------------------------------
-//    //上方向
-//    GameLib::AnimeData animeEnemey_Up[] = {
-//        { &sprPlayer_Up0, 10 },
-//        { &sprPlayer_Up1, 10 },
-//        { &sprPlayer_Up2, 10 },
-//        { &sprPlayer_Up1, 10 },
-//        { nullptr, -1 },// 終了フラグ
-//    };
-//    //右方向
-//    GameLib::AnimeData animeEnemey_Right[] = {
-//        { &sprPlayer_Right0, 10 },
-//        { &sprPlayer_Right1, 10 },
-//        { &sprPlayer_Right2, 10 },
-//        { &sprPlayer_Right1, 10 },
-//        { nullptr, -1 },// 終了フラグ
-//    };
-//    //下方向
-//    GameLib::AnimeData animeEnemey_Down[] = {
-//        { &sprPlayer_Down0, 10 },
-//        { &sprPlayer_Down1, 10 },
-//        { &sprPlayer_Down2, 10 },
-//        { &sprPlayer_Down1, 10 },
-//        { nullptr, -1 },// 終了フラグ
-//    };
-//    //左方向
-//    GameLib::AnimeData animeEnemey_Left[] = {
-//        { &sprPlayer_Left0, 10 },
-//        { &sprPlayer_Left1, 10 },
-//        { &sprPlayer_Left2, 10 },
-//        { &sprPlayer_Left1, 10 },
-//        { nullptr, -1 },// 終了フラグ
-//    };
-//}
 
 void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer = false) // trueならこのobjをplayer_に代入する
 {
@@ -106,10 +55,12 @@ void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer = fa
 
     if (makeOrgPlayer == true) 
     {
-        Game::instance()->player_ = obj2dManager->add(player, &normalPlayerBehavior, pos); 
+        //Game::instance()->player_ = obj2dManager->add(player, &normalPlayerBehavior, pos); 
+        Game::instance()->player_ = obj2dManager->add(player, &normalPlayerBehavior, pos);
     }
     else
     {
+        //obj2dManager->add(player, &normalPlayerBehavior, pos);
         obj2dManager->add(player, &normalPlayerBehavior, pos);
     }
 }
@@ -156,13 +107,9 @@ void BasePlayerBehavior::moveX(OBJ2D* obj) const
     {
     case GameLib::input::PAD_LEFT:  // 左だけが押されている場合
         obj->transform_->velocity_.x -= getParam()->ACCEL_X;
-        obj->renderer_->animeData_ = getParam()->ANIME_LEFT;
-        obj->actorComponent_->xFlip_ = true;
         break;
     case GameLib::input::PAD_RIGHT: // 右だけが押されている場合
         obj->transform_->velocity_.x += getParam()->ACCEL_X;
-        obj->renderer_->animeData_ = getParam()->ANIME_RIGHT;
-        obj->actorComponent_->xFlip_ = false;
         break;
     default:        // どちらも押されていないか相殺されている場合
         if (obj->transform_->velocity_.x > 0)
@@ -224,24 +171,24 @@ void BasePlayerBehavior::damageProc(OBJ2D* obj) const
 
 void BasePlayerBehavior::areaCheck(OBJ2D* obj) const
 {
-    // 仮
-    if (obj->transform_->position_.x < obj->collider_->size_.x)
-    {
-        obj->transform_->position_.x = obj->collider_->size_.x;
-    }
-    if (obj->transform_->position_.x > BG::WINDOW_W - obj->collider_->size_.x)
-    {
-        obj->transform_->position_.x = BG::WINDOW_W - obj->collider_->size_.x;
-    }
+    //// 仮
+    //if (obj->transform_->position_.x < obj->collider_->size_.x)
+    //{
+    //    obj->transform_->position_.x = obj->collider_->size_.x;
+    //}
+    //if (obj->transform_->position_.x > BG::WINDOW_W - obj->collider_->size_.x)
+    //{
+    //    obj->transform_->position_.x = BG::WINDOW_W - obj->collider_->size_.x;
+    //}
 
-    if (obj->transform_->position_.y < obj->collider_->size_.y)
-    {
-        obj->transform_->position_.y = obj->collider_->size_.y;
-    }
-    if (obj->transform_->position_.y > BG::WINDOW_H - obj->collider_->size_.y)
-    {
-        obj->transform_->position_.y = BG::WINDOW_H - obj->collider_->size_.y;
-    }
+    //if (obj->transform_->position_.y < obj->collider_->size_.y)
+    //{
+    //    obj->transform_->position_.y = obj->collider_->size_.y;
+    //}
+    //if (obj->transform_->position_.y > BG::WINDOW_H - obj->collider_->size_.y)
+    //{
+    //    obj->transform_->position_.y = BG::WINDOW_H - obj->collider_->size_.y;
+    //}
 }
 
 //******************************************************************************
@@ -253,15 +200,12 @@ void BasePlayerBehavior::areaCheck(OBJ2D* obj) const
 NormalPlayerBehavior::NormalPlayerBehavior()
 {
     // アニメーション
-    param_.ANIME_UP    = sprPlayer_Up;
-    param_.ANIME_RIGHT = sprPlayer_Right;
-    param_.ANIME_DOWN  = sprPlayer_Down;
-    param_.ANIME_LEFT  = sprPlayer_Left;
+    param_.ANIME_WAIT    = sprPlayer_Wait;
 
     param_.SIZE    = VECTOR2(player_size, player_size);
-    param_.HIT_BOX = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
+    param_.HIT_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
     //param_.HIT_BOX = { -50, -175, 50, -75 };
-    param_.ATTACK_BOX = param_.HIT_BOX;
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
     // 速度関連のパラメータ
     param_.ACCEL_X = 8.0f;
@@ -330,7 +274,7 @@ void NormalPlayerBehavior::attack(OBJ2D* obj) const
                 nullptr, 
                 new WeaponComponent
             ), 
-            &shurikenBehavior, 
+            &normalShotBehavior, 
             pos
         );
         shuriken->zOrder_ = 2;
@@ -347,17 +291,13 @@ void NormalPlayerBehavior::attack(OBJ2D* obj) const
 //******************************************************************************
 ItemPlayerBehavior::ItemPlayerBehavior()
 {
-
     // アニメーション
-    param_.ANIME_UP    = sprPlayer_Up;
-    param_.ANIME_RIGHT = sprPlayer_Right;
-    param_.ANIME_DOWN = sprPlayer_Down;
-    param_.ANIME_LEFT = sprPlayer_Left;
+    param_.ANIME_WAIT    = sprPlayer_Wait;
 
     param_.SIZE = VECTOR2(player_size, player_size);
-    param_.HIT_BOX = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
+    param_.HIT_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
     //param_.HIT_BOX = { -50, -175, 50, -75 };
-    param_.ATTACK_BOX = param_.HIT_BOX;
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
     // 速度関連のパラメータ
     param_.ACCEL_X = 8.0f;
@@ -425,7 +365,7 @@ void ItemPlayerBehavior::attack(OBJ2D* obj) const
                 nullptr,
                 new WeaponComponent
             ),
-            &shurikenBehavior,
+            &normalShotBehavior,
             pos
         );
         shuriken->zOrder_ = 2;
@@ -440,7 +380,6 @@ void ItemPlayerBehavior::shrink(OBJ2D* obj) const
     Behavior::shrink(obj);  // 縮小処理
     contact(obj);           // 縮小に伴って位置を移動させる処理
 }
-
 
 // 接触する関数
 void ItemPlayerBehavior::contact(OBJ2D* obj) const
@@ -527,6 +466,28 @@ void ItemPlayerBehavior::contactToParent(OBJ2D* obj, OBJ2D* parent) const
     //obj->collider_->calcAttackBox(getParam()->ATTACK_BOX);
 }
 
+//******************************************************************************
+//      Turret01
+//******************************************************************************
+PlayerTurret01Behavior::PlayerTurret01Behavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT = animeTurret01;
+
+    param_.SIZE = VECTOR2(player_size, player_size);
+    param_.HIT_BOX[0] = { -80, 48, 125, 95 };   // 下長方形
+    param_.HIT_BOX[1] = { -125,-95,10,50 };      // ネジ
+
+    param_.ATTACK_BOX[0] = { -80, 48, 125, 95 };   // 下長方形
+    param_.ATTACK_BOX[1] = { -125,-95,10,50 };      // ネジ
+
+    // 速度関連のパラメータ
+    param_.ACCEL_X = 8.0f;
+    param_.ACCEL_Y = 8.0f;
+    param_.SPEED_X_MAX = 8.0f;
+    param_.SPEED_Y_MAX = 8.0f;
+    param_.JUMP_POWER_Y = -12.0f;
+}
 
 //--------------------------------------------------------------
 //  消去
@@ -564,8 +525,8 @@ void ErasePlayer::erase(OBJ2D* obj) const
 CursorBehavior::CursorBehavior()
 {
     param_.SIZE = VECTOR2( 5, 5);
-    param_.HIT_BOX = { -5, -5, 5 , 5 };
-    param_.ATTACK_BOX = { -5, -5, 5 , 5 };
+    param_.HIT_BOX[0] = { -5, -5, 5 , 5 };
+    param_.ATTACK_BOX[0] = { -5, -5, 5 , 5 };
 
     // 速度関連のパラメータ
     param_.ACCEL_X = 8.0f;

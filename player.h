@@ -78,6 +78,17 @@ private:
 };
 EXTERN CursorBehavior cursorBehavior;
 
+//******************************************************************************
+//      Turret01
+//******************************************************************************
+class PlayerTurret01Behavior : public ItemPlayerBehavior
+{
+public:
+    PlayerTurret01Behavior();
+private:
+};
+EXTERN PlayerTurret01Behavior playerTurret01Behavior;
+
 //==============================================================================
 //
 //      Á‹ƒAƒ‹ƒSƒŠƒYƒ€

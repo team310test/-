@@ -98,8 +98,8 @@ void Game::update()
     case 1:
         //////// 通常時の処理 ////////
 
-        // 敵追加
-        if (GameLib::input::TRG(0) & GameLib::input::PAD_START)
+        // 敵追加4
+        if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG2)
         {
             addEnemy(obj2dManager(), bg());
             ++num;
@@ -112,13 +112,14 @@ void Game::update()
 
 
         if (BasePlayerBehavior::plShrinkCount >= 10 ||
-            GameLib::input::TRG(0) & GameLib::input::PAD_TRG3)     // プレイヤーの数がShrinkの規定数に達していて
+            GameLib::input::TRG(0) & GameLib::input::PAD_TRG1)     // プレイヤーの数がShrinkの規定数に達していて
         {
             if (Collider::isAllShrink_  == false &&       // Shrinkが開始されておらず、
                 Behavior::isObjShrink() == false)         // すべてのobjがshrink中でなければ
             {
                 Collider::isAllShrink_ = true;           // Shrinkを開始
-                BasePlayerBehavior::plShrinkCount -= 10; // プレイヤーのカウントをリセット
+                if (BasePlayerBehavior::plShrinkCount >= 10)
+                    BasePlayerBehavior::plShrinkCount -= 10; // プレイヤーのカウントをリセット
                 ++shrinkNum;
             }
         }

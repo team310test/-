@@ -66,10 +66,13 @@ void OBJ2D::move()
 //--------------------------------------------------------------
 void Renderer::draw()
 {
+    VECTOR2 scale = 
+        drawXFlip_ ? VECTOR2( -obj_->transform_->scale_.x, obj_->transform_->scale_.y) : obj_->transform_->scale_;
+    
     if (data_)
     {
         data_->draw(obj_->transform_->position_,
-            obj_->transform_->scale_, obj_->transform_->rotation_, color_);  // dataのdrawメソッドでスプライトを描画する
+            scale, obj_->transform_->rotation_, color_);  // dataのdrawメソッドでスプライトを描画する
     }
 }
 
@@ -250,26 +253,33 @@ void Collider::draw()
 {
     if (isDrawHitRect_)
     {
-        VECTOR2 pos = VECTOR2(hitBox_.left, hitBox_.top);
-        VECTOR2 size = { hitBox_.right - hitBox_.left, hitBox_.bottom - hitBox_.top };
-        VECTOR2 center{ 0, 0 };
-        VECTOR4 blue{ 0,0,1,0.5f };
-        GameLib::primitive::rect(pos, size, center, 0, blue);
+        for (int i = 0; i < boxMax; ++i)
+        {
+
+            VECTOR2 pos = VECTOR2(hitBox_[i].left, hitBox_[i].top);
+            VECTOR2 size = { hitBox_[i].right - hitBox_[i].left, hitBox_[i].bottom - hitBox_[i].top };
+            VECTOR2 center{ 0, 0 };
+            VECTOR4 blue{ 0,0,1,0.5f };
+            GameLib::primitive::rect(pos, size, center, 0, blue);
+        }
     }
 
     if (isDrawAttackRect_)
     {
-        VECTOR2 pos = VECTOR2(attackBox_.left, attackBox_.top);
-        VECTOR2 size = { attackBox_.right - attackBox_.left, attackBox_.bottom - attackBox_.top };
-        VECTOR2 center{ 0, 0 };
-        VECTOR4 red{ 1,0,0,0.5f };
-        GameLib::primitive::rect(pos, size, center, 0, red);
+        for (int i = 0; i < boxMax; ++i)
+        {
+            VECTOR2 pos = VECTOR2(attackBox_[i].left, attackBox_[i].top);
+            VECTOR2 size = { attackBox_[i].right - attackBox_[i].left, attackBox_[i].bottom - attackBox_[i].top };
+            VECTOR2 center{ 0, 0 };
+            VECTOR4 red{ 1,0,0,0.5f };
+            GameLib::primitive::rect(pos, size, center, 0, red);
+        }
     }
 }
 
-void Collider::calcHitBox(const GameLib::fRECT& rc)
+void Collider::calcHitBox(const GameLib::fRECT& rc,int i)
 {
-    hitBox_ = {
+    hitBox_[i] = {
         //obj_->transform_->position_.x + rc.left, 
         //obj_->transform_->position_.y + rc.top, 
         //obj_->transform_->position_.x + rc.right, 
@@ -281,9 +291,9 @@ void Collider::calcHitBox(const GameLib::fRECT& rc)
     };
 }
 
-void Collider::calcAttackBox(const GameLib::fRECT& rc)
+void Collider::calcAttackBox(const GameLib::fRECT& rc, int i)
 {
-    attackBox_ = {
+    attackBox_[i] = {
         //obj_->transform_->position_.x + rc.left, 
         //obj_->transform_->position_.y + rc.top, 
         //obj_->transform_->position_.x + rc.right, 
@@ -297,12 +307,18 @@ void Collider::calcAttackBox(const GameLib::fRECT& rc)
 
 bool Collider::hitCheck(Collider* other)
 {
-    if (attackBox_.right < other->hitBox_.left ||
-        attackBox_.left > other->hitBox_.right ||
-        attackBox_.bottom < other->hitBox_.top ||
-        attackBox_.top > other->hitBox_.bottom) return false;
+    for (int i = 0; i < boxMax; ++i)
+    {
+        for (int j = 0; j < boxMax; ++j)
+        {
+            if (attackBox_[i].right > other->hitBox_[j].left &&
+                attackBox_[i].left < other->hitBox_[j].right &&
+                attackBox_[i].bottom > other->hitBox_[j].top &&
+                attackBox_[i].top < other->hitBox_[j].bottom) return true;
+        }
+    }
 
-    return true;
+    return false;
 }
 
 bool Collider::hitCheck(OBJ2D* obj)
@@ -333,4 +349,12 @@ void ActorComponent::muteki()
     obj->renderer_->color_ = color;
 
     --mutekiTimer_;
+}
+
+bool ActorComponent::isAliveParent() const
+{
+    if (parent_ == nullptr) return false;
+    if(parent_->actorComponent_->isAlive())
+
+    return true;
 }
