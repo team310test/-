@@ -3,7 +3,7 @@
 //******************************************************************************
 //
 //
-//      Player.h
+//      Enemyh
 //
 //
 //******************************************************************************
@@ -19,8 +19,9 @@ void addEnemy(OBJ2DManager* obj2dManager, BG* bg);
 //==============================================================================
 class BaseEnemyBehavior : public ActorBehavior
 {
-private:
+protected:
     void init(OBJ2D* obj) const override;
+private:
     void moveX(OBJ2D* obj) const;
     OBJ_TYPE getType() const override { return OBJ_TYPE::ENEMY; }
     OBJ_TYPE getAttackType() const override { return OBJ_TYPE::PLAYER; }
@@ -29,6 +30,10 @@ private:
     bool isAlive(OBJ2D* obj) const;
     void damageProc(OBJ2D* obj) const override;
     void areaCheck(OBJ2D* obj) const;
+
+    // ÉRÉAÇ≈Ç†ÇÈÇ©
+public:
+    virtual bool isCore() { return false; }
 };
 
 class NormalEnemyBehavior : public BaseEnemyBehavior
@@ -63,6 +68,8 @@ class EnemyCore01Behavior : public BaseEnemyBehavior
 public:
     EnemyCore01Behavior();
 private:
+    void init(OBJ2D* obj)const override;
+    bool isCore() { return true; }
     //void attack(OBJ2D* obj) const override;
 };
 EXTERN EnemyCore01Behavior enemyCore01Behavior;

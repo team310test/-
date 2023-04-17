@@ -38,12 +38,17 @@ namespace
     };
 }
 
-void setSubEnemy(OBJ2DManager* obj2dManager, BG* bg, OBJ2D* parent, VECTOR2 pos)
+void setSubEnemy(BaseEnemyBehavior* behavior, OBJ2D* parent, VECTOR2 pos)
 {
+    if (behavior->isCore())
+    {
+        assert(!"coreがcoreを呼び出しています");
+    };
+
     OBJ2D* subEnemy = new OBJ2D(
         new Renderer,
         new Collider,
-        bg,
+        Game::instance()->bg(),
         new ActorComponent,
         nullptr,
         nullptr
@@ -53,7 +58,7 @@ void setSubEnemy(OBJ2DManager* obj2dManager, BG* bg, OBJ2D* parent, VECTOR2 pos)
     // 親を設定
     subEnemy->actorComponent_->parent_ = parent;
 
-    obj2dManager->add(subEnemy, &enemyTurret01Behavior, pos);
+    Game::instance()->obj2dManager()->add(subEnemy, behavior, pos);
 }
 
 void setEnemy(OBJ2DManager* obj2dManager, BG* bg)
@@ -73,10 +78,6 @@ void setEnemy(OBJ2DManager* obj2dManager, BG* bg)
     enemy->actorComponent_->parent_ = enemy;
 
     obj2dManager->add(enemy, &enemyCore01Behavior, pos);
-
-    // サブパーツ
-    setSubEnemy(obj2dManager, bg, enemy, { pos.x,pos.y-229 });
-    setSubEnemy(obj2dManager, bg, enemy, { pos.x,pos.y+229 });
 }
 
 // カーソルの座標取得
@@ -108,10 +109,6 @@ void addEnemy(OBJ2DManager* obj2dManager, BG* bg)
     enemy->actorComponent_->parent_ = enemy;
 
     obj2dManager->add(enemy, &enemyCore01Behavior, pos);
-
-    // サブパーツ
-    setSubEnemy(obj2dManager, bg, enemy, { pos.x,pos.y - 229 });
-    setSubEnemy(obj2dManager, bg, enemy, { pos.x,pos.y + 229 });
 }
 
 //******************************************************************************
@@ -252,8 +249,15 @@ EnemyCore01Behavior::EnemyCore01Behavior()
     param_.SPEED_X_MAX = 4.0f;
     param_.SPEED_Y_MAX = 4.0f;
     param_.JUMP_POWER_Y = -12.0f;
+}
 
-    // 次のBehaviorなし
+void EnemyCore01Behavior::init(OBJ2D* obj) const
+{
+    // サブパーツ召喚
+    setSubEnemy(&enemyTurret01Behavior, obj, { obj->transform_->position_.x,obj->transform_->position_.y - 229 });
+    setSubEnemy(&enemyTurret01Behavior, obj, { obj->transform_->position_.x,obj->transform_->position_.y + 229 });
+
+    BaseEnemyBehavior::init(obj);
 }
 
 

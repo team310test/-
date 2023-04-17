@@ -22,6 +22,8 @@ private:
     bool            isPaused_;
     static Game     instance_;
 
+    Stage*          stage_;
+
     bool            isGameOver_;
     int             gameOverTimer_;
 

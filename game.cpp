@@ -21,6 +21,7 @@ void Game::init()
 
     obj2dManager_   = new OBJ2DManager;
     bg_             = new BG;
+    stage_          = new Stage;
 
     isPaused_ = false;   // ポーズフラグの初期化
 
@@ -35,6 +36,7 @@ void Game::deinit()
     // 各マネージャの解放
     safe_delete(bg_);
     safe_delete(obj2dManager_);
+    safe_delete(stage_);
 
     player_ = nullptr;
 
@@ -89,7 +91,7 @@ void Game::update()
         setCursor(obj2dManager(), bg());
 
         // エネミーを追加する
-        setEnemy(obj2dManager(), bg());
+        //setEnemy(obj2dManager(), bg());
 
         bg()->init(player_); // BGの初期化
 
@@ -104,6 +106,9 @@ void Game::update()
             addEnemy(obj2dManager(), bg());
             ++num;
         }
+
+        // エネミーデータ追加
+        stage_->update();
 
         GameLib::debug::setString("num:%d", num);
         if (player_->transform_) GameLib::debug::setString("playerScale:%f", player_->transform_->scale_.x);
