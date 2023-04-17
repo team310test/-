@@ -20,7 +20,7 @@ public:
     {}
 };
 
-#define SET_ENEMY(time,behavior,y)		{(time),(behavior),VECTOR2(BG::WINDOW_W + 200,y)}
+#define SET_ENEMY(time,behavior,pos)		{(time),(behavior),(pos)}
 #define SET_END                     		{(0),(nullptr),{0,0}}
 
 class Stage

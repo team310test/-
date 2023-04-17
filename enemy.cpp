@@ -158,10 +158,10 @@ void BaseEnemyBehavior::damageProc(OBJ2D* obj) const
 void BaseEnemyBehavior::areaCheck(OBJ2D* obj) const
 {
     // 左端に進むと右端から出てくる(仮)
-    if (obj->transform_->position_.x < -obj->collider_->size_.x)
-    {
-        obj->transform_->position_.x = obj->collider_->size_.x + BG::WINDOW_W;
-    }
+    //if (obj->transform_->position_.x < -obj->collider_->size_.x)
+    //{
+    //    obj->transform_->position_.x = obj->collider_->size_.x + BG::WINDOW_W;
+    //}
 }
 
 //******************************************************************************
@@ -328,8 +328,8 @@ void EraseEnemy::erase(OBJ2D* obj) const
         obj->renderer_->flip();
     }
 
-    // HPが0以下になると消滅
-    if (!obj->actorComponent_->isAlive())
+    // HPが0以下になる か　画面外へ行くと 消滅
+    if (!obj->actorComponent_->isAlive() || obj->transform_->position_.x < -obj->collider_->size_.x)
     {
         obj->actorComponent_->parent_ = nullptr;
         obj->behavior_ = nullptr;
@@ -347,8 +347,12 @@ void EraseItem::erase(OBJ2D* obj) const
         
         ++BasePlayerBehavior::plShrinkCount;
     }
-    //if (obj->transform_->position_.x < 0)
-    //{
-    //    obj->behavior_ = nullptr;
-    //}
+
+    //画面外へ行くと 消滅
+    if (obj->transform_->position_.x < -obj->collider_->size_.x)
+    {
+        obj->actorComponent_->parent_ = nullptr;
+        obj->behavior_ = nullptr;
+        return;
+    }
 }

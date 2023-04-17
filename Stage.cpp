@@ -35,4 +35,10 @@ void Stage::update()
         pScript++;
     }
     ++timer;
+
+    if (pScript->behavior_ == nullptr)
+    {
+        pScript = stageData;
+        timer = 0;
+    }
 }
