@@ -370,6 +370,8 @@ void EraseItem::erase(OBJ2D* obj) const
         
         obj->eraser_ = &erasePlayer;
         
+        obj->actorComponent_->hp_ = obj->behavior_->getParam_HP();
+
         ++BasePlayerBehavior::plShrinkCount;
     }
 

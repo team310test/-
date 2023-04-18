@@ -466,6 +466,12 @@ PlayerTurret01Behavior::PlayerTurret01Behavior()
 #define USE_FIND_PARENT
 void ErasePlayer::erase(OBJ2D* obj) const
 {
+    // HP‚ª0ˆÈ‰º‚É‚È‚Á‚½‚ç
+    if (!obj->actorComponent_->isAlive())
+    {
+        obj->behavior_ = nullptr;
+    }
+
     if (obj->actorComponent_->parent_->behavior_) return;   // ‚à‚µŽ©•ª‚Ìe‚ª‘¶Ý‚·‚é‚È‚çreturn
 
 #ifdef USE_FIND_PARENT
@@ -474,6 +480,7 @@ void ErasePlayer::erase(OBJ2D* obj) const
     {
         if (!dst->behavior_) continue;                      // ‘ŠŽè‚ª‘¶Ý‚µ‚È‚¯‚ê‚Îcontinue;
         if (obj == dst) continue;                           // ‘ŠŽè‚ªŽ©•ª‚È‚çcontinue;
+        if (!dst->actorComponent_) continue;                // ‘ŠŽè‚ªactorComponent‚ðŽ‚Á‚Ä‚¢‚È‚¯‚ê‚Îcontinue;
         if (!dst->actorComponent_->parent_) continue;       // ‘ŠŽè‚ªe‚ðŽ‚Á‚Ä‚¢‚È‚¯‚ê‚Îcontinue;
         if (obj == dst->actorComponent_->parent_) continue; // ‘ŠŽè‚ªŽ©•ª‚ÌŽq‚È‚çcontinue;
 

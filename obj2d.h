@@ -43,6 +43,7 @@ public:
 
     static bool isObjShrink(); // shrinkしているobjがいるか調べる関数（shrinkしているobjがいたらtrue, いなければfalse）
 
+    virtual int getParam_HP() { return 0; }
 };
 
 // 消去アルゴリズムクラス（抽象クラス）

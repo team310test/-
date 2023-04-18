@@ -45,4 +45,6 @@ private:
 
     virtual bool isAlive(OBJ2D*) const = 0;
     virtual void damageProc(OBJ2D*) const {}  // ƒ_ƒ[ƒWˆ—
+public:
+    int getParam_HP() override { return param_.HP; }
 };
