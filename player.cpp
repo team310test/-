@@ -246,18 +246,6 @@ void NormalPlayerBehavior::moveY(OBJ2D* obj) const
 
 void NormalPlayerBehavior::attack(OBJ2D* obj) const
 {
-    // プレイヤーを指すiteratorを取得する
-    auto objList = Game::instance()->obj2dManager()->getList();
-    std::list<OBJ2D*>::iterator iter = objList->begin();
-    for (; iter != objList->end(); ++iter)
-    {
-        if ((*iter)->behavior_ == nullptr) { continue; }
-        if ((*iter)->behavior_->getType() == OBJ_TYPE::PLAYER) 
-        {
-            break; 
-        }
-    }
-
     obj->actorComponent_->attackTimer_--;
 
     if (obj->actorComponent_->padTrg_ & GameLib::input::PAD_TRG3 &&
@@ -274,7 +262,7 @@ void NormalPlayerBehavior::attack(OBJ2D* obj) const
                 nullptr, 
                 new WeaponComponent
             ), 
-            &normalShotBehavior, 
+            &playerNormalShotBehavior, 
             pos
         );
         shuriken->zOrder_ = 2;
@@ -338,18 +326,6 @@ void ItemPlayerBehavior::moveY(OBJ2D* obj) const
 
 void ItemPlayerBehavior::attack(OBJ2D* obj) const
 {
-    // プレイヤーを指すiteratorを取得する
-    auto objList = Game::instance()->obj2dManager()->getList();
-    std::list<OBJ2D*>::iterator iter = objList->begin();
-    for (; iter != objList->end(); ++iter)
-    {
-        if ((*iter)->behavior_ == nullptr) { continue; }
-        if ((*iter)->behavior_->getType() == OBJ_TYPE::PLAYER)
-        {
-            break;
-        }
-    }
-
     obj->actorComponent_->attackTimer_--;
 
     if (obj->actorComponent_->padTrg_ & GameLib::input::PAD_TRG3 &&
@@ -365,7 +341,7 @@ void ItemPlayerBehavior::attack(OBJ2D* obj) const
                 nullptr,
                 new WeaponComponent
             ),
-            &normalShotBehavior,
+            &playerNormalShotBehavior,
             pos
         );
         shuriken->zOrder_ = 2;

@@ -30,7 +30,10 @@ void BaseWeaponBehavior::move(OBJ2D* obj) const
     }
 }
 
-NormalShotBehavior::NormalShotBehavior()
+//----------------------------------------------------------------------
+//  PlayerNormalShotBehavior
+//----------------------------------------------------------------------
+PlayerNormalShotBehavior::PlayerNormalShotBehavior()
 {
     param_.SPR_WEAPON = &sprWeapon_NormalShot;
     param_.ERASER = &normalShotEraser;
@@ -40,25 +43,42 @@ NormalShotBehavior::NormalShotBehavior()
     param_.ATTACK_BOX = { -24, -24, 24, 24 };
 }
 
-void NormalShotBehavior::update(OBJ2D* obj) const
+void PlayerNormalShotBehavior::update(OBJ2D* obj) const
 {
     // ˆÊ’u‚É‘¬“x‚ð‘«‚·
     obj->transform_->position_ += obj->transform_->velocity_;
 }
 
-void NormalShotBehavior::calcAttackBox(OBJ2D* obj) const
+void PlayerNormalShotBehavior::calcAttackBox(OBJ2D* obj) const
 {
     // UŒ‚”»’è‚ÌŒvŽZ
     obj->collider_->calcAttackBox(getParam()->ATTACK_BOX,1);
 }
 
-void NormalShotBehavior::hit(OBJ2D* src, OBJ2D* dst) const
+void PlayerNormalShotBehavior::hit(OBJ2D* src, OBJ2D* dst) const
 {
     dst->actorComponent_->hp_ = std::max(dst->actorComponent_->hp_ - getParam()->ATTACK_POWER, 0);
 
     src->remove();
 }
 
+//----------------------------------------------------------------------
+//  PlayerNormalShotBehavior
+//----------------------------------------------------------------------
+EnemyNormalShotBehavior::EnemyNormalShotBehavior()
+
+{
+    param_.SPR_WEAPON = &sprWeapon_NormalShot;
+    param_.ERASER = &normalShotEraser;
+    param_.SPEED_X = -20.0f;
+    param_.ATTACK_POWER = 1;
+    param_.SCALE = { 0.5f, 0.5f };
+    param_.ATTACK_BOX = { -24, -24, 24, 24 };
+}
+
+//----------------------------------------------------------------------
+//  Eraser
+//----------------------------------------------------------------------
 void NormalShotEraser::erase(OBJ2D* obj) const
 {
     const VECTOR2* size = &obj->collider_->size_;

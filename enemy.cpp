@@ -260,7 +260,6 @@ void EnemyCore01Behavior::init(OBJ2D* obj) const
     BaseEnemyBehavior::init(obj);
 }
 
-
 //******************************************************************************
 //
 //      Turret01
@@ -288,6 +287,32 @@ EnemyTurret01Behavior::EnemyTurret01Behavior()
 
     // 次のBehavior・Eraser
     param_.NEXT_BEHAVIOR = &playerTurret01Behavior;
+}
+
+void EnemyTurret01Behavior::attack(OBJ2D* obj) const
+{
+    obj->actorComponent_->attackTimer_--;
+
+    if (obj->actorComponent_->attackTimer_ >= 0)return;
+
+    const VECTOR2 pos = obj->transform_->position_/* + VECTOR2(0, -120)*/;
+
+    OBJ2D* shot = Game::instance()->obj2dManager()->add(
+        new OBJ2D(
+            new Renderer,
+            new Collider,
+            obj->bg_,
+            nullptr,
+            nullptr,
+            new WeaponComponent
+        ),
+        &enemyNormalShotBehavior,
+        pos
+    );
+    shot->zOrder_ = 2;
+    shot->weaponComponent_->parent_ = obj;
+    obj->actorComponent_->attackTimer_ = 180;
+
 }
 
 // アイテム

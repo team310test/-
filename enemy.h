@@ -70,7 +70,6 @@ public:
 private:
     void init(OBJ2D* obj)const override;
     bool isCore() { return true; }
-    //void attack(OBJ2D* obj) const override;
 };
 EXTERN EnemyCore01Behavior enemyCore01Behavior;
 
@@ -84,7 +83,7 @@ class EnemyTurret01Behavior : public BaseEnemyBehavior
 public:
     EnemyTurret01Behavior();
 private:
-    //void attack(OBJ2D* obj) const override;
+    void attack(OBJ2D* obj) const override;
 };
 EXTERN EnemyTurret01Behavior enemyTurret01Behavior;
 // ƒAƒCƒeƒ€

@@ -25,19 +25,34 @@ private:
 };
 
 //----------------------------------------------------------------------
-//  ShurikenBehavior
+//  PlayerNormalShotBehavior
 //----------------------------------------------------------------------
-class NormalShotBehavior : public BaseWeaponBehavior
+class PlayerNormalShotBehavior : public BaseWeaponBehavior
 {
 public:
-    NormalShotBehavior();
+    PlayerNormalShotBehavior();
 private:
     void update(OBJ2D* obj) const override;
     void calcAttackBox(OBJ2D* obj) const override;
     void hit(OBJ2D* src, OBJ2D* dst) const override;
 };
-EXTERN NormalShotBehavior normalShotBehavior;
+EXTERN PlayerNormalShotBehavior playerNormalShotBehavior;
 
+//----------------------------------------------------------------------
+//  PlayerNormalShotBehavior
+//----------------------------------------------------------------------
+class EnemyNormalShotBehavior : public PlayerNormalShotBehavior
+{
+public:
+    EnemyNormalShotBehavior();
+private:
+    OBJ_TYPE getAttackType() const override { return OBJ_TYPE::PLAYER; }
+};
+EXTERN EnemyNormalShotBehavior enemyNormalShotBehavior;
+
+//----------------------------------------------------------------------
+//  Eraser
+//----------------------------------------------------------------------
 class NormalShotEraser : public Eraser
 {
 private:
