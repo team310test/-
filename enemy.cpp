@@ -3,9 +3,9 @@
 // アニメデータ
 namespace
 {   
-    //上方向
-    GameLib::AnimeData animeEnemey_Up[] = {
-        { &sprEnemey_test, 10 },
+    //  コア01
+    GameLib::AnimeData animeCore01[] = {
+        { &sprPartsCore01, 10 },
         { nullptr, -1 },// 終了フラグ
     };
 
@@ -15,9 +15,10 @@ namespace
         //{ &sprPlayer_test, 10 },
         { nullptr, -1 },// 終了フラグ
     };
-    //  コア01
-    GameLib::AnimeData animeCore01[] = {
-        { &sprPartsCore01, 10 },
+
+    //  バフ01
+    GameLib::AnimeData animeBuff01[] = {
+        { &sprPartsBuff01, 10 },
         { nullptr, -1 },// 終了フラグ
     };
 }
@@ -134,6 +135,8 @@ void BaseEnemyBehavior::init(OBJ2D* obj) const
     obj->collider_->isDrawAttackRect_ = true;
 
     obj->eraser_ = &eraseEnemy;
+
+    obj->renderer_->flip(); // 反転させる
 }
 
 void BaseEnemyBehavior::moveX(OBJ2D* obj) const
@@ -144,7 +147,7 @@ void BaseEnemyBehavior::moveX(OBJ2D* obj) const
     ActorBehavior::moveX(obj);
 }
 
-void BaseEnemyBehavior::hit(OBJ2D* src, OBJ2D* dst) const
+void BaseEnemyBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
 {
     // プレイヤーのHPを減らす
     dst->actorComponent_->hp_ -= getParam()->ATTACK_POWER;
@@ -155,7 +158,7 @@ bool BaseEnemyBehavior::isAlive(OBJ2D* obj) const
     return obj->actorComponent_->hp_ > 0;
 }
 
-void BaseEnemyBehavior::damageProc(OBJ2D* obj) const
+void BaseEnemyBehavior::damageProc(OBJ2D* /*obj*/) const
 {
     // ダメージ処理
     //obj->actorComponent_->damaged();
@@ -171,38 +174,6 @@ void BaseEnemyBehavior::areaCheck(OBJ2D* obj) const
     {
         obj->transform_->position_.x = obj->collider_->size_.x + BG::WINDOW_W;
     }
-}
-
-//******************************************************************************
-//
-//      NormalEnemyBehavior
-//
-//******************************************************************************
-NormalEnemyBehavior::NormalEnemyBehavior()
-{
-    // アニメーション
-    param_.ANIME_WAIT = animeEnemey_Up;
-
-    param_.SIZE    = VECTOR2(player_size, player_size);
-    param_.HIT_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
-    //param_.ATTACK_BOX = { -250 / 2, -250, 250 / 2, 0 };
-    param_.HP = 1;
-
-    // 速度関連のパラメータ
-    param_.ACCEL_X = 1.0f;
-    param_.ACCEL_Y = 1.0f;
-    param_.SPEED_X_MAX = 4.0f;
-    param_.SPEED_Y_MAX = 4.0f;
-    param_.JUMP_POWER_Y = -12.0f;
-}
-
-void NormalEnemyBehavior::moveY(OBJ2D* obj) const
-{
-    BaseEnemyBehavior::moveY(obj);
-}
-
-void NormalEnemyBehavior::attack(OBJ2D* obj) const
-{
 }
 
 
@@ -273,7 +244,7 @@ EnemyTurret01Behavior::EnemyTurret01Behavior()
 // Buff01
 EnemyBuff01Behavior::EnemyBuff01Behavior()
 {
-    param_.ANIME_WAIT = animeTurret01;
+    param_.ANIME_WAIT = animeBuff01;
 
     param_.SIZE = { player_size, player_size };
     param_.HIT_BOX[0] = {
@@ -281,6 +252,7 @@ EnemyBuff01Behavior::EnemyBuff01Behavior()
          player_hitBox,  player_hitBox,
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
 
     param_.ACCEL_X = 4.0f;
     param_.ACCEL_Y = 4.0f;

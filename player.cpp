@@ -1,20 +1,26 @@
 #include "all.h"
 
+
 int BasePlayerBehavior::plShrinkCount_ = 0;
 
 // アニメデータ
 namespace
 {
     // 待機
-    GameLib::AnimeData sprPlayer_Wait[] = {
-        { &sprEnemey_test, 10 },
-        //{ &sprPlayer_test, 10 },
+    GameLib::AnimeData animePlayerCore01[] = {
+        { &sprPlayerCore01, 10 },
         { nullptr, -1 },// 終了フラグ
     };
 
     //  タレット01
     GameLib::AnimeData animeTurret01[] = {
         { &sprPartsTurret01, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };    
+    
+    //  バフ01
+    GameLib::AnimeData animeBuff01[] = {
+        { &sprPartsBuff01, 10 },
         { nullptr, -1 },// 終了フラグ
     };
 }
@@ -210,12 +216,13 @@ void BasePlayerBehavior::areaCheck(OBJ2D* /*obj*/) const
 CorePlayerBehavior::CorePlayerBehavior()
 {
     // アニメーション
-    param_.ANIME_WAIT    = sprPlayer_Wait;
+    param_.ANIME_WAIT    = animePlayerCore01;
 
     param_.SIZE    = VECTOR2(player_size, player_size);
     param_.HIT_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
     //param_.HIT_BOX = { -50, -175, 50, -75 };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
 
     // 速度関連のパラメータ
     param_.ACCEL_X = 8.0f;
@@ -259,11 +266,12 @@ void CorePlayerBehavior::attack(OBJ2D* obj) const
                 nullptr,
                 new WeaponComponent
             ),
-            &normalShotBehavior,
+            &playerWaveShotBehavior,
             pos
         );
         shot->zOrder_ = 2;
         shot->weaponComponent_->parent_ = obj;
+
     }
 
     obj->actorComponent_->attackTimer_ = 30;
@@ -276,24 +284,6 @@ void CorePlayerBehavior::attack(OBJ2D* obj) const
 //      partsPlayerBehavior(パーツのベース)
 //
 //******************************************************************************
-PartsPlayerBehavior::PartsPlayerBehavior()
-{
-    // アニメーション
-    param_.ANIME_WAIT    = sprPlayer_Wait;
-
-    param_.SIZE = VECTOR2(player_size, player_size);
-    param_.HIT_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
-    //param_.HIT_BOX = { -50, -175, 50, -75 };
-    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
-
-    // 速度関連のパラメータ
-    param_.ACCEL_X = 8.0f;
-    param_.ACCEL_Y = 8.0f;
-    param_.SPEED_X_MAX = 8.0f;
-    param_.SPEED_Y_MAX = 8.0f;
-    param_.JUMP_POWER_Y = -12.0f;
-}
-
 // パーツの縮小関数
 void PartsPlayerBehavior::shrink(OBJ2D* obj) const
 {
@@ -398,17 +388,17 @@ PlayerTurret01Behavior::PlayerTurret01Behavior()
     param_.ANIME_WAIT = animeTurret01;
 
     param_.SIZE = VECTOR2(player_size, player_size);
-    param_.HIT_BOX[0] = { -80, 48, 125, 95 };   // 下長方形
+    param_.HIT_BOX[0] = { -80, 48, 125, 95 };    // 下長方形
     param_.HIT_BOX[1] = { -125,-95,10,50 };      // ネジ
 
-    param_.ATTACK_BOX[0] = { -80, 48, 125, 95 };   // 下長方形
-    param_.ATTACK_BOX[1] = { -125,-95,10,50 };      // ネジ
+    param_.ATTACK_BOX[0] = { -80, 48, 125, 95 }; // 下長方形
+    param_.ATTACK_BOX[1] = { -125,-95,10,50 };   // ネジ
 
     param_.ACCEL_X = 8.0f;
     param_.ACCEL_Y = 8.0f;
     param_.SPEED_X_MAX = 8.0f;
     param_.SPEED_Y_MAX = 8.0f;
-    param_.JUMP_POWER_Y = -12.0f;
+    //param_.JUMP_POWER_Y = -12.0f;
 
 }
 
@@ -433,7 +423,7 @@ void PlayerTurret01Behavior::attack(OBJ2D* obj) const
                 nullptr,
                 new WeaponComponent
             ),
-            &normalShotBehavior,
+            &playerNormalShotBehavior,
             pos
         );
         shot->zOrder_ = 2;
@@ -444,6 +434,7 @@ void PlayerTurret01Behavior::attack(OBJ2D* obj) const
 
 }
 
+
 //******************************************************************************
 // 
 //      Buff（バフパーツ）
@@ -451,10 +442,10 @@ void PlayerTurret01Behavior::attack(OBJ2D* obj) const
 //******************************************************************************
 
 //Buff01
-static constexpr int buffMultiplyValue = 2; // ATTACK_BOXにかける値（バフの影響範囲が変わる）
+static constexpr int BUFF_MALTIPLY_VALUE = 2; // ATTACK_BOXにかける値（バフの影響範囲が変わる）
 PlayerBuff01Behavior::PlayerBuff01Behavior()
 {
-    param_.ANIME_WAIT = animeTurret01;
+    param_.ANIME_WAIT = animeBuff01;
 
     param_.SIZE = { player_size, player_size };
     param_.HIT_BOX[0] = { 
@@ -462,9 +453,16 @@ PlayerBuff01Behavior::PlayerBuff01Behavior()
          player_hitBox,  player_hitBox,
     };
     param_.ATTACK_BOX[0] = { 
-        -player_hitBox * buffMultiplyValue, -player_hitBox * buffMultiplyValue,
-         player_hitBox * buffMultiplyValue,  player_hitBox * buffMultiplyValue,
+        -player_hitBox * BUFF_MALTIPLY_VALUE, 
+        -player_hitBox * BUFF_MALTIPLY_VALUE,
+         player_hitBox * BUFF_MALTIPLY_VALUE,  
+         player_hitBox * BUFF_MALTIPLY_VALUE,
     };
+
+    param_.ACCEL_X = 8.0f;
+    param_.ACCEL_Y = 8.0f;
+    param_.SPEED_X_MAX = 8.0f;
+    param_.SPEED_Y_MAX = 8.0f;
 }                            
 
 // 攻撃タイプがPLAYERなのでdstは味方(プレイヤー)になる

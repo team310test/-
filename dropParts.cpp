@@ -8,6 +8,12 @@ namespace
         //{ &sprPlayer_test, 10 },
         { nullptr, -1 },// 終了フラグ
     };
+
+    //  バフ01
+    GameLib::AnimeData animeBuff01[] = {
+        { &sprPartsBuff01, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
 }
 
 void BaseDropPartsBehavior::init(OBJ2D* obj) const
@@ -36,7 +42,7 @@ void BaseDropPartsBehavior::hit(OBJ2D* src, OBJ2D* dst) const
     src->actorComponent_->parent_ = dst;        // 親を保存
 }
 
-bool BaseDropPartsBehavior::isAlive(OBJ2D* obj) const
+bool BaseDropPartsBehavior::isAlive(OBJ2D* /*obj*/) const
 {
     return true;
 }
@@ -88,7 +94,7 @@ DropTurret01Behavior::DropTurret01Behavior()
 // Buff01
 DropBuff01Behavior::DropBuff01Behavior()
 {
-    param_.ANIME_WAIT = animeTurret01;
+    param_.ANIME_WAIT = animeBuff01;
 
     param_.SIZE = { player_size, player_size };
     param_.HIT_BOX[0] = {

@@ -23,7 +23,7 @@ enum class OBJ_TYPE
     PLAYER = 0, 
     PARTS, //　パーツ
     ENEMY, 
-    WEAPON, 
+    SHOT, 
     MAX, 
 };
 
@@ -36,6 +36,7 @@ public:
     virtual void move(OBJ2D*) const = 0;
     virtual OBJ_TYPE getType() const = 0;
     virtual OBJ_TYPE getAttackType() const = 0;
+
     virtual void hit(OBJ2D* src, OBJ2D* dst) const = 0;
 
     virtual void startAllShrink(OBJ2D*) const;  // すべてのobjのShrinkを開始させる関数
@@ -84,12 +85,14 @@ class Transform : public Component
 {
 public:
     VECTOR2 position_;
+    VECTOR2 orgPosition_;
     VECTOR2 scale_;
     float rotation_;
     VECTOR2 velocity_;
 
     Transform()
-        :position_()
+        : position_()
+        , orgPosition_()
         , scale_(1, 1)
         , rotation_()
         , velocity_()
@@ -237,6 +240,7 @@ class OBJ2D
 public:
     // 基本的なメンバ
     int state_ = 0;
+    int act_ = 0;
     int timer_ = 0;
     int zOrder_ = 0;
     Behavior* behavior_     = nullptr;

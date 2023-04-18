@@ -12,11 +12,13 @@
 
 // 2D画像ロードデータ
 GameLib::LoadTexture loadTexture[] = {
-    { TEXNO::SHOT,      L"./Data/Images/weapon.png",    1U },// ショット(仮)
-    //{TEXNO::TURRET01, L"./Data/Images/Lzi250.png",    1U },        // パーツ01(L字)
-    //{TEXNO::CORE01,   L"./Data/Images/core.png",      1U },        // パーツ01(L字)
-    {TEXNO::TURRET01,   L"./Data/Images/Weapon1.png",   1U },        // パーツ01(L字)
-    {TEXNO::CORE01,     L"./Data/Images/Weapon1.png",   1U },        // パーツ01(L字)
+    { TEXNO::SHOT,      L"./Data/Images/Bullet01.png", 1U }, 
+    //{TEXNO::TURRET01, L"./Data/Images/Lzi250.png",     1U },        // パーツ01(L字)
+    //{TEXNO::CORE01,   L"./Data/Images/core.png",       1U },        // パーツ01(L字)
+    {TEXNO::PL_CORE01,  L"./Data/Images/Core01.png",   1U },    
+    {TEXNO::ENM_CORE01, L"./Data/Images/Turret02.png", 1U }, 
+    {TEXNO::TURRET01,   L"./Data/Images/Turret01.png", 1U },     
+    {TEXNO::BUFF01,     L"./Data/Images/Trash01.png",  1U },        
 
     { -1, nullptr }	// 終了フラグ
 };
@@ -27,14 +29,15 @@ GameLib::LoadTexture loadTexture[] = {
 
 
 //------< テスト >------------------------------------------------------------------
-GameLib::SpriteData sprEnemey_test = SPRITE_CENTER(TEXNO::TURRET01, 0, 0, 250, 250);
+GameLib::SpriteData sprPlayerCore01 = SPRITE_CENTER(TEXNO::PL_CORE01, 0, 0, 250, 250);
 
 //------< パーツ >------------------------------------------------------------------
-GameLib::SpriteData sprPartsCore01 = SPRITE_CENTER(TEXNO::CORE01, 0, 0, 250,250 );
+GameLib::SpriteData sprPartsCore01   = SPRITE_CENTER(TEXNO::ENM_CORE01, 0, 0, 250,250 );
 GameLib::SpriteData sprPartsTurret01 = SPRITE_CENTER(TEXNO::TURRET01, 0, 0, 250,250 );
+GameLib::SpriteData sprPartsBuff01   = SPRITE_CENTER(TEXNO::BUFF01, 0, 0, 250,250 );
 
 //------< ショット >----------------------------------------------------------------
-GameLib::SpriteData sprWeapon_NormalShot = SPRITE_CENTER(TEXNO::SHOT, 128 * 4, 0, 128, 128);
+GameLib::SpriteData sprShot_NormalShot = SPRITE_CENTER(TEXNO::SHOT, 0, 0, 100, 100);
 
 //------------------------------------------------------------------------------
 #undef SPRITE_CENTER

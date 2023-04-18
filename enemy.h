@@ -1,15 +1,19 @@
 #pragma once
 
 void setEnemy(OBJ2DManager* obj2dManager, BG* bg);
-
 void addEnemy(OBJ2DManager* obj2dManager, BG* bg);
 
+//******************************************************************************
+// 
+//      BaseEnemyBehavior(エネミーのベース)
+// 
+//******************************************************************************
 class BaseEnemyBehavior : public ActorBehavior
 {
 private:
     void init(OBJ2D* obj) const override;
     void moveX(OBJ2D* obj) const override;
-    OBJ_TYPE getType() const override { return OBJ_TYPE::ENEMY; }
+    OBJ_TYPE getType() const override       { return OBJ_TYPE::ENEMY; }
     OBJ_TYPE getAttackType() const override { return OBJ_TYPE::PLAYER; }
     void hit(OBJ2D*, OBJ2D*) const override;
 
@@ -18,19 +22,10 @@ private:
     void areaCheck(OBJ2D* obj) const override;
 };
 
-class NormalEnemyBehavior : public BaseEnemyBehavior
-{
-public:    
-    NormalEnemyBehavior();
-private:
-    void moveY(OBJ2D* obj) const override;
-    void attack(OBJ2D* obj) const override;
-};
-EXTERN NormalEnemyBehavior normalEnemyBehavior;
 
 //******************************************************************************
 // 
-//      EnemyCore
+//      EnemyCore（エネミーの本体）
 // 
 //******************************************************************************
 
@@ -47,7 +42,7 @@ EXTERN EnemyCore01Behavior enemyCore01Behavior;
 
 //******************************************************************************
 // 
-//      Turret
+//      Turret（攻撃パーツ）
 // 
 //******************************************************************************
 

@@ -65,7 +65,8 @@ void ActorBehavior::move(OBJ2D* obj) const
         moveY(obj);
         moveX(obj);
         areaCheck(obj);
-        attack(obj);
+
+        if(obj->transform_->scale_.x >= 0) attack(obj); // scale‚ª0‚æ‚è‘å‚«‚¯‚ê‚ÎUŒ‚ˆ—‚ğs‚¤
 
 
         break;

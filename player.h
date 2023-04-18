@@ -3,6 +3,7 @@
 void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer);
 void setCursor(OBJ2DManager* obj2dManager, BG* bg);
 
+
 //******************************************************************************
 // 
 //      BasePlayerBehavior（プレイヤーのベース）
@@ -26,6 +27,7 @@ public:
     static int plShrinkCount_; // 縮小するまでのプレイヤーの数を数える変数
 };
 
+
 //******************************************************************************
 // 
 //      CorePlayerBehavior（自機本体）
@@ -40,6 +42,7 @@ private:
 };
 EXTERN CorePlayerBehavior corePlayerBehavior;
 
+
 //******************************************************************************
 // 
 //      PartsPlayerBehavior（パーツのベース）
@@ -47,8 +50,6 @@ EXTERN CorePlayerBehavior corePlayerBehavior;
 //******************************************************************************
 class PartsPlayerBehavior : public BasePlayerBehavior
 {
-public:
-    PartsPlayerBehavior();
 private:
     void shrink(OBJ2D*) const override;           // 縮小関数
 
@@ -56,7 +57,7 @@ private:
     void contactToOriginal(OBJ2D*, OBJ2D*) const; // オリジナル自機に向かって接触しに行く関数
     void contactToParent(OBJ2D*, OBJ2D*) const;   // 親に向かって接触しに行く関数
 };
-EXTERN PartsPlayerBehavior partsPlayerBehavior;
+
 
 //******************************************************************************
 // 
@@ -98,6 +99,7 @@ private:
 };
 EXTERN PlayerTurret01Behavior playerTurret01Behavior;
 
+
 //******************************************************************************
 // 
 //      Buff(バフパーツ)
@@ -114,6 +116,8 @@ private:
     void hit(OBJ2D*, OBJ2D*) const override;
 };
 EXTERN PlayerBuff01Behavior playerBuff01Behavior;
+
+
 
 //==============================================================================
 //

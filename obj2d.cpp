@@ -240,7 +240,6 @@ void Collider::draw()
     {
         for (int i = 0; i < boxMax; ++i)
         {
-
             VECTOR2 pos = VECTOR2(hitBox_[i].left, hitBox_[i].top);
             VECTOR2 size = { hitBox_[i].right - hitBox_[i].left, hitBox_[i].bottom - hitBox_[i].top };
             VECTOR2 center{ 0, 0 };
@@ -269,10 +268,10 @@ void Collider::calcHitBox(const GameLib::fRECT& rc,int i)
         //obj_->transform_->position_.y + rc.top, 
         //obj_->transform_->position_.x + rc.right, 
         //obj_->transform_->position_.y + rc.bottom 
-        obj_->transform_->position_.x + rc.left * obj_->transform_->scale_.x,
-        obj_->transform_->position_.y + rc.top * obj_->transform_->scale_.y,
-        obj_->transform_->position_.x + rc.right * obj_->transform_->scale_.x,
-        obj_->transform_->position_.y + rc.bottom * obj_->transform_->scale_.y
+        obj_->transform_->position_.x + (rc.left   * obj_->transform_->scale_.x),
+        obj_->transform_->position_.y + (rc.top    * obj_->transform_->scale_.y),
+        obj_->transform_->position_.x + (rc.right  * obj_->transform_->scale_.x),
+        obj_->transform_->position_.y + (rc.bottom * obj_->transform_->scale_.y),
     };
 }
 
@@ -283,25 +282,35 @@ void Collider::calcAttackBox(const GameLib::fRECT& rc, int i)
         //obj_->transform_->position_.y + rc.top, 
         //obj_->transform_->position_.x + rc.right, 
         //obj_->transform_->position_.y + rc.bottom
-        obj_->transform_->position_.x + rc.left * obj_->transform_->scale_.x,
-        obj_->transform_->position_.y + rc.top * obj_->transform_->scale_.y,
-        obj_->transform_->position_.x + rc.right * obj_->transform_->scale_.x,
-        obj_->transform_->position_.y + rc.bottom * obj_->transform_->scale_.y
+        obj_->transform_->position_.x + (rc.left   * obj_->transform_->scale_.x),
+        obj_->transform_->position_.y + (rc.top    * obj_->transform_->scale_.y),
+        obj_->transform_->position_.x + (rc.right  * obj_->transform_->scale_.x),
+        obj_->transform_->position_.y + (rc.bottom * obj_->transform_->scale_.y),
     };
 }
 
 bool Collider::hitCheck(Collider* other)
 {
-    for (int i = 0; i < boxMax; ++i)
+    for (auto& This : attackBox_)
     {
-        for (int j = 0; j < boxMax; ++j)
+        for (auto& Other : other->hitBox_)
         {
-            if (attackBox_[i].right > other->hitBox_[j].left &&
-                attackBox_[i].left < other->hitBox_[j].right &&
-                attackBox_[i].bottom > other->hitBox_[j].top &&
-                attackBox_[i].top < other->hitBox_[j].bottom) return true;
-        }
+            if (This.right  > Other.left  &&
+                This.left   < Other.right &&
+                This.bottom > Other.top   &&
+                This.top    < Other.bottom) return true;
+        }      
     }
+    //for (int i = 0; i < boxMax; ++i)
+    //{
+    //    for (int j = 0; j < boxMax; ++j)
+    //    {
+    //        if (attackBox_[i].right  > other->hitBox_[j].left  &&
+    //            attackBox_[i].left   < other->hitBox_[j].right &&
+    //            attackBox_[i].bottom > other->hitBox_[j].top   &&
+    //            attackBox_[i].top    < other->hitBox_[j].bottom) return true;
+    //    }
+    //}
 
     return false;
 }
