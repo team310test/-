@@ -28,7 +28,7 @@ enum class OBJ_TYPE
 };
 
 //==============================================================================
-
+// 
 // 移動アルゴリズムクラス（抽象クラス）
 class Behavior
 {
@@ -44,6 +44,10 @@ public:
     static bool isObjShrink(); // shrinkしているobjがいるか調べる関数（shrinkしているobjがいたらtrue, いなければfalse）
 
     virtual int getParam_HP() { return 0; }
+
+    // アニメーション
+    virtual void rotateAnime(OBJ2D*)const {};
+    virtual void XscaleAnime(OBJ2D*)const {};
 };
 
 // 消去アルゴリズムクラス（抽象クラス）

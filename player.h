@@ -42,7 +42,6 @@ public:
 private:
     void moveY(OBJ2D* obj) const override;
     void attack(OBJ2D* obj) const override;
-
 };
 EXTERN NormalPlayerBehavior normalPlayerBehavior;
 

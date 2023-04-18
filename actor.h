@@ -30,12 +30,14 @@ protected:
         int BOX_NUM = 1;
         Behavior* NEXT_BEHAVIOR = nullptr;
         Eraser* NEXT_ERASER = nullptr;
+        
+        // アニメーション用パラメータ
+        float ROT_SPEED = 0.0f;
     } param_;
-    const Param* getParam() const { return &param_; }
 
     virtual void moveY(OBJ2D* obj) const;
     virtual void moveX(OBJ2D* obj) const;
-
+    const Param* getParam() const { return &param_; }
 private:
     void move(OBJ2D* obj) const override;
 
@@ -45,6 +47,11 @@ private:
 
     virtual bool isAlive(OBJ2D*) const = 0;
     virtual void damageProc(OBJ2D*) const {}  // ダメージ処理
+
+    // アニメーション
+    virtual void rotateAnime(OBJ2D*)const override;
+    virtual void XscaleAnime(OBJ2D*)const override;
+
 public:
     int getParam_HP() override { return param_.HP; }
 };

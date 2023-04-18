@@ -33,6 +33,11 @@ namespace
         { &sprPartsTurret01, 10 },
         { nullptr, -1 },// 終了フラグ
     };
+    //  コア01
+    GameLib::AnimeData animeCore01[] = {
+        { &sprPartsCore01, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
 }
 
 void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer = false) // trueならこのobjをplayer_に代入する
@@ -200,7 +205,7 @@ void BasePlayerBehavior::areaCheck(OBJ2D* obj) const
 NormalPlayerBehavior::NormalPlayerBehavior()
 {
     // アニメーション
-    param_.ANIME_WAIT    = sprPlayer_Wait;
+    param_.ANIME_WAIT    = animeCore01;
 
     param_.SIZE    = VECTOR2(player_size, player_size);
     param_.HIT_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
@@ -215,6 +220,9 @@ NormalPlayerBehavior::NormalPlayerBehavior()
     param_.JUMP_POWER_Y = -12.0f;
 
     param_.HP = 30;
+
+    // アニメーションのパラメータ
+    param_.ROT_SPEED = 0.05f;
 }
 
 void NormalPlayerBehavior::moveY(OBJ2D* obj) const

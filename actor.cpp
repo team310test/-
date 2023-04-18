@@ -52,6 +52,10 @@ void ActorBehavior::move(OBJ2D* obj) const
 
         damageProc(obj);
 
+        // アニメーション
+        rotateAnime(obj);
+        XscaleAnime(obj);
+
         startAllShrink(obj); //縮小開始
         shrink(obj);    // 画像縮小
 
@@ -73,6 +77,25 @@ void ActorBehavior::move(OBJ2D* obj) const
 
     if (obj->renderer_->animeData_) 
         obj->renderer_->animeUpdate();
+}
+
+// <回転アニメーション>
+void ActorBehavior::rotateAnime(OBJ2D* obj) const
+{
+    if (getParam()->ROT_SPEED == 0.0f) return;  // 回転速度が0なら return
+
+    obj->transform_->rotation_ += getParam()->ROT_SPEED;
+}
+
+// <X軸のスケール変動アニメーション>
+void ActorBehavior::XscaleAnime(OBJ2D* obj) const
+{
+    // 画面の縮小中なら return
+    if (obj->collider_->isShrink_) return;
+
+    VECTOR2 orgScale = obj->transform_->scale_;
+    float shrinkScale = orgScale.x * 0.05;
+    static bool isShrink;
 }
 
 
