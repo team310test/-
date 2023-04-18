@@ -67,7 +67,7 @@ void OBJ2D::move()
 void Renderer::draw()
 {
     VECTOR2 scale = 
-        drawXFlip_ ? VECTOR2( -obj_->transform_->scale_.x, obj_->transform_->scale_.y) : obj_->transform_->scale_;
+        drawXFlip_ ? VECTOR2( -scale_.x, scale_.y) : scale_;
     
     if (data_)
     {
@@ -239,30 +239,30 @@ OBJ2DManager::~OBJ2DManager()
 
 void Collider::draw()
 {
-    if (isDrawHitRect_)
-    {
-        for (int i = 0; i < boxMax; ++i)
-        {
+    //if (isDrawHitRect_)
+    //{
+    //    for (int i = 0; i < boxMax; ++i)
+    //    {
 
-            VECTOR2 pos = VECTOR2(hitBox_[i].left, hitBox_[i].top);
-            VECTOR2 size = { hitBox_[i].right - hitBox_[i].left, hitBox_[i].bottom - hitBox_[i].top };
-            VECTOR2 center{ 0, 0 };
-            VECTOR4 blue{ 0,0,1,0.5f };
-            GameLib::primitive::rect(pos, size, center, 0, blue);
-        }
-    }
+    //        VECTOR2 pos = VECTOR2(hitBox_[i].left, hitBox_[i].top);
+    //        VECTOR2 size = { hitBox_[i].right - hitBox_[i].left, hitBox_[i].bottom - hitBox_[i].top };
+    //        VECTOR2 center{ 0, 0 };
+    //        VECTOR4 blue{ 0,0,1,0.5f };
+    //        GameLib::primitive::rect(pos, size, center, 0, blue);
+    //    }
+    //}
 
-    if (isDrawAttackRect_)
-    {
-        for (int i = 0; i < boxMax; ++i)
-        {
-            VECTOR2 pos = VECTOR2(attackBox_[i].left, attackBox_[i].top);
-            VECTOR2 size = { attackBox_[i].right - attackBox_[i].left, attackBox_[i].bottom - attackBox_[i].top };
-            VECTOR2 center{ 0, 0 };
-            VECTOR4 red{ 1,0,0,0.5f };
-            GameLib::primitive::rect(pos, size, center, 0, red);
-        }
-    }
+    //if (isDrawAttackRect_)
+    //{
+    //    for (int i = 0; i < boxMax; ++i)
+    //    {
+    //        VECTOR2 pos = VECTOR2(attackBox_[i].left, attackBox_[i].top);
+    //        VECTOR2 size = { attackBox_[i].right - attackBox_[i].left, attackBox_[i].bottom - attackBox_[i].top };
+    //        VECTOR2 center{ 0, 0 };
+    //        VECTOR4 red{ 1,0,0,0.5f };
+    //        GameLib::primitive::rect(pos, size, center, 0, red);
+    //    }
+    //}
 }
 
 void Collider::calcHitBox(const GameLib::fRECT& rc,int i)

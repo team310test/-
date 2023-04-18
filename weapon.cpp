@@ -10,6 +10,7 @@ void BaseWeaponBehavior::move(OBJ2D* obj) const
 
         //obj->transform_->scale_ = getParam()->SCALE;
         obj->transform_->scale_ = obj->weaponComponent_->parent_->transform_->scale_;
+        obj->renderer_->scale_ = obj->weaponComponent_->parent_->transform_->scale_;
 
         obj->eraser_ = getParam()->ERASER;
         obj->collider_->judgeFlag_ = true;      // ‚ ‚½‚è”»’è‚ğs‚¤

@@ -33,6 +33,7 @@ void ActorBehavior::move(OBJ2D* obj) const
         // アニメの初期設定
         obj->renderer_->animeData_ = getParam()->ANIME_WAIT;
         obj->transform_->scale_ = getParam()->SCALE;
+        obj->renderer_->scale_ = getParam()->SCALE;
         obj->collider_->size_ = {
             getParam()->SIZE.x * getParam()->SCALE.x, 
             getParam()->SIZE.y * getParam()->SCALE.y
@@ -135,7 +136,6 @@ void Behavior::shrink(OBJ2D* obj) const
 
     if (*isShrink == false) return; // Shrinkしていなければreturn
 
-
     VECTOR2* currentScale = &obj->transform_->scale_;      // 現在のscale
     VECTOR2* targetScale  = &obj->collider_->targetScale_; // 最終的に目指すscale 
 
@@ -144,10 +144,14 @@ void Behavior::shrink(OBJ2D* obj) const
     {
         *currentScale += {                // 縮小
             shrinkVelocity * obj->transform_->scale_.x, 
-            shrinkVelocity * obj->transform_->scale_.y
+            shrinkVelocity * obj->transform_->scale_.y,
         };  
         if (currentScale->x < targetScale->x)  *currentScale = *targetScale; // 最終目標より小さくなったら値を修正
     }
+    
+    // 描画用と判定用のscaleのサイズを合わせる
+    obj->renderer_->scale_ = obj->transform_->scale_;
+
 
     // 目標を達成した場合
     if (currentScale->x == targetScale->x)

@@ -291,6 +291,9 @@ EnemyTurret01Behavior::EnemyTurret01Behavior()
 
     // 次のBehavior・Eraser
     param_.NEXT_BEHAVIOR = &playerTurret01Behavior;
+
+    // アニメーションのパラメータ
+    param_.obj_ANIME = &scaleAnime;
 }
 
 void EnemyTurret01Behavior::attack(OBJ2D* obj) const
