@@ -16,6 +16,8 @@
 // 前方宣言
 class OBJ2D;
 
+typedef	void(*OBJ_ANIME)(OBJ2D* obj);		// 関数ポインタ（アニメ処理）
+
 enum class OBJ_TYPE
 {
     //TYPE_NULL = -1,
@@ -46,8 +48,6 @@ public:
     virtual int getParam_HP() { return 0; }
 
     // アニメーション
-    virtual void rotateAnime(OBJ2D*)const {};
-    virtual void XscaleAnime(OBJ2D*)const {};
 };
 
 // 消去アルゴリズムクラス（抽象クラス）
@@ -188,6 +188,10 @@ public:
     static int playerNum;
     int No;
 
+    // アニメ用データ
+    OBJ_ANIME objAnime_;
+    float rotSpeed_;
+    
     ActorComponent()
         :hp_(1)
         , attackTimer_(0)
@@ -203,6 +207,9 @@ public:
         , nextEraser_(nullptr)
 
         , No(1)
+        
+        , objAnime_(nullptr)
+        , rotSpeed_(0)
     {
     }
     bool isAlive() const { return hp_ > 0; }

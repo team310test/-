@@ -32,6 +32,7 @@ protected:
         Eraser* NEXT_ERASER = nullptr;
         
         // アニメーション用パラメータ
+        OBJ_ANIME obj_ANIME = nullptr;
         float ROT_SPEED = 0.0f;
     } param_;
 
@@ -47,10 +48,6 @@ private:
 
     virtual bool isAlive(OBJ2D*) const = 0;
     virtual void damageProc(OBJ2D*) const {}  // ダメージ処理
-
-    // アニメーション
-    virtual void rotateAnime(OBJ2D*)const override;
-    virtual void XscaleAnime(OBJ2D*)const override;
 
 public:
     int getParam_HP() override { return param_.HP; }

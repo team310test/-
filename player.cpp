@@ -222,6 +222,7 @@ NormalPlayerBehavior::NormalPlayerBehavior()
     param_.HP = 30;
 
     // アニメーションのパラメータ
+    param_.obj_ANIME = &rotateAnime;
     param_.ROT_SPEED = 0.05f;
 }
 

@@ -42,6 +42,11 @@ void ActorBehavior::move(OBJ2D* obj) const
         obj->actorComponent_->nextBehavior_ = getParam()->NEXT_BEHAVIOR;
         obj->actorComponent_->nextEraser_ = getParam()->NEXT_ERASER;
 
+        // アニメ用パラメータ
+        obj->actorComponent_->objAnime_ = getParam()->obj_ANIME;
+        obj->actorComponent_->rotSpeed_ = getParam()->ROT_SPEED;
+
+
         init(obj);
 
         obj->state_++;
@@ -53,8 +58,7 @@ void ActorBehavior::move(OBJ2D* obj) const
         damageProc(obj);
 
         // アニメーション
-        rotateAnime(obj);
-        XscaleAnime(obj);
+        if(obj->actorComponent_->objAnime_) obj->actorComponent_->objAnime_(obj);
 
         startAllShrink(obj); //縮小開始
         shrink(obj);    // 画像縮小
@@ -79,24 +83,24 @@ void ActorBehavior::move(OBJ2D* obj) const
         obj->renderer_->animeUpdate();
 }
 
-// <回転アニメーション>
-void ActorBehavior::rotateAnime(OBJ2D* obj) const
-{
-    if (getParam()->ROT_SPEED == 0.0f) return;  // 回転速度が0なら return
-
-    obj->transform_->rotation_ += getParam()->ROT_SPEED;
-}
-
-// <X軸のスケール変動アニメーション>
-void ActorBehavior::XscaleAnime(OBJ2D* obj) const
-{
-    // 画面の縮小中なら return
-    if (obj->collider_->isShrink_) return;
-
-    VECTOR2 orgScale = obj->transform_->scale_;
-    float shrinkScale = orgScale.x * 0.05;
-    static bool isShrink;
-}
+//// <回転アニメーション>
+//void ActorBehavior::rotateAnime(OBJ2D* obj) const
+//{
+//    if (getParam()->ROT_SPEED == 0.0f) return;  // 回転速度が0なら return
+//
+//    obj->transform_->rotation_ += getParam()->ROT_SPEED;
+//}
+//
+//// <X軸のスケール変動アニメーション>
+//void ActorBehavior::XscaleAnime(OBJ2D* obj) const
+//{
+//    // 画面の縮小中なら return
+//    if (obj->collider_->isShrink_) return;
+//
+//    VECTOR2 orgScale = obj->transform_->scale_;
+//    float shrinkScale = orgScale.x * 0.05;
+//    static bool isShrink;
+//}
 
 
 static const float divideValue = 0.5f;     // scaleを割る値(最終的なscaleの大きさに影響)

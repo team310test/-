@@ -249,6 +249,10 @@ EnemyCore01Behavior::EnemyCore01Behavior()
     param_.SPEED_X_MAX = 4.0f;
     param_.SPEED_Y_MAX = 4.0f;
     param_.JUMP_POWER_Y = -12.0f;
+
+    // アニメーションのパラメータ
+    param_.obj_ANIME = &rotateAnime;
+    param_.ROT_SPEED = -0.05f;
 }
 
 void EnemyCore01Behavior::init(OBJ2D* obj) const
