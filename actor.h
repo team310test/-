@@ -30,6 +30,7 @@ protected:
         int BOX_NUM = 1;
         Behavior* NEXT_BEHAVIOR = nullptr;
         Eraser* NEXT_ERASER = nullptr;
+
     } param_;
     const Param* getParam() const { return &param_; }
 

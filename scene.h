@@ -16,9 +16,9 @@
 class Scene
 {
 protected:
-    int state_;          // 状態
-    int timer_;          // タイマー
-    Scene* nextScene_;   // 次のシーン
+    int state_ = 0;              // 状態
+    int timer_ = 0;              // タイマー
+    Scene* nextScene_ = nullptr; // 次のシーン
 
 public:
     Scene* execute();   // 実行処理

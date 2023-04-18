@@ -1,20 +1,8 @@
-//******************************************************************************
-//
-//
-//      OBJ2Dクラス
-//
-//
-//******************************************************************************
-
-//------< インクルード >----------------------------------------------------------
 #include "all.h"
 
 bool Collider::isAllShrink_ = false;
 int ActorComponent::playerNum = 1;
 
-//--------------------------------------------------------------
-//  コンストラクタ
-//--------------------------------------------------------------
 OBJ2D::OBJ2D(
     Renderer* renderer,
     Collider* collider,
@@ -39,9 +27,7 @@ OBJ2D::OBJ2D(
     if (weaponComponent_) weaponComponent_->setOBJ2D(this);
 }
 
-//--------------------------------------------------------------
-//  デストラクタ
-//--------------------------------------------------------------
+
 OBJ2D::~OBJ2D()
 {
     safe_delete(transform_);
@@ -61,13 +47,12 @@ void OBJ2D::move()
     if (eraser_) eraser_->erase(this);
 }
 
-//--------------------------------------------------------------
-//  描画
-//--------------------------------------------------------------
+
 void Renderer::draw()
 {
-    VECTOR2 scale = 
-        drawXFlip_ ? VECTOR2( -obj_->transform_->scale_.x, obj_->transform_->scale_.y) : obj_->transform_->scale_;
+    VECTOR2 scale = drawXFlip_ 
+                  ? VECTOR2( -obj_->transform_->scale_.x, obj_->transform_->scale_.y) 
+                  : obj_->transform_->scale_;
     
     if (data_)
     {
@@ -354,7 +339,5 @@ void ActorComponent::muteki()
 bool ActorComponent::isAliveParent() const
 {
     if (parent_ == nullptr) return false;
-    if(parent_->actorComponent_->isAlive())
-
-    return true;
+    return (parent_->actorComponent_->isAlive());
 }

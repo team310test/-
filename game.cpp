@@ -1,20 +1,7 @@
-//******************************************************************************
-//
-//
-//      ゲーム
-//
-//
-//******************************************************************************
-
-//------< インクルード >---------------------------------------------------------
 #include "all.h"
 
-//------< 変数 >----------------------------------------------------------------
 Game Game::instance_;
 
-//--------------------------------------------------------------
-//  初期化処理
-//--------------------------------------------------------------
 void Game::init()
 {
     Scene::init();	    // 基底クラスのinitを呼ぶ
@@ -27,9 +14,7 @@ void Game::init()
     isGameOver_ = false;
 }
 
-//--------------------------------------------------------------
-//  終了処理
-//--------------------------------------------------------------
+
 void Game::deinit()
 {
     // 各マネージャの解放
@@ -48,9 +33,6 @@ void Game::deinit()
 int num = 2;
 int shrinkNum = 0;
 
-//--------------------------------------------------------------
-//  更新処理
-//--------------------------------------------------------------
 void Game::update()
 {
     // ソフトリセット
@@ -72,7 +54,7 @@ void Game::update()
         //////// 初期設定 ////////
         timer_ = 0;
         num = 2;
-        BasePlayerBehavior::plShrinkCount = 0;
+        BasePlayerBehavior::plShrinkCount_ = 0;
 
         GameLib::setBlendMode(GameLib::Blender::BS_ALPHA);   // 通常のアルファ処理
 
@@ -108,18 +90,18 @@ void Game::update()
         GameLib::debug::setString("num:%d", num);
         if (player_->transform_) GameLib::debug::setString("playerScale:%f", player_->transform_->scale_.x);
         GameLib::debug::setString("shrinkNum:%d", shrinkNum);
-        GameLib::debug::setString("plShrinkCount:%d", BasePlayerBehavior::plShrinkCount);
+        GameLib::debug::setString("plShrinkCount_:%d", BasePlayerBehavior::plShrinkCount_);
 
 
-        if (BasePlayerBehavior::plShrinkCount >= 10 ||
+        if (BasePlayerBehavior::plShrinkCount_ >= 10 ||
             GameLib::input::TRG(0) & GameLib::input::PAD_TRG1)     // プレイヤーの数がShrinkの規定数に達していて
         {
             if (Collider::isAllShrink_  == false &&       // Shrinkが開始されておらず、
                 Behavior::isObjShrink() == false)         // すべてのobjがshrink中でなければ
             {
                 Collider::isAllShrink_ = true;           // Shrinkを開始
-                if (BasePlayerBehavior::plShrinkCount >= 10)
-                    BasePlayerBehavior::plShrinkCount -= 10; // プレイヤーのカウントをリセット
+                if (BasePlayerBehavior::plShrinkCount_ >= 10)
+                    BasePlayerBehavior::plShrinkCount_ -= 10; // プレイヤーのカウントをリセット
                 ++shrinkNum;
             }
         }

@@ -24,6 +24,7 @@
 #include "weapon.h"
 #include "actor.h"
 #include "player.h"
+#include "dropParts.h"
 #include "enemy.h"
 
 #include "scene.h"

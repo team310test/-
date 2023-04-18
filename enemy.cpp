@@ -1,24 +1,8 @@
-//******************************************************************************
-//
-//
-//      エネミークラス
-//
-//
-//******************************************************************************
-
-//------< インクルード >---------------------------------------------------------
 #include "all.h"
 
-//******************************************************************************
-//
-//      エネミー移動処理
-//
-//******************************************************************************
-
-//------< アニメデータ >----------------------------------------------
+// アニメデータ
 namespace
 {   
-    //------< アニメデータ >------------------------------------------
     //上方向
     GameLib::AnimeData animeEnemey_Up[] = {
         { &sprEnemey_test, 10 },
@@ -38,6 +22,7 @@ namespace
     };
 }
 
+// Turret
 void setSubEnemy(OBJ2DManager* obj2dManager, BG* bg, OBJ2D* parent, VECTOR2 pos)
 {
     OBJ2D* subEnemy = new OBJ2D(
@@ -54,6 +39,24 @@ void setSubEnemy(OBJ2DManager* obj2dManager, BG* bg, OBJ2D* parent, VECTOR2 pos)
     subEnemy->actorComponent_->parent_ = parent;
 
     obj2dManager->add(subEnemy, &enemyTurret01Behavior, pos);
+}
+// Buff
+void setSubEnemy2(OBJ2DManager* obj2dManager, BG* bg, OBJ2D* parent, VECTOR2 pos)
+{
+    OBJ2D* subEnemy = new OBJ2D(
+        new Renderer,
+        new Collider,
+        bg,
+        new ActorComponent,
+        nullptr,
+        nullptr
+    );
+
+    subEnemy->zOrder_ = 3;
+    // 親を設定
+    subEnemy->actorComponent_->parent_ = parent;
+
+    obj2dManager->add(subEnemy, &enemyBuff01Behavior, pos);
 }
 
 void setEnemy(OBJ2DManager* obj2dManager, BG* bg)
@@ -75,8 +78,10 @@ void setEnemy(OBJ2DManager* obj2dManager, BG* bg)
     obj2dManager->add(enemy, &enemyCore01Behavior, pos);
 
     // サブパーツ
-    setSubEnemy(obj2dManager, bg, enemy, { pos.x,pos.y-229 });
-    setSubEnemy(obj2dManager, bg, enemy, { pos.x,pos.y+229 });
+    setSubEnemy(obj2dManager, bg, enemy, { pos.x, pos.y - 429 });
+    setSubEnemy(obj2dManager, bg, enemy, { pos.x, pos.y - 229 });
+    setSubEnemy2(obj2dManager, bg, enemy, { pos.x, pos.y + 229 });
+    setSubEnemy2(obj2dManager, bg, enemy, { pos.x, pos.y + 429 });
 }
 
 // カーソルの座標取得
@@ -110,9 +115,10 @@ void addEnemy(OBJ2DManager* obj2dManager, BG* bg)
     obj2dManager->add(enemy, &enemyCore01Behavior, pos);
 
     // サブパーツ
-    setSubEnemy(obj2dManager, bg, enemy, { pos.x,pos.y - 229 });
-    setSubEnemy(obj2dManager, bg, enemy, { pos.x,pos.y + 229 });
+    setSubEnemy(obj2dManager, bg, enemy, { pos.x, pos.y - 229 });
+    setSubEnemy(obj2dManager, bg, enemy, { pos.x, pos.y + 229 });
 }
+
 
 //******************************************************************************
 //
@@ -199,37 +205,6 @@ void NormalEnemyBehavior::attack(OBJ2D* obj) const
 {
 }
 
-//******************************************************************************
-//
-//      ItemEnemyBehavior
-//
-//******************************************************************************
-ItemEnemyBehavior::ItemEnemyBehavior()
-{
-    // アニメーション
-    param_.ANIME_WAIT = animeEnemey_Up;
-
-    param_.SIZE = VECTOR2(player_size, player_size);
-    param_.ATTACK_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
-    param_.HIT_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
-    param_.HP = 1;
-
-    // 速度関連のパラメータ
-    param_.ACCEL_X = 4.0f;
-    param_.ACCEL_Y = 4.0f;
-    param_.SPEED_X_MAX = 4.0f;
-    param_.SPEED_Y_MAX = 4.0f;
-    param_.JUMP_POWER_Y = -12.0f;
-}
-
-void ItemEnemyBehavior::hit(OBJ2D* src, OBJ2D* dst) const
-{
-    src->actorComponent_->hp_ = 0;
-}
-
-void ItemEnemyBehavior::attack(OBJ2D* obj) const
-{
-}
 
 //******************************************************************************
 //
@@ -254,108 +229,106 @@ EnemyCore01Behavior::EnemyCore01Behavior()
     param_.JUMP_POWER_Y = -12.0f;
 
     // 次のBehaviorなし
+    param_.NEXT_BEHAVIOR = nullptr;
+    param_.NEXT_ERASER   = nullptr;
 }
 
 
 //******************************************************************************
 //
-//      Turret01
+//      Turret
 //
 //******************************************************************************
-// エネミー
+
+// Turret01
 EnemyTurret01Behavior::EnemyTurret01Behavior()
 {
-    // アニメーション
     param_.ANIME_WAIT = animeTurret01;
 
-    param_.SIZE = VECTOR2(player_size, player_size);
+    param_.SIZE = { player_size, player_size };
     param_.HIT_BOX[0] = { -125, 48, 80, 95 };   // 下長方形
     param_.HIT_BOX[1] = { -10,-95,125,50 };      // ネジ
 
     param_.ATTACK_BOX[0] = { -125, 48, 80, 95 };   // 下長方形
     param_.ATTACK_BOX[1] = { -10,-95,125,50 };      // ネジ
 
-    // 速度関連のパラメータ
     param_.ACCEL_X = 4.0f;
     param_.ACCEL_Y = 4.0f;
     param_.SPEED_X_MAX = 4.0f;
     param_.SPEED_Y_MAX = 4.0f;
-    param_.JUMP_POWER_Y = -12.0f;
+    //param_.JUMP_POWER_Y = -12.0f;
 
-    // 次のBehavior・Eraser
-    param_.NEXT_BEHAVIOR = &playerTurret01Behavior;
+    // 次のBehavior・Eraser（ドロップアイテム）
+    param_.NEXT_BEHAVIOR = &dropTurret01Behavior;
+    param_.NEXT_ERASER   = &eraseDropParts;
 }
 
-// アイテム
-ItemTurret01Behavior::ItemTurret01Behavior()
+
+//******************************************************************************
+//
+//      Buff
+//
+//******************************************************************************
+
+// Buff01
+EnemyBuff01Behavior::EnemyBuff01Behavior()
 {
-    // アニメーション
     param_.ANIME_WAIT = animeTurret01;
 
-    param_.SIZE = VECTOR2(player_size, player_size);
-    param_.HIT_BOX[0] = { -80, 48, 125, 95 };   // 下長方形
-    param_.HIT_BOX[1] = { -125,-95,10,50 };      // ネジ
+    param_.SIZE = { player_size, player_size };
+    param_.HIT_BOX[0] = {
+        -player_hitBox, -player_hitBox,
+         player_hitBox,  player_hitBox,
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
-    param_.ATTACK_BOX[0] = { -80, 48, 125, 95 };   // 下長方形
-    param_.ATTACK_BOX[1] = { -125,-95,10,50 };      // ネジ
+    param_.ACCEL_X = 4.0f;
+    param_.ACCEL_Y = 4.0f;
+    param_.SPEED_X_MAX = 4.0f;
+    param_.SPEED_Y_MAX = 4.0f;
+    //param_.JUMP_POWER_Y = -12.0f;
 
-    // 速度関連のパラメータ
-    param_.ACCEL_X = 2.0f;
-    param_.ACCEL_Y = 2.0f;
-    param_.SPEED_X_MAX = 2.0f;
-    param_.SPEED_Y_MAX = 2.0f;
-    param_.JUMP_POWER_Y = -12.0f;
+    // 次のBehavior・Eraser（ドロップアイテム）
+    param_.NEXT_BEHAVIOR = &dropBuff01Behavior;
+    param_.NEXT_ERASER   = &eraseDropParts;
 }
 
-//--------------------------------------------------------------
-//  消去
-//--------------------------------------------------------------
+//******************************************************************************
+//
+//      erase（消去）
+//
+//******************************************************************************
 void EraseEnemy::erase(OBJ2D* obj) const
 {
+    // スケールが0以下になったら消去
     if (obj->transform_->scale_.x <= 0)
     {
         obj->behavior_ = nullptr;
+        return;
     }
 
-    //if (!obj->actorComponent_->isAlive())
-    // 親が消滅するとアイテム化する
-    if (obj->actorComponent_->parent_->actorComponent_->parent_ == nullptr)
-    {
-        obj->actorComponent_->parent_ = nullptr;
-        obj->behavior_ = &itemTurret01Behavior;
-        obj->actorComponent_->hp_ = 1;
-        obj->eraser_ = &eraseItem;
+    //OBJ2D* parent = obj->actorComponent_->parent_->actorComponent_->parent_; // 長いので省略
+    OBJ2D* parent = obj->actorComponent_->parent_; // 長いので省略
 
-        // 反転させる
-        obj->renderer_->flip();
+    // 親が消滅するとアイテム化する
+    if (parent && parent->behavior_ == nullptr) // 親がいてその親がすでに死んでいる場合
+    {
+        obj->actorComponent_->parent_ = nullptr; // 親リセット
+
+        // 次のbehavior・eraser（ドロップアイテム）を代入
+        obj->behavior_ = obj->nextBehavior_;
+        obj->eraser_ = obj->nextEraser_;
+
+        obj->renderer_->flip(); // 反転させる
+
+        return;
     }
 
     // HPが0以下になると消滅
     if (!obj->actorComponent_->isAlive())
     {
-        obj->actorComponent_->parent_ = nullptr;
         obj->behavior_ = nullptr;
         return;
     }
-}
 
-void EraseItem::erase(OBJ2D* obj) const
-{
-    if (obj->transform_->scale_.x <= 0)
-    {
-        obj->behavior_ = nullptr;
-    }
-
-    if (!obj->actorComponent_->isAlive())
-    {
-        obj->behavior_ = obj->actorComponent_->nextBehavior_;
-        
-        obj->eraser_ = &erasePlayer;
-        
-        ++BasePlayerBehavior::plShrinkCount;
-    }
-    //if (obj->transform_->position_.x < 0)
-    //{
-    //    obj->behavior_ = nullptr;
-    //}
 }

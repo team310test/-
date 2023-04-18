@@ -19,9 +19,9 @@ class OBJ2D;
 enum class OBJ_TYPE
 {
     //TYPE_NULL = -1,
-    null = -1,
+    NONE = -1,
     PLAYER = 0, 
-    ITEM, 
+    PARTS, //　パーツ
     ENEMY, 
     WEAPON, 
     MAX, 
@@ -177,8 +177,6 @@ public:
 
     OBJ2D* parent_;
     OBJ2D* obj;
-    Behavior* nextBehavior_; // 次に変わるBehavior
-    Eraser* nextEraser_;    // 次変わるEraser
 
     static int playerNum;
     int No;
@@ -193,9 +191,6 @@ public:
 
         , obj(nullptr)
         , parent_(nullptr)
-
-        , nextBehavior_(nullptr)
-        , nextEraser_(nullptr)
 
         , No(1)
     {
@@ -244,8 +239,10 @@ public:
     int state_ = 0;
     int timer_ = 0;
     int zOrder_ = 0;
-    Behavior* behavior_ = nullptr;
-    Eraser* eraser_ = nullptr;
+    Behavior* behavior_     = nullptr;
+    Eraser*   eraser_       = nullptr;
+    Behavior* nextBehavior_ = nullptr; // 次に変わるBehavior
+    Eraser*   nextEraser_   = nullptr; // 次に変わるEraser
 
     BG* bg_ = nullptr;
 

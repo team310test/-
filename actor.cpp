@@ -3,24 +3,27 @@
 void ActorBehavior::moveY(OBJ2D* obj) const
 {
     // 最大速度チェックを行う
-    obj->transform_->velocity_.y = clamp(obj->transform_->velocity_.y, -getParam()->SPEED_Y_MAX, getParam()->SPEED_Y_MAX);
+    obj->transform_->velocity_.y = clamp(
+        obj->transform_->velocity_.y, -getParam()->SPEED_Y_MAX, getParam()->SPEED_Y_MAX
+    );
 
     // 位置更新
-    float oldY = obj->transform_->position_.y;           // 移動前の位置を保持
+    //float oldY = obj->transform_->position_.y;           // 移動前の位置を保持
     obj->transform_->position_.y += obj->transform_->velocity_.y;
-    float deltaY = obj->transform_->position_.y - oldY;  // 移動後の位置から移動前の位置を引く
+    //float deltaY = obj->transform_->position_.y - oldY;  // 移動後の位置から移動前の位置を引く
 }
 
 void ActorBehavior::moveX(OBJ2D* obj) const
 {
     // 最大速度チェック
-    if (obj->transform_->velocity_.x > getParam()->SPEED_X_MAX) obj->transform_->velocity_.x = getParam()->SPEED_X_MAX;
-    if (obj->transform_->velocity_.x < -getParam()->SPEED_X_MAX) obj->transform_->velocity_.x = -getParam()->SPEED_X_MAX;
+    obj->transform_->velocity_.x = clamp(
+        obj->transform_->velocity_.x, -getParam()->SPEED_X_MAX, getParam()->SPEED_X_MAX
+    );
 
     // X方向移動
-    float oldX = obj->transform_->position_.x;
+    //float oldX = obj->transform_->position_.x;
     obj->transform_->position_.x += obj->transform_->velocity_.x;
-    float deltaX = obj->transform_->position_.x - oldX;
+    //float deltaX = obj->transform_->position_.x - oldX;
 }
 
 void ActorBehavior::move(OBJ2D* obj) const
@@ -39,8 +42,8 @@ void ActorBehavior::move(OBJ2D* obj) const
         };
         obj->actorComponent_->hp_ = getParam()->HP;
 
-        obj->actorComponent_->nextBehavior_ = getParam()->NEXT_BEHAVIOR;
-        obj->actorComponent_->nextEraser_ = getParam()->NEXT_ERASER;
+        obj->nextBehavior_ = getParam()->NEXT_BEHAVIOR;
+        obj->nextEraser_   = getParam()->NEXT_ERASER;
 
         init(obj);
 
@@ -49,6 +52,10 @@ void ActorBehavior::move(OBJ2D* obj) const
 
     case 1:
         //////// 通常時 ////////
+
+        // 現在のbehavior・eraserがparamと違う場合、paramの方を代入
+        if (obj->nextBehavior_ != getParam()->NEXT_BEHAVIOR) obj->nextBehavior_ = getParam()->NEXT_BEHAVIOR;
+        if (obj->nextEraser_ != getParam()->NEXT_ERASER) obj->nextEraser_ = getParam()->NEXT_ERASER;
 
         damageProc(obj);
 
@@ -59,6 +66,8 @@ void ActorBehavior::move(OBJ2D* obj) const
         moveX(obj);
         areaCheck(obj);
         attack(obj);
+
+
         break;
     }
 
@@ -98,7 +107,7 @@ void Behavior::shrink(OBJ2D* obj) const
     bool* isShrink = &obj->collider_->isShrink_; // 縮小しているかどうか
 
     // オリジナル自機でscaleが0.5f以下ならshrinkを強制終了
-    if (obj->behavior_ == &normalPlayerBehavior &&
+    if (obj->behavior_ == &corePlayerBehavior &&
         obj->transform_->scale_.x <= 0.5f)
     {
         *isShrink = false;

@@ -50,7 +50,11 @@ private:
         :obj2dManager_(nullptr)
         , bg_(nullptr)
         , isPaused_(false)
-        , player_(nullptr) {}
+        , isGameOver_(false)
+        , gameOverTimer_(0)
+        , player_(nullptr) 
+        , cursor_(nullptr)
+    {}
     Game(const Game&) = delete; // = delete コピーコンストラクタが存在しないことを明示
 
     void judge();
