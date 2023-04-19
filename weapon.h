@@ -15,6 +15,7 @@ protected:
         GameLib::SpriteData*    SPR_WEAPON;     // スプライト
         Eraser*                 ERASER;         // イレイサー（削除用のアルゴリズム）
         float                   SPEED_X;        // 横方向の速度（手裏剣用）
+        float                   SPEED_Y;        // 横方向の速度（手裏剣用）
         float                   ROT_SPEED;      // 回転速度（手裏剣用）
         int                     ATTACK_POWER;   // 攻撃力
         //GameLib::fRECT          ATTACK_BOX;     // 攻撃用あたり領域
@@ -61,7 +62,7 @@ private:
 
 //******************************************************************************
 //
-//      NormalShotBehavior（通常弾）
+//      NormalShot（通常弾）
 //
 //******************************************************************************
 
@@ -78,34 +79,61 @@ EXTERN PlayerNormalShotBehavior playerNormalShotBehavior;
 
 //******************************************************************************
 //
-//      SinShotBehavior（波形移動弾）
+//      SineWaveShot（正弦波弾）
 //
 //******************************************************************************
 
 // プレイヤー
-class PlayerWaveShotBehavior : public BasePlayerShotBehavior
+class PlSineWaveShotBehavior : public BasePlayerShotBehavior
 {
 public:
-    PlayerWaveShotBehavior();
+    PlSineWaveShotBehavior();
 private:
     void update(OBJ2D* obj) const override;
 };
-EXTERN PlayerWaveShotBehavior playerWaveShotBehavior;
+EXTERN PlSineWaveShotBehavior plSineWaveShotBehavior;
 
 
-//class EnemyNormalShotBehavior : public BaseShotBehavior
-//{
-//public:
-//    EnemyNormalShotBehavior();
-//private:
-//    void update(OBJ2D* obj) const override;
-//    OBJ_TYPE getAttackType() const override { return OBJ_TYPE::PLAYER; };
-//};
-//EXTERN EnemyNormalShotBehavior enemyNormalShotBehavior;
+//******************************************************************************
+//
+//      SquareWaveShot（矩形波弾）
+//
+//******************************************************************************
+
+// プレイヤー
+class PlSquareWaveShotBehavior : public BasePlayerShotBehavior
+{
+public:
+    PlSquareWaveShotBehavior();
+private:
+    void update(OBJ2D* obj) const override;
+};
+EXTERN PlSquareWaveShotBehavior plSquareWaveShotBehavior;
+
+
+//******************************************************************************
+//
+//      CurveShot（カーブ弾）
+//
+//******************************************************************************
+
+// プレイヤー
+class PlCurveShotBehavior : public BasePlayerShotBehavior
+{
+public:
+    PlCurveShotBehavior();
+private:
+    void update(OBJ2D* obj) const override;
+};
+EXTERN PlCurveShotBehavior plCurveShotBehavior;
 
 
 
-
+//******************************************************************************
+//
+//      erase（消去）
+//
+//******************************************************************************
 class ShotEraser : public Eraser
 {
 private:

@@ -266,7 +266,7 @@ void CorePlayerBehavior::attack(OBJ2D* obj) const
                 nullptr,
                 new WeaponComponent
             ),
-            &playerWaveShotBehavior,
+            &plCurveShotBehavior,
             pos
         );
         shot->zOrder_ = 2;

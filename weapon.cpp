@@ -1,6 +1,5 @@
 #include "all.h"
 
-// 敵がTurret01のときで左上に敵がいるときに弾を打つと消える
 
 //******************************************************************************
 //
@@ -23,14 +22,13 @@ void BaseShotBehavior::move(OBJ2D* obj) const
         obj->collider_->isDrawAttackRect_ = true;  // あたり判定の領域を描画する（デバッグ用）
 
         // 左右の向き、速度を設定（プレイヤーにもxFlip_の設定が必要）
-        obj->transform_->velocity_.x =  getParam()->SPEED_X;
-        obj->transform_->velocity_.y = 0.0f;    // 念のため
+        obj->transform_->velocity_.x = getParam()->SPEED_X;
+        obj->transform_->velocity_.y = getParam()->SPEED_Y;
 
         ++obj->state_;
         /*fallthrough*/
     case 1:
         //////// 通常時 ////////
-
         update(obj);        // 武器の位置更新
 
         break;
@@ -62,7 +60,7 @@ void BaseShotBehavior::calcAttackBox(OBJ2D* obj) const
 
 //******************************************************************************
 //
-//      NormalShotBehavior（ノーマル弾）
+//      NormalShot（通常弾）
 //
 //******************************************************************************
 
@@ -89,12 +87,12 @@ void PlayerNormalShotBehavior::update(OBJ2D* obj) const
 
 //******************************************************************************
 //
-//      SinShotBehavior（波形移動弾）
+//      SineWaveShot（正弦波弾）
 //
 //******************************************************************************
 
 // プレイヤー
-PlayerWaveShotBehavior::PlayerWaveShotBehavior()
+PlSineWaveShotBehavior::PlSineWaveShotBehavior()
 {
     param_.SPR_WEAPON = &sprShot_NormalShot;
     param_.ERASER = &eraseShot;
@@ -107,7 +105,7 @@ PlayerWaveShotBehavior::PlayerWaveShotBehavior()
 }
 
 static constexpr float SIN_YOFS = 64.0f;  // 振れ幅
-void PlayerWaveShotBehavior::update(OBJ2D* obj) const
+void PlSineWaveShotBehavior::update(OBJ2D* obj) const
 {
     Transform* transform = obj->transform_;
 
@@ -135,7 +133,8 @@ void PlayerWaveShotBehavior::update(OBJ2D* obj) const
     case 2: // 波形移動の前準備
         transform->velocity_.y += 2.0f; // 振れ幅の分まで徐々にずらす
 
-        if (transform->position_.y >= transform->orgPosition_.y + SIN_YOFS) // 振れ幅の分だけY座標をずらしたら
+        // 振れ幅の分だけY座標をずらしたら
+        if (transform->position_.y >= transform->orgPosition_.y + (SIN_YOFS * transform->scale_.y) ) // scaleに挙動を合わせる
         {
             ++obj->act_;
             break;
@@ -143,7 +142,8 @@ void PlayerWaveShotBehavior::update(OBJ2D* obj) const
 
         break;
     case 3: // 波形移動
-        transform->velocity_.y += (transform->orgPosition_.y - transform->position_.y) / 128.0f;
+        transform->velocity_.y += 
+            (transform->orgPosition_.y - transform->position_.y) / (128.0f * transform->scale_.y); // scaleに挙動を合わせる
 
         break;
     }
@@ -155,6 +155,106 @@ void PlayerWaveShotBehavior::update(OBJ2D* obj) const
 
 //******************************************************************************
 //
+//      SquareWaveShot（矩形波弾）
+//
+//******************************************************************************
+
+// プレイヤー
+PlSquareWaveShotBehavior::PlSquareWaveShotBehavior()
+{
+    param_.SPR_WEAPON = &sprShot_NormalShot;
+    param_.ERASER = &eraseShot;
+
+    param_.SPEED_X = 40.0f;
+    param_.SPEED_Y = 20.0f;
+    param_.ATTACK_POWER = 1;
+
+    // 変更予定
+    param_.ATTACK_BOX[0] = { -24, -24, 24, 24 };
+}
+
+static constexpr float SQUARE_WAVE_SHOT_POSX_LIMIT = 300.0f; // 一度に前に進める距離
+static constexpr float SQUARE_WAVE_SHOT_POSY_LIMIT = 75.0f;  // 上下移動できる限界
+void PlSquareWaveShotBehavior::update(OBJ2D* obj) const
+{
+    Transform* transform = obj->transform_;
+
+    switch (obj->act_)
+    {
+    case 0: // 現在位置を保存
+        transform->orgPosition_ = transform->position_; // 現在位置を保存
+
+        ++obj->act_;
+        /*fallthrough*/
+    case 1: // 前に進む（X移動）
+        transform->position_.x += transform->velocity_.x; //　X位置にX速度を足す
+
+        // orgX位置からしばらく進んだら
+        if (transform->position_.x > transform->orgPosition_.x + (SQUARE_WAVE_SHOT_POSX_LIMIT * transform->scale_.x) ) // scaleに挙動を合わせる
+        {
+            ++obj->act_; // act進行
+            break;
+        }
+
+        break;
+    case 2: // 上、または下に移動（Y移動）
+        transform->position_.y += transform->velocity_.y; // Y位置にY速度を足す
+
+        // orgY位置+αよりY位置が下回った、または上回った場合
+        if (transform->position_.y < transform->orgPosition_.y - (SQUARE_WAVE_SHOT_POSY_LIMIT * transform->scale_.x) || // scaleに挙動を合わせる
+            transform->position_.y > transform->orgPosition_.y + (SQUARE_WAVE_SHOT_POSY_LIMIT * transform->scale_.y) )
+        {
+            transform->velocity_.y = -transform->velocity_.y;   // Y速度を反転
+            transform->orgPosition_.x = transform->position_.x; // 現在のX位置を保存
+
+            --obj->act_;  // actを戻す
+            break;
+        }
+
+        break;
+    }
+
+}
+
+
+//******************************************************************************
+//
+//      CurveShot（カーブ弾）
+//
+//******************************************************************************
+
+// プレイヤー
+PlCurveShotBehavior::PlCurveShotBehavior()
+{
+    param_.SPR_WEAPON = &sprShot_NormalShot;
+    param_.ERASER = &eraseShot;
+
+    param_.SPEED_X = -20.0f;
+    param_.SPEED_Y = -25.0f;
+    param_.ATTACK_POWER = 1;
+
+    // 変更予定
+    param_.ATTACK_BOX[0] = { -24, -24, 24, 24 };
+
+}
+
+static constexpr float CURVE_SHOT_ACCEL_X = 1.4f; // X速度に足すX加速度
+static constexpr float CURVE_SHOT_ACCEL_Y = 0.9f; // Y速度に足すY加速度
+void PlCurveShotBehavior::update(OBJ2D* obj) const
+{
+    Transform* transform = obj->transform_;
+
+    transform->position_ += transform->velocity_; // 位置に速度を足す
+
+    // 速度に加速度を足す
+    transform->velocity_ += {
+        CURVE_SHOT_ACCEL_X / transform->scale_.x,  // scaleに挙動を合わせる
+        CURVE_SHOT_ACCEL_Y / transform->scale_.y,  // scaleに挙動を合わせる
+    };  
+}
+
+//******************************************************************************
+//
 //      erase（消去）
 //
 //******************************************************************************
@@ -163,16 +263,17 @@ void ShotEraser::erase(OBJ2D* obj) const
     const VECTOR2* size = &obj->collider_->size_;
     const VECTOR2* pos = &obj->transform_->position_;
 
-    const float leftLimit = size->x;
-    const float rightLimit = BG::WINDOW_W + size->x;
-    const float topLimit = size->y;
+    const float leftLimit   = size->x;
+    const float rightLimit  = BG::WINDOW_W + size->x;
+    const float topLimit    = size->y;
     const float bottomLimit = BG::WINDOW_H + size->y;
 
-    if (pos->x < leftLimit ||
+    if (pos->x < leftLimit  ||
         pos->x > rightLimit ||
-        pos->y < topLimit ||
+        pos->y < topLimit   ||
         pos->y > bottomLimit)
     {
-        obj = nullptr; // 画面外に行ったら消去
+        obj->behavior_ = nullptr; // 画面外に行ったら消去
     }
+
 }
