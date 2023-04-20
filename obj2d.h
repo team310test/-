@@ -195,6 +195,8 @@ public:
     static int playerNum;
     int No;
 
+    bool isCore;            // コアであるか
+
     // アニメ用データ
     OBJ_ANIME objAnime_;
     float rotSpeed_;
@@ -214,7 +216,8 @@ public:
         , nextEraser_(nullptr)
 
         , No(1)
-        
+        , isCore(false)
+
         , objAnime_(nullptr)
         , rotSpeed_(0)
     {

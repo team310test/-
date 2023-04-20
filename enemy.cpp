@@ -45,11 +45,6 @@ namespace
 
 void setSubEnemy(BaseEnemyBehavior* behavior, OBJ2D* parent, VECTOR2 pos)
 {
-    if (behavior->isCore())
-    {
-        assert(!"coreがcoreを呼び出しています");
-    };
-
     VECTOR2 POS = { parent->transform_->position_.x + pos.x,parent->transform_->position_.y + pos.y };
 
     OBJ2D* subEnemy = new OBJ2D(
@@ -257,6 +252,9 @@ EnemyCore01Behavior::EnemyCore01Behavior()
     param_.SPEED_Y_MAX = 4.0f;
     param_.JUMP_POWER_Y = -12.0f;
 
+    // コアであることの設定
+    param_.IS_CORE = true;
+
     // アニメーションのパラメータ
     param_.obj_ANIME = &rotateAnime;
     param_.ROT_SPEED = -0.05f;
@@ -289,6 +287,9 @@ EnemyCore02Behavior::EnemyCore02Behavior()
     param_.SPEED_X_MAX = 4.0f;
     param_.SPEED_Y_MAX = 4.0f;
     param_.JUMP_POWER_Y = -12.0f;
+
+    // コアであることの設定
+    param_.IS_CORE = true;
 
     // アニメーションのパラメータ
     param_.obj_ANIME = &rotateAnime;
@@ -409,7 +410,7 @@ ItemTrash01Behavior::ItemTrash01Behavior()
 //--------------------------------------------------------------
 void EraseEnemy::erase(OBJ2D* obj) const
 {
-    // 親が消滅するとアイテム化する
+    // 親が消滅するとアイテム化してreturn
     if (obj->actorComponent_->parent_->actorComponent_->parent_ == nullptr)
     {
         obj->actorComponent_->parent_ = nullptr;
@@ -419,10 +420,11 @@ void EraseEnemy::erase(OBJ2D* obj) const
 
         // 反転させる
         obj->renderer_->flip();
+        return;
     }
 
-    // HPが0以下になるとTrashアイテム化する
-    if (!obj->actorComponent_->isAlive())
+    // コアでない　かつ　HPが0以下になるとTrashアイテム化してreturn
+    if (!obj->actorComponent_->isCore && !obj->actorComponent_->isAlive())
     {
         obj->actorComponent_->parent_ = nullptr;
         obj->behavior_ = &itemTrash01Behavior;
@@ -435,10 +437,11 @@ void EraseEnemy::erase(OBJ2D* obj) const
 
         // 反転させる
         obj->renderer_->flip();
+        return;
     }
 
-    // 画面外へ行くと消滅
-    if (obj->transform_->position_.x < -obj->collider_->size_.x)
+    // 画面外へ行くと消滅　か　コアの体力が0になると消滅
+    if (obj->transform_->position_.x < -obj->collider_->size_.x || !obj->actorComponent_->isAlive())
     {
         obj->actorComponent_->parent_ = nullptr;
         obj->behavior_ = nullptr;

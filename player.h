@@ -96,6 +96,7 @@ class  PlayerTrash01Behavior : public ItemPlayerBehavior
 {
 public:
     PlayerTrash01Behavior();
+    void attack(OBJ2D* obj) const override {};
 };
 EXTERN PlayerTrash01Behavior playerTrash01Behavior;
 

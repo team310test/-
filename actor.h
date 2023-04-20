@@ -31,6 +31,8 @@ protected:
         Behavior* NEXT_BEHAVIOR = nullptr;
         Eraser* NEXT_ERASER = nullptr;
         
+        bool IS_CORE = false;
+
         // アニメーション用パラメータ
         OBJ_ANIME obj_ANIME = nullptr;
         float ROT_SPEED = 0.0f;

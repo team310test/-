@@ -30,10 +30,6 @@ private:
     bool isAlive(OBJ2D* obj) const;
     void damageProc(OBJ2D* obj) const override;
     void areaCheck(OBJ2D* obj) const;
-
-    // ÉRÉAÇ≈Ç†ÇÈÇ©
-public:
-    virtual bool isCore() { return false; }
 };
 
 class NormalEnemyBehavior : public BaseEnemyBehavior
@@ -69,7 +65,6 @@ public:
     EnemyCore01Behavior();
 private:
     void init(OBJ2D* obj)const override;
-    bool isCore() { return true; }
 };
 EXTERN EnemyCore01Behavior enemyCore01Behavior;
 
@@ -83,7 +78,6 @@ public:
     EnemyCore02Behavior();
 private:
     void init(OBJ2D* obj)const override;
-    bool isCore() { return true; }
 };
 EXTERN EnemyCore02Behavior enemyCore02Behavior;
 
