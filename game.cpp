@@ -1,20 +1,7 @@
-//******************************************************************************
-//
-//
-//      ゲーム
-//
-//
-//******************************************************************************
-
-//------< インクルード >---------------------------------------------------------
 #include "all.h"
 
-//------< 変数 >----------------------------------------------------------------
 Game Game::instance_;
 
-//--------------------------------------------------------------
-//  初期化処理
-//--------------------------------------------------------------
 void Game::init()
 {
     Scene::init();	    // 基底クラスのinitを呼ぶ
@@ -28,9 +15,7 @@ void Game::init()
     isGameOver_ = false;
 }
 
-//--------------------------------------------------------------
-//  終了処理
-//--------------------------------------------------------------
+
 void Game::deinit()
 {
     // 各マネージャの解放
@@ -50,9 +35,6 @@ void Game::deinit()
 int num = 2;
 int shrinkNum = 0;
 
-//--------------------------------------------------------------
-//  更新処理
-//--------------------------------------------------------------
 void Game::update()
 {
     // ソフトリセット
@@ -64,9 +46,9 @@ void Game::update()
     }
 
     // ポーズ処理
-    if (GameLib::input::TRG(0) & GameLib::input::PAD_START)
-        isPaused_ = !isPaused_;       // 0コンのスタートボタンが押されたらポーズ状態が反転
-    if (isPaused_) return;           // この時点でポーズ中ならリターン
+    //if (GameLib::input::TRG(0) & GameLib::input::PAD_START)
+    //    isPaused_ = !isPaused_;       // 0コンのスタートボタンが押されたらポーズ状態が反転
+    //if (isPaused_) return;           // この時点でポーズ中ならリターン
 
     switch (state_)
     {
@@ -74,7 +56,7 @@ void Game::update()
         //////// 初期設定 ////////
         timer_ = 0;
         num = 2;
-        BasePlayerBehavior::plShrinkCount = 0;
+        BasePlayerBehavior::plShrinkCount_ = 0;
 
         GameLib::setBlendMode(GameLib::Blender::BS_ALPHA);   // 通常のアルファ処理
 
@@ -91,7 +73,8 @@ void Game::update()
         setCursor(obj2dManager(), bg());
 
         // エネミーを追加する
-        //setEnemy(obj2dManager(), bg());
+        //setEnemy01(obj2dManager(), bg(), { 100,500 });
+        //setEnemy01(obj2dManager(), bg());
 
         bg()->init(player_); // BGの初期化
 
@@ -100,6 +83,9 @@ void Game::update()
     case 1:
         //////// 通常時の処理 ////////
 
+        // ステージ更新(エネミー出現)
+        stage_->update(obj2dManager_, bg_);
+
         // 敵追加4
         if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG2)
         {
@@ -107,21 +93,24 @@ void Game::update()
             ++num;
         }
 
-        // エネミーデータ追加
-        stage_->update();
-
         GameLib::debug::setString("num:%d", num);
         if (player_->transform_) GameLib::debug::setString("playerScale:%f", player_->transform_->scale_.x);
         GameLib::debug::setString("shrinkNum:%d", shrinkNum);
-        GameLib::debug::setString("plShrinkCount:%d", BasePlayerBehavior::plShrinkCount);
+        GameLib::debug::setString("plShrinkCount_:%d", BasePlayerBehavior::plShrinkCount_);
 
-        if (BasePlayerBehavior::plShrinkCount >= 10)     // プレイヤーの数がShrinkの規定数に達していて
+
+        if (BasePlayerBehavior::plShrinkCount_ >= 10 ||
+            GameLib::input::TRG(0) & GameLib::input::PAD_TRG1)     // プレイヤーの数がShrinkの規定数に達していて
         {
-            if (Collider::isAllShrink_  == false &&       // Shrinkが開始されておらず、
-                Behavior::isObjShrink() == false)         // すべてのobjがshrink中でなければ
+            if (Collider::isAllShrink_  == false && // Shrinkが開始されておらず、
+                Behavior::isObjShrink() == false)   // すべてのobjがshrink中でなければ
             {
-                Collider::isAllShrink_ = true;           // Shrinkを開始
-                BasePlayerBehavior::plShrinkCount -= 10; // プレイヤーのカウントをリセット
+                Collider::isAllShrink_ = true;      // Shrinkを開始
+
+                bg()->BG::setBGTargetScale();       // 背景のtargetScale(縮小目標値)を設定
+
+                if (BasePlayerBehavior::plShrinkCount_ >= 10)
+                    BasePlayerBehavior::plShrinkCount_ -= 10; // プレイヤーのカウントをリセット
                 ++shrinkNum;
             }
         }
@@ -155,7 +144,7 @@ void Game::update()
 void Game::draw()
 {
     // 画面クリア
-    GameLib::clear(VECTOR4(0.6f, 0.4f, 0.3f, 1));
+    GameLib::clear(VECTOR4(0.75f, 0.45f, 0.3f, 1));
 
     bg()->drawBack();     // 背景の描画
 

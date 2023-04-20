@@ -1,44 +1,28 @@
-//******************************************************************************
-//
-//
-//		Stage.h
-//
-//
-//******************************************************************************
-
-//------< インクルード >----------------------------------------------------------
 #include "all.h"
 
-Stage::Stage()
-    :timer(0)
-    , pScript(stageData)
+#define X BG::WINDOW_W + 256.0f
+
+STAGE_SCRIPT stageData01[] =
 {
+    {180,&setEnemy01,{X,300}},
+    {360,&setEnemy02,{X,800}},
+    SET_ENEMY_DATA_END
+};
+
+Stage::Stage()
+    : timer()
+    , pScript(nullptr)
+{
+    pScript = stageData01;
 }
 
-void Stage::update()
+void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
 {
-    while (pScript->enemyData_ && pScript->time_ == timer)
+    while (pScript->setEnemy_ && pScript->time_ == timer)
     {
-        OBJ2D* PARENT = nullptr;
+        pScript->setEnemy_(obj2dManager, bg, pScript->pos_);
 
-        while (pScript->enemyData_->behavior_)
-        {
-            VECTOR2 pos =
-            {
-                pScript->pos_.x + pScript->enemyData_->pos_.x,
-                pScript->pos_.y + pScript->enemyData_->pos_.y
-            };
-
-            PARENT = setEnemy(pScript->enemyData_->behavior_, PARENT, pos, pScript->enemyData_->zOrder_);
-            pScript->enemyData_++;
-        }
         pScript++;
     }
     ++timer;
-
-    if (!pScript->enemyData_)
-    {
-        pScript = stageData;
-        timer = 0;
-    }
 }

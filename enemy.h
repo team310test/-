@@ -1,89 +1,60 @@
 #pragma once
 
-//******************************************************************************
-//
-//
-//      Enemyh
-//
-//
-//******************************************************************************
+#define NEW_SET_ENEMY 1
+
+
+//void setEnemy01(OBJ2DManager* obj2dManager, BG* bg);
+//void setEnemy01(OBJ2DManager* obj2dManager, BG* bg);
 
 void addEnemy(OBJ2DManager* obj2dManager, BG* bg);
 
-//==============================================================================
-//
-//      移動アルゴリズム
-//
-//==============================================================================
+void setEnemy01(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos);
+void setEnemy02(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos);
+void setEnemyT(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos);
+
+//******************************************************************************
+// 
+//      BaseEnemyBehavior(エネミーのベース)
+// 
+//******************************************************************************
 class BaseEnemyBehavior : public ActorBehavior
 {
-protected:
-    void init(OBJ2D* obj) const override;
 private:
-    void moveX(OBJ2D* obj) const;
-    OBJ_TYPE getType() const override { return OBJ_TYPE::ENEMY; }
+    void init(OBJ2D* obj) const override;
+    void moveX(OBJ2D* obj) const override;
+    OBJ_TYPE getType() const override       { return OBJ_TYPE::ENEMY; }
     OBJ_TYPE getAttackType() const override { return OBJ_TYPE::PLAYER; }
     void hit(OBJ2D*, OBJ2D*) const override;
 
-    bool isAlive(OBJ2D* obj) const;
+    bool isAlive(OBJ2D* obj) const override;
     void damageProc(OBJ2D* obj) const override;
-    void areaCheck(OBJ2D* obj) const;
+    void areaCheck(OBJ2D* obj) const override;
 };
-
-class NormalEnemyBehavior : public BaseEnemyBehavior
-{
-public:    
-    NormalEnemyBehavior();
-private:
-    void moveY(OBJ2D* obj) const override;
-    void attack(OBJ2D* obj) const override;
-};
-EXTERN NormalEnemyBehavior normalEnemyBehavior;
-
-class ItemEnemyBehavior : public BaseEnemyBehavior
-{
-public:
-    ItemEnemyBehavior();
-private:
-    OBJ_TYPE getType() const override { return OBJ_TYPE::ITEM; }
-    OBJ_TYPE getAttackType() const override { return OBJ_TYPE::null; }
-    void hit(OBJ2D*, OBJ2D*) const override;
-    void attack(OBJ2D* obj) const override;
-};
-EXTERN ItemEnemyBehavior itemEnemyBehavior;
 
 
 //******************************************************************************
-//      EnemyCore01
+// 
+//      EnemyCore（エネミーの本体）
+// 
 //******************************************************************************
-// エネミー
+// EnemyCore01
 class EnemyCore01Behavior : public BaseEnemyBehavior
 {
 public:
     EnemyCore01Behavior();
 private:
-    void init(OBJ2D* obj)const override;
+    //void attack(OBJ2D* obj) const override;
 };
 EXTERN EnemyCore01Behavior enemyCore01Behavior;
 
-//******************************************************************************
-//      EnemyCore02
-//******************************************************************************
-// エネミー
-class EnemyCore02Behavior : public BaseEnemyBehavior
-{
-public:
-    EnemyCore02Behavior();
-private:
-    void init(OBJ2D* obj)const override;
-};
-EXTERN EnemyCore02Behavior enemyCore02Behavior;
-
 
 //******************************************************************************
-//      Turret01
+// 
+//      Turret（攻撃パーツ）
+// 
 //******************************************************************************
-// エネミー
+
+// Turret01
 class EnemyTurret01Behavior : public BaseEnemyBehavior
 {
 public:
@@ -92,53 +63,30 @@ private:
     void attack(OBJ2D* obj) const override;
 };
 EXTERN EnemyTurret01Behavior enemyTurret01Behavior;
-// アイテム
-class ItemTurret01Behavior : public BaseEnemyBehavior
-{
-public:
-    ItemTurret01Behavior();
-private:
-    OBJ_TYPE getType() const override { return OBJ_TYPE::ITEM; }
-    OBJ_TYPE getAttackType() const override { return OBJ_TYPE::null; }
-};
-EXTERN ItemTurret01Behavior itemTurret01Behavior;
+
 
 //******************************************************************************
-//      EnemyTrash01
+// 
+//      Buff(バフパーツ)
+// 
 //******************************************************************************
-// エネミー
-class ItemTrash01Behavior : public BaseEnemyBehavior
+
+// Buff01
+class EnemyBuff01Behavior : public BaseEnemyBehavior
 {
 public:
-    ItemTrash01Behavior();
-    OBJ_TYPE getType() const override { return OBJ_TYPE::ITEM; }
-    OBJ_TYPE getAttackType() const override { return OBJ_TYPE::null; }
+    EnemyBuff01Behavior();
 };
-EXTERN ItemTrash01Behavior itemTrash01Behavior;
+EXTERN EnemyBuff01Behavior enemyBuff01Behavior;
 
-//==============================================================================
-//
-//      消去アルゴリズム
-//
-//==============================================================================
 
-// 消去アルゴリズム
+//******************************************************************************
+// 
+//      erase(消去)
+// 
+//******************************************************************************
 class EraseEnemy : public Eraser
 {
     void erase(OBJ2D* obj) const;
 };
 EXTERN EraseEnemy eraseEnemy;
-
-class EraseItem : public Eraser
-{
-    void erase(OBJ2D* obj) const;
-};
-EXTERN EraseItem eraseItem;
-
-
-//==============================================================================
-//
-//     Enemeyのset
-//
-//==============================================================================
-OBJ2D* setEnemy(BaseEnemyBehavior* behavior, OBJ2D* parent, VECTOR2 pos, int zOrder);

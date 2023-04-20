@@ -1,27 +1,11 @@
-//******************************************************************************
-//
-//
-//      エネミークラス
-//
-//
-//******************************************************************************
-
-//------< インクルード >---------------------------------------------------------
 #include "all.h"
 
-//******************************************************************************
-//
-//      エネミー移動処理
-//
-//******************************************************************************
-
-//------< アニメデータ >----------------------------------------------
+// アニメデータ
 namespace
 {   
-    //------< アニメデータ >------------------------------------------
-    //上方向
-    GameLib::AnimeData animeEnemey_Up[] = {
-        { &sprEnemey_test, 10 },
+    //  コア01
+    GameLib::AnimeData animeCore01[] = {
+        { &sprPartsCore01, 10 },
         { nullptr, -1 },// 終了フラグ
     };
 
@@ -31,36 +15,12 @@ namespace
         //{ &sprPlayer_test, 10 },
         { nullptr, -1 },// 終了フラグ
     };
-    //  コア01
-    GameLib::AnimeData animeCore01[] = {
-        { &sprPartsCore01, 10 },
+
+    //  バフ01
+    GameLib::AnimeData animeBuff01[] = {
+        { &sprPartsBuff01, 10 },
         { nullptr, -1 },// 終了フラグ
     };
-    //  ゴミ01
-    GameLib::AnimeData animeTrash01[] = {
-        { &sprPartsTrash01, 10 },
-        { nullptr, -1 },// 終了フラグ
-    };
-}
-
-void setSubEnemy(BaseEnemyBehavior* behavior, OBJ2D* parent, VECTOR2 pos)
-{
-    VECTOR2 POS = { parent->transform_->position_.x + pos.x,parent->transform_->position_.y + pos.y };
-
-    OBJ2D* subEnemy = new OBJ2D(
-        new Renderer,
-        new Collider,
-        Game::instance()->bg(),
-        new ActorComponent,
-        nullptr,
-        nullptr
-    );
-
-    subEnemy->zOrder_ = 3;
-    // 親を設定
-    subEnemy->actorComponent_->parent_ = parent;
-
-    Game::instance()->obj2dManager()->add(subEnemy, behavior, POS);
 }
 
 // カーソルの座標取得
@@ -73,6 +33,133 @@ VECTOR2 getCursorPoint2()
 
     VECTOR2 pos = { static_cast<float>(point_.x), static_cast<float>(point_.y) };
     return pos;
+}
+
+
+OBJ2D* setMainEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behavior, VECTOR2 pos, int zOrder = 3)
+{
+    OBJ2D* enemy = new OBJ2D(
+        new Renderer,
+        new Collider,
+        bg,
+        new ActorComponent,
+        nullptr,
+        nullptr
+    );
+
+    enemy->zOrder_ = 3;
+    enemy->actorComponent_->parent_ = enemy;
+
+    return obj2dManager->add(enemy, &enemyCore01Behavior, pos);
+}
+void setSubEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behavior, OBJ2D* parent, VECTOR2 pos, int zOrder = 3)
+{
+    VECTOR2 POS = parent->transform_->position_ + pos;
+
+    OBJ2D* subEnemy = new OBJ2D(
+        new Renderer,
+        new Collider,
+        bg,
+        new ActorComponent,
+        nullptr,
+        nullptr
+    );
+
+    subEnemy->zOrder_ = zOrder;
+    // 親を設定
+    subEnemy->actorComponent_->parent_ = parent;
+
+    obj2dManager->add(subEnemy, behavior, POS);
+}
+
+void setEnemy01(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos)
+{
+    OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos);
+    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { -64,96 });
+}
+void setEnemy02(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos)
+{
+    OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos);
+    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { -128,0 });
+}
+
+void setEnemyT(OBJ2DManager* obj2dManager, BG* bg,VECTOR2 pos)
+{
+    OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos);
+    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { 0,-429 });
+    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { 0,-229 });
+    setSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, Parent, { 0,229 });
+    setSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, Parent, { 0,429 });
+}
+
+void addEnemy(OBJ2DManager* obj2dManager, BG* bg)
+{
+    OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, getCursorPoint2());
+    // サブパーツ
+    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { 0,-229 });
+    setSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, Parent, { 0,229 });
+}
+#if 0
+// Turret
+void setSubEnemy(OBJ2DManager* obj2dManager, BG* bg, OBJ2D* parent, VECTOR2 pos)
+{
+    OBJ2D* subEnemy = new OBJ2D(
+        new Renderer,
+        new Collider,
+        bg,
+        new ActorComponent,
+        nullptr,
+        nullptr
+    );
+
+    subEnemy->zOrder_ = 3;
+    // 親を設定
+    subEnemy->actorComponent_->parent_ = parent;
+
+    obj2dManager->add(subEnemy, &enemyTurret01Behavior, pos);
+}
+// Buff
+void setSubEnemy2(OBJ2DManager* obj2dManager, BG* bg, OBJ2D* parent, VECTOR2 pos)
+{
+    OBJ2D* subEnemy = new OBJ2D(
+        new Renderer,
+        new Collider,
+        bg,
+        new ActorComponent,
+        nullptr,
+        nullptr
+    );
+
+    subEnemy->zOrder_ = 3;
+    // 親を設定
+    subEnemy->actorComponent_->parent_ = parent;
+
+    obj2dManager->add(subEnemy, &enemyBuff01Behavior, pos);
+}
+
+void setEnemy01(OBJ2DManager* obj2dManager, BG* bg)
+{
+    const VECTOR2 pos = { 100,500 };
+
+    OBJ2D* enemy = new OBJ2D(
+        new Renderer,
+        new Collider,
+        bg,
+        new ActorComponent,
+        nullptr,
+        nullptr
+    );
+
+    enemy->zOrder_ = 3;
+    enemy->actorComponent_->parent_ = enemy;
+
+    obj2dManager->add(enemy, &enemyCore01Behavior, pos);
+
+    // サブパーツ
+    setSubEnemy(obj2dManager, bg, enemy, { pos.x, pos.y - 429 });
+    setSubEnemy(obj2dManager, bg, enemy, { pos.x, pos.y - 229 });
+    setSubEnemy2(obj2dManager, bg, enemy, { pos.x, pos.y + 229 });
+    setSubEnemy2(obj2dManager, bg, enemy, { pos.x, pos.y + 429 });
 }
 
 void addEnemy(OBJ2DManager* obj2dManager, BG* bg)
@@ -91,8 +178,16 @@ void addEnemy(OBJ2DManager* obj2dManager, BG* bg)
     enemy->zOrder_ = 3;
     enemy->actorComponent_->parent_ = enemy;
 
-    obj2dManager->add(enemy, &enemyCore02Behavior, pos);
+    obj2dManager->add(enemy, &enemyCore01Behavior, pos);
+
+    // サブパーツ
+    setSubEnemy(obj2dManager, bg, enemy, { pos.x, pos.y - 229 });
+    setSubEnemy(obj2dManager, bg, enemy, { pos.x, pos.y + 229 });
 }
+#endif
+
+
+
 
 //******************************************************************************
 //
@@ -108,6 +203,8 @@ void BaseEnemyBehavior::init(OBJ2D* obj) const
     obj->collider_->isDrawAttackRect_ = true;
 
     obj->eraser_ = &eraseEnemy;
+
+    obj->renderer_->flip(); // 反転させる
 }
 
 void BaseEnemyBehavior::moveX(OBJ2D* obj) const
@@ -118,7 +215,7 @@ void BaseEnemyBehavior::moveX(OBJ2D* obj) const
     ActorBehavior::moveX(obj);
 }
 
-void BaseEnemyBehavior::hit(OBJ2D* src, OBJ2D* dst) const
+void BaseEnemyBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
 {
     // プレイヤーのHPを減らす
     dst->actorComponent_->hp_ -= getParam()->ATTACK_POWER;
@@ -129,7 +226,7 @@ bool BaseEnemyBehavior::isAlive(OBJ2D* obj) const
     return obj->actorComponent_->hp_ > 0;
 }
 
-void BaseEnemyBehavior::damageProc(OBJ2D* obj) const
+void BaseEnemyBehavior::damageProc(OBJ2D* /*obj*/) const
 {
     // ダメージ処理
     //obj->actorComponent_->damaged();
@@ -140,76 +237,21 @@ void BaseEnemyBehavior::damageProc(OBJ2D* obj) const
 
 void BaseEnemyBehavior::areaCheck(OBJ2D* obj) const
 {
+#if 1
     // 左端に進むと右端から出てくる(仮)
-    //if (obj->transform_->position_.x < -obj->collider_->size_.x)
-    //{
-    //    obj->transform_->position_.x = obj->collider_->size_.x + BG::WINDOW_W;
-    //}
+    if (obj->transform_->position_.x < -obj->collider_->size_.x)
+    {
+        obj->transform_->position_.x = obj->collider_->size_.x + BG::WINDOW_W;
+    }
+
+#else
+    if (obj->transform_->position_.x < 0) // 画面右に行ったら
+    {
+        obj->behavior_ = nullptr; // 消去
+    }
+#endif
 }
 
-//******************************************************************************
-//
-//      NormalEnemyBehavior
-//
-//******************************************************************************
-NormalEnemyBehavior::NormalEnemyBehavior()
-{
-    // アニメーション
-    param_.ANIME_WAIT = animeEnemey_Up;
-
-    param_.SIZE    = VECTOR2(player_size, player_size);
-    param_.HIT_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
-    //param_.ATTACK_BOX = { -250 / 2, -250, 250 / 2, 0 };
-    param_.HP = 1;
-
-    // 速度関連のパラメータ
-    param_.ACCEL_X = 1.0f;
-    param_.ACCEL_Y = 1.0f;
-    param_.SPEED_X_MAX = 4.0f;
-    param_.SPEED_Y_MAX = 4.0f;
-    param_.JUMP_POWER_Y = -12.0f;
-}
-
-void NormalEnemyBehavior::moveY(OBJ2D* obj) const
-{
-    BaseEnemyBehavior::moveY(obj);
-}
-
-void NormalEnemyBehavior::attack(OBJ2D* obj) const
-{
-}
-
-//******************************************************************************
-//
-//      ItemEnemyBehavior
-//
-//******************************************************************************
-ItemEnemyBehavior::ItemEnemyBehavior()
-{
-    // アニメーション
-    param_.ANIME_WAIT = animeEnemey_Up;
-
-    param_.SIZE = VECTOR2(player_size, player_size);
-    param_.ATTACK_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
-    param_.HIT_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
-    param_.HP = 1;
-
-    // 速度関連のパラメータ
-    param_.ACCEL_X = 4.0f;
-    param_.ACCEL_Y = 4.0f;
-    param_.SPEED_X_MAX = 4.0f;
-    param_.SPEED_Y_MAX = 4.0f;
-    param_.JUMP_POWER_Y = -12.0f;
-}
-
-void ItemEnemyBehavior::hit(OBJ2D* src, OBJ2D* dst) const
-{
-    src->actorComponent_->hp_ = 0;
-}
-
-void ItemEnemyBehavior::attack(OBJ2D* obj) const
-{
-}
 
 //******************************************************************************
 //
@@ -222,45 +264,9 @@ EnemyCore01Behavior::EnemyCore01Behavior()
     param_.ANIME_WAIT = animeCore01;
 
     param_.SIZE = VECTOR2(player_size, player_size);
-    param_.HIT_BOX[0] = { -64,-64,64,64 };
+    param_.HIT_BOX[0] = { -125,-125,125,125 };
 
-    param_.ATTACK_BOX[0] = { -64, -64, 64, 64 };
-
-    // 速度関連のパラメータ
-    param_.ACCEL_X = 4.0f;
-    param_.ACCEL_Y = 4.0f;
-    param_.SPEED_X_MAX = 4.0f;
-    param_.SPEED_Y_MAX = 4.0f;
-    param_.JUMP_POWER_Y = -12.0f;
-
-    // コアであることの設定
-    param_.IS_CORE = true;
-
-    // アニメーションのパラメータ
-    param_.obj_ANIME = &rotateAnime;
-    param_.ROT_SPEED = -0.05f;
-}
-
-void EnemyCore01Behavior::init(OBJ2D* obj) const
-{
-    // サブパーツ召喚
-    //setSubEnemy(&enemyTurret01Behavior, obj, { -64,96 });
-
-    BaseEnemyBehavior::init(obj);
-}
-
-//******************************************************************************
-//      EnemyCore02
-//******************************************************************************
-EnemyCore02Behavior::EnemyCore02Behavior()
-{
-    // アニメーション
-    param_.ANIME_WAIT = animeCore01;
-
-    param_.SIZE = VECTOR2(player_size, player_size);
-    param_.HIT_BOX[0] = { -64,-64,64,64 };
-
-    param_.ATTACK_BOX[0] = { -64, -64, 64, 64 };
+    param_.ATTACK_BOX[0] = { -125, -125, 125, 125 };
 
     // 速度関連のパラメータ
     param_.ACCEL_X = 4.0f;
@@ -269,8 +275,9 @@ EnemyCore02Behavior::EnemyCore02Behavior()
     param_.SPEED_Y_MAX = 4.0f;
     param_.JUMP_POWER_Y = -12.0f;
 
-    // コアであることの設定
-    param_.IS_CORE = true;
+    // 次のBehaviorなし
+    param_.NEXT_BEHAVIOR = nullptr;
+    param_.NEXT_ERASER   = nullptr;
 
     // アニメーションのパラメータ
     param_.obj_ANIME = &rotateAnime;
@@ -278,202 +285,144 @@ EnemyCore02Behavior::EnemyCore02Behavior()
 }
 
 
-void EnemyCore02Behavior::init(OBJ2D* obj) const
-{
-    // サブパーツ召喚
-    //setSubEnemy(&enemyTurret01Behavior, obj, { -128,0 });
-
-    BaseEnemyBehavior::init(obj);
-}
-
-
 //******************************************************************************
 //
-//      Turret01
+//      Turret
 //
 //******************************************************************************
-// エネミー
+
+// Turret01
 EnemyTurret01Behavior::EnemyTurret01Behavior()
 {
-    // アニメーション
     param_.ANIME_WAIT = animeTurret01;
 
-    param_.SIZE = VECTOR2(player_size, player_size);
-    param_.HIT_BOX[0] =  { -64,-64,64,64 };
+    param_.SIZE = { player_size, player_size };
+    param_.HIT_BOX[0] = { -125, 48, 80, 95 };   // 下長方形
+    param_.HIT_BOX[1] = { -10,-95,125,50 };      // ネジ
 
-    param_.ATTACK_BOX[0] =  { -64,-64,64,64 };
+    param_.ATTACK_BOX[0] = { -125, 48, 80, 95 };   // 下長方形
+    param_.ATTACK_BOX[1] = { -10,-95,125,50 };      // ネジ
 
-    // 速度関連のパラメータ
     param_.ACCEL_X = 4.0f;
     param_.ACCEL_Y = 4.0f;
     param_.SPEED_X_MAX = 4.0f;
     param_.SPEED_Y_MAX = 4.0f;
-    param_.JUMP_POWER_Y = -12.0f;
+    //param_.JUMP_POWER_Y = -12.0f;
 
-    // 次のBehavior・Eraser
-    param_.NEXT_BEHAVIOR = &playerTurret01Behavior;
-
-    // アニメーションのパラメータ
-    param_.obj_ANIME = &scaleAnime;
+    // 次のBehavior・Eraser（ドロップアイテム）
+    param_.NEXT_BEHAVIOR = &dropTurret01Behavior;
+    param_.NEXT_ERASER   = &eraseDropParts;
 }
 
 void EnemyTurret01Behavior::attack(OBJ2D* obj) const
 {
-    obj->actorComponent_->attackTimer_--;
+    // 攻撃クールタイム減少
+    if (obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
 
-    if (obj->actorComponent_->attackTimer_ >= 0)return;
+    // 攻撃クールタイムが終わっていなければreturn
+    if (obj->actorComponent_->attackTimer_ > 0) return;
 
-    const VECTOR2 pos = obj->transform_->position_/* + VECTOR2(0, -120)*/;
+    // 後々(inline)関数化したい
+    {
+        const VECTOR2 pos = obj->transform_->position_/* + VECTOR2(0, -120)*/;
 
-    OBJ2D* shot = Game::instance()->obj2dManager()->add(
-        new OBJ2D(
-            new Renderer,
-            new Collider,
-            obj->bg_,
-            nullptr,
-            nullptr,
-            new WeaponComponent
-        ),
-        &enemyNormalShotBehavior,
-        pos
-    );
-    shot->zOrder_ = 2;
-    shot->weaponComponent_->parent_ = obj;
-    obj->actorComponent_->attackTimer_ = 180;
+        OBJ2D* shot = Game::instance()->obj2dManager()->add(
+            new OBJ2D(
+                new Renderer,
+                new Collider,
+                obj->bg_,
+                nullptr,
+                nullptr,
+                new WeaponComponent
+            ),
+            &enemyNormalShotBehavior,
+            pos
+        );
+        shot->zOrder_ = 2;
+        shot->weaponComponent_->parent_ = obj;
+    }
 
-}
-
-// アイテム
-ItemTurret01Behavior::ItemTurret01Behavior()
-{
-    // アニメーション
-    param_.ANIME_WAIT = animeTurret01;
-
-    param_.SIZE = VECTOR2(player_size, player_size);
-    param_.HIT_BOX[0] = { -64,-64,64,64 };
-
-    param_.ATTACK_BOX[0] = { -64,-64,64,64 };
-
-    // 速度関連のパラメータ
-    param_.ACCEL_X = 2.0f;
-    param_.ACCEL_Y = 2.0f;
-    param_.SPEED_X_MAX = 2.0f;
-    param_.SPEED_Y_MAX = 2.0f;
-    param_.JUMP_POWER_Y = -12.0f;
+    obj->actorComponent_->attackTimer_ = 30;
 }
 
 
 //******************************************************************************
-//      EnemyTrash01
+//
+//      Buff
+//
 //******************************************************************************
-// アイテム
-ItemTrash01Behavior::ItemTrash01Behavior()
+
+// Buff01
+EnemyBuff01Behavior::EnemyBuff01Behavior()
 {
-    // アニメーション
-    param_.ANIME_WAIT = animeTrash01;
+    param_.ANIME_WAIT = animeBuff01;
 
-    param_.SIZE = VECTOR2(player_size, player_size);
-    param_.HIT_BOX[0] = { -64,-64,64,64 };
+    param_.SIZE = { player_size, player_size };
+    param_.HIT_BOX[0] = {
+        -player_hitBox, -player_hitBox,
+         player_hitBox,  player_hitBox,
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
-    param_.ATTACK_BOX[0] = { -64,-64,64,64 };
 
-    // 速度関連のパラメータ
-    param_.ACCEL_X = 2.0f;
-    param_.ACCEL_Y = 2.0f;
-    param_.SPEED_X_MAX = 2.0f;
-    param_.SPEED_Y_MAX = 2.0f;
-    param_.JUMP_POWER_Y = -12.0f;
+    param_.ACCEL_X = 4.0f;
+    param_.ACCEL_Y = 4.0f;
+    param_.SPEED_X_MAX = 4.0f;
+    param_.SPEED_Y_MAX = 4.0f;
+    //param_.JUMP_POWER_Y = -12.0f;
+
+    // 次のBehavior・Eraser（ドロップアイテム）
+    param_.NEXT_BEHAVIOR = &dropBuff01Behavior;
+    param_.NEXT_ERASER   = &eraseDropParts;
 }
 
-
-//--------------------------------------------------------------
-//  消去
-//--------------------------------------------------------------
+//******************************************************************************
+//
+//      erase（消去）
+//
+//******************************************************************************
 void EraseEnemy::erase(OBJ2D* obj) const
 {
-    // 親が消滅するとアイテム化してreturn
-    if (obj->actorComponent_->parent_->actorComponent_->parent_ == nullptr)
+    // スケールが0以下になったら消去
+    if (obj->transform_->scale_.x <= 0)
     {
-        obj->actorComponent_->parent_ = nullptr;
-        obj->behavior_ = &itemTurret01Behavior;
-        obj->actorComponent_->hp_ = 1;
-        obj->eraser_ = &eraseItem;
-
-        // 反転させる
-        obj->renderer_->flip();
-        return;
-    }
-
-    // コアでない　かつ　HPが0以下になるとTrashアイテム化してreturn
-    if (!obj->actorComponent_->isCore && !obj->actorComponent_->isAlive())
-    {
-        obj->actorComponent_->parent_ = nullptr;
-        obj->behavior_ = &itemTrash01Behavior;
-        obj->actorComponent_->hp_ = 1;
-        obj->eraser_ = &eraseItem;
-        // アニメーション停止
-        obj->actorComponent_->objAnime_ = nullptr;
-        // nextBehavior_変更
-        obj->actorComponent_->nextBehavior_ = &playerTrash01Behavior;
-
-        // 反転させる
-        obj->renderer_->flip();
-        return;
-    }
-
-    // 画面外へ行くと消滅　か　コアの体力が0になると消滅
-    if (obj->transform_->position_.x < -obj->collider_->size_.x || !obj->actorComponent_->isAlive())
-    {
-        obj->actorComponent_->parent_ = nullptr;
         obj->behavior_ = nullptr;
         return;
     }
-}
 
-void EraseItem::erase(OBJ2D* obj) const
-{
+    //OBJ2D* parent = obj->actorComponent_->parent_->actorComponent_->parent_; // 長いので省略
+    OBJ2D* parent = obj->actorComponent_->parent_; // 長いので省略
+
+    // 親が消滅するとアイテム化する
+    if (parent && parent->behavior_ == nullptr) // 親がいてその親がすでに死んでいる場合
+    {
+        obj->actorComponent_->parent_ = nullptr; // 親リセット
+
+        // 次のbehavior・eraser（ドロップアイテム）を代入
+        obj->behavior_ = obj->nextBehavior_;
+        obj->eraser_ = obj->nextEraser_;
+
+        obj->renderer_->flip(); // 反転させる
+
+        return;
+    }
+
+    // HPが0以下になると
     if (!obj->actorComponent_->isAlive())
     {
-        obj->behavior_ = obj->actorComponent_->nextBehavior_;
-        
-        obj->eraser_ = &erasePlayer;
-        
-        obj->actorComponent_->hp_ = obj->behavior_->getParam_HP();
+            // コアでないならゴミアイテム化する
+        if (obj != parent)
+        {
+            obj->actorComponent_->parent_ = nullptr; // 親リセット
 
-        ++BasePlayerBehavior::plShrinkCount;
-    }
+            // 次のbehavior・eraser（ドロップアイテム）を代入
+            obj->behavior_ = &doropTrash01Behavior;
+            obj->eraser_ = &eraseDropParts;;
+            return;
+        }
 
-    //画面外へ行くと 消滅
-    if (obj->transform_->position_.x < -obj->collider_->size_.x)
-    {
-        obj->actorComponent_->parent_ = nullptr;
+        // コアなら消滅する
         obj->behavior_ = nullptr;
         return;
     }
-}
-
-
-//==============================================================================
-//
-//     Enemeyのset
-//
-//==============================================================================
-OBJ2D* setEnemy(BaseEnemyBehavior* behavior, OBJ2D* parent, VECTOR2 pos, int zOrder)
-{
-    OBJ2D* enemy = new OBJ2D(
-        new Renderer,
-        new Collider,
-        Game::instance()->bg(),
-        new ActorComponent,
-        nullptr,
-        nullptr
-    );
-
-    enemy->zOrder_ = zOrder;
-
-    // parentがなければ自分を親にする
-    if (parent == nullptr)enemy->actorComponent_->parent_ = enemy;
-    else enemy->actorComponent_->parent_ = parent;
-
-    return Game::instance()->obj2dManager()->add(enemy, behavior, pos);
 }

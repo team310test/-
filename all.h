@@ -25,10 +25,9 @@
 #include "objAnime.h"
 #include "actor.h"
 #include "player.h"
+#include "dropParts.h"
 #include "enemy.h"
-#include "EnemyData.h"
-#include "Stage.h"
-#include "stageData.h"
+#include "stage.h"
 
 #include "scene.h"
 #include "game.h"

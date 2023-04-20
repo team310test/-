@@ -19,10 +19,10 @@ class Game : public Scene
 private:
     OBJ2DManager*   obj2dManager_;
     BG*             bg_;
+    Stage*          stage_;
+
     bool            isPaused_;
     static Game     instance_;
-
-    Stage*          stage_;
 
     bool            isGameOver_;
     int             gameOverTimer_;
@@ -51,8 +51,13 @@ private:
     Game()
         :obj2dManager_(nullptr)
         , bg_(nullptr)
+        , stage_(nullptr)
         , isPaused_(false)
-        , player_(nullptr) {}
+        , isGameOver_(false)
+        , gameOverTimer_(0)
+        , player_(nullptr) 
+        , cursor_(nullptr)
+    {}
     Game(const Game&) = delete; // = delete コピーコンストラクタが存在しないことを明示
 
     void judge();

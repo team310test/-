@@ -16,21 +16,23 @@
 // 前方宣言
 class OBJ2D;
 
-typedef	void(*OBJ_ANIME)(OBJ2D* obj);		// 関数ポインタ（アニメ処理）
+// 関数ポインタ（アニメ処理）
+typedef	void(*OBJ_ANIME)(OBJ2D* obj);
+
 
 enum class OBJ_TYPE
 {
     //TYPE_NULL = -1,
-    null = -1,
+    NONE = -1,
     PLAYER = 0, 
-    ITEM, 
+    PARTS, //　パーツ
     ENEMY, 
-    WEAPON, 
+    SHOT, 
     MAX, 
 };
 
 //==============================================================================
-// 
+
 // 移動アルゴリズムクラス（抽象クラス）
 class Behavior
 {
@@ -38,6 +40,7 @@ public:
     virtual void move(OBJ2D*) const = 0;
     virtual OBJ_TYPE getType() const = 0;
     virtual OBJ_TYPE getAttackType() const = 0;
+
     virtual void hit(OBJ2D* src, OBJ2D* dst) const = 0;
 
     virtual void startAllShrink(OBJ2D*) const;  // すべてのobjのShrinkを開始させる関数
@@ -45,9 +48,6 @@ public:
 
     static bool isObjShrink(); // shrinkしているobjがいるか調べる関数（shrinkしているobjがいたらtrue, いなければfalse）
 
-    virtual int getParam_HP() { return 0; }
-
-    // アニメーション
 };
 
 // 消去アルゴリズムクラス（抽象クラス）
@@ -89,12 +89,14 @@ class Transform : public Component
 {
 public:
     VECTOR2 position_;
+    VECTOR2 orgPosition_;
     VECTOR2 scale_;
     float rotation_;
     VECTOR2 velocity_;
 
     Transform()
-        :position_()
+        : position_()
+        , orgPosition_()
         , scale_(1, 1)
         , rotation_()
         , velocity_()
@@ -114,10 +116,6 @@ public:
     GameLib::AnimeData* animeData_;
     bool drawXFlip_;
     bool pad_[3];
-    VECTOR2 renderPosition_;
-    bool isRenderShrink;
-
-    VECTOR2 scale_;
     Renderer()
         :data_()
         , color_({ 1,1,1,1 })
@@ -125,9 +123,6 @@ public:
         , animeData_()
         , drawXFlip_()
         , pad_()
-        , scale_()
-        , renderPosition_()
-        , isRenderShrink()
     {
     }
     void flip() { drawXFlip_ = !drawXFlip_; }
@@ -181,6 +176,7 @@ class ActorComponent : public Component
 {
 public:
     int hp_;
+    int nextHp_;
     int attackTimer_;
     int damageTimer_;
     int mutekiTimer_;
@@ -189,20 +185,17 @@ public:
 
     OBJ2D* parent_;
     OBJ2D* obj;
-    Behavior* nextBehavior_; // 次に変わるBehavior
-    Eraser* nextEraser_;    // 次変わるEraser
 
     static int playerNum;
     int No;
 
-    bool isCore;            // コアであるか
-
     // アニメ用データ
     OBJ_ANIME objAnime_;
     float rotSpeed_;
-    
+
     ActorComponent()
         :hp_(1)
+        , nextHp_(0)
         , attackTimer_(0)
         , damageTimer_(0)
         , mutekiTimer_(0)
@@ -212,12 +205,9 @@ public:
         , obj(nullptr)
         , parent_(nullptr)
 
-        , nextBehavior_(nullptr)
-        , nextEraser_(nullptr)
-
         , No(1)
-        , isCore(false)
 
+        // アニメ用データ
         , objAnime_(nullptr)
         , rotSpeed_(0)
     {
@@ -264,10 +254,13 @@ class OBJ2D
 public:
     // 基本的なメンバ
     int state_ = 0;
+    int act_ = 0;
     int timer_ = 0;
     int zOrder_ = 0;
-    Behavior* behavior_ = nullptr;
-    Eraser* eraser_ = nullptr;
+    Behavior* behavior_     = nullptr;
+    Eraser*   eraser_       = nullptr;
+    Behavior* nextBehavior_ = nullptr; // 次に変わるBehavior
+    Eraser*   nextEraser_   = nullptr; // 次に変わるEraser
 
     BG* bg_ = nullptr;
 

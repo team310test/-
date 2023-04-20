@@ -1,20 +1,8 @@
-//******************************************************************************
-//
-//
-//      OBJ2Dクラス
-//
-//
-//******************************************************************************
-
-//------< インクルード >----------------------------------------------------------
 #include "all.h"
 
 bool Collider::isAllShrink_ = false;
 int ActorComponent::playerNum = 1;
 
-//--------------------------------------------------------------
-//  コンストラクタ
-//--------------------------------------------------------------
 OBJ2D::OBJ2D(
     Renderer* renderer,
     Collider* collider,
@@ -39,9 +27,7 @@ OBJ2D::OBJ2D(
     if (weaponComponent_) weaponComponent_->setOBJ2D(this);
 }
 
-//--------------------------------------------------------------
-//  デストラクタ
-//--------------------------------------------------------------
+
 OBJ2D::~OBJ2D()
 {
     safe_delete(transform_);
@@ -61,13 +47,12 @@ void OBJ2D::move()
     if (eraser_) eraser_->erase(this);
 }
 
-//--------------------------------------------------------------
-//  描画
-//--------------------------------------------------------------
+
 void Renderer::draw()
 {
-    VECTOR2 scale = 
-        drawXFlip_ ? VECTOR2( -scale_.x, scale_.y) : scale_;
+    VECTOR2 scale = drawXFlip_ 
+                  ? VECTOR2( -obj_->transform_->scale_.x, obj_->transform_->scale_.y) 
+                  : obj_->transform_->scale_;
     
     if (data_)
     {
@@ -207,17 +192,29 @@ void OBJ2DManager::draw()
             screenPos.y > GameLib::window::getHeight() + LIMIT)
             continue;
 
-        obj->renderer_->draw();
-        
-        obj->collider_->draw();
 
+        if (obj->transform_->scale_.x > 0.10f) obj->renderer_->draw();
+        
+
+        static bool isDrawHitBox = false; // ヒットボックスを表示するか
+        // 1キーでヒットボックス表示・非表示
+        if (GetAsyncKeyState('1') & 1) 
+        {
+            if (!isDrawHitBox) isDrawHitBox = true;
+            else isDrawHitBox = false;
+        }
+        if (isDrawHitBox) obj->collider_->draw();
+
+
+
+        // カーソルが見づらいのでプリミティブ描画
         OBJ2D* cursor = Game::instance()->cursor_;
         GameLib::primitive::rect(
             cursor->transform_->position_,
-            cursor->collider_->size_,
-            {0,0},
+            { 10,10 },
+            { 0,0 },
             0,
-            {0,0,0,1}
+            { 0,0,0,1 }
         );
     }
 }
@@ -239,30 +236,29 @@ OBJ2DManager::~OBJ2DManager()
 
 void Collider::draw()
 {
-    //if (isDrawHitRect_)
-    //{
-    //    for (int i = 0; i < boxMax; ++i)
-    //    {
+    if (isDrawHitRect_)
+    {
+        for (int i = 0; i < boxMax; ++i)
+        {
+            VECTOR2 pos = VECTOR2(hitBox_[i].left, hitBox_[i].top);
+            VECTOR2 size = { hitBox_[i].right - hitBox_[i].left, hitBox_[i].bottom - hitBox_[i].top };
+            VECTOR2 center{ 0, 0 };
+            VECTOR4 blue{ 0,0,1,0.5f };
+            GameLib::primitive::rect(pos, size, center, 0, blue);
+        }
+    }
 
-    //        VECTOR2 pos = VECTOR2(hitBox_[i].left, hitBox_[i].top);
-    //        VECTOR2 size = { hitBox_[i].right - hitBox_[i].left, hitBox_[i].bottom - hitBox_[i].top };
-    //        VECTOR2 center{ 0, 0 };
-    //        VECTOR4 blue{ 0,0,1,0.5f };
-    //        GameLib::primitive::rect(pos, size, center, 0, blue);
-    //    }
-    //}
-
-    //if (isDrawAttackRect_)
-    //{
-    //    for (int i = 0; i < boxMax; ++i)
-    //    {
-    //        VECTOR2 pos = VECTOR2(attackBox_[i].left, attackBox_[i].top);
-    //        VECTOR2 size = { attackBox_[i].right - attackBox_[i].left, attackBox_[i].bottom - attackBox_[i].top };
-    //        VECTOR2 center{ 0, 0 };
-    //        VECTOR4 red{ 1,0,0,0.5f };
-    //        GameLib::primitive::rect(pos, size, center, 0, red);
-    //    }
-    //}
+    if (isDrawAttackRect_)
+    {
+        for (int i = 0; i < boxMax; ++i)
+        {
+            VECTOR2 pos = VECTOR2(attackBox_[i].left, attackBox_[i].top);
+            VECTOR2 size = { attackBox_[i].right - attackBox_[i].left, attackBox_[i].bottom - attackBox_[i].top };
+            VECTOR2 center{ 0, 0 };
+            VECTOR4 red{ 1,0,0,0.5f };
+            GameLib::primitive::rect(pos, size, center, 0, red);
+        }
+    }
 }
 
 void Collider::calcHitBox(const GameLib::fRECT& rc,int i)
@@ -272,10 +268,10 @@ void Collider::calcHitBox(const GameLib::fRECT& rc,int i)
         //obj_->transform_->position_.y + rc.top, 
         //obj_->transform_->position_.x + rc.right, 
         //obj_->transform_->position_.y + rc.bottom 
-        obj_->transform_->position_.x + rc.left * obj_->transform_->scale_.x,
-        obj_->transform_->position_.y + rc.top * obj_->transform_->scale_.y,
-        obj_->transform_->position_.x + rc.right * obj_->transform_->scale_.x,
-        obj_->transform_->position_.y + rc.bottom * obj_->transform_->scale_.y
+        obj_->transform_->position_.x + (rc.left   * obj_->transform_->scale_.x),
+        obj_->transform_->position_.y + (rc.top    * obj_->transform_->scale_.y),
+        obj_->transform_->position_.x + (rc.right  * obj_->transform_->scale_.x),
+        obj_->transform_->position_.y + (rc.bottom * obj_->transform_->scale_.y),
     };
 }
 
@@ -286,25 +282,35 @@ void Collider::calcAttackBox(const GameLib::fRECT& rc, int i)
         //obj_->transform_->position_.y + rc.top, 
         //obj_->transform_->position_.x + rc.right, 
         //obj_->transform_->position_.y + rc.bottom
-        obj_->transform_->position_.x + rc.left * obj_->transform_->scale_.x,
-        obj_->transform_->position_.y + rc.top * obj_->transform_->scale_.y,
-        obj_->transform_->position_.x + rc.right * obj_->transform_->scale_.x,
-        obj_->transform_->position_.y + rc.bottom * obj_->transform_->scale_.y
+        obj_->transform_->position_.x + (rc.left   * obj_->transform_->scale_.x),
+        obj_->transform_->position_.y + (rc.top    * obj_->transform_->scale_.y),
+        obj_->transform_->position_.x + (rc.right  * obj_->transform_->scale_.x),
+        obj_->transform_->position_.y + (rc.bottom * obj_->transform_->scale_.y),
     };
 }
 
 bool Collider::hitCheck(Collider* other)
 {
-    for (int i = 0; i < boxMax; ++i)
+    for (auto& This : attackBox_)
     {
-        for (int j = 0; j < boxMax; ++j)
+        for (auto& Other : other->hitBox_)
         {
-            if (attackBox_[i].right > other->hitBox_[j].left &&
-                attackBox_[i].left < other->hitBox_[j].right &&
-                attackBox_[i].bottom > other->hitBox_[j].top &&
-                attackBox_[i].top < other->hitBox_[j].bottom) return true;
-        }
+            if (This.right  > Other.left  &&
+                This.left   < Other.right &&
+                This.bottom > Other.top   &&
+                This.top    < Other.bottom) return true;
+        }      
     }
+    //for (int i = 0; i < boxMax; ++i)
+    //{
+    //    for (int j = 0; j < boxMax; ++j)
+    //    {
+    //        if (attackBox_[i].right  > other->hitBox_[j].left  &&
+    //            attackBox_[i].left   < other->hitBox_[j].right &&
+    //            attackBox_[i].bottom > other->hitBox_[j].top   &&
+    //            attackBox_[i].top    < other->hitBox_[j].bottom) return true;
+    //    }
+    //}
 
     return false;
 }
@@ -342,7 +348,5 @@ void ActorComponent::muteki()
 bool ActorComponent::isAliveParent() const
 {
     if (parent_ == nullptr) return false;
-    if(parent_->actorComponent_->isAlive())
-
-    return true;
+    return (parent_->actorComponent_->isAlive());
 }
