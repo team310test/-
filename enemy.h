@@ -73,6 +73,20 @@ private:
 };
 EXTERN EnemyCore01Behavior enemyCore01Behavior;
 
+//******************************************************************************
+//      EnemyCore02
+//******************************************************************************
+// エネミー
+class EnemyCore02Behavior : public BaseEnemyBehavior
+{
+public:
+    EnemyCore02Behavior();
+private:
+    void init(OBJ2D* obj)const override;
+    bool isCore() { return true; }
+};
+EXTERN EnemyCore02Behavior enemyCore02Behavior;
+
 
 //******************************************************************************
 //      Turret01

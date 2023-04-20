@@ -115,7 +115,7 @@ void addEnemy(OBJ2DManager* obj2dManager, BG* bg)
     enemy->zOrder_ = 3;
     enemy->actorComponent_->parent_ = enemy;
 
-    obj2dManager->add(enemy, &enemyCore01Behavior, pos);
+    obj2dManager->add(enemy, &enemyCore02Behavior, pos);
 }
 
 //******************************************************************************
@@ -269,6 +269,41 @@ void EnemyCore01Behavior::init(OBJ2D* obj) const
 
     BaseEnemyBehavior::init(obj);
 }
+
+//******************************************************************************
+//      EnemyCore02
+//******************************************************************************
+EnemyCore02Behavior::EnemyCore02Behavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT = animeCore01;
+
+    param_.SIZE = VECTOR2(player_size, player_size);
+    param_.HIT_BOX[0] = { -64,-64,64,64 };
+
+    param_.ATTACK_BOX[0] = { -64, -64, 64, 64 };
+
+    // 速度関連のパラメータ
+    param_.ACCEL_X = 4.0f;
+    param_.ACCEL_Y = 4.0f;
+    param_.SPEED_X_MAX = 4.0f;
+    param_.SPEED_Y_MAX = 4.0f;
+    param_.JUMP_POWER_Y = -12.0f;
+
+    // アニメーションのパラメータ
+    param_.obj_ANIME = &rotateAnime;
+    param_.ROT_SPEED = -0.05f;
+}
+
+
+void EnemyCore02Behavior::init(OBJ2D* obj) const
+{
+    // サブパーツ召喚
+    setSubEnemy(&enemyTurret01Behavior, obj, { -128,0 });
+
+    BaseEnemyBehavior::init(obj);
+}
+
 
 //******************************************************************************
 //
