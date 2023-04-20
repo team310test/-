@@ -251,7 +251,62 @@ void PlCurveShotBehavior::update(OBJ2D* obj) const
         CURVE_SHOT_ACCEL_X / transform->scale_.x,  // scaleに挙動を合わせる
         CURVE_SHOT_ACCEL_Y / transform->scale_.y,  // scaleに挙動を合わせる
     };  
+
 }
+
+//******************************************************************************
+//
+//      CurveShot（カーブ弾）
+//
+//******************************************************************************
+
+// プレイヤー
+PlPenetrateShotBehavior::PlPenetrateShotBehavior()
+{
+    param_.SPR_WEAPON = &sprShot_NormalShot;
+    param_.ERASER = &eraseShot;
+
+    param_.SPEED_X = 100.0f;
+    param_.ATTACK_POWER = 1;
+
+    // 変更予定
+    param_.ATTACK_BOX[0] = { -24, -24, 24, 24 };
+
+}
+
+void PlPenetrateShotBehavior::update(OBJ2D* obj) const
+{
+    Transform* transform = obj->transform_;
+
+    switch (obj->act_)
+    {
+    case 0: // X速度を落とす
+        transform->velocity_.x *= 0.8f;
+
+        // 弾がほぼ止まった状態になったら
+        if (transform->velocity_.x <= 0.05f)
+        {
+            // 速度を代入
+            transform->velocity_.x += param_.SPEED_X / transform->scale_.x;  // scaleに挙動を合わせる  
+            ++obj->act_;
+            break;
+        }
+        break;
+
+    case 1: // 高速移動
+
+        break;
+    }
+
+    //transform->position_ += transform->velocity_; // 位置に速度を足す
+    transform->position_ +=
+    {
+        transform->velocity_.x * obj->transform_->scale_.x, // 位置に速度を足す
+        transform->velocity_.y * obj->transform_->scale_.y, // 位置に速度を足す
+    };
+}
+
+
 
 //******************************************************************************
 //

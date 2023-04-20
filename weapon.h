@@ -128,6 +128,22 @@ private:
 EXTERN PlCurveShotBehavior plCurveShotBehavior;
 
 
+//******************************************************************************
+//
+//      PenetrateShot（貫通弾）
+//
+//******************************************************************************
+
+// プレイヤー
+class PlPenetrateShotBehavior : public BasePlayerShotBehavior
+{
+public:
+    PlPenetrateShotBehavior();
+private:
+    void update(OBJ2D* obj) const override;
+};
+EXTERN PlPenetrateShotBehavior plPenetrateShotBehavior;
+
 
 //******************************************************************************
 //

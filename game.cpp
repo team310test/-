@@ -96,10 +96,13 @@ void Game::update()
         if (BasePlayerBehavior::plShrinkCount_ >= 10 ||
             GameLib::input::TRG(0) & GameLib::input::PAD_TRG1)     // プレイヤーの数がShrinkの規定数に達していて
         {
-            if (Collider::isAllShrink_  == false &&       // Shrinkが開始されておらず、
-                Behavior::isObjShrink() == false)         // すべてのobjがshrink中でなければ
+            if (Collider::isAllShrink_  == false && // Shrinkが開始されておらず、
+                Behavior::isObjShrink() == false)   // すべてのobjがshrink中でなければ
             {
-                Collider::isAllShrink_ = true;           // Shrinkを開始
+                Collider::isAllShrink_ = true;      // Shrinkを開始
+
+                bg()->BG::setBGTargetScale();       // 背景のtargetScale(縮小目標値)を設定
+
                 if (BasePlayerBehavior::plShrinkCount_ >= 10)
                     BasePlayerBehavior::plShrinkCount_ -= 10; // プレイヤーのカウントをリセット
                 ++shrinkNum;
@@ -135,7 +138,7 @@ void Game::update()
 void Game::draw()
 {
     // 画面クリア
-    GameLib::clear(VECTOR4(0.6f, 0.4f, 0.3f, 1));
+    GameLib::clear(VECTOR4(0.75f, 0.45f, 0.3f, 1));
 
     bg()->drawBack();     // 背景の描画
 

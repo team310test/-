@@ -1,24 +1,16 @@
-//******************************************************************************
-//
-//
-//		SPRITE_DATA
-//
-//
-//******************************************************************************
-
-//------< インクルード >----------------------------------------------------------
 #include "all.h"
-//------< データ >---------------------------------------------------------------
 
 // 2D画像ロードデータ
 GameLib::LoadTexture loadTexture[] = {
-    { TEXNO::SHOT,      L"./Data/Images/Bullet01.png", 1U }, 
+    { TEXNO::BACK01,    L"./Data/Images/BackGround01.png", 1U },
+    { TEXNO::BACK02,    L"./Data/Images/BackGround02.png", 1U },
+    { TEXNO::SHOT,      L"./Data/Images/Bullet01.png",     1U }, 
     //{TEXNO::TURRET01, L"./Data/Images/Lzi250.png",     1U },        // パーツ01(L字)
     //{TEXNO::CORE01,   L"./Data/Images/core.png",       1U },        // パーツ01(L字)
-    {TEXNO::PL_CORE01,  L"./Data/Images/Core01.png",   1U },    
-    {TEXNO::ENM_CORE01, L"./Data/Images/Turret02.png", 1U }, 
-    {TEXNO::TURRET01,   L"./Data/Images/Turret01.png", 1U },     
-    {TEXNO::BUFF01,     L"./Data/Images/Trash01.png",  1U },        
+    { TEXNO::PL_CORE01,  L"./Data/Images/Core01.png",   1U },    
+    { TEXNO::ENM_CORE01, L"./Data/Images/Turret02.png", 1U }, 
+    { TEXNO::TURRET01,   L"./Data/Images/Turret01.png", 1U },     
+    { TEXNO::BUFF01,     L"./Data/Images/Trash01.png",  1U },        
 
     { -1, nullptr }	// 終了フラグ
 };
@@ -28,7 +20,7 @@ GameLib::LoadTexture loadTexture[] = {
 #define SPRITE_BOTTOM(texno,left,top,width,height)	{ (texno),(left),(top),(width),(height),(width)/2,(height)   }  // 画像の足元が中心
 
 
-//------< テスト >------------------------------------------------------------------
+//------< プレイヤー >------------------------------------------------------------------
 GameLib::SpriteData sprPlayerCore01 = SPRITE_CENTER(TEXNO::PL_CORE01, 0, 0, 250, 250);
 
 //------< パーツ >------------------------------------------------------------------
