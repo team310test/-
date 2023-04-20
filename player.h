@@ -88,6 +88,17 @@ private:
 };
 EXTERN PlayerTurret01Behavior playerTurret01Behavior;
 
+//******************************************************************************
+//       PlayerTrash01
+//******************************************************************************
+// エネミー
+class  PlayerTrash01Behavior : public ItemPlayerBehavior
+{
+public:
+    PlayerTrash01Behavior();
+};
+EXTERN PlayerTrash01Behavior playerTrash01Behavior;
+
 //==============================================================================
 //
 //      消去アルゴリズム

@@ -150,7 +150,7 @@ void Behavior::shrink(OBJ2D* obj) const
     }
     
     // 描画用と判定用のscaleのサイズを合わせる
-    //obj->renderer_->scale_ = obj->transform_->scale_;
+    obj->renderer_->scale_ = obj->transform_->scale_;
 
 
     // 目標を達成した場合

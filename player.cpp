@@ -38,6 +38,11 @@ namespace
         { &sprPartsCore01, 10 },
         { nullptr, -1 },// 終了フラグ
     };
+    //  ゴミ01
+    GameLib::AnimeData animeTrash01[] = {
+        { &sprPartsTrash01, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
 }
 
 void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer = false) // trueならこのobjをplayer_に代入する
@@ -455,11 +460,30 @@ PlayerTurret01Behavior::PlayerTurret01Behavior()
     param_.ANIME_WAIT = animeTurret01;
 
     param_.SIZE = VECTOR2(player_size, player_size);
-    param_.HIT_BOX[0] = { -80, 48, 125, 95 };   // 下長方形
-    param_.HIT_BOX[1] = { -125,-95,10,50 };      // ネジ
+    param_.HIT_BOX[0] = { -64,-64,64,64 };
 
-    param_.ATTACK_BOX[0] = { -80, 48, 125, 95 };   // 下長方形
-    param_.ATTACK_BOX[1] = { -125,-95,10,50 };      // ネジ
+    param_.ATTACK_BOX[0] = { -64,-64,64,64 };
+
+    // 速度関連のパラメータ
+    param_.ACCEL_X = 8.0f;
+    param_.ACCEL_Y = 8.0f;
+    param_.SPEED_X_MAX = 8.0f;
+    param_.SPEED_Y_MAX = 8.0f;
+    param_.JUMP_POWER_Y = -12.0f;
+}
+
+//******************************************************************************
+//       PlayerTrash01
+//******************************************************************************
+PlayerTrash01Behavior::PlayerTrash01Behavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT = animeTrash01;
+
+    param_.SIZE = VECTOR2(player_size, player_size);
+    param_.HIT_BOX[0] = { -64,-64,64,64 };
+
+    param_.ATTACK_BOX[0] = { -64,-64,64,64 };
 
     // 速度関連のパラメータ
     param_.ACCEL_X = 8.0f;

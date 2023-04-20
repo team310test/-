@@ -36,6 +36,11 @@ namespace
         { &sprPartsCore01, 10 },
         { nullptr, -1 },// 終了フラグ
     };
+    //  ゴミ01
+    GameLib::AnimeData animeTrash01[] = {
+        { &sprPartsTrash01, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
 }
 
 void setSubEnemy(BaseEnemyBehavior* behavior, OBJ2D* parent, VECTOR2 pos)
@@ -44,6 +49,8 @@ void setSubEnemy(BaseEnemyBehavior* behavior, OBJ2D* parent, VECTOR2 pos)
     {
         assert(!"coreがcoreを呼び出しています");
     };
+
+    VECTOR2 POS = { parent->transform_->position_.x + pos.x,parent->transform_->position_.y + pos.y };
 
     OBJ2D* subEnemy = new OBJ2D(
         new Renderer,
@@ -58,7 +65,7 @@ void setSubEnemy(BaseEnemyBehavior* behavior, OBJ2D* parent, VECTOR2 pos)
     // 親を設定
     subEnemy->actorComponent_->parent_ = parent;
 
-    Game::instance()->obj2dManager()->add(subEnemy, behavior, pos);
+    Game::instance()->obj2dManager()->add(subEnemy, behavior, POS);
 }
 
 void setEnemy(OBJ2DManager* obj2dManager, BG* bg)
@@ -258,8 +265,7 @@ EnemyCore01Behavior::EnemyCore01Behavior()
 void EnemyCore01Behavior::init(OBJ2D* obj) const
 {
     // サブパーツ召喚
-    setSubEnemy(&enemyTurret01Behavior, obj, { obj->transform_->position_.x,obj->transform_->position_.y - 229 });
-    setSubEnemy(&enemyTurret01Behavior, obj, { obj->transform_->position_.x,obj->transform_->position_.y + 229 });
+    setSubEnemy(&enemyTurret01Behavior, obj, { -64,96 });
 
     BaseEnemyBehavior::init(obj);
 }
@@ -327,11 +333,9 @@ ItemTurret01Behavior::ItemTurret01Behavior()
     param_.ANIME_WAIT = animeTurret01;
 
     param_.SIZE = VECTOR2(player_size, player_size);
-    param_.HIT_BOX[0] = { -80, 48, 125, 95 };   // 下長方形
-    param_.HIT_BOX[1] = { -125,-95,10,50 };      // ネジ
+    param_.HIT_BOX[0] = { -64,-64,64,64 };
 
-    param_.ATTACK_BOX[0] = { -80, 48, 125, 95 };   // 下長方形
-    param_.ATTACK_BOX[1] = { -125,-95,10,50 };      // ネジ
+    param_.ATTACK_BOX[0] = { -64,-64,64,64 };
 
     // 速度関連のパラメータ
     param_.ACCEL_X = 2.0f;
@@ -340,6 +344,30 @@ ItemTurret01Behavior::ItemTurret01Behavior()
     param_.SPEED_Y_MAX = 2.0f;
     param_.JUMP_POWER_Y = -12.0f;
 }
+
+
+//******************************************************************************
+//      EnemyTrash01
+//******************************************************************************
+// アイテム
+ItemTrash01Behavior::ItemTrash01Behavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT = animeTrash01;
+
+    param_.SIZE = VECTOR2(player_size, player_size);
+    param_.HIT_BOX[0] = { -64,-64,64,64 };
+
+    param_.ATTACK_BOX[0] = { -64,-64,64,64 };
+
+    // 速度関連のパラメータ
+    param_.ACCEL_X = 2.0f;
+    param_.ACCEL_Y = 2.0f;
+    param_.SPEED_X_MAX = 2.0f;
+    param_.SPEED_Y_MAX = 2.0f;
+    param_.JUMP_POWER_Y = -12.0f;
+}
+
 
 //--------------------------------------------------------------
 //  消去
@@ -358,8 +386,24 @@ void EraseEnemy::erase(OBJ2D* obj) const
         obj->renderer_->flip();
     }
 
-    // HPが0以下になる か　画面外へ行くと 消滅
-    if (!obj->actorComponent_->isAlive() || obj->transform_->position_.x < -obj->collider_->size_.x)
+    // HPが0以下になるとTrashアイテム化する
+    if (!obj->actorComponent_->isAlive())
+    {
+        obj->actorComponent_->parent_ = nullptr;
+        obj->behavior_ = &itemTrash01Behavior;
+        obj->actorComponent_->hp_ = 1;
+        obj->eraser_ = &eraseItem;
+        // アニメーション停止
+        obj->actorComponent_->objAnime_ = nullptr;
+        // nextBehavior_変更
+        obj->actorComponent_->nextBehavior_ = &playerTrash01Behavior;
+
+        // 反転させる
+        obj->renderer_->flip();
+    }
+
+    // 画面外へ行くと消滅
+    if (obj->transform_->position_.x < -obj->collider_->size_.x)
     {
         obj->actorComponent_->parent_ = nullptr;
         obj->behavior_ = nullptr;

@@ -17,8 +17,9 @@ GameLib::LoadTexture loadTexture[] = {
     { TEXNO::PLAYER2,      L"./Data/Images/Weapon1.png",    1U },// 250*250
     { TEXNO::SHOT,        L"./Data/Images/weapon.png",    1U },// ショット(仮)
     //{ TEXNO::ENEMY,        L"./Data/Images/enemy(test).png",    1U },// エネミー(仮)
-    {TEXNO::TURRET01,    L"./Data/Images/Lzi250.png",    1U},        // パーツ01(Lzi)
-    {TEXNO::CORE01,    L"./Data/Images/core.png",    1U},        // パーツ01(Lzi)
+    {TEXNO::TURRET01,    L"./Data/Images/turret128x128.png",    1U},        // パーツ01(Lzi)
+    {TEXNO::CORE01,    L"./Data/Images/core128x128.png",    1U},        // パーツ01(Lzi)
+    {TEXNO::TRASH01,    L"./Data/Images/Trash128x128.png",    1U},        // パーツ01(Lzi)
     { -1, nullptr }	// 終了フラグ
 };
 
@@ -31,8 +32,9 @@ GameLib::LoadTexture loadTexture[] = {
 GameLib::SpriteData sprEnemey_test = SPRITE_CENTER(TEXNO::PLAYER2, 0, 0, 250, 250);
 
 //------< パーツ >------------------------------------------------------------------
-GameLib::SpriteData sprPartsCore01 = SPRITE_CENTER(TEXNO::CORE01, 0, 0, 250,250 );
-GameLib::SpriteData sprPartsTurret01 = SPRITE_CENTER(TEXNO::TURRET01, 0, 0, 250,250 );
+GameLib::SpriteData sprPartsCore01 = SPRITE_CENTER(TEXNO::CORE01, 0, 0, 128, 128);
+GameLib::SpriteData sprPartsTurret01 = SPRITE_CENTER(TEXNO::TURRET01, 0, 0, 128, 64);
+GameLib::SpriteData sprPartsTrash01 = SPRITE_CENTER(TEXNO::TRASH01, 0, 0, 128, 128);
 
 //------< ショット >----------------------------------------------------------------
 GameLib::SpriteData sprWeapon_NormalShot = SPRITE_CENTER(TEXNO::SHOT, 128 * 4, 0, 128, 128);

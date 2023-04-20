@@ -23,6 +23,7 @@ enum TEXNO
     SHOT,
     CORE01,
     TURRET01,
+    TRASH01,
 };
 
 extern GameLib::LoadTexture loadTexture[];
@@ -33,6 +34,7 @@ extern GameLib::SpriteData sprEnemey_test;
 //------< ƒp[ƒc >----------------------------------------------------------------
 extern GameLib::SpriteData sprPartsTurret01;
 extern GameLib::SpriteData sprPartsCore01;
+extern GameLib::SpriteData sprPartsTrash01;
 
 //------< ‹… >----------------------------------------------------------------
 extern GameLib::SpriteData sprWeapon_NormalShot;

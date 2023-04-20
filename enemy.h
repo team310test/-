@@ -97,6 +97,19 @@ private:
 };
 EXTERN ItemTurret01Behavior itemTurret01Behavior;
 
+//******************************************************************************
+//      EnemyTrash01
+//******************************************************************************
+// エネミー
+class ItemTrash01Behavior : public BaseEnemyBehavior
+{
+public:
+    ItemTrash01Behavior();
+    OBJ_TYPE getType() const override { return OBJ_TYPE::ITEM; }
+    OBJ_TYPE getAttackType() const override { return OBJ_TYPE::null; }
+};
+EXTERN ItemTrash01Behavior itemTrash01Behavior;
+
 //==============================================================================
 //
 //      消去アルゴリズム
