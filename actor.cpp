@@ -58,11 +58,11 @@ void ActorBehavior::move(OBJ2D* obj) const
 
         damageProc(obj);
 
-        // アニメーション
-        if(obj->actorComponent_->objAnime_) obj->actorComponent_->objAnime_(obj);
-
         startAllShrink(obj); //縮小開始
         shrink(obj);    // 画像縮小
+
+        // アニメーション
+        if(obj->actorComponent_->objAnime_) obj->actorComponent_->objAnime_(obj);
 
         moveY(obj);
         moveX(obj);
@@ -150,7 +150,7 @@ void Behavior::shrink(OBJ2D* obj) const
     }
     
     // 描画用と判定用のscaleのサイズを合わせる
-    obj->renderer_->scale_ = obj->transform_->scale_;
+    //obj->renderer_->scale_ = obj->transform_->scale_;
 
 
     // 目標を達成した場合

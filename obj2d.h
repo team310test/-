@@ -114,7 +114,8 @@ public:
     GameLib::AnimeData* animeData_;
     bool drawXFlip_;
     bool pad_[3];
-    VECTOR2 drawPosition_;
+    VECTOR2 renderPosition_;
+    bool isRenderShrink;
 
     VECTOR2 scale_;
     Renderer()
@@ -125,7 +126,8 @@ public:
         , drawXFlip_()
         , pad_()
         , scale_()
-        , drawPosition_()
+        , renderPosition_()
+        , isRenderShrink()
     {
     }
     void flip() { drawXFlip_ = !drawXFlip_; }
@@ -196,7 +198,6 @@ public:
     // アニメ用データ
     OBJ_ANIME objAnime_;
     float rotSpeed_;
-    bool isDrawShrink;
     
     ActorComponent()
         :hp_(1)
@@ -216,7 +217,6 @@ public:
         
         , objAnime_(nullptr)
         , rotSpeed_(0)
-        , isDrawShrink(false)
     {
     }
     bool isAlive() const { return hp_ > 0; }

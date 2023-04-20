@@ -64,9 +64,9 @@ void Game::update()
     }
 
     // ポーズ処理
-    //if (GameLib::input::TRG(0) & GameLib::input::PAD_START)
-    //    isPaused_ = !isPaused_;       // 0コンのスタートボタンが押されたらポーズ状態が反転
-    //if (isPaused_) return;           // この時点でポーズ中ならリターン
+    if (GameLib::input::TRG(0) & GameLib::input::PAD_START)
+        isPaused_ = !isPaused_;       // 0コンのスタートボタンが押されたらポーズ状態が反転
+    if (isPaused_) return;           // この時点でポーズ中ならリターン
 
     switch (state_)
     {

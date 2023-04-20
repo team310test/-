@@ -239,9 +239,9 @@ EnemyCore01Behavior::EnemyCore01Behavior()
     param_.ANIME_WAIT = animeCore01;
 
     param_.SIZE = VECTOR2(player_size, player_size);
-    param_.HIT_BOX[0] = { -125,-125,125,125 };
+    param_.HIT_BOX[0] = { -64,-64,64,64 };
 
-    param_.ATTACK_BOX[0] = { -125, -125, 125, 125 };
+    param_.ATTACK_BOX[0] = { -64, -64, 64, 64 };
 
     // 速度関連のパラメータ
     param_.ACCEL_X = 4.0f;
@@ -276,11 +276,9 @@ EnemyTurret01Behavior::EnemyTurret01Behavior()
     param_.ANIME_WAIT = animeTurret01;
 
     param_.SIZE = VECTOR2(player_size, player_size);
-    param_.HIT_BOX[0] = { -125, 48, 80, 95 };   // 下長方形
-    param_.HIT_BOX[1] = { -10,-95,125,50 };      // ネジ
+    param_.HIT_BOX[0] =  { -64,-64,64,64 };
 
-    param_.ATTACK_BOX[0] = { -125, 48, 80, 95 };   // 下長方形
-    param_.ATTACK_BOX[1] = { -10,-95,125,50 };      // ネジ
+    param_.ATTACK_BOX[0] =  { -64,-64,64,64 };
 
     // 速度関連のパラメータ
     param_.ACCEL_X = 4.0f;

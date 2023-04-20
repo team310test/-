@@ -22,11 +22,15 @@ void rotateAnime(OBJ2D* obj)
 //--------------------------------------------------------------
 void scaleAnime(OBJ2D* obj)
 {
-    static const float shrinkVelocity = -0.002f; // k¬‚·‚é‘¬“x(k¬‚Ì‘¬‚³‚É‰e‹¿)
-    static int timer = 50;
+    float shrinkVelocity = obj->collider_->isShrink_ ?
+        -0.004f : -0.002; // k¬‚·‚é‘¬“x(k¬‚Ì‘¬‚³‚É‰e‹¿)
+    
+    // –Ú•W‚ÌƒXƒP[ƒ‹
     VECTOR2 targetScale = { obj->transform_->scale_.x * 1.2f, obj->transform_->scale_.x * 1.2f };
 
-    if (obj->actorComponent_->isDrawShrink)
+
+    // k¬
+    if (obj->renderer_->isRenderShrink)
     {
         obj->renderer_->scale_ +=
         {
@@ -34,7 +38,8 @@ void scaleAnime(OBJ2D* obj)
             obj->renderer_->scale_.y* shrinkVelocity
         };
     }
-    else
+    // Šg‘å
+    if (!obj->renderer_->isRenderShrink)
     {
         obj->renderer_->scale_ -=
         {
@@ -43,15 +48,17 @@ void scaleAnime(OBJ2D* obj)
         };
     }
 
-    if ((obj->renderer_->scale_.x > targetScale.x || obj->renderer_->scale_.y > targetScale.y) && !obj->actorComponent_->isDrawShrink)
+    // –Ú•WƒXƒP[ƒ‹‚ð’´‚¦‚é‚ÆisRenderShrink‚ðtrue‚É‚·‚é
+    if ((obj->renderer_->scale_.x > targetScale.x || obj->renderer_->scale_.y > targetScale.y) && !obj->renderer_->isRenderShrink)
     {
-        obj->actorComponent_->isDrawShrink = true;
+        obj->renderer_->isRenderShrink = true;
         if (obj->renderer_->scale_ != targetScale)obj->renderer_->scale_ = targetScale;
 
     }
-    if ((obj->renderer_->scale_.x < obj->transform_->scale_.x || obj->renderer_->scale_.y < obj->transform_->scale_.y) && obj->actorComponent_->isDrawShrink)
+    // ”»’è—p‚ÌƒXƒP[ƒ‹–¢–ž‚É‚È‚é‚ÆisRenderShrink‚ðfalse‚É‚·‚é
+    if ((obj->renderer_->scale_.x < obj->transform_->scale_.x || obj->renderer_->scale_.y < obj->transform_->scale_.y) && obj->renderer_->isRenderShrink)
     {
-        obj->actorComponent_->isDrawShrink = false;
+        obj->renderer_->isRenderShrink = false;
         if (obj->renderer_->scale_ != obj->transform_->scale_)obj->renderer_->scale_ = obj->transform_->scale_;
     }
 }
