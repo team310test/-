@@ -237,6 +237,9 @@ CorePlayerBehavior::CorePlayerBehavior()
     param_.SPEED_X_MAX = 8.0f;
     param_.SPEED_Y_MAX = 8.0f;
     param_.JUMP_POWER_Y = -12.0f;
+
+    // アニメ用データ
+    param_.obj_ANIME = scaleAnime;
 }
 
 void CorePlayerBehavior::attack(OBJ2D* obj) const

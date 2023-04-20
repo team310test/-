@@ -114,13 +114,17 @@ public:
     VECTOR4 color_;
     GameLib::Anime anime_;
     GameLib::AnimeData* animeData_;
+    VECTOR2 drawScale_;
     bool drawXFlip_;
-    bool pad_[3];
+    bool isDrawShrink_;
+    bool pad_[2];
     Renderer()
         :data_()
         , color_({ 1,1,1,1 })
         , anime_()
         , animeData_()
+        , drawScale_()
+        , isDrawShrink_()
         , drawXFlip_()
         , pad_()
     {

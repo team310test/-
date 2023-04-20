@@ -22,8 +22,8 @@
 
 #include "bg.h"
 #include "weapon.h"
-#include "objAnime.h"
 #include "actor.h"
+#include "objAnime.h"
 #include "player.h"
 #include "dropParts.h"
 #include "enemy.h"

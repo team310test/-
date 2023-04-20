@@ -36,6 +36,7 @@ void ActorBehavior::move(OBJ2D* obj) const
         // アニメの初期設定
         obj->renderer_->animeData_ = getParam()->ANIME_WAIT;
         obj->transform_->scale_ = getParam()->SCALE;
+        obj->renderer_->drawScale_ = getParam()->SCALE;
         obj->collider_->size_ = {
             getParam()->SIZE.x * getParam()->SCALE.x, 
             getParam()->SIZE.y * getParam()->SCALE.y
@@ -139,6 +140,10 @@ void Behavior::shrink(OBJ2D* obj) const
         };  
         if (currentScale->x < targetScale->x)  *currentScale = *targetScale; // 最終目標より小さくなったら値を修正
     }
+
+    // scaleAnimeが設定されていなら描画用と判定用のscaleのサイズを合わせる
+    if (obj->actorComponent_->objAnime_ != &scaleAnime)
+        obj->renderer_->drawScale_ = obj->transform_->scale_;
 
     // 目標を達成した場合
     if (currentScale->x == targetScale->x)

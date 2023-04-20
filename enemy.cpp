@@ -342,7 +342,7 @@ void EnemyTurret01Behavior::attack(OBJ2D* obj) const
         shot->weaponComponent_->parent_ = obj;
     }
 
-    obj->actorComponent_->attackTimer_ = 30;
+    obj->actorComponent_->attackTimer_ = 120;
 }
 
 
