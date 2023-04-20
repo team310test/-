@@ -10,18 +10,18 @@ class STAGE_SCRIPT
 {
 public:
     int time_;
-    BaseEnemyBehavior* behavior_;
+    EnemyData* enemyData_;
     VECTOR2 pos_;
 
-    STAGE_SCRIPT(int time, BaseEnemyBehavior* behavior, VECTOR2 pos)
+    STAGE_SCRIPT(int time, EnemyData* enemyData, VECTOR2 pos)
         :time_(time)
-        , behavior_(behavior)
+        , enemyData_(enemyData)
         , pos_(pos)
     {}
 };
 
-#define SET_ENEMY(time,behavior,pos)		{(time),(behavior),(pos)}
-#define SET_END                     		{(0),(nullptr),{0,0}}
+#define SET_ENEMY_DATA(time,enemyData,pos)		{(time),(enemyData),(pos)}
+#define SET_ENEMY_DATA_END                     	{(0),(nullptr),{0,0}}
 
 class Stage
 {

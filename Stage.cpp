@@ -17,26 +17,26 @@ Stage::Stage()
 
 void Stage::update()
 {
-    while (pScript->behavior_ && pScript->time_ == timer)
+    while (pScript->enemyData_ && pScript->time_ == timer)
     {
-        OBJ2D* enemy = new OBJ2D(
-            new Renderer,
-            new Collider,
-            Game::instance()->bg(),
-            new ActorComponent,
-            nullptr,
-            nullptr
-        );
+        OBJ2D* PARENT = nullptr;
 
-        enemy->zOrder_ = 3;
-        enemy->actorComponent_->parent_ = enemy;
+        while (pScript->enemyData_->behavior_)
+        {
+            VECTOR2 pos =
+            {
+                pScript->pos_.x + pScript->enemyData_->pos_.x,
+                pScript->pos_.y + pScript->enemyData_->pos_.y
+            };
 
-        Game::instance()->obj2dManager()->add(enemy, pScript->behavior_, pScript->pos_);
+            PARENT = setEnemy(pScript->enemyData_->behavior_, PARENT, pos, pScript->enemyData_->zOrder_);
+            pScript->enemyData_++;
+        }
         pScript++;
     }
     ++timer;
 
-    if (pScript->behavior_ == nullptr)
+    if (!pScript->enemyData_)
     {
         pScript = stageData;
         timer = 0;

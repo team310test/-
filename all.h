@@ -26,6 +26,7 @@
 #include "actor.h"
 #include "player.h"
 #include "enemy.h"
+#include "EnemyData.h"
 #include "Stage.h"
 #include "stageData.h"
 

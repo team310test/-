@@ -63,25 +63,6 @@ void setSubEnemy(BaseEnemyBehavior* behavior, OBJ2D* parent, VECTOR2 pos)
     Game::instance()->obj2dManager()->add(subEnemy, behavior, POS);
 }
 
-void setEnemy(OBJ2DManager* obj2dManager, BG* bg)
-{
-    const VECTOR2 pos = { 100,500 };
-
-    OBJ2D* enemy = new OBJ2D(
-        new Renderer,
-        new Collider,
-        bg,
-        new ActorComponent,
-        nullptr,
-        nullptr
-    );
-
-    enemy->zOrder_ = 3;
-    enemy->actorComponent_->parent_ = enemy;
-
-    obj2dManager->add(enemy, &enemyCore01Behavior, pos);
-}
-
 // カーソルの座標取得
 VECTOR2 getCursorPoint2()
 {
@@ -263,7 +244,7 @@ EnemyCore01Behavior::EnemyCore01Behavior()
 void EnemyCore01Behavior::init(OBJ2D* obj) const
 {
     // サブパーツ召喚
-    setSubEnemy(&enemyTurret01Behavior, obj, { -64,96 });
+    //setSubEnemy(&enemyTurret01Behavior, obj, { -64,96 });
 
     BaseEnemyBehavior::init(obj);
 }
@@ -300,7 +281,7 @@ EnemyCore02Behavior::EnemyCore02Behavior()
 void EnemyCore02Behavior::init(OBJ2D* obj) const
 {
     // サブパーツ召喚
-    setSubEnemy(&enemyTurret01Behavior, obj, { -128,0 });
+    //setSubEnemy(&enemyTurret01Behavior, obj, { -128,0 });
 
     BaseEnemyBehavior::init(obj);
 }
@@ -469,4 +450,30 @@ void EraseItem::erase(OBJ2D* obj) const
         obj->behavior_ = nullptr;
         return;
     }
+}
+
+
+//==============================================================================
+//
+//     Enemeyのset
+//
+//==============================================================================
+OBJ2D* setEnemy(BaseEnemyBehavior* behavior, OBJ2D* parent, VECTOR2 pos, int zOrder)
+{
+    OBJ2D* enemy = new OBJ2D(
+        new Renderer,
+        new Collider,
+        Game::instance()->bg(),
+        new ActorComponent,
+        nullptr,
+        nullptr
+    );
+
+    enemy->zOrder_ = zOrder;
+
+    // parentがなければ自分を親にする
+    if (parent == nullptr)enemy->actorComponent_->parent_ = enemy;
+    else enemy->actorComponent_->parent_ = parent;
+
+    return Game::instance()->obj2dManager()->add(enemy, behavior, pos);
 }

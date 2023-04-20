@@ -8,8 +8,6 @@
 //
 //******************************************************************************
 
-void setEnemy(OBJ2DManager* obj2dManager, BG* bg);
-
 void addEnemy(OBJ2DManager* obj2dManager, BG* bg);
 
 //==============================================================================
@@ -136,3 +134,11 @@ class EraseItem : public Eraser
     void erase(OBJ2D* obj) const;
 };
 EXTERN EraseItem eraseItem;
+
+
+//==============================================================================
+//
+//     Enemey‚Ìset
+//
+//==============================================================================
+OBJ2D* setEnemy(BaseEnemyBehavior* behavior, OBJ2D* parent, VECTOR2 pos, int zOrder);
