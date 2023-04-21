@@ -282,7 +282,7 @@ EnemyCore01Behavior::EnemyCore01Behavior()
     param_.NEXT_ERASER   = nullptr;
 
     // アニメーションのパラメータ
-    param_.obj_ANIME = &rotateAnime;
+    param_.OBJ_ANIME = &rotateAnime;
     param_.ROT_SPEED = -0.05f;
 }
 

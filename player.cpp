@@ -239,7 +239,7 @@ CorePlayerBehavior::CorePlayerBehavior()
     param_.JUMP_POWER_Y = -12.0f;
 
     // アニメ用データ
-    param_.obj_ANIME = scaleAnime;
+    param_.OBJ_ANIME = scaleAnime;
 }
 
 void CorePlayerBehavior::attack(OBJ2D* obj) const
@@ -272,8 +272,8 @@ void CorePlayerBehavior::attack(OBJ2D* obj) const
 
     }
 
+    setXAxisSclaeAnime(obj);
     obj->actorComponent_->attackTimer_ = 30;
-
 }
 
 
