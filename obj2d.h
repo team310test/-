@@ -17,7 +17,8 @@
 class OBJ2D;
 
 // 関数ポインタ（アニメ処理）
-typedef	void(*OBJ_ANIME)(OBJ2D* obj);
+typedef	void(*OBJ_ANIME_ALWAYS)(OBJ2D* obj);
+typedef	bool(*OBJ_ANIME_TEMPORARY)(OBJ2D* obj);
 
 
 enum class OBJ_TYPE
@@ -194,7 +195,8 @@ public:
     int No;
 
     // アニメ用データ
-    OBJ_ANIME objAnime_;
+    OBJ_ANIME_ALWAYS objAnimeAlways_;
+    OBJ_ANIME_TEMPORARY objAnimeTemporary_;
     float rotSpeed_;
 
     ActorComponent()
@@ -212,7 +214,8 @@ public:
         , No(1)
 
         // アニメ用データ
-        , objAnime_(nullptr)
+        , objAnimeAlways_(nullptr)
+        , objAnimeTemporary_(nullptr)
         , rotSpeed_(0)
     {
     }

@@ -33,7 +33,7 @@ protected:
         int NEXT_HP = 1;
 
         // アニメーション用パラメータ
-        OBJ_ANIME obj_ANIME = nullptr;
+        OBJ_ANIME_ALWAYS OBJ_ANIME = nullptr;
         float ROT_SPEED = 0.0f;
     } param_;
     const Param* getParam() const { return &param_; }

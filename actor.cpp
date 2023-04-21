@@ -48,7 +48,7 @@ void ActorBehavior::move(OBJ2D* obj) const
         obj->nextEraser_   = getParam()->NEXT_ERASER;
 
         // アニメ用パラメータ
-        obj->actorComponent_->objAnime_ = getParam()->obj_ANIME;
+        obj->actorComponent_->objAnimeAlways_ = getParam()->OBJ_ANIME;
         obj->actorComponent_->rotSpeed_ = getParam()->ROT_SPEED;
 
         init(obj);
@@ -68,8 +68,13 @@ void ActorBehavior::move(OBJ2D* obj) const
         startAllShrink(obj); //縮小開始
         shrink(obj);    // 画像縮小
 
-        // PGによるアニメーション
-        if (obj->actorComponent_->objAnime_) obj->actorComponent_->objAnime_(obj);
+        // PGによるアニメーション(objAnimeTemporary_を優先的に行う)
+        if (obj->actorComponent_->objAnimeTemporary_)
+        {
+            if (obj->actorComponent_->objAnimeTemporary_(obj))
+                obj->actorComponent_->objAnimeTemporary_ = nullptr; // アニメが終わるとobjAnimeTemporaryをnullptrにする
+        }
+        else if (obj->actorComponent_->objAnimeAlways_) obj->actorComponent_->objAnimeAlways_(obj);
 
 
         moveY(obj);
@@ -142,7 +147,7 @@ void Behavior::shrink(OBJ2D* obj) const
     }
 
     // scaleAnimeが設定されていなら描画用と判定用のscaleのサイズを合わせる
-    if (obj->actorComponent_->objAnime_ != &scaleAnime)
+    if (obj->actorComponent_->objAnimeAlways_ != &scaleAnime)
         obj->renderer_->drawScale_ = obj->transform_->scale_;
 
     // 目標を達成した場合
