@@ -266,7 +266,11 @@ void CorePlayerBehavior::attack(OBJ2D* obj) const
                 nullptr,
                 new WeaponComponent
             ),
-            &plPenetrateShotBehavior,
+            &plNormalShotBehavior,     // ノーマル
+            //&plSineWaveShotBehavior,   // 正弦波
+            //&plSquareWaveShotBehavior, // 矩形波
+            //&plCurveWaveShotBehavior,  // 上カーブ
+            //&plPenetrateShotBehavior,  // 高速・貫通(予定)
             pos
         );
         shot->zOrder_ = 2;
@@ -292,22 +296,26 @@ void PartsPlayerBehavior::shrink(OBJ2D* obj) const
 }
 
 // 接触する関数
-void PartsPlayerBehavior::contact(OBJ2D* obj) const
+void PartsPlayerBehavior::contact(OBJ2D* obj) const 
 {
     if (!obj->collider_->isShrink_) return; // 縮小していなければreturn
 
     // オリジナル自機の方へ移動する処理
     contactToOriginal(obj, Game::instance()->player_); 
+    
 
-    OBJ2D* parent = obj->actorComponent_->parent_;              // 自分の親のデータ
-    if (parent->collider_->hitCheck(obj->collider_)) return;    // 親と接触していればreturn
-
+    // contactToOriginal関数でobjと自機本体の距離に合わせて
+    // 速度調整できるようになっていたので必要なかった
+    // if (obj->actorComponent_->parent_->behavior_ == nullptr) return;        // 縮小中に親が消えている場合return
+    // if (obj->collider_->hitCheck(obj->actorComponent_->parent_)) return;    // 親と接触していればreturn
+    //
     // 親の方へ移動する処理
-    contactToParent(obj, parent); // (親とくっついていないobjがオリジナル自機に向かって突っ込んでいくのを軽減)
+    // contactToParent(obj, obj->actorComponent_->parent_); // (親とくっついていないobjがオリジナル自機に向かって突っ込んでいくのを軽減)
 }
 
 // オリジナル自機の方に向かって移動する関数
-static const float toCoreVelocity = 0.085f; // 元になる速度(オリジナル自機へ向かう速さに影響)
+//static const float toCoreVelocity = 0.085f; // 元になる速度(オリジナル自機へ向かう速さに影響)
+static const float toCoreVelocity = 0.14f; // 元になる速度(オリジナル自機へ向かう速さに影響)
 void PartsPlayerBehavior::contactToOriginal(OBJ2D* obj, OBJ2D* original) const
 {    
     const VECTOR2 orginalPos = original->transform_->position_; // 自機本体の位置
@@ -321,58 +329,54 @@ void PartsPlayerBehavior::contactToOriginal(OBJ2D* obj, OBJ2D* original) const
     const float copyDist = dist > 0 ? dist : -dist;          //
     while (true)
     {
-        if (num > 100) // 一定以上数が増えてshrinkするとなぜか下のif処理で固まるので応急処置
+        if (num > 999) // 終点
         {
             addVelocity = toCoreVelocity * num;
             break;
         }
 
-        // objから自機本体までの距離によって速度を上昇させる
+        // objから自機本体までの距離が遠くなる程速度を上昇させる
         // (距離が遠すぎるとobjが自機本体に追いつけないため)
         if ((copyDist >=  (50.0f * num) && copyDist <=  50.0f * (num + 1.0f)))  // ±0から±50、±50から±100、±100から±150...
         {
-            addVelocity = (num != 0) 
-                        ? toCoreVelocity * num 
-                        : 0.1f;    // ±0から±50までの距離はnumが0なので0.1fを代入
+            addVelocity = (num != 0.0f) ? (toCoreVelocity * num ): toCoreVelocity; // ±0から±50までの距離はnumが0なのでデフォルトの値を代入
 
             break; // 代入したのでbreak;
         }
+
         ++num; // numを加算していく
     }
 
     obj->transform_->velocity_ = {
-        (d.x / dist) * (addVelocity/* / obj->transform_->scale_.x*/), // scaleが小さくなった時に速度が落ちないようscaleで割る
-        (d.y / dist) * (addVelocity/* / obj->transform_->scale_.y*/)
+        (d.x / dist) * (addVelocity),
+        (d.y / dist) * (addVelocity),
     };
 
     ActorBehavior::moveY(obj);
     ActorBehavior::moveX(obj);
-
-    //obj->collider_->calcHitBox(getParam()->HIT_BOX);
-    //obj->collider_->calcAttackBox(getParam()->ATTACK_BOX);
 }
 
 // 親の方に向かって移動する関数
-static const float toParentVelocity = 0.5f; // 足す速度(親へ向かう速さに影響)
-void PartsPlayerBehavior::contactToParent(OBJ2D* obj, OBJ2D* parent) const
-{    
-    const VECTOR2 parentPos = parent->transform_->position_;    // 親の位置
-    const VECTOR2 objPos    = obj->transform_->position_;       // objの位置
-
-    const VECTOR2 d  = { parentPos - objPos };               // objから親へ向かうベクトル
-    const float dist = sqrtf( (d.x * d.x) + (d.y * d.y) );   // objから親までの距離
-
-    obj->transform_->velocity_ = {
-        (d.x / dist) * (toParentVelocity),
-        (d.y / dist) * (toParentVelocity)
-    };
-
-    ActorBehavior::moveY(obj);
-    ActorBehavior::moveX(obj);
-
-    //obj->collider_->calcHitBox(getParam()->HIT_BOX);
-    //obj->collider_->calcAttackBox(getParam()->ATTACK_BOX);
-}
+//static const float toParentVelocity = 0.5f; // 足す速度(親へ向かう速さに影響)
+//void PartsPlayerBehavior::contactToParent(OBJ2D* obj, OBJ2D* parent) const
+//{    
+//    const VECTOR2 parentPos = parent->transform_->position_;    // 親の位置
+//    const VECTOR2 objPos    = obj->transform_->position_;       // objの位置
+//
+//    const VECTOR2 d  = { parentPos - objPos };               // objから親へ向かうベクトル
+//    const float dist = sqrtf( (d.x * d.x) + (d.y * d.y) );   // objから親までの距離
+//
+//    obj->transform_->velocity_ = {
+//        (d.x / dist) * (toParentVelocity),
+//        (d.y / dist) * (toParentVelocity)
+//    };
+//
+//    ActorBehavior::moveY(obj);
+//    ActorBehavior::moveX(obj);
+//
+//    //obj->collider_->calcHitBox(getParam()->HIT_BOX);
+//    //obj->collider_->calcAttackBox(getParam()->ATTACK_BOX);
+//}
 
 
 
@@ -423,7 +427,7 @@ void PlayerTurret01Behavior::attack(OBJ2D* obj) const
                 nullptr,
                 new WeaponComponent
             ),
-            &playerNormalShotBehavior,
+            &plNormalShotBehavior,
             pos
         );
         shot->zOrder_ = 2;
@@ -490,6 +494,9 @@ void ErasePlayer::erase(OBJ2D* obj) const
     {
         if (!dst->behavior_) continue;                      // 相手が存在しなければcontinue;
         if (obj == dst) continue;                           // 相手が自分ならcontinue;
+
+        if (dst->behavior_->getType() != OBJ_TYPE::PLAYER) continue; // 相手が自分と同じプレイヤーでなければcontinue
+
         if (!dst->actorComponent_->parent_) continue;       // 相手が親を持っていなければcontinue;
         if (obj == dst->actorComponent_->parent_) continue; // 相手が自分の子ならcontinue;
 
@@ -504,8 +511,10 @@ void ErasePlayer::erase(OBJ2D* obj) const
     // 親が見つからなかった場合
     obj->actorComponent_->parent_ = nullptr; // 親情報をリセット
     obj->behavior_ = nullptr;                // 自分を消去
+    BasePlayerBehavior::plShrinkCount_ = std::max(0, BasePlayerBehavior::plShrinkCount_ - 1);
     return;
 }
+#undef USE_FIND_PARENT
 
 
 //******************************************************************************
@@ -547,6 +556,7 @@ void CursorBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
          (GetAsyncKeyState(VK_LBUTTON) & 1) )
     {
         dst->behavior_ = nullptr;
+        BasePlayerBehavior::plShrinkCount_ = std::max(0, BasePlayerBehavior::plShrinkCount_ - 1);
     }
 }
 

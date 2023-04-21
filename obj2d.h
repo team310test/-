@@ -108,6 +108,7 @@ class Renderer : public Component
 public:
     GameLib::SpriteData* data_;
     VECTOR4 color_;
+    VECTOR4 targetColor_;
     GameLib::Anime anime_;
     GameLib::AnimeData* animeData_;
     bool drawXFlip_;
@@ -115,6 +116,7 @@ public:
     Renderer()
         :data_()
         , color_({ 1,1,1,1 })
+        , targetColor_({1,1,1,1})
         , anime_()
         , animeData_()
         , drawXFlip_()

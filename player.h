@@ -55,7 +55,7 @@ private:
 
     void contact(OBJ2D*) const;                   // 縮小に伴って位置を移動させる関数
     void contactToOriginal(OBJ2D*, OBJ2D*) const; // オリジナル自機に向かって接触しに行く関数
-    void contactToParent(OBJ2D*, OBJ2D*) const;   // 親に向かって接触しに行く関数
+    //void contactToParent(OBJ2D*, OBJ2D*) const;   // 親に向かって接触しに行く関数
 };
 
 

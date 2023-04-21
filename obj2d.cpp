@@ -193,7 +193,7 @@ void OBJ2DManager::draw()
             continue;
 
 
-        if (obj->transform_->scale_.x > 0.10f) obj->renderer_->draw();
+        obj->renderer_->draw();
         
 
         static bool isDrawHitBox = false; // ヒットボックスを表示するか
@@ -291,7 +291,7 @@ void Collider::calcAttackBox(const GameLib::fRECT& rc, int i)
 
 bool Collider::hitCheck(Collider* other)
 {
-    for (auto& This : attackBox_)
+    for (auto& This : this->attackBox_)
     {
         for (auto& Other : other->hitBox_)
         {

@@ -101,7 +101,7 @@ void Game::update()
             {
                 Collider::isAllShrink_ = true;      // Shrinkを開始
 
-                bg()->BG::setBGTargetScale();       // 背景のtargetScale(縮小目標値)を設定
+                bg()->BG::setBGShrink();       // 背景の縮小設定
 
                 if (BasePlayerBehavior::plShrinkCount_ >= 10)
                     BasePlayerBehavior::plShrinkCount_ -= 10; // プレイヤーのカウントをリセット

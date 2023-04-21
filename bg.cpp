@@ -1,10 +1,18 @@
 #include "all.h"
 
-//bool isDebugDraw;
 
 BG::BG()
     :player_(nullptr)
     , bgSprNo_(0)
+{
+}
+
+BG::~BG()
+{
+    for (auto& bg : bg_) if (bg) bg = nullptr;
+}
+
+void BG::init(OBJ2D* player)
 {
     for (auto& bg : bg_)
     {
@@ -12,55 +20,59 @@ BG::BG()
                 new OBJ2D(
                     new Renderer,
                     new Collider,
-                    this,
+                    new BG,
                     nullptr,
                     nullptr,
                     nullptr)
             );
     }
-}
 
-
-void BG::init(OBJ2D* player)
-{
     player_ = player;
 
     // BG用データのクリア
     clear();
 
-    //isDebugDraw = false;
 }
 
 
 void BG::clear()
 {
+    // スケールとスプライト画像の設定
     bg_[0]->transform_->scale_ = bg_[1]->transform_->scale_ = { 1, 1 };
-    //bg_[2]->transform_->scale_ = bg_[3]->transform_->scale_ = { 2, 2 };
+    bg_[2]->transform_->scale_ = bg_[3]->transform_->scale_ = { 2, 2 };
+    bg_[4]->transform_->scale_ = bg_[5]->transform_->scale_ = { 4, 4 };
+    bg_[6]->transform_->scale_ = bg_[7]->transform_->scale_ = { 8, 8 };
+    bg_[8]->transform_->scale_ = bg_[9]->transform_->scale_ = { 16, 16 };
 
-    bg_[0]->bg_->bgSprNo_ = BACK01;
-    bg_[1]->bg_->bgSprNo_ = BACK01;
-    //bg_[2]->bg_->bgSprNo_ = BACK01;
-    //bg_[3]->bg_->bgSprNo_ = BACK01;
+    bg_[0]->bg_->bgSprNo_ = bg_[1]->bg_->bgSprNo_ = BACK01;
+    bg_[2]->bg_->bgSprNo_ = bg_[3]->bg_->bgSprNo_ = BACK02;
+    bg_[4]->bg_->bgSprNo_ = bg_[5]->bg_->bgSprNo_ = BACK01;
+    bg_[6]->bg_->bgSprNo_ = bg_[7]->bg_->bgSprNo_ = BACK02;
+    bg_[8]->bg_->bgSprNo_ = bg_[9]->bg_->bgSprNo_ = BACK01;
 
 
-    int num = 1;
-
+    int bgNum = 1; // スクロールの右左配置設定用
     for (auto& bg : bg_)
     {
-        bg->collider_->size_        = { 3840, 1080 };
-        bg->transform_->position_.x = (num % 2 == 0) // 2で割れたら
-                                    ? 3840.0f + bg->collider_->size_.x * 0.5f // 位置を右側にする
-                                    : 0.0f    + bg->collider_->size_.x * 0.5f;
-        bg->transform_->position_.y = bg->bg_->WINDOW_H * 0.5f;
-        bg->collider_->targetScale_ = bg->transform_->scale_;
-        bg->renderer_->color_       = { 1, 1, 1, 0.1f };
+        Transform* t = bg->transform_;
+        Collider*  c = bg->collider_;
+        Renderer*  r = bg->renderer_;
 
-        bg->transform_->velocity_.x = -5.0f;
+        c->targetScale_ = t->scale_;         // スケール
+        c->size_        = { 3840, 1080 };    // 画像サイズ
 
-        ++num;
+        t->position_.x  = (bgNum % 2 == 0) ? c->size_.x : 0.0f; // 2で割れたらスクロールの右側担当にする
+        t->position_.y  = bg->bg_->WINDOW_H * 0.5f;             // yだけ真ん中に設定（見栄え）
+
+        t->velocity_.x  = -5.0f;             // スクロール速度
+
+        r->color_   = { 1, 1, 1, 1 };        // カラー
+        r->color_.w = (t->scale_.x < DISP_BG_SCALE_MAX) // 不透明度
+                    ? DEFAULT_ALPHA_COLOR : 0.0f; 
+        r->targetColor_ = r->color_;         // 目標カラー
+
+        ++bgNum;
     }
-
-
 
 }
 
@@ -72,37 +84,66 @@ void BG::update()
 
 
 // 背景更新処理(private)
-static constexpr float subScaleValue = -0.0025f; // scaleの縮小速度
+static constexpr float SUBJECT_SCALE       = -0.0025f; // scaleの縮小速度
+static constexpr float ADD_ALPHA_COLOR     =  0.001f;  // 不透明度の増加速度
+static constexpr float SUBJECT_ALPHA_COLOR = -0.0025f; // 不透明度の減少速度
 void BG::moveBack() const
 {
     for (auto& bg : bg_)
     {
         Transform* t = bg->transform_;
+        Renderer*  r = bg->renderer_;
         Collider*  c = bg->collider_;
 
-        if (t->scale_.x <= 0.0f) continue; // scaleが0以下ならcontinue
-
-        // 位置に速度を足す
-        t->position_.x += (t->velocity_.x * t->scale_.x); // scaleの大きさでスクロール速度を調整
-
-        // position更新
-        if (t->position_.x + (c->size_.x * 0.5f) < 0.0f)
+        // 値確認
         {
-            t->position_.x += (c->size_.x * 2.0f); // 画像サイズ2つ分右に移動
+            //GameLib::debug::setString("position + size:%f", (t->position_.x + c->size_.x)); // 画像の右端の値
+            //GameLib::debug::setString("scale:%f", t->scale_.x); // スケール
+            //GameLib::debug::setString("color.z:%f", r->color_.w); // 不透明度
         }
 
-        // scale更新
+        if (t->scale_.x < DISP_BG_SCALE_MIN) continue;  // scaleが最小表示より小さければcontinue
+
+
+/////////////// スケール更新 //////////////////////////
         if (t->scale_.x > c->targetScale_.x)
         {
             // scale減少
-            t->scale_ += (subScaleValue * t->scale_); // scaleの大きさで縮小速度を調整
+            t->scale_ += (SUBJECT_SCALE * t->scale_); // scaleの大きさで縮小速度を調整更新
 
-            if (t->scale_.x < c->targetScale_.x)
-            {
-                // 目標より小さくなったら修正
-                t->scale_ = c->targetScale_;
-            }        
+            // 目標より小さくなったら修正
+            if (t->scale_.x < c->targetScale_.x) t->scale_ = c->targetScale_;
         }
+
+
+/////////////// カラー不透明度更新 /////////////////////
+        if (r->color_.w > r->targetColor_.w) // 目標値より大きい場合
+        {
+            // 不透明度減少
+            r->color_.w += (SUBJECT_ALPHA_COLOR * r->color_.w);
+
+            // 超過修正
+            if (r->color_.w < r->targetColor_.w) r->color_.w = r->targetColor_.w;
+        }
+        else if (r->color_.w < r->targetColor_.w) // 目標値より小さい場合
+        {
+            // 不透明度増加
+            r->color_.w += ADD_ALPHA_COLOR;
+
+            // 超過修正
+            if (r->color_.w > r->targetColor_.w) r->color_.w = r->targetColor_.w;
+        }
+
+
+/////////////// 位置更新 /////////////////////////////
+        if (t->scale_.x > DISP_BG_SCALE_MAX) continue;  // scaleが最大表示より大きければ位置を更新しない
+        
+        // 位置に速度を足す
+        if (t->scale_.x == c->targetScale_.x) t->position_.x += (t->velocity_.x * t->scale_.x); // scaleの大きさでスクロール速度を調整（小さい（遠い）ほどゆっくりになる）
+
+        // 画像の右端が画面左端を超えたら画像サイズ2つ分右に移動
+        if ( (t->position_.x + c->size_.x) < 0) t->position_.x += (c->size_.x * 2.0f);  
+
     }
 
 }
@@ -113,30 +154,46 @@ void BG::drawBack()
     // 背景描画する
     for (auto& bg : bg_)
     {
-        if (bg->transform_->scale_.x <= 0.0f) continue;
-        //if (bg->transform_->scale_.x >= 2.0f) continue;
+        Transform* t = bg->transform_;
+        Collider*  c = bg->collider_;
+        Renderer*  r = bg->renderer_;
+
+        if (t->scale_.x < DISP_BG_SCALE_MIN) continue; // scaleが最小表示より小さければcontinue
+        if (t->scale_.x > DISP_BG_SCALE_MAX) continue; // scaleが最大表示より大きければcontinue
+
 
         GameLib::texture::begin(bg->bg_->bgSprNo_);
         GameLib::texture::draw(
             bg->bg_->bgSprNo_,
-            bg->transform_->position_, bg->transform_->scale_,
-            { 0,0 }, bg->collider_->size_,
-            {bg->collider_->size_.x * 0.5f, bg->collider_->size_.y * 0.5f, }, 
+            t->position_, t->scale_,
+            { 0, 0 }, c->size_,
+            { 0.0f,  (c->size_.y * 0.5f) }, 
             0,
-            bg->renderer_->color_
+            r->color_
         );
         GameLib::texture::end(bg->bg_->bgSprNo_);
     }
 
 }
 
-void BG::setBGTargetScale()
+
+void BG::setBGShrink()
 {
     for (auto& bg : bg_)
     {
-        if (bg->transform_->scale_.x <= 0) continue;
+        Transform* t = bg->transform_;
+        Collider*  c = bg->collider_;
+        Renderer*  r = bg->renderer_;
 
-        // scaleの半分を目標値に設定
-        bg->collider_->targetScale_ = bg->transform_->scale_ * 0.5f;
+        if (t->scale_.x < DISP_BG_SCALE_MIN) continue; // scaleが最小表示より小さければcontinue
+
+        t->velocity_ *= 1.25f;
+
+        // scale・colorの半分を目標値に設定
+        c->targetScale_ = t->scale_ * 0.5f;
+
+        // デフォルトのscaleの値の1.0f以下なら減らし、最大表示より小さければ増やす
+        if (t->scale_.x <= 1.0f) r->targetColor_.w = r->color_.w * 0.75f;
+        else if (t->scale_.x <= DISP_BG_SCALE_MAX) r->targetColor_.w = DEFAULT_ALPHA_COLOR;
     }
 }

@@ -74,7 +74,7 @@ public:
 private:
     void update(OBJ2D* obj) const override;
 };
-EXTERN PlayerNormalShotBehavior playerNormalShotBehavior;
+EXTERN PlayerNormalShotBehavior plNormalShotBehavior;
 
 
 //******************************************************************************
