@@ -16,6 +16,7 @@ void BaseShotBehavior::move(OBJ2D* obj) const
 
         //obj->transform_->scale_ = getParam()->SCALE;
         obj->transform_->scale_ = obj->weaponComponent_->parent_->transform_->scale_;
+        obj->renderer_->drawScale_ = obj->weaponComponent_->parent_->transform_->scale_;
 
         obj->eraser_ = getParam()->ERASER;
         obj->collider_->judgeFlag_ = true;      // あたり判定を行う
@@ -24,6 +25,10 @@ void BaseShotBehavior::move(OBJ2D* obj) const
         // 左右の向き、速度を設定（プレイヤーにもxFlip_の設定が必要）
         obj->transform_->velocity_.x = getParam()->SPEED_X;
         obj->transform_->velocity_.y = getParam()->SPEED_Y;
+
+
+        // 画像の向きを設定
+        obj->renderer_->drawXFlip_ = obj->weaponComponent_->parent_->renderer_->drawXFlip_;
 
         ++obj->state_;
         /*fallthrough*/
@@ -82,6 +87,26 @@ void PlayerNormalShotBehavior::update(OBJ2D* obj) const
 {
     // 位置に速度を足す
     obj->transform_->position_ += obj->transform_->velocity_;
+}
+
+
+// エネミー
+EnemyNormalShotBehavior::EnemyNormalShotBehavior()
+{
+    param_.SPR_WEAPON = &sprShot_NormalShot;
+    param_.ERASER = &eraseShot;
+
+    param_.SPEED_X = 30.0f;
+    param_.ATTACK_POWER = 1;
+
+    // 変更予定
+    param_.ATTACK_BOX[0] = { -24, -24, 24, 24 };
+}
+
+void EnemyNormalShotBehavior::update(OBJ2D* obj) const
+{
+    // 位置に速度を足す
+    obj->transform_->position_ -= obj->transform_->velocity_;
 }
 
 

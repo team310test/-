@@ -16,6 +16,11 @@
 // 前方宣言
 class OBJ2D;
 
+// 関数ポインタ（アニメ処理）
+typedef	void(*OBJ_ANIME_ALWAYS)(OBJ2D* obj);
+typedef	bool(*OBJ_ANIME_TEMPORARY)(OBJ2D* obj);
+
+
 enum class OBJ_TYPE
 {
     //TYPE_NULL = -1,
@@ -111,14 +116,18 @@ public:
     VECTOR4 targetColor_;
     GameLib::Anime anime_;
     GameLib::AnimeData* animeData_;
+    VECTOR2 drawScale_;
     bool drawXFlip_;
-    bool pad_[3];
+    bool isDrawShrink_;
+    bool pad_[2];
     Renderer()
         :data_()
         , color_({ 1,1,1,1 })
         , targetColor_({1,1,1,1})
         , anime_()
         , animeData_()
+        , drawScale_()
+        , isDrawShrink_()
         , drawXFlip_()
         , pad_()
     {
@@ -174,6 +183,7 @@ class ActorComponent : public Component
 {
 public:
     int hp_;
+    int nextHp_;
     int attackTimer_;
     int damageTimer_;
     int mutekiTimer_;
@@ -186,8 +196,14 @@ public:
     static int playerNum;
     int No;
 
+    // アニメ用データ
+    OBJ_ANIME_ALWAYS objAnimeAlways_;
+    OBJ_ANIME_TEMPORARY objAnimeTemporary_;
+    float rotSpeed_;
+
     ActorComponent()
         :hp_(1)
+        , nextHp_(0)
         , attackTimer_(0)
         , damageTimer_(0)
         , mutekiTimer_(0)
@@ -198,6 +214,11 @@ public:
         , parent_(nullptr)
 
         , No(1)
+
+        // アニメ用データ
+        , objAnimeAlways_(nullptr)
+        , objAnimeTemporary_(nullptr)
+        , rotSpeed_(0)
     {
     }
     bool isAlive() const { return hp_ > 0; }

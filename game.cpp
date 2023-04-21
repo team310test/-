@@ -8,6 +8,7 @@ void Game::init()
 
     obj2dManager_   = new OBJ2DManager;
     bg_             = new BG;
+    stage_          = new Stage;
 
     isPaused_ = false;   // ポーズフラグの初期化
 
@@ -20,6 +21,7 @@ void Game::deinit()
     // 各マネージャの解放
     safe_delete(bg_);
     safe_delete(obj2dManager_);
+    safe_delete(stage_);
 
     player_ = nullptr;
 
@@ -71,7 +73,8 @@ void Game::update()
         setCursor(obj2dManager(), bg());
 
         // エネミーを追加する
-        setEnemy(obj2dManager(), bg());
+        setEnemyT(obj2dManager(), bg(), { 100,500 });
+        //setEnemy01(obj2dManager(), bg());
 
         bg()->init(player_); // BGの初期化
 
@@ -80,6 +83,9 @@ void Game::update()
     case 1:
         //////// 通常時の処理 ////////
 
+        // ステージ更新(エネミー出現)
+        //stage_->update(obj2dManager_, bg_);
+
         // 敵追加4
         if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG2)
         {
@@ -87,21 +93,23 @@ void Game::update()
             ++num;
         }
 
-        GameLib::debug::setString("num:%d", num);
-        if (player_->transform_) GameLib::debug::setString("playerScale:%f", player_->transform_->scale_.x);
-        GameLib::debug::setString("shrinkNum:%d", shrinkNum);
-        GameLib::debug::setString("plShrinkCount_:%d", BasePlayerBehavior::plShrinkCount_);
+        // debug::setString
+        {
+            GameLib::debug::setString("num:%d", num);
+            if (player_->transform_) GameLib::debug::setString("playerScale:%f", player_->transform_->scale_.x);
+            GameLib::debug::setString("shrinkNum:%d", shrinkNum);
+            GameLib::debug::setString("plShrinkCount_:%d", BasePlayerBehavior::plShrinkCount_);
+        }
 
-
-        if (BasePlayerBehavior::plShrinkCount_ >= 10 ||
-            GameLib::input::TRG(0) & GameLib::input::PAD_TRG1)     // プレイヤーの数がShrinkの規定数に達していて
+        if (BasePlayerBehavior::plShrinkCount_ >= 10)     // プレイヤーの数がShrinkの規定数に達したら
         {
             if (Collider::isAllShrink_  == false && // Shrinkが開始されておらず、
                 Behavior::isObjShrink() == false)   // すべてのobjがshrink中でなければ
             {
                 Collider::isAllShrink_ = true;      // Shrinkを開始
 
-                bg()->BG::setBGShrink();       // 背景の縮小設定
+
+                bg()->BG::setBGShrink();       // 背景のtargetScale(縮小目標値)を設定
 
                 if (BasePlayerBehavior::plShrinkCount_ >= 10)
                     BasePlayerBehavior::plShrinkCount_ -= 10; // プレイヤーのカウントをリセット

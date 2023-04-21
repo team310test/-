@@ -51,8 +51,8 @@ void OBJ2D::move()
 void Renderer::draw()
 {
     VECTOR2 scale = drawXFlip_ 
-                  ? VECTOR2( -obj_->transform_->scale_.x, obj_->transform_->scale_.y) 
-                  : obj_->transform_->scale_;
+                  ? VECTOR2( -obj_->renderer_->drawScale_.x, obj_->renderer_->drawScale_.y)
+                  : obj_->renderer_->drawScale_;
     
     if (data_)
     {
@@ -301,16 +301,6 @@ bool Collider::hitCheck(Collider* other)
                 This.top    < Other.bottom) return true;
         }      
     }
-    //for (int i = 0; i < boxMax; ++i)
-    //{
-    //    for (int j = 0; j < boxMax; ++j)
-    //    {
-    //        if (attackBox_[i].right  > other->hitBox_[j].left  &&
-    //            attackBox_[i].left   < other->hitBox_[j].right &&
-    //            attackBox_[i].bottom > other->hitBox_[j].top   &&
-    //            attackBox_[i].top    < other->hitBox_[j].bottom) return true;
-    //    }
-    //}
 
     return false;
 }

@@ -14,6 +14,12 @@ namespace
         { &sprPartsBuff01, 10 },
         { nullptr, -1 },// 終了フラグ
     };
+
+    //  ゴミ01
+    GameLib::AnimeData animeTrash01[] = {
+        { &sprPartsTrash01, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
 }
 
 void BaseDropPartsBehavior::init(OBJ2D* obj) const
@@ -116,6 +122,36 @@ DropBuff01Behavior::DropBuff01Behavior()
 
 //******************************************************************************
 // 
+//      Trash(ゴミパーツ)
+// 
+//******************************************************************************
+DropTrash01Behavior::DropTrash01Behavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT = animeTrash01;
+
+    param_.SIZE = { player_size, player_size };
+    param_.HIT_BOX[0] = {
+        -player_hitBox, -player_hitBox,
+         player_hitBox,  player_hitBox,
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    param_.ACCEL_X = 2.0f;
+    param_.ACCEL_Y = 2.0f;
+    param_.SPEED_X_MAX = 2.0f;
+    param_.SPEED_Y_MAX = 2.0f;
+
+    // 次のbehavior・eraser（プレイヤー）
+    param_.NEXT_BEHAVIOR = &playerTrash01Behavior;
+    param_.NEXT_ERASER   = &erasePlayer;
+
+    param_.NEXT_HP = 3;
+}
+
+
+//******************************************************************************
+// 
 //      erase(消去)
 // 
 //******************************************************************************
@@ -131,6 +167,8 @@ void EraseDropParts::erase(OBJ2D* obj) const
     {
         obj->behavior_ = obj->nextBehavior_; // 次のbehaviorを代入
         obj->eraser_   = obj->nextEraser_;   // 次のeraserを代入
+
+        obj->actorComponent_->hp_ = obj->actorComponent_->nextHp_;  // 次のHPを代入
         
         ++BasePlayerBehavior::plShrinkCount_; // 縮小までのカウントを加算
         return;

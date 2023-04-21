@@ -23,9 +23,11 @@
 #include "bg.h"
 #include "weapon.h"
 #include "actor.h"
+#include "objAnime.h"
 #include "player.h"
 #include "dropParts.h"
 #include "enemy.h"
+#include "stage.h"
 
 #include "scene.h"
 #include "game.h"

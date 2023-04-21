@@ -19,6 +19,8 @@ class Game : public Scene
 private:
     OBJ2DManager*   obj2dManager_;
     BG*             bg_;
+    Stage*          stage_;
+
     bool            isPaused_;
     static Game     instance_;
 
@@ -49,6 +51,7 @@ private:
     Game()
         :obj2dManager_(nullptr)
         , bg_(nullptr)
+        , stage_(nullptr)
         , isPaused_(false)
         , isGameOver_(false)
         , gameOverTimer_(0)

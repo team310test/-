@@ -76,6 +76,16 @@ private:
 };
 EXTERN PlayerNormalShotBehavior plNormalShotBehavior;
 
+// エネミー
+class EnemyNormalShotBehavior : public BaseEnemyShotBehavior
+{
+public:
+    EnemyNormalShotBehavior();
+private:
+    void update(OBJ2D* obj) const override;
+};
+EXTERN EnemyNormalShotBehavior enemyNormalShotBehavior;
+
 
 //******************************************************************************
 //

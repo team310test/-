@@ -23,6 +23,12 @@ namespace
         { &sprPartsBuff01, 10 },
         { nullptr, -1 },// 終了フラグ
     };
+
+    //  ゴミ01
+    GameLib::AnimeData animeTrash01[] = {
+        { &sprPartsTrash01, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
 }
 
 void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer = false) // trueならこのobjをplayer_に代入する
@@ -223,6 +229,7 @@ CorePlayerBehavior::CorePlayerBehavior()
     //param_.HIT_BOX = { -50, -175, 50, -75 };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
+    param_.HP = 1000;
 
     // 速度関連のパラメータ
     param_.ACCEL_X = 8.0f;
@@ -230,22 +237,13 @@ CorePlayerBehavior::CorePlayerBehavior()
     param_.SPEED_X_MAX = 8.0f;
     param_.SPEED_Y_MAX = 8.0f;
     param_.JUMP_POWER_Y = -12.0f;
+
+    // アニメ用データ
+    param_.OBJ_ANIME = scaleAnime;
 }
 
 void CorePlayerBehavior::attack(OBJ2D* obj) const
 {
-    // プレイヤーを指すiteratorを取得する
-    //auto objList = Game::instance()->obj2dManager()->getList();
-    //std::list<OBJ2D*>::iterator iter = objList->begin();
-    //for (; iter != objList->end(); ++iter)
-    //{
-    //    if ((*iter)->behavior_ == nullptr) { continue; }
-    //    if ((*iter)->behavior_->getType() == OBJ_TYPE::PLAYER) 
-    //    {
-    //        break; 
-    //    }
-    //}
-
     // 攻撃クールタイム減少
     if (obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
 
@@ -278,6 +276,8 @@ void CorePlayerBehavior::attack(OBJ2D* obj) const
 
     }
 
+
+    setXAxisSclaeAnime(obj);
     obj->actorComponent_->attackTimer_ = 30;
 
 }
@@ -296,7 +296,7 @@ void PartsPlayerBehavior::shrink(OBJ2D* obj) const
 }
 
 // 接触する関数
-void PartsPlayerBehavior::contact(OBJ2D* obj) const 
+void PartsPlayerBehavior::contact(OBJ2D* obj) const
 {
     if (!obj->collider_->isShrink_) return; // 縮小していなければreturn
 
@@ -329,7 +329,7 @@ void PartsPlayerBehavior::contactToOriginal(OBJ2D* obj, OBJ2D* original) const
     const float copyDist = dist > 0 ? dist : -dist;          //
     while (true)
     {
-        if (num > 999) // 終点
+        if (num > 999) // 念のために終点を設置
         {
             addVelocity = toCoreVelocity * num;
             break;
@@ -344,6 +344,14 @@ void PartsPlayerBehavior::contactToOriginal(OBJ2D* obj, OBJ2D* original) const
             break; // 代入したのでbreak;
         }
 
+        // objから自機本体までの距離によって速度を上昇させる
+        // (距離が遠すぎるとobjが自機本体に追いつけないため)
+        if ((copyDist >=  (50.0f * num) && copyDist <=  50.0f * (num + 1.0f)))  // ±0から±50、±50から±100、±100から±150...
+        {
+            addVelocity = (num != 0) ? (toCoreVelocity * num) : toCoreVelocity;   // ±0から±50までの距離はnumが0なので0.1fを代入
+
+            break; // 代入したのでbreak;
+        }
         ++num; // numを加算していく
     }
 
@@ -478,6 +486,34 @@ void PlayerBuff01Behavior::hit(OBJ2D*, OBJ2D* dst) const
 
 //******************************************************************************
 // 
+//      Trash(ゴミパーツ)
+// 
+//******************************************************************************
+PlayerTrash01Behavior::PlayerTrash01Behavior()
+{
+    param_.ANIME_WAIT = animeTrash01;
+
+    param_.SIZE = { player_size, player_size };
+    param_.HIT_BOX[0] = {
+        -player_hitBox, -player_hitBox,
+         player_hitBox,  player_hitBox,
+    };
+    param_.ATTACK_BOX[0] = {
+        -player_hitBox,
+        -player_hitBox,
+         player_hitBox,
+         player_hitBox,
+    };
+
+    param_.ACCEL_X = 8.0f;
+    param_.ACCEL_Y = 8.0f;
+    param_.SPEED_X_MAX = 8.0f;
+    param_.SPEED_Y_MAX = 8.0f;
+}
+
+
+//******************************************************************************
+// 
 //      erase（消去）
 // 
 //******************************************************************************
@@ -486,6 +522,12 @@ void PlayerBuff01Behavior::hit(OBJ2D*, OBJ2D* dst) const
 
 void ErasePlayer::erase(OBJ2D* obj) const
 {
+    // HPが0以下になったら
+    if (!obj->actorComponent_->isAlive())
+    {
+        obj->behavior_ = nullptr;
+    }
+
     if (obj->actorComponent_->parent_->behavior_) return;   // もし自分の親が存在するならreturn
 
 #ifdef USE_FIND_PARENT
@@ -511,6 +553,8 @@ void ErasePlayer::erase(OBJ2D* obj) const
     // 親が見つからなかった場合
     obj->actorComponent_->parent_ = nullptr; // 親情報をリセット
     obj->behavior_ = nullptr;                // 自分を消去
+
+    // 縮小カウント減少
     BasePlayerBehavior::plShrinkCount_ = std::max(0, BasePlayerBehavior::plShrinkCount_ - 1);
     return;
 }
@@ -556,6 +600,8 @@ void CursorBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
          (GetAsyncKeyState(VK_LBUTTON) & 1) )
     {
         dst->behavior_ = nullptr;
+
+        // 縮小カウント減少
         BasePlayerBehavior::plShrinkCount_ = std::max(0, BasePlayerBehavior::plShrinkCount_ - 1);
     }
 }

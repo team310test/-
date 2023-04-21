@@ -118,6 +118,20 @@ private:
 EXTERN PlayerBuff01Behavior playerBuff01Behavior;
 
 
+//******************************************************************************
+// 
+//      Trash(ゴミパーツ)
+// 
+//******************************************************************************
+
+// Trach01
+class  PlayerTrash01Behavior : public PartsPlayerBehavior
+{
+public:
+    PlayerTrash01Behavior();
+};
+EXTERN PlayerTrash01Behavior playerTrash01Behavior;
+
 
 //==============================================================================
 //

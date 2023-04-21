@@ -7,10 +7,12 @@ BG::BG()
 {
 }
 
+
 BG::~BG()
 {
-    for (auto& bg : bg_) if (bg) bg = nullptr;
+    for (auto& bg : bg_) { if (bg) bg = nullptr; }
 }
+
 
 void BG::init(OBJ2D* player)
 {
@@ -52,6 +54,8 @@ void BG::clear()
 
 
     int bgNum = 1; // スクロールの右左配置設定用
+
+    // 初期設定
     for (auto& bg : bg_)
     {
         Transform* t = bg->transform_;
@@ -122,7 +126,7 @@ void BG::moveBack() const
             // 不透明度減少
             r->color_.w += (SUBJECT_ALPHA_COLOR * r->color_.w);
 
-            // 超過修正
+            // 超過分を修正
             if (r->color_.w < r->targetColor_.w) r->color_.w = r->targetColor_.w;
         }
         else if (r->color_.w < r->targetColor_.w) // 目標値より小さい場合
@@ -130,7 +134,7 @@ void BG::moveBack() const
             // 不透明度増加
             r->color_.w += ADD_ALPHA_COLOR;
 
-            // 超過修正
+            // 超過分を修正
             if (r->color_.w > r->targetColor_.w) r->color_.w = r->targetColor_.w;
         }
 
@@ -189,11 +193,12 @@ void BG::setBGShrink()
 
         t->velocity_ *= 1.25f;
 
-        // scale・colorの半分を目標値に設定
+        // scaleの半分を目標値に設定
         c->targetScale_ = t->scale_ * 0.5f;
 
-        // デフォルトのscaleの値の1.0f以下なら減らし、最大表示より小さければ増やす
+        // 不透明度はデフォルトのscaleの値の1.0f以下なら減らし、最大表示より小さければ増やす
         if (t->scale_.x <= 1.0f) r->targetColor_.w = r->color_.w * 0.75f;
         else if (t->scale_.x <= DISP_BG_SCALE_MAX) r->targetColor_.w = DEFAULT_ALPHA_COLOR;
     }
+
 }

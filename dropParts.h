@@ -50,6 +50,19 @@ public:
 EXTERN DropBuff01Behavior dropBuff01Behavior;
 
 
+//******************************************************************************
+// 
+//      Trash(ゴミパーツ)
+// 
+//******************************************************************************
+
+// Trash01
+class DropTrash01Behavior : public BaseDropPartsBehavior
+{
+public:
+    DropTrash01Behavior();
+};
+EXTERN DropTrash01Behavior dropTrash01Behavior;
 
 //******************************************************************************
 // 

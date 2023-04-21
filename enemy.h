@@ -1,7 +1,17 @@
 #pragma once
 
-void setEnemy(OBJ2DManager* obj2dManager, BG* bg);
+
+#define NEW_SET_ENEMY 1
+
+
+//void setEnemy01(OBJ2DManager* obj2dManager, BG* bg);
+//void setEnemy01(OBJ2DManager* obj2dManager, BG* bg);
+
 void addEnemy(OBJ2DManager* obj2dManager, BG* bg);
+
+void setEnemy01(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos);
+void setEnemy02(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos);
+void setEnemyT(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos);
 
 //******************************************************************************
 // 
@@ -52,7 +62,7 @@ class EnemyTurret01Behavior : public BaseEnemyBehavior
 public:
     EnemyTurret01Behavior();
 private:
-    //void attack(OBJ2D* obj) const override;
+    void attack(OBJ2D* obj) const override;
 };
 EXTERN EnemyTurret01Behavior enemyTurret01Behavior;
 
