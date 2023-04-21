@@ -52,10 +52,8 @@ OBJ2D* setMainEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behav
 
     return obj2dManager->add(enemy, &enemyCore01Behavior, pos);
 }
-void setSubEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behavior, OBJ2D* parent, VECTOR2 pos, int zOrder = 3)
+OBJ2D* setSubEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behavior, OBJ2D* parent, VECTOR2 pos, int zOrder = 3)
 {
-    VECTOR2 POS = parent->transform_->position_ + pos;
-
     OBJ2D* subEnemy = new OBJ2D(
         new Renderer,
         new Collider,
@@ -69,35 +67,39 @@ void setSubEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behavior
     // 親を設定
     subEnemy->actorComponent_->parent_ = parent;
 
-    obj2dManager->add(subEnemy, behavior, POS);
+    return obj2dManager->add(subEnemy, behavior, pos);
 }
 
 void setEnemy01(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos)
 {
     OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos);
-    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { -64,96 });
+    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x - 64,pos.y + 96 });
 }
 void setEnemy02(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos)
 {
     OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos);
-    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { -128,0 });
+    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x - 128,pos.y });
 }
 
 void setEnemyT(OBJ2DManager* obj2dManager, BG* bg,VECTOR2 pos)
 {
     OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos);
-    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { 0,-429 });
-    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { 0,-229 });
-    setSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, Parent, { 0,229 });
-    setSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, Parent, { 0,429 });
+
+    OBJ2D* subParent01 =
+        setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x,pos.y - 229 });
+    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, subParent01, { pos.x,pos.y - 429 });
+    OBJ2D* subParent02 =
+        setSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, Parent, { pos.x,pos.y + 229 });
+    setSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, subParent02, { pos.x,pos.y + 429 });
 }
 
 void addEnemy(OBJ2DManager* obj2dManager, BG* bg)
 {
     OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, getCursorPoint2());
+    VECTOR2 pos = Parent->transform_->position_;
     // サブパーツ
-    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { 0,-229 });
-    setSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, Parent, { 0,229 });
+    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x,pos.y - 229 });
+    setSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, Parent, { pos.x,pos.y + 229 });
 }
 #if 0
 // Turret
@@ -393,14 +395,16 @@ void EraseEnemy::erase(OBJ2D* obj) const
     //OBJ2D* parent = obj->actorComponent_->parent_->actorComponent_->parent_; // 長いので省略
     OBJ2D* parent = obj->actorComponent_->parent_; // 長いので省略
 
-    // 親が消滅するとアイテム化する
-    if (parent && parent->behavior_ == nullptr) // 親がいてその親がすでに死んでいる場合
+    // 親が消滅する か 親の体力が0になると　とアイテム化する
+    if (parent && (parent->behavior_ == nullptr || !parent->actorComponent_->isAlive())) // 親がいてその親がすでに死んでいる場合
     {
         obj->actorComponent_->parent_ = nullptr; // 親リセット
 
         // 次のbehavior・eraser（ドロップアイテム）を代入
         obj->behavior_ = obj->nextBehavior_;
         obj->eraser_ = obj->nextEraser_;
+
+        obj->actorComponent_->hp_ = 0;  // HPを0にする
 
         obj->renderer_->flip(); // 反転させる
 
