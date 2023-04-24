@@ -75,8 +75,8 @@ PlayerNormalShotBehavior::PlayerNormalShotBehavior()
     param_.SPR_WEAPON = &sprShot_NormalShot;
     param_.ERASER     = &eraseShot;
 
-    param_.SPEED_X = 30.0f;
-    param_.ATTACK_POWER = 1;
+    param_.SPEED_X      = PL_NORMAL_SHOT_SPEED;
+    param_.ATTACK_POWER = PL_NORMAL_SHOT_ATK;
 
     // 変更予定
     param_.ATTACK_BOX[0] = { -24, -24, 24, 24 };
@@ -91,7 +91,7 @@ void PlayerNormalShotBehavior::update(OBJ2D* obj) const
 
 
 // エネミー
-EnemyNormalShotBehavior::EnemyNormalShotBehavior()
+EnmNormalShotBehavior::EnmNormalShotBehavior()
 {
     param_.SPR_WEAPON = &sprShot_NormalShot;
     param_.ERASER = &eraseShot;
@@ -103,7 +103,7 @@ EnemyNormalShotBehavior::EnemyNormalShotBehavior()
     param_.ATTACK_BOX[0] = { -24, -24, 24, 24 };
 }
 
-void EnemyNormalShotBehavior::update(OBJ2D* obj) const
+void EnmNormalShotBehavior::update(OBJ2D* obj) const
 {
     // 位置に速度を足す
     obj->transform_->position_ -= obj->transform_->velocity_;
@@ -329,6 +329,55 @@ void PlPenetrateShotBehavior::update(OBJ2D* obj) const
         transform->velocity_.x * obj->transform_->scale_.x, // 位置に速度を足す
         transform->velocity_.y * obj->transform_->scale_.y, // 位置に速度を足す
     };
+}
+
+
+//******************************************************************************
+//
+//      AimShot（プレイヤー狙撃弾）
+//
+//******************************************************************************
+
+// エネミー
+EnmAimShotBehavior::EnmAimShotBehavior()
+{
+    param_.SPR_WEAPON = &sprShot_NormalShot;
+    param_.ERASER     = &eraseShot;
+
+    param_.SPEED_X = 20.0f;
+    param_.SPEED_Y = 20.0f;
+    param_.ATTACK_POWER = 1;
+
+    // 変更予定
+    param_.ATTACK_BOX[0] = { -24, -24, 24, 24 };
+}
+
+void EnmAimShotBehavior::update(OBJ2D* obj) const
+{
+    // 省略
+    Transform* t = obj->transform_;
+    Transform* corePl = Game::instance()->player_->transform_;
+
+    switch (obj->act_) 
+    {
+    case 0:
+        {
+            const VECTOR2 d  = corePl->position_ - t->position_;
+            const float dist = sqrtf(d.x * d.x + d.y * d.y);
+
+            t->velocity_ = {
+                param_.SPEED_X * d.x / dist,
+                param_.SPEED_Y * d.y / dist,
+            };
+        }
+
+        ++obj->act_;
+        /*fallthrough*/
+    case 1:
+        t->position_ += t->velocity_;
+
+        break;
+    }
 }
 
 

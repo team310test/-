@@ -254,14 +254,15 @@ CorePlayerBehavior::CorePlayerBehavior()
     //param_.HIT_BOX = { -50, -175, 50, -75 };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
-    param_.HP = 1000;
+    //param_.HP = 1000;
+    param_.HP = CORE_PLAYER_HP;
 
     // 速度関連のパラメータ
-    param_.ACCEL_X = 8.0f;
-    param_.ACCEL_Y = 8.0f;
-    param_.SPEED_X_MAX = 8.0f;
-    param_.SPEED_Y_MAX = 8.0f;
-    param_.JUMP_POWER_Y = -12.0f;
+    param_.ACCEL_X     = CORE_PLAYER_SPEED;
+    param_.ACCEL_Y     = CORE_PLAYER_SPEED;
+    param_.SPEED_X_MAX = CORE_PLAYER_SPEED;
+    param_.SPEED_Y_MAX = CORE_PLAYER_SPEED;
+    //param_.JUMP_POWER_Y = -12.0f;
 
     // アニメ用データ
     param_.OBJ_ANIME = scaleAnime;
@@ -562,7 +563,8 @@ void ErasePlayer::erase(OBJ2D* obj) const
         if (!dst->behavior_) continue;                      // 相手が存在しなければcontinue;
         if (obj == dst) continue;                           // 相手が自分ならcontinue;
 
-        if (dst->behavior_->getType() != OBJ_TYPE::PLAYER) continue; // 相手が自分と同じプレイヤーでなければcontinue
+        if (!dst->actorComponent_) continue;
+        //if (dst->behavior_->getType() != OBJ_TYPE::PLAYER) continue; // 相手が自分と同じプレイヤーでなければcontinue
 
         if (!dst->actorComponent_->parent_) continue;       // 相手が親を持っていなければcontinue;
         if (obj == dst->actorComponent_->parent_) continue; // 相手が自分の子ならcontinue;
