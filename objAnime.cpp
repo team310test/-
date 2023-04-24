@@ -14,7 +14,7 @@ void rotateAnime(OBJ2D* obj)
 void scaleAnime(OBJ2D* obj)
 {
     float shrinkVelocity = obj->collider_->isShrink_ ?
-        -0.005f : -0.002; // k¬‚·‚é‘¬“x(k¬‚Ì‘¬‚³‚É‰e‹¿)
+        -0.005f : -0.002f; // k¬‚·‚é‘¬“x(k¬‚Ì‘¬‚³‚É‰e‹¿)
     
     // –Ú•W‚ÌƒXƒP[ƒ‹
     VECTOR2 targetScale = { obj->transform_->scale_.x * 1.2f, obj->transform_->scale_.x * 1.2f };
@@ -61,9 +61,9 @@ void scaleAnime(OBJ2D* obj)
 bool xAxisSclaeAnime(OBJ2D* obj)
 {
     float shrinkVelocity = obj->collider_->isShrink_ ?
-        -0.08f : -0.07; // k¬‚·‚é‘¬“x(k¬‚Ì‘¬‚³‚É‰e‹¿)
+        -0.08f : -0.07f; // k¬‚·‚é‘¬“x(k¬‚Ì‘¬‚³‚É‰e‹¿)
     float magnificationVelocity = obj->collider_->isShrink_ ?
-        -0.12f : -0.09; // k¬‚·‚é‘¬“x(k¬‚Ì‘¬‚³‚É‰e‹¿)
+        -0.12f : -0.09f; // k¬‚·‚é‘¬“x(k¬‚Ì‘¬‚³‚É‰e‹¿)
 
     // –Ú•W‚ÌƒXƒP[ƒ‹
     VECTOR2 targetScale = { obj->transform_->scale_.x * 1.4f, obj->transform_->scale_.y };

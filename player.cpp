@@ -95,28 +95,41 @@ void BasePlayerBehavior::init(OBJ2D* obj) const
     obj->eraser_ = &erasePlayer;
 }
 
+
 void BasePlayerBehavior::moveY(OBJ2D* obj) const
 {
-    // 左右入力の取り出し
-    switch (obj->actorComponent_->padState_ & (GameLib::input::PAD_UP | GameLib::input::PAD_DOWN))
+    // 省略
+    using namespace GameLib::input;
+    ActorComponent* a = obj->actorComponent_;
+    Transform* t = obj->transform_;
+
+
+    // 斜め移動時の速度を修正
+    const float fixSpeedY = (a->padState_ & PAD_LEFT || a->padState_ & PAD_RIGHT) &&
+                            (a->padState_ & PAD_DOWN || a->padState_ & PAD_UP)
+                            ? 0.71f : 1.0f;
+    const float  fixedAccelY = param_.ACCEL_Y * fixSpeedY;
+
+    // 上下入力の取り出し
+    switch (a->padState_ & (PAD_UP | PAD_DOWN))
     {
-    case GameLib::input::PAD_UP:  // 上だけが押されている場合
-        obj->transform_->velocity_.y -= getParam()->ACCEL_Y;
+    case PAD_UP:    // 上だけが押されている場合
+        t->velocity_.y -= fixedAccelY;
         break;
-    case GameLib::input::PAD_DOWN: // 下だけが押されている場合
-        obj->transform_->velocity_.y += getParam()->ACCEL_Y;
-        obj->renderer_->animeData_ = obj->renderer_->animeData_;
+    case PAD_DOWN:  // 下だけが押されている場合
+        t->velocity_.y += fixedAccelY;
+        //obj->renderer_->animeData_ = obj->renderer_->animeData_;
         break;
     default:        // どちらも押されていないか相殺されている場合
-        if (obj->transform_->velocity_.y > 0)
+        if (t->velocity_.y > 0)
         {
-            obj->transform_->velocity_.y -= getParam()->ACCEL_Y / 2;
-            if (obj->transform_->velocity_.y < 0) obj->transform_->velocity_.y = 0;
+            t->velocity_.y -= getParam()->ACCEL_Y / 2;
+            if (t->velocity_.y < 0) t->velocity_.y = 0;
         }
-        if (obj->transform_->velocity_.y < 0)
+        if (t->velocity_.y < 0)
         {
-            obj->transform_->velocity_.y += getParam()->ACCEL_Y / 2;
-            if (obj->transform_->velocity_.y > 0) obj->transform_->velocity_.y = 0;
+            t->velocity_.y += getParam()->ACCEL_Y / 2;
+            if (t->velocity_.y > 0) t->velocity_.y = 0;
         }
         break;
     }
@@ -126,25 +139,37 @@ void BasePlayerBehavior::moveY(OBJ2D* obj) const
 
 void BasePlayerBehavior::moveX(OBJ2D* obj) const
 {
+    // 省略
+    using namespace GameLib::input;
+    ActorComponent* a = obj->actorComponent_;
+    Transform*      t = obj->transform_;
+
+
+    // 斜め移動時の速度を修正
+    const float fixSpeedX = (a->padState_ & PAD_LEFT || a->padState_ & PAD_RIGHT) &&
+                            (a->padState_ & PAD_DOWN || a->padState_ & PAD_UP   ) 
+                            ? 0.71f : 1.0f;
+    const float fixedAccelX = param_.ACCEL_X * fixSpeedX;
+
     // 左右入力の取り出し
-    switch (obj->actorComponent_->padState_ & (GameLib::input::PAD_LEFT | GameLib::input::PAD_RIGHT))
+    switch (a->padState_ & (PAD_LEFT | PAD_RIGHT))
     {
-    case GameLib::input::PAD_LEFT:  // 左だけが押されている場合
-        obj->transform_->velocity_.x -= getParam()->ACCEL_X;
+    case PAD_LEFT:  // 左だけが押されている場合
+        t->velocity_.x -= fixedAccelX;
         break;
-    case GameLib::input::PAD_RIGHT: // 右だけが押されている場合
-        obj->transform_->velocity_.x += getParam()->ACCEL_X;
+    case PAD_RIGHT: // 右だけが押されている場合
+        t->velocity_.x += fixedAccelX;
         break;
     default:        // どちらも押されていないか相殺されている場合
-        if (obj->transform_->velocity_.x > 0)
+        if (t->velocity_.x > 0)
         {
-            obj->transform_->velocity_.x -= getParam()->ACCEL_X / 2;
-            if (obj->transform_->velocity_.x < 0) obj->transform_->velocity_.x = 0;
+            t->velocity_.x -= getParam()->ACCEL_X / 2;
+            if (t->velocity_.x < 0) t->velocity_.x = 0;
         }
-        if (obj->transform_->velocity_.x < 0)
+        if (t->velocity_.x < 0)
         {
-            obj->transform_->velocity_.x += getParam()->ACCEL_X / 2;
-            if (obj->transform_->velocity_.x > 0) obj->transform_->velocity_.x = 0;
+            t->velocity_.x += getParam()->ACCEL_X / 2;
+            if (t->velocity_.x > 0) t->velocity_.x = 0;
         }
         break;
     }
