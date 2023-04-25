@@ -24,5 +24,14 @@ void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
 
         pScript++;
     }
+
     ++timer;
+
+    // ƒ‹[ƒvˆ—(‰¼)
+    if (!pScript->setEnemy_)
+    {
+        pScript = 0;
+        timer = 0;
+        pScript = stageData01;
+    }
 }

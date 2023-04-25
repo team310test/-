@@ -73,7 +73,7 @@ void Game::update()
         setCursor(obj2dManager(), bg());
 
         // エネミーを追加する
-        setEnemyT(obj2dManager(), bg(), { 100,500 });
+        //setEnemyT(obj2dManager(), bg(), { BG::WINDOW_W,500 });
         //setEnemy01(obj2dManager(), bg());
 
         bg()->init(player_); // BGの初期化
@@ -84,7 +84,7 @@ void Game::update()
         //////// 通常時の処理 ////////
 
         // ステージ更新(エネミー出現)
-        //stage_->update(obj2dManager_, bg_);
+        stage_->update(obj2dManager_, bg_);
 
         // 敵追加4
         if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG2)

@@ -73,25 +73,31 @@ OBJ2D* setSubEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behavi
 
 void setEnemy01(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos)
 {
-    OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos, ENEMY_LINE);
-    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x - 64,pos.y + 96 }, ENEMY_LINE);
+    OBJ_DATA update = ENEMY_LINE;
+
+    OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos, update);
+    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x - 64,pos.y + 96 }, update);
 }
 void setEnemy02(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos)
 {
-    OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos, ENEMY_LINE);
-    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x - 128,pos.y }, ENEMY_LINE);
+    OBJ_DATA update = ENEMY_LINE;
+
+    OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos, update);
+    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x - 128,pos.y }, update);
 }
 
 void setEnemyT(OBJ2DManager* obj2dManager, BG* bg,VECTOR2 pos)
 {
-    OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos, ENEMY_LINE);
+    OBJ_DATA update = ENEMY_LINE;
+
+    OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos, update);
 
     OBJ2D* subParent01 =
-        setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x,pos.y - 229 }, ENEMY_LINE);
-    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, subParent01, { pos.x,pos.y - 429 }, ENEMY_LINE);
+        setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x,pos.y - 229 }, update);
+    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, subParent01, { pos.x,pos.y - 429 }, update);
     OBJ2D* subParent02 =
-        setSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, Parent, { pos.x,pos.y + 229 }, ENEMY_LINE);
-    setSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, subParent02, { pos.x,pos.y + 429 }, ENEMY_LINE);
+        setSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, Parent, { pos.x,pos.y + 229 }, update);
+    setSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, subParent02, { pos.x,pos.y + 429 }, update);
 }
 
 void addEnemy(OBJ2DManager* obj2dManager, BG* bg)
