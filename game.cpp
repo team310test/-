@@ -83,9 +83,6 @@ void Game::update()
     case 1:
         //////// 通常時の処理 ////////
 
-        // ステージ更新(エネミー出現)
-        stage_->update(obj2dManager_, bg_);
-
         // 敵追加4
         if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG2)
         {
@@ -104,7 +101,7 @@ void Game::update()
         if (BasePlayerBehavior::plShrinkCount_ >= 10)     // プレイヤーの数がShrinkの規定数に達したら
         {
             if (Collider::isAllShrink_  == false && // Shrinkが開始されておらず、
-                Behavior::isObjShrink() == false)   // すべてのobjがshrink中でなければ
+                Behavior::isObjShrink() == false)   // すべてのobjが縮小していなければ
             {
                 Collider::isAllShrink_ = true;      // Shrinkを開始
 
@@ -120,9 +117,29 @@ void Game::update()
         // オブジェクトの更新
         obj2dManager()->update();
 
+        
+        if (Behavior::isObjShrink() == false) // すべてのobjが縮小終了していれば
+        {
+            // ステージ更新(エネミー出現)
+            stage_->update(obj2dManager_, bg_);
+        }
+
+
         // オブジェクトの更新後にShrinkの開始を止める
         if (Collider::isAllShrink_) Collider::isAllShrink_ = false; 
 
+        static bool isSecond = false;
+        //// 縮小とパーツプレイヤーへ向かう速度いじり
+        if (Behavior::isObjShrink()) // ひとつでもobjが縮小していれば
+        {
+            Behavior::shrinkVelocity            += (-SHRINK_SPEED)  * 0.015f;
+            PartsPlayerBehavior::toCoreVelocity += (-TO_CORE_SPEED) * 0.015f;
+        }
+        else // すべてのobjが縮小していなければ
+        {
+            Behavior::shrinkVelocity = SHRINK_SPEED;
+            PartsPlayerBehavior::toCoreVelocity = TO_CORE_SPEED;
+        }
 
         // ゲームオーバーの処理
         if (isGameOver())
@@ -152,6 +169,7 @@ void Game::draw()
 
     // オブジェクトの描画
     obj2dManager()->draw();
+
 }
 
 void Game::judge()

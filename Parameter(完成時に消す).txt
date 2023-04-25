@@ -4,12 +4,22 @@
 // SPEED：速度
 
 
-// 自機本体
-#define CORE_PLAYER_HP		(1000)
-#define CORE_PLAYER_ATK		(1)
-#define CORE_PLAYER_SPEED	(8.0f)
+// プレイヤー本体・プレイヤーパーツ
+#define PL_SPEED			(5.0f)
+#define PL_SPEED_MAX		(15.0f)
 
+// プレイヤー本体
+#define CORE_PLAYER_HP		(1000)
 
 // 通常弾
 #define PL_NORMAL_SHOT_ATK	 (1)
 #define PL_NORMAL_SHOT_SPEED (30.0f)
+
+
+// 縮小の初期速度
+//#define SHRINK_SPEED		(-0.0025f)
+#define SHRINK_SPEED		(0.0025f * 3)
+
+// プレイヤー本体へ向かう初期速度
+//#define TO_CORE_SPEED		(0.14f)
+#define TO_CORE_SPEED		(-0.14f * 3)

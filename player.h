@@ -13,11 +13,11 @@ class BasePlayerBehavior : public ActorBehavior
 {
 private:
     void init(OBJ2D* obj) const override;
-    OBJ_TYPE getType() const override { return OBJ_TYPE::PLAYER; }
+    OBJ_TYPE getType() const override       { return OBJ_TYPE::PLAYER; }
     OBJ_TYPE getAttackType() const override { return OBJ_TYPE::ENEMY; }
     void hit(OBJ2D*, OBJ2D*) const override;
 
-    bool isAlive(OBJ2D* obj) const override;
+    bool isAlive(OBJ2D* obj) const override { return obj->actorComponent_->hp_; }
     void damageProc(OBJ2D* obj) const override;
     void areaCheck(OBJ2D* obj) const override;
 
@@ -49,11 +49,11 @@ EXTERN CorePlayerBehavior corePlayerBehavior;
 class PartsPlayerBehavior : public BasePlayerBehavior
 {
 private:
-    void shrink(OBJ2D*) const override;           // 縮小関数
+    void shrink(OBJ2D*) const override;             // 縮小関数
+    void contactToOriginal(OBJ2D*, OBJ2D*) const;   // オリジナル自機に向かって接触しに行く関数
 
-    void contact(OBJ2D*) const;                   // 縮小に伴って位置を移動させる関数
-    void contactToOriginal(OBJ2D*, OBJ2D*) const; // オリジナル自機に向かって接触しに行く関数
-    //void contactToParent(OBJ2D*, OBJ2D*) const;   // 親に向かって接触しに行く関数
+public:
+    static float toCoreVelocity;  // オリジナル自機へ向かう速度
 };
 
 
@@ -67,7 +67,7 @@ class CursorBehavior : public BasePlayerBehavior
 public:
     CursorBehavior();
 private:
-    OBJ_TYPE getType() const override { return OBJ_TYPE::MAX; }
+    OBJ_TYPE getType() const override { return OBJ_TYPE::CURSOR; }
     OBJ_TYPE getAttackType() const override { return OBJ_TYPE::PLAYER; }
     void hit(OBJ2D*, OBJ2D*) const override;
 
@@ -147,6 +147,6 @@ EXTERN ErasePlayer erasePlayer;
 //      エネミーのupdate
 //******************************************************************************
 // 自機本体のupdate
-extern void PLAYER_PUDATE(OBJ2D* obj);
+void PLAYER_UPDATE(OBJ2D* obj);
 // パーツのupdate
-extern void PATRS_PLAYER_UPDATE(OBJ2D* obj);
+void PATRS_PLAYER_UPDATE(OBJ2D* obj);

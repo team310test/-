@@ -34,6 +34,12 @@ void BaseShotBehavior::move(OBJ2D* obj) const
         /*fallthrough*/
     case 1:
         //////// 通常時 ////////
+
+        startAllShrink(obj);    // 縮小開始
+        shrink(obj);            // 画像縮小
+
+        if (obj->collider_->isShrink_) break; // 縮小中なら飛ばす
+
         update(obj);        // 武器の位置更新
 
         break;

@@ -8,14 +8,14 @@ void ActorBehavior::move(OBJ2D* obj) const
     case 0:
         //////// 初期設定 ////////
         // アニメの初期設定
-        obj->renderer_->animeData_ = getParam()->ANIME_WAIT;
-        obj->transform_->scale_ = getParam()->SCALE;
-        obj->renderer_->drawScale_ = getParam()->SCALE;
+        obj->renderer_->animeData_  = getParam()->ANIME_WAIT;
+        obj->transform_->scale_     = getParam()->SCALE;
+        obj->renderer_->drawScale_  = getParam()->SCALE;
         obj->collider_->size_ = {
             getParam()->SIZE.x * getParam()->SCALE.x, 
             getParam()->SIZE.y * getParam()->SCALE.y
         };
-        obj->actorComponent_->hp_ = getParam()->HP;
+        obj->actorComponent_->hp_     = getParam()->HP;
         obj->actorComponent_->nextHp_ = getParam()->NEXT_HP;
 
         obj->nextBehavior_ = getParam()->NEXT_BEHAVIOR;
@@ -32,15 +32,22 @@ void ActorBehavior::move(OBJ2D* obj) const
 
     case 1:
         //////// 通常時 ////////
-
         // 現在のbehavior・eraserがparamと違う場合、paramの方を代入
         if (obj->nextBehavior_ != getParam()->NEXT_BEHAVIOR) obj->nextBehavior_ = getParam()->NEXT_BEHAVIOR;
-        if (obj->nextEraser_ != getParam()->NEXT_ERASER) obj->nextEraser_ = getParam()->NEXT_ERASER;
+        if (obj->nextEraser_   != getParam()->NEXT_ERASER)   obj->nextEraser_   = getParam()->NEXT_ERASER;
 
-        damageProc(obj);
 
-        startAllShrink(obj); //縮小開始
-        shrink(obj);    // 画像縮小
+        startAllShrink(obj);    // 縮小開始
+        shrink(obj);            // 画像縮小
+
+
+
+        if (obj->collider_->isShrink_) break; // 縮小中なら飛ばす
+
+        if (obj == Game::instance()->player_) // objがプレイヤーの場合
+        {
+            if (Behavior::isObjShrink()) break; // すべてのobjが縮小終了していなければ飛ばす
+        }
 
         // PGによるアニメーション(objAnimeTemporary_を優先的に行う)
         if (obj->actorComponent_->objAnimeTemporary_)
@@ -49,6 +56,9 @@ void ActorBehavior::move(OBJ2D* obj) const
                 obj->actorComponent_->objAnimeTemporary_ = nullptr; // アニメが終わるとobjAnimeTemporaryをnullptrにする
         }
         else if (obj->actorComponent_->objAnimeAlways_) obj->actorComponent_->objAnimeAlways_(obj);
+
+        damageProc(obj);
+
 
         // updateがあるならupdateを使用する(仮)
         if (update)
@@ -85,7 +95,6 @@ void ActorBehavior::move(OBJ2D* obj) const
 }
 
 
-static const float divideValue = 0.5f;     // scaleを割る値(最終的なscaleの大きさに影響)
 // すべてのobjのShrinkを開始させる関数
 void Behavior::startAllShrink(OBJ2D* obj) const
 {
@@ -94,55 +103,56 @@ void Behavior::startAllShrink(OBJ2D* obj) const
     if (obj->transform_->scale_.x <= 0) return; // scaleが0以下ならreturn
 
     VECTOR2* currentScale = &obj->transform_->scale_;       // 現在のscale
-    VECTOR2* targetScale = &obj->collider_->targetScale_;  // 最終的に目指すscale 
-    *targetScale = (*currentScale) * divideValue;           // 現在のscaleの?分の?を最終目標に設定
+    VECTOR2* targetScale  = &obj->collider_->targetScale_;  // 最終的に目指すscale 
+    *targetScale = (*currentScale) * SHRINK_DIVIDE_VALUE;           // 現在のscaleの?分の?を最終目標に設定
 
+    obj->collider_->judgeFlag_ = false;
     obj->collider_->isShrink_ = true; // objのshrinkを開始
 }
 
-static const float shrinkVelocity = -0.0025f; // 縮小する速度(縮小の速さに影響)
 // 縮小関数
+float Behavior::shrinkVelocity = SHRINK_SPEED; // 縮小する速度
 void Behavior::shrink(OBJ2D* obj) const
 {
-    bool* isShrink = &obj->collider_->isShrink_; // 縮小しているかどうか
+    Transform* t = obj->transform_;
+    Collider*  c = obj->collider_;
 
     // オリジナル自機でscaleが0.5f以下ならshrinkを強制終了
-    if (obj->behavior_ == &corePlayerBehavior &&
-        obj->transform_->scale_.x <= 0.5f)
+    if (obj->behavior_ == &corePlayerBehavior && t->scale_.x <= 0.5f)
     {
-        *isShrink = false;
+        c->isShrink_ = false;
         return; 
     }
 
-    if (*isShrink == false) return; // Shrinkしていなければreturn
+    if (c->isShrink_ == false) return; // Shrinkしていなければreturn
 
 
-    VECTOR2* currentScale = &obj->transform_->scale_;      // 現在のscale
-    VECTOR2* targetScale  = &obj->collider_->targetScale_; // 最終的に目指すscale 
 
     // Shrink中の場合
-    if (currentScale->x > targetScale->x) // 最終目標より現在のscaleが大きければ
+    if (t->scale_.x > c->targetScale_.x) // 現在のscaleが最終目標より大きければ
     {
-        *currentScale += {                // 縮小
-            shrinkVelocity * obj->transform_->scale_.x, 
-            shrinkVelocity * obj->transform_->scale_.y
+        t->scale_ += {                // 縮小
+            shrinkVelocity * t->scale_.x, 
+            shrinkVelocity * t->scale_.y
         };  
-        if (currentScale->x < targetScale->x)  *currentScale = *targetScale; // 最終目標より小さくなったら値を修正
+        if (t->scale_.x < c->targetScale_.x)  t->scale_ = c->targetScale_; // 最終目標より小さくなったら値を修正
     }
 
-    // scaleAnimeが設定されていなら描画用と判定用のscaleのサイズを合わせる
-    if (obj->actorComponent_->objAnimeAlways_ != &scaleAnime)
-        obj->renderer_->drawScale_ = obj->transform_->scale_;
+    // scaleAnimeが設定されていなければ描画用と判定用のscaleのサイズを合わせる
+/*    if (obj->actorComponent_)
+    {
+        if (obj->actorComponent_->objAnimeAlways_ != &scaleAnime)
+            obj->renderer_->drawScale_ = t->scale_;
+    }
+    else */obj->renderer_->drawScale_ = t->scale_;
+
 
     // 目標を達成した場合
-    if (currentScale->x == targetScale->x)
+    if (t->scale_.x == c->targetScale_.x)
     {
-        *isShrink = false;           // Shrink終了
-
-        //obj->actorComponent_->padTrg_ = GameLib::input::TRG(0);
-        //obj->actorComponent_->padState_ = GameLib::input::STATE(0);
+        obj->collider_->judgeFlag_ = true;
+        c->isShrink_ = false;   // Shrink終了
     }
-
 }
 
 // shrinkしているobjがいるか調べる関数（shrinkしているobjがいたらtrue, いなければfalse）

@@ -13,7 +13,7 @@ void rotateAnime(OBJ2D* obj)
 //  Šg‘åEk¬ƒAƒjƒ[ƒVƒ‡ƒ“
 void scaleAnime(OBJ2D* obj)
 {
-    float shrinkVelocity = obj->collider_->isShrink_ ?
+    float SHRINK_VELOCITY = obj->collider_->isShrink_ ?
         -0.005f : -0.002f; // k¬‚·‚é‘¬“x(k¬‚Ì‘¬‚³‚É‰e‹¿)
     
     // –Ú•W‚ÌƒXƒP[ƒ‹
@@ -25,8 +25,8 @@ void scaleAnime(OBJ2D* obj)
     {
         obj->renderer_->drawScale_ +=
         {
-            obj->renderer_->drawScale_.x* shrinkVelocity,
-            obj->renderer_->drawScale_.y* shrinkVelocity
+            obj->renderer_->drawScale_.x* SHRINK_VELOCITY,
+            obj->renderer_->drawScale_.y* SHRINK_VELOCITY
         };
     }
     // Šg‘å
@@ -34,8 +34,8 @@ void scaleAnime(OBJ2D* obj)
     {
         obj->renderer_->drawScale_ -=
         {
-            obj->renderer_->drawScale_.x* shrinkVelocity,
-                obj->renderer_->drawScale_.y* shrinkVelocity
+            obj->renderer_->drawScale_.x* SHRINK_VELOCITY,
+                obj->renderer_->drawScale_.y* SHRINK_VELOCITY
         };
     }
 
@@ -60,7 +60,7 @@ void scaleAnime(OBJ2D* obj)
 //  XŽ²Šg‘åEk¬ƒAƒjƒ[ƒVƒ‡ƒ“
 bool xAxisSclaeAnime(OBJ2D* obj)
 {
-    float shrinkVelocity = obj->collider_->isShrink_ ?
+    float SHRINK_VELOCITY = obj->collider_->isShrink_ ?
         -0.08f : -0.07f; // k¬‚·‚é‘¬“x(k¬‚Ì‘¬‚³‚É‰e‹¿)
     float magnificationVelocity = obj->collider_->isShrink_ ?
         -0.12f : -0.09f; // k¬‚·‚é‘¬“x(k¬‚Ì‘¬‚³‚É‰e‹¿)
@@ -74,7 +74,7 @@ bool xAxisSclaeAnime(OBJ2D* obj)
     {
         obj->renderer_->drawScale_ +=
         {
-            obj->renderer_->drawScale_.x* shrinkVelocity,
+            obj->renderer_->drawScale_.x* SHRINK_VELOCITY,
                 0
         };
     }
@@ -105,7 +105,7 @@ bool xAxisSclaeAnime(OBJ2D* obj)
 
     return false;
 }
-void setXAxisSclaeAnime(OBJ2D* obj)
+void setXAxisScaleAnime(OBJ2D* obj)
 {
     obj->renderer_->isDrawShrink_ = false;
     obj->renderer_->drawScale_ = obj->transform_->scale_;

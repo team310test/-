@@ -1,11 +1,11 @@
 #include "all.h"
 
-#define X BG::WINDOW_W + 256.0f
-
 STAGE_SCRIPT stageData01[] =
 {
-    {180,&setEnemy01,{X,300}},
-    {360,&setEnemy02,{X,800}},
+    //{180,&setEnemy01,{X,300}},
+    //{360,&setEnemy02,{X,800}},    
+    {60,  &setEnemy01,  { Stage::ENEMY_SPAWN_POS_X, 300 } },
+    {120, &setEnemy02,  { Stage::ENEMY_SPAWN_POS_X, 800 } },
     SET_ENEMY_DATA_END
 };
 
@@ -31,7 +31,7 @@ void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
     if (!pScript->setEnemy_)
     {
         pScript = 0;
-        timer = 0;
+        timer   = 0;
         pScript = stageData01;
     }
 }

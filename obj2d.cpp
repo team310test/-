@@ -120,7 +120,7 @@ void OBJ2DManager::init()
 //--------------------------------------------------------------
 //  ƒŠƒXƒg‚Ö’Ç‰Á
 //--------------------------------------------------------------
-OBJ2D* OBJ2DManager::add(OBJ2D* obj, Behavior* behavior, const VECTOR2& pos,const OBJ_DATA update)
+OBJ2D* OBJ2DManager::add(OBJ2D* obj, Behavior* behavior, const VECTOR2& pos, const OBJ_DATA update)
 {
     obj->behavior_ = behavior;           // behavior_‚Éˆø”‚Ìbehavior‚ð‘ã“ü
     obj->transform_->position_ = pos;                // position_‚Éˆø”‚Ìpos‚ð‘ã“ü
