@@ -77,14 +77,14 @@ private:
 EXTERN PlayerNormalShotBehavior plNormalShotBehavior;
 
 // エネミー
-class EnemyNormalShotBehavior : public BaseEnemyShotBehavior
+class EnmNormalShotBehavior : public BaseEnemyShotBehavior
 {
 public:
-    EnemyNormalShotBehavior();
+    EnmNormalShotBehavior();
 private:
     void update(OBJ2D* obj) const override;
 };
-EXTERN EnemyNormalShotBehavior enemyNormalShotBehavior;
+EXTERN EnmNormalShotBehavior enmNormalShotBehavior;
 
 
 //******************************************************************************
@@ -153,6 +153,24 @@ private:
     void update(OBJ2D* obj) const override;
 };
 EXTERN PlPenetrateShotBehavior plPenetrateShotBehavior;
+
+
+//******************************************************************************
+//
+//      AimShot（プレイヤー狙撃弾）
+//
+//******************************************************************************
+
+// エネミー
+class EnmAimShotBehavior : public BaseEnemyShotBehavior
+{
+public:
+    EnmAimShotBehavior();
+private:
+    void update(OBJ2D* obj) const override;
+};
+EXTERN EnmAimShotBehavior enmAimShotBehavior;
+
 
 
 //******************************************************************************

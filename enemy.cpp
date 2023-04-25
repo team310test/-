@@ -333,7 +333,7 @@ void EnemyTurret01Behavior::attack(OBJ2D* obj) const
                 nullptr,
                 new WeaponComponent
             ),
-            &enemyNormalShotBehavior,
+            &enmAimShotBehavior,
             pos,
             nullptr
         );

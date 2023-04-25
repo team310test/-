@@ -20,6 +20,8 @@
 #include "obj2d.h"
 #include "sprite_data.h"
 
+#include "Parameter.h"
+
 #include "bg.h"
 #include "weapon.h"
 #include "actor.h"

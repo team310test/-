@@ -334,9 +334,8 @@ CorePlayerBehavior::CorePlayerBehavior()
     //param_.HIT_BOX = { -50, -175, 50, -75 };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
-    param_.HP = 1000;
-
-    //param_.UPDATE = &PLAYER_PUDATE;
+    //param_.HP = 1000;
+    param_.HP = CORE_PLAYER_HP;
 
     // アニメ用データ
     param_.OBJ_ANIME = scaleAnime;
@@ -631,7 +630,8 @@ void ErasePlayer::erase(OBJ2D* obj) const
         if (!dst->behavior_) continue;                      // 相手が存在しなければcontinue;
         if (obj == dst) continue;                           // 相手が自分ならcontinue;
 
-        if (dst->behavior_->getType() != OBJ_TYPE::PLAYER) continue; // 相手が自分と同じプレイヤーでなければcontinue
+        if (!dst->actorComponent_) continue;
+        //if (dst->behavior_->getType() != OBJ_TYPE::PLAYER) continue; // 相手が自分と同じプレイヤーでなければcontinue
 
         if (!dst->actorComponent_->parent_) continue;       // 相手が親を持っていなければcontinue;
         if (obj == dst->actorComponent_->parent_) continue; // 相手が自分の子ならcontinue;
