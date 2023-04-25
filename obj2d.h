@@ -38,18 +38,16 @@ enum class OBJ_TYPE
 class Behavior
 {
 public:
-    virtual void move(OBJ2D*) const = 0;
-    virtual OBJ_TYPE getType() const = 0;
-    virtual OBJ_TYPE getAttackType() const = 0;
+    virtual void move(OBJ2D*) const {};
+    virtual OBJ_TYPE getType() const { return OBJ_TYPE::NONE; };
+    virtual OBJ_TYPE getAttackType() const { return OBJ_TYPE::NONE; };
 
-    virtual void hit(OBJ2D* src, OBJ2D* dst) const = 0;
+    virtual void hit(OBJ2D* src, OBJ2D* dst) const {};
 
     virtual void startAllShrink(OBJ2D*) const;  // すべてのobjのShrinkを開始させる関数
     virtual void shrink(OBJ2D*) const;          // 縮小関数
 
     static bool isObjShrink(); // shrinkしているobjがいるか調べる関数（shrinkしているobjがいたらtrue, いなければfalse）
-
-    OBJ_DATA update = nullptr;
 };
 
 // 消去アルゴリズムクラス（抽象クラス）
@@ -271,6 +269,7 @@ public:
     Eraser*   eraser_       = nullptr;
     Behavior* nextBehavior_ = nullptr; // 次に変わるBehavior
     Eraser*   nextEraser_   = nullptr; // 次に変わるEraser
+    OBJ_DATA  update_       = nullptr;
 
     BG* bg_ = nullptr;
 

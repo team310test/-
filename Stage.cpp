@@ -4,8 +4,8 @@
 
 STAGE_SCRIPT stageData01[] =
 {
-    {180,&setEnemy01,{X,300}},
-    {360,&setEnemy02,{X,800}},
+    {180,setEnemy01,{X,300},ENEMY_LINE},
+    {360,setEnemy02,{X,800},ENEMY_LINE_SLOW},
     SET_ENEMY_DATA_END
 };
 
@@ -20,7 +20,7 @@ void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
 {
     while (pScript->setEnemy_ && pScript->time_ == timer)
     {
-        pScript->setEnemy_(obj2dManager, bg, pScript->pos_);
+        pScript->setEnemy_(obj2dManager, bg, pScript->pos_,pScript->update_);
 
         pScript++;
     }
@@ -28,10 +28,10 @@ void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
     ++timer;
 
     // ƒ‹[ƒvˆ—(‰¼)
-    if (!pScript->setEnemy_)
-    {
-        pScript = 0;
-        timer = 0;
-        pScript = stageData01;
-    }
+    //if (!pScript->setEnemy_)
+    //{
+    //    pScript = 0;
+    //    timer = 0;
+    //    pScript = stageData01;
+    //}
 }

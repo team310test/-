@@ -124,7 +124,7 @@ OBJ2D* OBJ2DManager::add(OBJ2D* obj, Behavior* behavior, const VECTOR2& pos,cons
 {
     obj->behavior_ = behavior;           // behavior_に引数のbehaviorを代入
     obj->transform_->position_ = pos;                // position_に引数のposを代入
-    obj->behavior_->update = update;    // updateを代入
+    obj->update_ = update;    // updateを代入
 
     objList_.emplace_back(obj);            // リストにobjを追加する
     return obj;       // 今追加したobjのアドレスを返す（何かで使えるように）

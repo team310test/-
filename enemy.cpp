@@ -71,25 +71,19 @@ OBJ2D* setSubEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behavi
     return obj2dManager->add(subEnemy, behavior, pos, update);
 }
 
-void setEnemy01(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos)
+void setEnemy01(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos,OBJ_DATA update)
 {
-    OBJ_DATA update = ENEMY_LINE;
-
     OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos, update);
     setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x - 64,pos.y + 96 }, update);
 }
-void setEnemy02(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos)
+void setEnemy02(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos, OBJ_DATA update)
 {
-    OBJ_DATA update = ENEMY_LINE;
-
     OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos, update);
     setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x - 128,pos.y }, update);
 }
 
-void setEnemyT(OBJ2DManager* obj2dManager, BG* bg,VECTOR2 pos)
+void setEnemyT(OBJ2DManager* obj2dManager, BG* bg,VECTOR2 pos, OBJ_DATA update)
 {
-    OBJ_DATA update = ENEMY_LINE;
-
     OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos, update);
 
     OBJ2D* subParent01 =
@@ -253,7 +247,7 @@ void BaseEnemyBehavior::damageProc(OBJ2D* /*obj*/) const
 
 void BaseEnemyBehavior::areaCheck(OBJ2D* obj) const
 {
-#if 1
+#if 0
     // 左端に進むと右端から出てくる(仮)
     if (obj->transform_->position_.x < -obj->collider_->size_.x)
     {
@@ -402,7 +396,7 @@ void EraseEnemy::erase(OBJ2D* obj) const
         obj->eraser_   = obj->nextEraser_;
 
         if (obj->behavior_ == nullptr) return;
-        obj->behavior_->update = PARTS_UPDATE;  // updateを変更
+        obj->update_ = PARTS_UPDATE;  // updateを変更
 
         obj->actorComponent_->hp_ = 0;  // HPを0にする
 
@@ -425,7 +419,7 @@ void EraseEnemy::erase(OBJ2D* obj) const
             obj->eraser_   = &eraseDropParts;
             
             if (obj->behavior_ == nullptr) return;
-            obj->behavior_->update = PARTS_UPDATE;  // updateを変更
+            obj->update_ = PARTS_UPDATE;  // updateを変更
 
             return;
         }
@@ -447,7 +441,7 @@ void ENEMY_LINE(OBJ2D* obj)
     const float speed = -5;
     Transform* t = obj->transform_;
     
-    t->velocity_.x = speed;
+    t->velocity_ = { speed,0.0f };
 
     t->position_ += t->velocity_;
 }
@@ -457,6 +451,7 @@ void ENEMY_LINE_SLOW(OBJ2D* obj)
     Transform* t = obj->transform_;
 
     t->velocity_.x = speed;
+    t->velocity_.y = speed;
 
     t->position_ += t->velocity_;
 }

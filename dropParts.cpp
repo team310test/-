@@ -146,7 +146,7 @@ void EraseDropParts::erase(OBJ2D* obj) const
         obj->eraser_   = obj->nextEraser_;   // ŽŸ‚Ìeraser‚ð‘ã“ü
 
         if (obj->behavior_ == nullptr) return;
-        obj->behavior_->update = PATRS_PLAYER_UPDATE;  // update‚ð•ÏX
+        obj->update_ = PATRS_PLAYER_UPDATE;  // update‚ð•ÏX
 
         obj->actorComponent_->hp_ = obj->actorComponent_->nextHp_;  // ŽŸ‚ÌHP‚ð‘ã“ü
         

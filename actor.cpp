@@ -51,9 +51,9 @@ void ActorBehavior::move(OBJ2D* obj) const
         else if (obj->actorComponent_->objAnimeAlways_) obj->actorComponent_->objAnimeAlways_(obj);
 
         // update‚ª‚ ‚é‚È‚çupdate‚ðŽg—p‚·‚é(‰¼)
-        if (update)
+        if (obj->update_)
         {
-            update(obj);
+            obj->update_(obj);
         }
         //else
         //{

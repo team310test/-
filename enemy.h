@@ -9,9 +9,9 @@
 
 void addEnemy(OBJ2DManager* obj2dManager, BG* bg);
 
-void setEnemy01(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos);
-void setEnemy02(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos);
-void setEnemyT(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos);
+void setEnemy01(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos,OBJ_DATA update);
+void setEnemy02(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos,OBJ_DATA update);
+void setEnemyT(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos, OBJ_DATA update);
 
 //******************************************************************************
 // 
