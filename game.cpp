@@ -93,7 +93,7 @@ void Game::update()
         // debug::setString
         {
             GameLib::debug::setString("num:%d", num);
-            if (player_->transform_) GameLib::debug::setString("playerScale:%f", player_->transform_->scale_.x);
+            //if (player_->transform_) GameLib::debug::setString("playerScale:%f", player_->transform_->scale_.x);
             GameLib::debug::setString("shrinkNum:%d", shrinkNum);
             GameLib::debug::setString("plShrinkCount_:%d", BasePlayerBehavior::plShrinkCount_);
         }
@@ -128,17 +128,18 @@ void Game::update()
         // オブジェクトの更新後にShrinkの開始を止める
         if (Collider::isAllShrink_) Collider::isAllShrink_ = false; 
 
-        static bool isSecond = false;
         //// 縮小とパーツプレイヤーへ向かう速度いじり
         if (Behavior::isObjShrink()) // ひとつでもobjが縮小していれば
         {
             Behavior::shrinkVelocity            += (-SHRINK_SPEED)  * 0.015f;
             PartsPlayerBehavior::toCoreVelocity += (-TO_CORE_SPEED) * 0.015f;
+            letterBox_multiplySizeY_ = std::max(0.75f, letterBox_multiplySizeY_ + LETTER_BOX_SUB_SPEED); // 0.0fより小さければ0.0fに修正
         }
         else // すべてのobjが縮小していなければ
         {
             Behavior::shrinkVelocity = SHRINK_SPEED;
             PartsPlayerBehavior::toCoreVelocity = TO_CORE_SPEED;
+            letterBox_multiplySizeY_ = std::min(1.0f, letterBox_multiplySizeY_ + LETTER_BOX_ADD_SPEED); // 1.0fより大きければ1.0fに修正
         }
 
         // ゲームオーバーの処理
@@ -157,6 +158,7 @@ void Game::update()
     }
 }
 
+
 //--------------------------------------------------------------
 //  描画処理
 //--------------------------------------------------------------
@@ -170,7 +172,37 @@ void Game::draw()
     // オブジェクトの描画
     obj2dManager()->draw();
 
+    drawLetterBox();
+
 }
+
+// 映画の黒帯描画（仮）
+void Game::drawLetterBox()
+{
+    // マスク消す方
+    DepthStencil::instance().set(DepthStencil::MODE::MASK);
+    VECTOR2 pos    = { BG::WINDOW_W * 0.5f, BG::WINDOW_H * 0.5f };
+    VECTOR2 size   = { BG::WINDOW_W, BG::WINDOW_H * letterBox_multiplySizeY_ };
+    VECTOR2 center = size * 0.5f;
+
+    GameLib::primitive::rect(pos, size, center);
+
+
+    // マスク消される方
+    DepthStencil::instance().set(DepthStencil::MODE::EXCLUSIVE);
+    pos     = {};
+    size    = { BG::WINDOW_W, BG::WINDOW_H };
+    center  = {};
+    const float angle   = 0.0f;
+    const VECTOR4 color = { 0, 0, 0, 0.7f };
+
+    GameLib::primitive::rect(pos, size, center, angle, color);
+
+
+    DepthStencil::instance().clear();
+    DepthStencil::instance().set(DepthStencil::MODE::NONE);
+}
+
 
 void Game::judge()
 {

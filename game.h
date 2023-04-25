@@ -1,19 +1,5 @@
 #pragma once
 
-//******************************************************************************
-//
-//
-//      ÉQÅ[ÉÄÉVÅ[Éì
-//
-//
-//******************************************************************************
-
-//==============================================================================
-//
-//      GameÉNÉâÉX
-//
-//==============================================================================
-
 class Game : public Scene
 {
 private:
@@ -27,6 +13,8 @@ private:
     bool            isGameOver_;
     int             gameOverTimer_;
 
+    float           letterBox_multiplySizeY_;     // âfâÊÇÃçïë—ÇÃècïù
+
 public:
     OBJ2D*          player_;
     OBJ2D*          cursor_;
@@ -39,6 +27,8 @@ public:
     void deinit() override;
     void update() override;
     void draw() override;
+
+    void drawLetterBox(); // âfâÊÇÃçïë—ï`âÊÅiâºÅj
 
     void setGameOver()
     {
@@ -55,6 +45,7 @@ private:
         , isPaused_(false)
         , isGameOver_(false)
         , gameOverTimer_(0)
+        , letterBox_multiplySizeY_(1.0f)
         , player_(nullptr) 
         , cursor_(nullptr)
     {}

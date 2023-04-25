@@ -88,7 +88,7 @@ void BG::update()
 
 
 // 背景更新処理(private)
-float BG::subScale = -0.0025f;    // scaleの縮小速度
+float BG::subScale = -0.0035f;    // scaleの縮小速度
 static constexpr float ADD_ALPHA_COLOR     =  0.001f;  // 不透明度の増加速度
 static constexpr float SUBJECT_ALPHA_COLOR = -0.0025f; // 不透明度の減少速度
 void BG::moveBack() const
