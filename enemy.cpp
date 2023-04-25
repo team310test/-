@@ -37,7 +37,7 @@ VECTOR2 getCursorPoint2()
 }
 
 
-OBJ2D* setMainEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behavior, VECTOR2 pos, int zOrder = 3)
+OBJ2D* setMainEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behavior, VECTOR2 pos,OBJ_DATA update,int zOrder = 3)
 {
     OBJ2D* enemy = new OBJ2D(
         new Renderer,
@@ -51,9 +51,9 @@ OBJ2D* setMainEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behav
     enemy->zOrder_ = zOrder;
     enemy->actorComponent_->parent_ = enemy;
 
-    return obj2dManager->add(enemy, behavior, pos);
+    return obj2dManager->add(enemy, behavior, pos, update);
 }
-OBJ2D* setSubEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behavior, OBJ2D* parent, VECTOR2 pos, int zOrder = 3)
+OBJ2D* setSubEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behavior, OBJ2D* parent, VECTOR2 pos, OBJ_DATA update, int zOrder = 3)
 {
     OBJ2D* subEnemy = new OBJ2D(
         new Renderer,
@@ -68,39 +68,39 @@ OBJ2D* setSubEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behavi
     // 親を設定
     subEnemy->actorComponent_->parent_ = parent;
 
-    return obj2dManager->add(subEnemy, behavior, pos);
+    return obj2dManager->add(subEnemy, behavior, pos, update);
 }
 
 void setEnemy01(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos)
 {
-    OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos);
-    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x - 64,pos.y + 96 });
+    OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos, ENEMY_LINE);
+    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x - 64,pos.y + 96 }, ENEMY_LINE);
 }
 void setEnemy02(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos)
 {
-    OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos);
-    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x - 128,pos.y });
+    OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos, ENEMY_LINE);
+    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x - 128,pos.y }, ENEMY_LINE);
 }
 
 void setEnemyT(OBJ2DManager* obj2dManager, BG* bg,VECTOR2 pos)
 {
-    OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos);
+    OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos, ENEMY_LINE);
 
     OBJ2D* subParent01 =
-        setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x,pos.y - 229 });
-    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, subParent01, { pos.x,pos.y - 429 });
+        setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x,pos.y - 229 }, ENEMY_LINE);
+    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, subParent01, { pos.x,pos.y - 429 }, ENEMY_LINE);
     OBJ2D* subParent02 =
-        setSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, Parent, { pos.x,pos.y + 229 });
-    setSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, subParent02, { pos.x,pos.y + 429 });
+        setSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, Parent, { pos.x,pos.y + 229 }, ENEMY_LINE);
+    setSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, subParent02, { pos.x,pos.y + 429 }, ENEMY_LINE);
 }
 
 void addEnemy(OBJ2DManager* obj2dManager, BG* bg)
 {
-    OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, getCursorPoint2());
+    OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, getCursorPoint2(), ENEMY_LINE);
     VECTOR2 pos = Parent->transform_->position_;
     // サブパーツ
-    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x,pos.y - 229 });
-    setSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, Parent, { pos.x,pos.y + 229 });
+    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x,pos.y - 229 }, ENEMY_LINE);
+    setSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, Parent, { pos.x,pos.y + 229 }, ENEMY_LINE);
 }
 
 #if 0
@@ -225,14 +225,6 @@ void BaseEnemyBehavior::init(OBJ2D* obj) const
     obj->renderer_->flip(); // 反転させる
 }
 
-void BaseEnemyBehavior::moveX(OBJ2D* obj) const
-{
-    // 直線移動(仮)
-    obj->transform_->velocity_.x -= getParam()->ACCEL_X;
-    
-    ActorBehavior::moveX(obj);
-}
-
 void BaseEnemyBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
 {
     // プレイヤーのHPを減らす
@@ -286,13 +278,6 @@ EnemyCore01Behavior::EnemyCore01Behavior()
 
     param_.ATTACK_BOX[0] = { -125, -125, 125, 125 };
 
-    // 速度関連のパラメータ
-    param_.ACCEL_X = 4.0f;
-    param_.ACCEL_Y = 4.0f;
-    param_.SPEED_X_MAX = 4.0f;
-    param_.SPEED_Y_MAX = 4.0f;
-    param_.JUMP_POWER_Y = -12.0f;
-
     // 次のBehaviorなし
     param_.NEXT_BEHAVIOR = nullptr;
     param_.NEXT_ERASER   = nullptr;
@@ -320,12 +305,6 @@ EnemyTurret01Behavior::EnemyTurret01Behavior()
 
     param_.ATTACK_BOX[0] = { -125, 48, 80, 95 };   // 下長方形
     param_.ATTACK_BOX[1] = { -10,-95,125,50 };      // ネジ
-
-    param_.ACCEL_X = 4.0f;
-    param_.ACCEL_Y = 4.0f;
-    param_.SPEED_X_MAX = 4.0f;
-    param_.SPEED_Y_MAX = 4.0f;
-    //param_.JUMP_POWER_Y = -12.0f;
 
     // 次のBehavior・Eraser（ドロップアイテム）
     param_.NEXT_BEHAVIOR = &dropTurret01Behavior;
@@ -355,7 +334,8 @@ void EnemyTurret01Behavior::attack(OBJ2D* obj) const
                 new WeaponComponent
             ),
             &enemyNormalShotBehavior,
-            pos
+            pos,
+            nullptr
         );
         shot->zOrder_ = 2;
         shot->weaponComponent_->parent_ = obj;
@@ -382,13 +362,6 @@ EnemyBuff01Behavior::EnemyBuff01Behavior()
          player_hitBox,  player_hitBox,
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
-
-
-    param_.ACCEL_X = 4.0f;
-    param_.ACCEL_Y = 4.0f;
-    param_.SPEED_X_MAX = 4.0f;
-    param_.SPEED_Y_MAX = 4.0f;
-    //param_.JUMP_POWER_Y = -12.0f;
 
     // 次のBehavior・Eraser（ドロップアイテム）
     param_.NEXT_BEHAVIOR = &dropBuff01Behavior;
@@ -417,9 +390,13 @@ void EraseEnemy::erase(OBJ2D* obj) const
     {
         obj->actorComponent_->parent_ = nullptr; // 親リセット
 
+
         // 次のbehavior・eraser（ドロップアイテム）を代入
         obj->behavior_ = obj->nextBehavior_;
         obj->eraser_   = obj->nextEraser_;
+
+        if (obj->behavior_ == nullptr) return;
+        obj->behavior_->update = PARTS_UPDATE;  // updateを変更
 
         obj->actorComponent_->hp_ = 0;  // HPを0にする
 
@@ -436,9 +413,14 @@ void EraseEnemy::erase(OBJ2D* obj) const
         {
             obj->actorComponent_->parent_ = nullptr; // 親リセット
 
+
             // 次のbehavior・eraser（ドロップアイテム）を代入
             obj->behavior_ = &dropTrash01Behavior;
             obj->eraser_   = &eraseDropParts;
+            
+            if (obj->behavior_ == nullptr) return;
+            obj->behavior_->update = PARTS_UPDATE;  // updateを変更
+
             return;
         }
 
@@ -447,4 +429,28 @@ void EraseEnemy::erase(OBJ2D* obj) const
         return;
     }
 
+}
+
+//******************************************************************************
+//
+//      エネミーのupdate
+//
+//******************************************************************************
+void ENEMY_LINE(OBJ2D* obj)
+{
+    const float speed = -5;
+    Transform* t = obj->transform_;
+    
+    t->velocity_.x = speed;
+
+    t->position_ += t->velocity_;
+}
+void ENEMY_LINE_SLOW(OBJ2D* obj)
+{
+    const float speed = -1;
+    Transform* t = obj->transform_;
+
+    t->velocity_.x = speed;
+
+    t->position_ += t->velocity_;
 }

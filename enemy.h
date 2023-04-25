@@ -22,7 +22,6 @@ class BaseEnemyBehavior : public ActorBehavior
 {
 private:
     void init(OBJ2D* obj) const override;
-    void moveX(OBJ2D* obj) const override;
     OBJ_TYPE getType() const override       { return OBJ_TYPE::ENEMY; }
     OBJ_TYPE getAttackType() const override { return OBJ_TYPE::PLAYER; }
     void hit(OBJ2D*, OBJ2D*) const override;
@@ -92,3 +91,10 @@ class EraseEnemy : public Eraser
     void erase(OBJ2D* obj) const;
 };
 EXTERN EraseEnemy eraseEnemy;
+
+
+//******************************************************************************
+//      エネミーのupdate
+//******************************************************************************
+extern void ENEMY_LINE(OBJ2D*);
+extern void ENEMY_LINE_SLOW(OBJ2D* obj);

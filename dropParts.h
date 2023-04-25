@@ -10,7 +10,6 @@ class BaseDropPartsBehavior : public ActorBehavior
 {
 private:
     void init(OBJ2D* obj)    const override;
-    void moveX(OBJ2D* obj)   const override;
     OBJ_TYPE getType()       const override { return OBJ_TYPE::PARTS; }
     OBJ_TYPE getAttackType() const override { return OBJ_TYPE::PLAYER; }
     void hit(OBJ2D*, OBJ2D*) const override;
@@ -74,3 +73,8 @@ class EraseDropParts : public Eraser
     void erase(OBJ2D* obj) const;
 };
 EXTERN EraseDropParts eraseDropParts;
+
+//******************************************************************************
+//      ÉpÅ[ÉcÇÃupdate
+//******************************************************************************
+extern void PARTS_UPDATE(OBJ2D* obj);

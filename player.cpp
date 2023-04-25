@@ -52,12 +52,12 @@ void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer = fa
     if (makeOrgPlayer == true) 
     {
         //Game::instance()->player_ = obj2dManager->add(player, &normalPlayerBehavior, pos); 
-        Game::instance()->player_ = obj2dManager->add(player, &corePlayerBehavior, pos);
+        Game::instance()->player_ = obj2dManager->add(player, &corePlayerBehavior, pos, PLAYER_PUDATE);
     }
     else
     {
         //obj2dManager->add(player, &normalPlayerBehavior, pos);
-        obj2dManager->add(player, &corePlayerBehavior, pos);
+        obj2dManager->add(player, &corePlayerBehavior, pos, PLAYER_PUDATE);
     }
 }
 // 仮
@@ -77,9 +77,88 @@ void setCursor(OBJ2DManager* obj2dManager, BG* bg)
     cursor->zOrder_ = 4;
     cursor->actorComponent_->parent_ = cursor;
 
-    Game::instance()->cursor_ = obj2dManager->add(cursor, &cursorBehavior, pos);
+    Game::instance()->cursor_ = obj2dManager->add(cursor, &cursorBehavior, pos,nullptr);
 }
 
+//******************************************************************************
+//      エネミーのupdate
+//******************************************************************************
+#define PL_SPEED 3.0f
+#define PL_SPEED_MAX 10.0f
+#define RATIO 0.7f
+#define PAD_MOVE		(PAD_RIGHT|PAD_LEFT|PAD_DOWN|PAD_UP)
+VECTOR2 speeData[16] = {
+    { 0, 0 },								        //----
+    { 0, -PL_SPEED },						        //---u
+    { 0,  PL_SPEED },						        //--d-
+    { 0, 0 },								        //--du
+    { -PL_SPEED, 0 },						        //-l--
+    { -PL_SPEED * RATIO, -PL_SPEED * RATIO },		//-l-u
+    { -PL_SPEED * RATIO,  PL_SPEED * RATIO },		//-ld-
+    { -PL_SPEED, 0 },						        //-ldu
+    { PL_SPEED, 0 },						        //r---
+    { PL_SPEED * RATIO, -PL_SPEED * RATIO },		//r--u
+    { PL_SPEED * RATIO,  PL_SPEED * RATIO },		//r-d-
+    { PL_SPEED, 0 },						        //r-du
+    { 0, 0 },								        //rl--
+    { 0, -PL_SPEED },						        //rl-u
+    { 0,  PL_SPEED },						        //rld-
+    { 0, 0 },								        //rldu
+};
+// 自機本体のupdate
+void PLAYER_PUDATE(OBJ2D* obj)
+{
+    using namespace GameLib::input;
+    ActorComponent* a = obj->actorComponent_;
+    Transform* t = obj->transform_;
+
+    t->velocity_ += speeData
+        [a->padState_ & PAD_MOVE];
+
+    // y軸の減速
+    if (!(a->padState_ & (PAD_DOWN | PAD_UP)))
+    {
+        if (t->velocity_.y > 0)
+        {
+            t->velocity_.y -= PL_SPEED / 2;
+            if (t->velocity_.y < 0) t->velocity_.y = 0;
+        }
+        if (t->velocity_.y < 0)
+        {
+            t->velocity_.y += PL_SPEED / 2;
+            if (t->velocity_.y > 0) t->velocity_.y = 0;
+        }
+    }
+    // x軸の減速
+    if (!(a->padState_ & (PAD_RIGHT | PAD_LEFT)))
+    {
+        if (t->velocity_.x > 0)
+        {
+            t->velocity_.x -= PL_SPEED / 2;
+            if (t->velocity_.x < 0) t->velocity_.x = 0;
+        }
+        if (t->velocity_.x < 0)
+        {
+            t->velocity_.x += PL_SPEED / 2;
+            if (t->velocity_.x > 0) t->velocity_.x = 0;
+        }
+    }
+
+    // 最大速度チェック
+    t->velocity_.x = clamp(t->velocity_.x, -PL_SPEED_MAX, PL_SPEED_MAX);
+    t->velocity_.y = clamp(t->velocity_.y, -PL_SPEED_MAX, PL_SPEED_MAX);
+
+    // 移動
+    t->position_ += t->velocity_;
+}
+// パーツのupdate
+void PATRS_PLAYER_UPDATE(OBJ2D* obj)
+{
+    Transform* t = obj->transform_;
+    OBJ2D* parent = Game::instance()->player_;;
+
+    t->position_ += parent->transform_->velocity_;
+}
 
 //******************************************************************************
 //
@@ -95,87 +174,88 @@ void BasePlayerBehavior::init(OBJ2D* obj) const
     obj->eraser_ = &erasePlayer;
 }
 
+// BasePlayerBehavior::moveY(moveX)念のため残している
 
-void BasePlayerBehavior::moveY(OBJ2D* obj) const
-{
-    // 省略
-    using namespace GameLib::input;
-    ActorComponent* a = obj->actorComponent_;
-    Transform* t = obj->transform_;
-
-
-    // 斜め移動時の速度を修正
-    const float fixSpeedY = (a->padState_ & PAD_LEFT || a->padState_ & PAD_RIGHT) &&
-                            (a->padState_ & PAD_DOWN || a->padState_ & PAD_UP)
-                            ? 0.71f : 1.0f;
-    const float  fixedAccelY = param_.ACCEL_Y * fixSpeedY;
-
-    // 上下入力の取り出し
-    switch (a->padState_ & (PAD_UP | PAD_DOWN))
-    {
-    case PAD_UP:    // 上だけが押されている場合
-        t->velocity_.y -= fixedAccelY;
-        break;
-    case PAD_DOWN:  // 下だけが押されている場合
-        t->velocity_.y += fixedAccelY;
-        //obj->renderer_->animeData_ = obj->renderer_->animeData_;
-        break;
-    default:        // どちらも押されていないか相殺されている場合
-        if (t->velocity_.y > 0)
-        {
-            t->velocity_.y -= getParam()->ACCEL_Y / 2;
-            if (t->velocity_.y < 0) t->velocity_.y = 0;
-        }
-        if (t->velocity_.y < 0)
-        {
-            t->velocity_.y += getParam()->ACCEL_Y / 2;
-            if (t->velocity_.y > 0) t->velocity_.y = 0;
-        }
-        break;
-    }
-
-    ActorBehavior::moveY(obj);
-}
-
-void BasePlayerBehavior::moveX(OBJ2D* obj) const
-{
-    // 省略
-    using namespace GameLib::input;
-    ActorComponent* a = obj->actorComponent_;
-    Transform*      t = obj->transform_;
-
-
-    // 斜め移動時の速度を修正
-    const float fixSpeedX = (a->padState_ & PAD_LEFT || a->padState_ & PAD_RIGHT) &&
-                            (a->padState_ & PAD_DOWN || a->padState_ & PAD_UP   ) 
-                            ? 0.71f : 1.0f;
-    const float fixedAccelX = param_.ACCEL_X * fixSpeedX;
-
-    // 左右入力の取り出し
-    switch (a->padState_ & (PAD_LEFT | PAD_RIGHT))
-    {
-    case PAD_LEFT:  // 左だけが押されている場合
-        t->velocity_.x -= fixedAccelX;
-        break;
-    case PAD_RIGHT: // 右だけが押されている場合
-        t->velocity_.x += fixedAccelX;
-        break;
-    default:        // どちらも押されていないか相殺されている場合
-        if (t->velocity_.x > 0)
-        {
-            t->velocity_.x -= getParam()->ACCEL_X / 2;
-            if (t->velocity_.x < 0) t->velocity_.x = 0;
-        }
-        if (t->velocity_.x < 0)
-        {
-            t->velocity_.x += getParam()->ACCEL_X / 2;
-            if (t->velocity_.x > 0) t->velocity_.x = 0;
-        }
-        break;
-    }
-
-    ActorBehavior::moveX(obj);
-}
+//void BasePlayerBehavior::moveY(OBJ2D* obj) const
+//{
+//    // 省略
+//    using namespace GameLib::input;
+//    ActorComponent* a = obj->actorComponent_;
+//    Transform* t = obj->transform_;
+//
+//
+//    // 斜め移動時の速度を修正
+//    const float fixSpeedY = (a->padState_ & PAD_LEFT || a->padState_ & PAD_RIGHT) &&
+//                            (a->padState_ & PAD_DOWN || a->padState_ & PAD_UP)
+//                            ? 0.71f : 1.0f;
+//    const float  fixedAccelY = param_.ACCEL_Y * fixSpeedY;
+//
+//    // 上下入力の取り出し
+//    switch (a->padState_ & (PAD_UP | PAD_DOWN))
+//    {
+//    case PAD_UP:    // 上だけが押されている場合
+//        t->velocity_.y -= fixedAccelY;
+//        break;
+//    case PAD_DOWN:  // 下だけが押されている場合
+//        t->velocity_.y += fixedAccelY;
+//        //obj->renderer_->animeData_ = obj->renderer_->animeData_;
+//        break;
+//    default:        // どちらも押されていないか相殺されている場合
+//        if (t->velocity_.y > 0)
+//        {
+//            t->velocity_.y -= getParam()->ACCEL_Y / 2;
+//            if (t->velocity_.y < 0) t->velocity_.y = 0;
+//        }
+//        if (t->velocity_.y < 0)
+//        {
+//            t->velocity_.y += getParam()->ACCEL_Y / 2;
+//            if (t->velocity_.y > 0) t->velocity_.y = 0;
+//        }
+//        break;
+//    }
+//
+//    ActorBehavior::moveY(obj);
+//}
+//
+//void BasePlayerBehavior::moveX(OBJ2D* obj) const
+//{
+//    // 省略
+//    using namespace GameLib::input;
+//    ActorComponent* a = obj->actorComponent_;
+//    Transform*      t = obj->transform_;
+//
+//
+//    // 斜め移動時の速度を修正
+//    const float fixSpeedX = (a->padState_ & PAD_LEFT || a->padState_ & PAD_RIGHT) &&
+//                            (a->padState_ & PAD_DOWN || a->padState_ & PAD_UP   ) 
+//                            ? 0.71f : 1.0f;
+//    const float fixedAccelX = param_.ACCEL_X * fixSpeedX;
+//
+//    // 左右入力の取り出し
+//    switch (a->padState_ & (PAD_LEFT | PAD_RIGHT))
+//    {
+//    case PAD_LEFT:  // 左だけが押されている場合
+//        t->velocity_.x -= fixedAccelX;
+//        break;
+//    case PAD_RIGHT: // 右だけが押されている場合
+//        t->velocity_.x += fixedAccelX;
+//        break;
+//    default:        // どちらも押されていないか相殺されている場合
+//        if (t->velocity_.x > 0)
+//        {
+//            t->velocity_.x -= getParam()->ACCEL_X / 2;
+//            if (t->velocity_.x < 0) t->velocity_.x = 0;
+//        }
+//        if (t->velocity_.x < 0)
+//        {
+//            t->velocity_.x += getParam()->ACCEL_X / 2;
+//            if (t->velocity_.x > 0) t->velocity_.x = 0;
+//        }
+//        break;
+//    }
+//
+//    ActorBehavior::moveX(obj);
+//}
 
 void BasePlayerBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
 {
@@ -256,12 +336,7 @@ CorePlayerBehavior::CorePlayerBehavior()
 
     param_.HP = 1000;
 
-    // 速度関連のパラメータ
-    param_.ACCEL_X = 8.0f;
-    param_.ACCEL_Y = 8.0f;
-    param_.SPEED_X_MAX = 8.0f;
-    param_.SPEED_Y_MAX = 8.0f;
-    param_.JUMP_POWER_Y = -12.0f;
+    //param_.UPDATE = &PLAYER_PUDATE;
 
     // アニメ用データ
     param_.OBJ_ANIME = scaleAnime;
@@ -294,7 +369,8 @@ void CorePlayerBehavior::attack(OBJ2D* obj) const
             //&plSquareWaveShotBehavior, // 矩形波
             //&plCurveWaveShotBehavior,  // 上カーブ
             //&plPenetrateShotBehavior,  // 高速・貫通(予定)
-            pos
+            pos,
+            nullptr
         );
         shot->zOrder_ = 2;
         shot->weaponComponent_->parent_ = obj;
@@ -385,8 +461,16 @@ void PartsPlayerBehavior::contactToOriginal(OBJ2D* obj, OBJ2D* original) const
         (d.y / dist) * (addVelocity),
     };
 
-    ActorBehavior::moveY(obj);
-    ActorBehavior::moveX(obj);
+
+    // 最大速度チェックを行う
+    obj->transform_->velocity_.y = clamp(
+        obj->transform_->velocity_.y, -PL_SPEED_MAX, PL_SPEED_MAX
+    );
+    obj->transform_->velocity_.x = clamp(
+        obj->transform_->velocity_.x, -PL_SPEED_MAX, PL_SPEED_MAX
+    );
+    // 位置更新
+    obj->transform_->position_ += obj->transform_->velocity_;
 }
 
 // 親の方に向かって移動する関数
@@ -430,13 +514,6 @@ PlayerTurret01Behavior::PlayerTurret01Behavior()
 
     param_.ATTACK_BOX[0] = { -80, 48, 125, 95 }; // 下長方形
     param_.ATTACK_BOX[1] = { -125,-95,10,50 };   // ネジ
-
-    param_.ACCEL_X = 8.0f;
-    param_.ACCEL_Y = 8.0f;
-    param_.SPEED_X_MAX = 8.0f;
-    param_.SPEED_Y_MAX = 8.0f;
-    //param_.JUMP_POWER_Y = -12.0f;
-
 }
 
 void PlayerTurret01Behavior::attack(OBJ2D* obj) const
@@ -461,7 +538,8 @@ void PlayerTurret01Behavior::attack(OBJ2D* obj) const
                 new WeaponComponent
             ),
             &plNormalShotBehavior,
-            pos
+            pos,
+            nullptr
         );
         shot->zOrder_ = 2;
         shot->weaponComponent_->parent_ = obj;
@@ -495,11 +573,6 @@ PlayerBuff01Behavior::PlayerBuff01Behavior()
          player_hitBox * BUFF_MALTIPLY_VALUE,  
          player_hitBox * BUFF_MALTIPLY_VALUE,
     };
-
-    param_.ACCEL_X = 8.0f;
-    param_.ACCEL_Y = 8.0f;
-    param_.SPEED_X_MAX = 8.0f;
-    param_.SPEED_Y_MAX = 8.0f;
 }                            
 
 // 攻撃タイプがPLAYERなのでdstは味方(プレイヤー)になる
@@ -530,10 +603,6 @@ PlayerTrash01Behavior::PlayerTrash01Behavior()
          player_hitBox,
     };
 
-    param_.ACCEL_X = 8.0f;
-    param_.ACCEL_Y = 8.0f;
-    param_.SPEED_X_MAX = 8.0f;
-    param_.SPEED_Y_MAX = 8.0f;
 }
 
 
@@ -597,12 +666,6 @@ CursorBehavior::CursorBehavior()
     param_.HIT_BOX[0] = { -5, -5, 5 , 5 };
     param_.ATTACK_BOX[0] = { -5, -5, 5 , 5 };
 
-    // 速度関連のパラメータ
-    param_.ACCEL_X = 8.0f;
-    param_.ACCEL_Y = 8.0f;
-    param_.SPEED_X_MAX = 8.0f;
-    param_.SPEED_Y_MAX = 8.0f;
-    param_.JUMP_POWER_Y = -12.0f;
 }
 
 // カーソルの座標取得

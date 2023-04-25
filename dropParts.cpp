@@ -33,14 +33,6 @@ void BaseDropPartsBehavior::init(OBJ2D* obj) const
     obj->eraser_ = &eraseDropParts;
 }
 
-void BaseDropPartsBehavior::moveX(OBJ2D* obj) const
-{
-    // 直線移動(仮)
-    obj->transform_->velocity_.x -= getParam()->ACCEL_X;
-
-    ActorBehavior::moveX(obj);
-}
-
 void BaseDropPartsBehavior::hit(OBJ2D* src, OBJ2D* dst) const
 {
     if (!dst->actorComponent_->parent_) return; // もし相手が親を持っていなければreturn
@@ -80,11 +72,6 @@ DropTurret01Behavior::DropTurret01Behavior()
     param_.ATTACK_BOX[0] = { -80, 48, 125, 95 };   // 下長方形
     param_.ATTACK_BOX[1] = { -125,-95,10,50 };      // ネジ
 
-    param_.ACCEL_X = 2.0f;
-    param_.ACCEL_Y = 2.0f;
-    param_.SPEED_X_MAX = 2.0f;
-    param_.SPEED_Y_MAX = 2.0f;
-
     // 次のbehavior・eraser（プレイヤー）
     param_.NEXT_BEHAVIOR = &playerTurret01Behavior;
     param_.NEXT_ERASER   = &erasePlayer;
@@ -109,11 +96,6 @@ DropBuff01Behavior::DropBuff01Behavior()
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
-    param_.ACCEL_X = 2.0f;
-    param_.ACCEL_Y = 2.0f;
-    param_.SPEED_X_MAX = 2.0f;
-    param_.SPEED_Y_MAX = 2.0f;
-
     // 次のbehavior・eraser（プレイヤー）
     param_.NEXT_BEHAVIOR = &playerBuff01Behavior;
     param_.NEXT_ERASER   = &erasePlayer;
@@ -136,11 +118,6 @@ DropTrash01Behavior::DropTrash01Behavior()
          player_hitBox,  player_hitBox,
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
-
-    param_.ACCEL_X = 2.0f;
-    param_.ACCEL_Y = 2.0f;
-    param_.SPEED_X_MAX = 2.0f;
-    param_.SPEED_Y_MAX = 2.0f;
 
     // 次のbehavior・eraser（プレイヤー）
     param_.NEXT_BEHAVIOR = &playerTrash01Behavior;
@@ -168,9 +145,24 @@ void EraseDropParts::erase(OBJ2D* obj) const
         obj->behavior_ = obj->nextBehavior_; // 次のbehaviorを代入
         obj->eraser_   = obj->nextEraser_;   // 次のeraserを代入
 
+        if (obj->behavior_ == nullptr) return;
+        obj->behavior_->update = PATRS_PLAYER_UPDATE;  // updateを変更
+
         obj->actorComponent_->hp_ = obj->actorComponent_->nextHp_;  // 次のHPを代入
         
         ++BasePlayerBehavior::plShrinkCount_; // 縮小までのカウントを加算
         return;
     }
+}
+
+//******************************************************************************
+//      パーツのupdate
+//******************************************************************************
+#define ITEM_SUPEED -2.0f
+void PARTS_UPDATE(OBJ2D* obj)
+{
+    Transform* t = obj->transform_;
+    
+    t->velocity_.x = ITEM_SUPEED;
+    t->position_ += t->velocity_;
 }

@@ -1,31 +1,5 @@
 #include "all.h"
 
-void ActorBehavior::moveY(OBJ2D* obj) const
-{
-    // 最大速度チェックを行う
-    obj->transform_->velocity_.y = clamp(
-        obj->transform_->velocity_.y, -getParam()->SPEED_Y_MAX, getParam()->SPEED_Y_MAX
-    );
-
-    // 位置更新
-    //float oldY = obj->transform_->position_.y;           // 移動前の位置を保持
-    obj->transform_->position_.y += obj->transform_->velocity_.y;
-    //float deltaY = obj->transform_->position_.y - oldY;  // 移動後の位置から移動前の位置を引く
-}
-
-void ActorBehavior::moveX(OBJ2D* obj) const
-{
-    // 最大速度チェック
-    obj->transform_->velocity_.x = clamp(
-        obj->transform_->velocity_.x, -getParam()->SPEED_X_MAX, getParam()->SPEED_X_MAX
-    );
-
-    // X方向移動
-    //float oldX = obj->transform_->position_.x;
-    obj->transform_->position_.x += obj->transform_->velocity_.x;
-    //float deltaX = obj->transform_->position_.x - oldX;
-}
-
 void ActorBehavior::move(OBJ2D* obj) const
 {
     obj->renderer_->animeData_ = nullptr;
@@ -76,9 +50,18 @@ void ActorBehavior::move(OBJ2D* obj) const
         }
         else if (obj->actorComponent_->objAnimeAlways_) obj->actorComponent_->objAnimeAlways_(obj);
 
+        // updateがあるならupdateを使用する(仮)
+        if (update)
+        {
+            update(obj);
+        }
+        //else
+        //{
+        //    moveY(obj);
+        //    moveX(obj);
+        //}
 
-        moveY(obj);
-        moveX(obj);
+
         areaCheck(obj);
 
 

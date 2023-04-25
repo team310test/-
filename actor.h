@@ -20,13 +20,6 @@ protected:
         int HP = 1;
         int ATTACK_POWER = 1;
 
-        // 速度関連のパラメータ
-        float ACCEL_X = 0.0f;
-        float ACCEL_Y = 0.0f;
-        float SPEED_X_MAX = 0.0f;
-        float SPEED_Y_MAX = 0.0f;
-        float JUMP_POWER_Y = 0.0f;
-
         int BOX_NUM = 1;
         Behavior* NEXT_BEHAVIOR = nullptr;
         Eraser* NEXT_ERASER = nullptr;
@@ -34,14 +27,11 @@ protected:
         int NEXT_HP = 1;
 
         // アニメーション用パラメータ
-        OBJ_ANIME_ALWAYS OBJ_ANIME = nullptr;
+        OBJ_DATA OBJ_ANIME = nullptr;
         float ROT_SPEED = 0.0f;
 
     } param_;
     const Param* getParam() const { return &param_; }
-
-    virtual void moveY(OBJ2D* obj) const;
-    virtual void moveX(OBJ2D* obj) const;
 
 private:
     void move(OBJ2D* obj) const override;

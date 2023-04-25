@@ -17,8 +17,8 @@
 class OBJ2D;
 
 // 関数ポインタ（アニメ処理）
-typedef	void(*OBJ_ANIME_ALWAYS)(OBJ2D* obj);
-typedef	bool(*OBJ_ANIME_TEMPORARY)(OBJ2D* obj);
+typedef	void(*OBJ_DATA)(OBJ2D* obj);
+typedef	bool(*OBJ_DATA_b)(OBJ2D* obj);
 
 
 enum class OBJ_TYPE
@@ -49,6 +49,7 @@ public:
 
     static bool isObjShrink(); // shrinkしているobjがいるか調べる関数（shrinkしているobjがいたらtrue, いなければfalse）
 
+    OBJ_DATA update = nullptr;
 };
 
 // 消去アルゴリズムクラス（抽象クラス）
@@ -197,8 +198,8 @@ public:
     int No;
 
     // アニメ用データ
-    OBJ_ANIME_ALWAYS objAnimeAlways_;
-    OBJ_ANIME_TEMPORARY objAnimeTemporary_;
+    OBJ_DATA objAnimeAlways_;
+    OBJ_DATA_b objAnimeTemporary_;
     float rotSpeed_;
 
     ActorComponent()
@@ -310,7 +311,7 @@ public:
     void update();  // 更新
     void draw();    // 描画
 
-    OBJ2D* add(OBJ2D* obj, Behavior* behavior, const VECTOR2& pos);
+    OBJ2D* add(OBJ2D* obj, Behavior* behavior, const VECTOR2& pos, const OBJ_DATA update);
     OBJ2D* insert(std::list<OBJ2D*>::iterator& iter,OBJ2D* obj, Behavior* behavior, const VECTOR2& pos);
     
     std::list<OBJ2D*>* getList() { return &objList_; }

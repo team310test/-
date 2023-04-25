@@ -13,8 +13,6 @@ class BasePlayerBehavior : public ActorBehavior
 {
 private:
     void init(OBJ2D* obj) const override;
-    void moveY(OBJ2D* obj) const override;
-    void moveX(OBJ2D* obj) const override;
     OBJ_TYPE getType() const override { return OBJ_TYPE::PLAYER; }
     OBJ_TYPE getAttackType() const override { return OBJ_TYPE::ENEMY; }
     void hit(OBJ2D*, OBJ2D*) const override;
@@ -143,3 +141,12 @@ class ErasePlayer : public Eraser
     void erase(OBJ2D* obj) const;
 };
 EXTERN ErasePlayer erasePlayer;
+
+
+//******************************************************************************
+//      エネミーのupdate
+//******************************************************************************
+// 自機本体のupdate
+extern void PLAYER_PUDATE(OBJ2D* obj);
+// パーツのupdate
+extern void PATRS_PLAYER_UPDATE(OBJ2D* obj);
