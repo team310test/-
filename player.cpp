@@ -155,7 +155,6 @@ void PLAYER_UPDATE(OBJ2D* obj)
 #undef RATIO
 #undef PAD_MOVE
 
-
 // ÉpÅ[ÉcÇÃupdate
 void PATRS_PLAYER_UPDATE(OBJ2D* obj)
 {

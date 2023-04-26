@@ -270,6 +270,8 @@ public:
     Behavior* nextBehavior_ = nullptr; // 次に変わるBehavior
     Eraser*   nextEraser_   = nullptr; // 次に変わるEraser
 
+    int bgSprNo_ = 0; // 背景スプライト画像TEXNO
+
     BG* bg_ = nullptr;
 
     Transform* transform_;

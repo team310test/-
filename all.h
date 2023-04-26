@@ -30,6 +30,7 @@
 #include "dropParts.h"
 #include "enemy.h"
 #include "stage.h"
+#include "UI.h"
 
 #include "scene.h"
 #include "game.h"

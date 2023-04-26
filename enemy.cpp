@@ -53,6 +53,7 @@ OBJ2D* setMainEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behav
 
     return obj2dManager->add(enemy, behavior, pos, update);
 }
+
 OBJ2D* setSubEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behavior, OBJ2D* parent, VECTOR2 pos, OBJ_DATA update, int zOrder = 3)
 {
     OBJ2D* subEnemy = new OBJ2D(
@@ -78,6 +79,7 @@ void setEnemy01(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos)
     OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos, update);
     setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x - 64,pos.y + 96 }, update);
 }
+
 void setEnemy02(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos)
 {
     OBJ_DATA update = ENEMY_LINE;
@@ -452,6 +454,7 @@ void ENEMY_LINE(OBJ2D* obj)
     t->velocity_.x = speed;
 
     t->position_ += t->velocity_;
+
 }
 void ENEMY_LINE_SLOW(OBJ2D* obj)
 {

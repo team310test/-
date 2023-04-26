@@ -22,6 +22,8 @@ private:
     void areaCheck(OBJ2D* obj) const override;
 
 public:
+    static const int PL_SHRINK_COUNT_MAX = 10; // 縮小するプレイヤーの規定数
+public:
     static int plShrinkCount_; // 縮小するまでのプレイヤーの数を数える変数
 };
 

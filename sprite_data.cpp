@@ -4,6 +4,8 @@
 GameLib::LoadTexture loadTexture[] = {
     { TEXNO::BACK01,    L"./Data/Images/BackGround01.png", 1U },
     { TEXNO::BACK02,    L"./Data/Images/BackGround02.png", 1U },
+    { TEXNO::UI_METER_FRAME,    L"./Data/Images/Meter_Frame.png",   1U },   // 計器の枠
+    { TEXNO::UI_METER_NEEDLE,   L"./Data/Images/Meter_Needle.png",  1U },   // 計器の針
     { TEXNO::SHOT,      L"./Data/Images/Bullet01.png",     1U },
     //{TEXNO::TURRET01, L"./Data/Images/Lzi250.png",     1U },        // パーツ01(L字)
     //{TEXNO::CORE01,   L"./Data/Images/core.png",       1U }, 
