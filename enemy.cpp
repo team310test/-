@@ -124,7 +124,6 @@ void BaseEnemyBehavior::damageProc(OBJ2D* /*obj*/) const
 
 void BaseEnemyBehavior::areaCheck(OBJ2D* obj) const
 {
-    GameLib::debug::setString("ENEMY");
 #if 0
     // 左端に進むと右端から出てくる(仮)
     if (obj->transform_->position_.x < -obj->collider_->size_.x)

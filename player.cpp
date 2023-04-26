@@ -148,8 +148,6 @@ void PLAYER_UPDATE(OBJ2D* obj)
     // 最大速度チェック
     t->velocity_.x = clamp(t->velocity_.x, -PL_SPEED_MAX, PL_SPEED_MAX);
     t->velocity_.y = clamp(t->velocity_.y, -PL_SPEED_MAX, PL_SPEED_MAX);
-
-    GameLib::debug::setString("speedP:%lf", obj->transform_->velocity_.x);
     // 移動
     t->position_ += t->velocity_;
 }
@@ -160,7 +158,6 @@ void PATRS_PLAYER_UPDATE(OBJ2D* obj)
     Transform* t       = obj->transform_;
     Transform* parent = Game::instance()->player_->transform_;
 
-    GameLib::debug::setString("speed:%lf", parent->velocity_.x);
     t->position_ += parent->velocity_;
 }
 
