@@ -29,6 +29,7 @@
 #include "player.h"
 #include "dropParts.h"
 #include "enemy.h"
+#include "enemyData.h"
 #include "stage.h"
 
 #include "scene.h"

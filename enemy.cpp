@@ -36,8 +36,8 @@ VECTOR2 getCursorPoint2()
     return pos;
 }
 
-
-OBJ2D* setMainEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behavior, VECTOR2 pos,OBJ_DATA update,int zOrder = 3)
+// クリックで敵出現させる(削除予定)
+OBJ2D* TsetMainEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behavior, VECTOR2 pos,OBJ_DATA update,float accelX,int zOrder = 3)
 {
     OBJ2D* enemy = new OBJ2D(
         new Renderer,
@@ -50,10 +50,13 @@ OBJ2D* setMainEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behav
 
     enemy->zOrder_ = zOrder;
     enemy->actorComponent_->parent_ = enemy;
+    enemy->actorComponent_->orgParent_ = enemy;
+    enemy->update_ = update;
+    enemy->actorComponent_->accel_.x = accelX;
 
-    return obj2dManager->add(enemy, behavior, pos, update);
+    return obj2dManager->add(enemy, behavior, pos);
 }
-OBJ2D* setSubEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behavior, OBJ2D* parent, VECTOR2 pos, OBJ_DATA update, int zOrder = 3)
+OBJ2D* TsetSubEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behavior, OBJ2D* parent,OBJ2D* orgParent, VECTOR2 pos, OBJ_DATA update, int zOrder = 3)
 {
     OBJ2D* subEnemy = new OBJ2D(
         new Renderer,
@@ -67,145 +70,19 @@ OBJ2D* setSubEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behavi
     subEnemy->zOrder_ = zOrder;
     // 親を設定
     subEnemy->actorComponent_->parent_ = parent;
+    subEnemy->actorComponent_->orgParent_ = orgParent;
+    subEnemy->update_ = update;
 
-    return obj2dManager->add(subEnemy, behavior, pos, update);
+    return obj2dManager->add(subEnemy, behavior, pos);
 }
-
-void setEnemy01(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos,OBJ_DATA update)
-{
-    OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos, update);
-    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x - 64,pos.y + 96 }, update);
-}
-void setEnemy02(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos, OBJ_DATA update)
-{
-    OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos, update);
-    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x - 128,pos.y }, update);
-}
-
-void setEnemyT(OBJ2DManager* obj2dManager, BG* bg,VECTOR2 pos, OBJ_DATA update)
-{
-    OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, pos, update);
-
-    OBJ2D* subParent01 =
-        setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x,pos.y - 229 }, update);
-    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, subParent01, { pos.x,pos.y - 429 }, update);
-    OBJ2D* subParent02 =
-        setSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, Parent, { pos.x,pos.y + 229 }, update);
-    setSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, subParent02, { pos.x,pos.y + 429 }, update);
-}
-
 void addEnemy(OBJ2DManager* obj2dManager, BG* bg)
 {
-    OBJ2D* Parent = setMainEnemy(obj2dManager, bg, &enemyCore01Behavior, getCursorPoint2(), ENEMY_LINE);
+    OBJ2D* Parent = TsetMainEnemy(obj2dManager, bg, &enemyCore01Behavior, getCursorPoint2(),ENEMY_LINE, 5.0f);
     VECTOR2 pos = Parent->transform_->position_;
     // サブパーツ
-    setSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, { pos.x,pos.y - 229 }, ENEMY_LINE);
-    setSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, Parent, { pos.x,pos.y + 229 }, ENEMY_LINE);
+    TsetSubEnemy(obj2dManager, bg, &enemyTurret01Behavior, Parent, Parent,{ pos.x,pos.y - 229 }, ENEMY_PARTS);
+    TsetSubEnemy(obj2dManager, bg, &enemyBuff01Behavior, Parent, Parent,{ pos.x,pos.y + 229 }, ENEMY_PARTS);
 }
-
-#if 0
-// Turret
-void setSubEnemy(OBJ2DManager* obj2dManager, BG* bg, OBJ2D* parent, VECTOR2 pos)
-{
-    OBJ2D* subEnemy = new OBJ2D(
-        new Renderer,
-        new Collider,
-        bg,
-        new ActorComponent,
-        nullptr,
-        nullptr
-    );
-
-    subEnemy->zOrder_ = 3;
-    // 親を設定
-    subEnemy->actorComponent_->parent_ = parent;
-
-    obj2dManager->add(subEnemy, &enemyTurret01Behavior, pos);
-}
-// Buff
-void setSubEnemy2(OBJ2DManager* obj2dManager, BG* bg, OBJ2D* parent, VECTOR2 pos)
-{
-    OBJ2D* subEnemy = new OBJ2D(
-        new Renderer,
-        new Collider,
-        bg,
-        new ActorComponent,
-        nullptr,
-        nullptr
-    );
-
-    subEnemy->zOrder_ = 3;
-    // 親を設定
-    subEnemy->actorComponent_->parent_ = parent;
-
-    obj2dManager->add(subEnemy, &enemyBuff01Behavior, pos);
-}
-
-void setEnemy01(OBJ2DManager* obj2dManager, BG* bg)
-{
-    const VECTOR2 pos = { 100,500 };
-
-    OBJ2D* enemy = new OBJ2D(
-        new Renderer,
-        new Collider,
-        bg,
-        new ActorComponent,
-        nullptr,
-        nullptr
-    );
-
-    enemy->zOrder_ = 3;
-    enemy->actorComponent_->parent_ = enemy;
-
-    obj2dManager->add(enemy, &enemyCore01Behavior, pos);
-
-    // サブパーツ
-    setSubEnemy(obj2dManager, bg, enemy, { pos.x, pos.y - 429 });
-    setSubEnemy(obj2dManager, bg, enemy, { pos.x, pos.y - 229 });
-    setSubEnemy2(obj2dManager, bg, enemy, { pos.x, pos.y + 229 });
-    setSubEnemy2(obj2dManager, bg, enemy, { pos.x, pos.y + 429 });
-<<<<<<< HEAD
-}
-
-// カーソルの座標取得
-VECTOR2 getCursorPoint2()
-{
-    static POINT point_;
-
-    GetCursorPos(&point_);
-    ScreenToClient(GetActiveWindow(), &point_);
-
-    VECTOR2 pos = { static_cast<float>(point_.x), static_cast<float>(point_.y) };
-    return pos;
-=======
->>>>>>> maeyama
-}
-
-void addEnemy(OBJ2DManager* obj2dManager, BG* bg)
-{
-    const VECTOR2 pos = getCursorPoint2();
-
-    OBJ2D* enemy = new OBJ2D(
-        new Renderer,
-        new Collider,
-        bg,
-        new ActorComponent,
-        nullptr,
-        nullptr
-    );
-
-    enemy->zOrder_ = 3;
-    enemy->actorComponent_->parent_ = enemy;
-
-    obj2dManager->add(enemy, &enemyCore01Behavior, pos);
-
-    // サブパーツ
-    setSubEnemy(obj2dManager, bg, enemy, { pos.x, pos.y - 229 });
-    setSubEnemy(obj2dManager, bg, enemy, { pos.x, pos.y + 229 });
-}
-#endif
-
-
 
 //******************************************************************************
 //
@@ -247,17 +124,32 @@ void BaseEnemyBehavior::damageProc(OBJ2D* /*obj*/) const
 
 void BaseEnemyBehavior::areaCheck(OBJ2D* obj) const
 {
+    GameLib::debug::setString("ENEMY");
 #if 0
     // 左端に進むと右端から出てくる(仮)
     if (obj->transform_->position_.x < -obj->collider_->size_.x)
     {
-        obj->transform_->position_.x = obj->collider_->size_.x + BG::WINDOW_W;
+        //obj->behavior_ = nullptr; // 画面外に行ったら消去
     }
 
 #else
-    if (obj->transform_->position_.x < 0) // 画面右に行ったら
+
+    const VECTOR2* size = &obj->collider_->size_;
+    const VECTOR2* pos = &obj->transform_->position_;
+    const float margin = 600.0f;
+
+    const float leftLimit = size->x - margin;
+    const float rightLimit = BG::WINDOW_W + size->x + margin;
+    const float topLimit = size->y - margin;
+    const float bottomLimit = BG::WINDOW_H + size->y + margin;
+
+    if (pos->x < leftLimit ||
+        pos->x > rightLimit ||
+        pos->y < topLimit ||
+        pos->y > bottomLimit)
     {
-        obj->behavior_ = nullptr; // 消去
+        obj->actorComponent_->hp_ = 0;              // 画面外に行ったら消去(体力を0にする)
+        obj->actorComponent_->parent_ = nullptr;    
     }
 #endif
 }
@@ -334,8 +226,7 @@ void EnemyTurret01Behavior::attack(OBJ2D* obj) const
                 new WeaponComponent
             ),
             &enmAimShotBehavior,
-            pos,
-            nullptr
+            pos
         );
         shot->zOrder_ = 2;
         shot->weaponComponent_->parent_ = obj;
@@ -385,7 +276,7 @@ void EraseEnemy::erase(OBJ2D* obj) const
 
     OBJ2D* parent = obj->actorComponent_->parent_; // 長いので省略
 
-    // 親が存在していて、親が消滅するか親の体力が0になるとアイテム化する
+    // 親が存在していて、親が自分でなく、親が消滅するか親の体力が0になるとアイテム化する
     if (parent && (parent->behavior_ == nullptr || !parent->actorComponent_->isAlive()) )
     {
         obj->actorComponent_->parent_ = nullptr; // 親リセット
@@ -436,22 +327,42 @@ void EraseEnemy::erase(OBJ2D* obj) const
 //      エネミーのupdate
 //
 //******************************************************************************
+// コアのアップデータ
 void ENEMY_LINE(OBJ2D* obj)
 {
-    const float speed = -5;
     Transform* t = obj->transform_;
-    
-    t->velocity_ = { speed,0.0f };
+    const float speedX = obj->actorComponent_->accel_.x;
 
+    t->velocity_ = { -speedX, 0.0f };
     t->position_ += t->velocity_;
 }
-void ENEMY_LINE_SLOW(OBJ2D* obj)
+// x軸の目標地点に達すると別の方向へ移動する(仮)
+void ENEMY_TARGET_X(OBJ2D* obj)
 {
-    const float speed = -1;
     Transform* t = obj->transform_;
+    VECTOR2 ACCEL = obj->actorComponent_->accel_;
+    const float targetPosX = obj->actorComponent_->addition_.x;
 
-    t->velocity_.x = speed;
-    t->velocity_.y = speed;
+    switch (obj->act_)
+    {
+    case 0:
+        if (t->position_.x < targetPosX) obj->act_++;
 
+        t->velocity_ = { -ACCEL.x, 0.0f };
+        break;
+    case 1:
+        t->velocity_ = { -ACCEL.x, -ACCEL.y };
+
+        break;
+    default:break;
+    }
     t->position_ += t->velocity_;
+}
+// パーツのアップデート
+void ENEMY_PARTS(OBJ2D* obj)
+{
+    Transform* t = obj->transform_;
+    OBJ2D* parent = obj->actorComponent_->orgParent_;
+
+    t->position_ += parent->transform_->velocity_;
 }

@@ -190,10 +190,15 @@ public:
     int padState_;
 
     OBJ2D* parent_;
+    OBJ2D* orgParent_;
     OBJ2D* obj;
 
     static int playerNum;
     int No;
+
+    // 速度関連パラメータ
+    VECTOR2 accel_;
+    VECTOR4 addition_;
 
     // アニメ用データ
     OBJ_DATA objAnimeAlways_;
@@ -209,10 +214,15 @@ public:
         , padTrg_(0)
         , padState_(0)
 
-        , obj(nullptr)
         , parent_(nullptr)
+        , orgParent_(nullptr)
+        , obj(nullptr)
 
         , No(1)
+
+        // 速度関連パラメータ
+        , accel_()
+        , addition_()
 
         // アニメ用データ
         , objAnimeAlways_(nullptr)
@@ -310,7 +320,7 @@ public:
     void update();  // 更新
     void draw();    // 描画
 
-    OBJ2D* add(OBJ2D* obj, Behavior* behavior, const VECTOR2& pos, const OBJ_DATA update);
+    OBJ2D* add(OBJ2D* obj, Behavior* behavior, const VECTOR2& pos);
     OBJ2D* insert(std::list<OBJ2D*>::iterator& iter,OBJ2D* obj, Behavior* behavior, const VECTOR2& pos);
     
     std::list<OBJ2D*>* getList() { return &objList_; }

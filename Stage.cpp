@@ -2,11 +2,17 @@
 
 #define X BG::WINDOW_W + 256.0f
 
+// addition_(追加変数)は省略できる
 STAGE_SCRIPT stageData01[] =
 {
-    {180,setEnemy01,{X,300},ENEMY_LINE},
-    {360,setEnemy02,{X,800},ENEMY_LINE_SLOW},
-    SET_ENEMY_DATA_END
+    SET_ENEMY_TARGET_X(0,enemy02,VECTOR2(X,800.0f),VECTOR2(5.0f,5.0f),100.0f),
+    //{0,enemy02,{X,800},ENEMY_TARGET_X,{5.0f,5.0f},{1500.f,0,0,0}},
+    
+    SET_ENEMY_LENE(180,enemy01,VECTOR2(X,300.0f),5.0f),
+    //{180,enemy01,{X,300},ENEMY_LINE,{5.0f,5.0f}},
+    
+    
+    SET_ENEMY_END
 };
 
 Stage::Stage()
@@ -14,24 +20,58 @@ Stage::Stage()
     , pScript(nullptr)
 {
     pScript = stageData01;
+    //pScript->enemyData_ = enemy02;
 }
 
 void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
 {
-    while (pScript->setEnemy_ && pScript->time_ == timer)
+    while (pScript->enemyData_ && pScript->time_ == timer)
     {
-        pScript->setEnemy_(obj2dManager, bg, pScript->pos_,pScript->update_);
+        OBJ2D* orgParent = nullptr;
+        OBJ2D* Parent[10] = {};
+        while (pScript->enemyData_ && pScript->enemyData_->behavior_)
+        {
+            // 0番目ではなくParentのparentNo番目がnullptrなら
+            if(pScript->enemyData_->no_ != 0 && !Parent[pScript->enemyData_->parentNo_])
+                assert(!"parent[parentNo]はnullptrです");
+            // parentNoが0以下だとエラーを吐く
+            if(pScript->enemyData_->parentNo_ < PARENT_NO::PARENT0) assert(!"parentNoが使用できない値です");
+            
+            VECTOR2 pos = { pScript->pos_.x + pScript->enemyData_->pos_.x, pScript->pos_.y + pScript->enemyData_->pos_.y };
+            
+            OBJ2D* hold =
+            setEnemy
+            (
+                obj2dManager
+                , bg
+                , pos
+                , pScript->enemyData_->behavior_
+                , pScript->update_
+                , Parent[pScript->enemyData_->parentNo_]
+                , orgParent
+                , pScript->enemyData_->zOrder_
+                , pScript->addition_
+            );
+            // 速度・追加パラメータ設定
+            hold->actorComponent_->accel_ = pScript->accel_;
+            hold->actorComponent_->addition_ = pScript->addition_;
 
+            if (!orgParent) orgParent = hold;                           // orgParentがnullptrなら元の親を設定する
+            
+            // noが-1より大きかったら
+            if (pScript->enemyData_->no_ > -1)
+            {
+                // Parentのno番目に値が入っていれば
+                if (Parent[pScript->enemyData_->no_])assert(!"parentを上書きしようとしています");
+
+                Parent[pScript->enemyData_->no_] = hold;                    // no番目のParentを設定
+            }
+
+            pScript->enemyData_++;
+        }
+        pScript->DataReset();   // enemyDataを先頭に戻す
         pScript++;
     }
 
     ++timer;
-
-    // ループ処理(仮)
-    //if (!pScript->setEnemy_)
-    //{
-    //    pScript = 0;
-    //    timer = 0;
-    //    pScript = stageData01;
-    //}
 }

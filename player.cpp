@@ -48,16 +48,17 @@ void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer = fa
     player->actorComponent_->parent_ = player;
 
     player->actorComponent_->No = ActorComponent::playerNum;
+    player->update_ = PLAYER_PUDATE;
 
     if (makeOrgPlayer == true) 
     {
         //Game::instance()->player_ = obj2dManager->add(player, &normalPlayerBehavior, pos); 
-        Game::instance()->player_ = obj2dManager->add(player, &corePlayerBehavior, pos, PLAYER_PUDATE);
+        Game::instance()->player_ = obj2dManager->add(player, &corePlayerBehavior, pos);
     }
     else
     {
         //obj2dManager->add(player, &normalPlayerBehavior, pos);
-        obj2dManager->add(player, &corePlayerBehavior, pos, PLAYER_PUDATE);
+        obj2dManager->add(player, &corePlayerBehavior, pos);
     }
 }
 // 仮
@@ -77,7 +78,7 @@ void setCursor(OBJ2DManager* obj2dManager, BG* bg)
     cursor->zOrder_ = 4;
     cursor->actorComponent_->parent_ = cursor;
 
-    Game::instance()->cursor_ = obj2dManager->add(cursor, &cursorBehavior, pos,nullptr);
+    Game::instance()->cursor_ = obj2dManager->add(cursor, &cursorBehavior, pos);
 }
 
 //******************************************************************************
@@ -368,8 +369,7 @@ void CorePlayerBehavior::attack(OBJ2D* obj) const
             //&plSquareWaveShotBehavior, // 矩形波
             //&plCurveWaveShotBehavior,  // 上カーブ
             //&plPenetrateShotBehavior,  // 高速・貫通(予定)
-            pos,
-            nullptr
+            pos
         );
         shot->zOrder_ = 2;
         shot->weaponComponent_->parent_ = obj;
@@ -537,8 +537,7 @@ void PlayerTurret01Behavior::attack(OBJ2D* obj) const
                 new WeaponComponent
             ),
             &plNormalShotBehavior,
-            pos,
-            nullptr
+            pos
         );
         shot->zOrder_ = 2;
         shot->weaponComponent_->parent_ = obj;
