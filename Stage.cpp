@@ -20,7 +20,6 @@ Stage::Stage()
     , pScript(nullptr)
 {
     pScript = stageData01;
-    //pScript->enemyData_ = enemy02;
 }
 
 void Stage::update(OBJ2DManager* obj2dManager, BG* bg)

@@ -156,9 +156,11 @@ void PLAYER_PUDATE(OBJ2D* obj)
 void PATRS_PLAYER_UPDATE(OBJ2D* obj)
 {
     Transform* t = obj->transform_;
-    OBJ2D* parent = Game::instance()->player_;;
+    OBJ2D* parent = Game::instance()->player_;
 
-    t->position_ += parent->transform_->velocity_;
+    t->velocity_ = parent->transform_->velocity_;
+
+    t->position_ += t->velocity_;
 }
 
 //******************************************************************************

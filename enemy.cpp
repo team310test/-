@@ -280,7 +280,7 @@ void EraseEnemy::erase(OBJ2D* obj) const
     if (parent && (parent->behavior_ == nullptr || !parent->actorComponent_->isAlive()) )
     {
         obj->actorComponent_->parent_ = nullptr; // 親リセット
-
+        obj->actorComponent_->orgParent_ = nullptr; // 元の親をリセット
 
         // 次のbehavior・eraser（ドロップアイテム）を代入
         obj->behavior_ = obj->nextBehavior_;

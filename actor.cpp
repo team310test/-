@@ -55,12 +55,6 @@ void ActorBehavior::move(OBJ2D* obj) const
         {
             obj->update_(obj);
         }
-        //else
-        //{
-        //    moveY(obj);
-        //    moveX(obj);
-        //}
-
 
         areaCheck(obj);
 

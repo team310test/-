@@ -72,10 +72,6 @@ void Game::update()
         // カーソル追加(仮)
         setCursor(obj2dManager(), bg());
 
-        // エネミーを追加する
-        //setEnemyT(obj2dManager(), bg(), { BG::WINDOW_W,500 });
-        //setEnemy01(obj2dManager(), bg());
-
         bg()->init(player_); // BGの初期化
 
         ++state_;    // 初期化処理の終了
