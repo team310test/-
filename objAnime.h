@@ -14,4 +14,4 @@ extern void scaleAnime(OBJ2D* obj);
 //--------------------------------------------------------------
 //  X軸拡大・縮小アニメーション
 extern bool xAxisSclaeAnime(OBJ2D* obj);
-extern void setXAxisSclaeAnime(OBJ2D*);
+extern void setXAxisScaleAnime(OBJ2D* obj);

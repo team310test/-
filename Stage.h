@@ -44,6 +44,9 @@ public:
 
 class Stage
 {
+public:
+    static constexpr float ENEMY_SPAWN_POS_X = (BG::WINDOW_W + 256.0f);
+
 private:
     int timer;
     STAGE_SCRIPT* pScript;

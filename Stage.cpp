@@ -11,7 +11,6 @@ STAGE_SCRIPT stageData01[] =
     SET_ENEMY_LENE(180,enemy01,VECTOR2(X,300.0f),5.0f),
     //{180,enemy01,{X,300},ENEMY_LINE,{5.0f,5.0f}},
     
-    
     SET_ENEMY_END
 };
 

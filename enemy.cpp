@@ -192,11 +192,13 @@ EnemyTurret01Behavior::EnemyTurret01Behavior()
     param_.ANIME_WAIT = animeTurret01;
 
     param_.SIZE = { player_size, player_size };
-    param_.HIT_BOX[0] = { -125, 48, 80, 95 };   // 下長方形
-    param_.HIT_BOX[1] = { -10,-95,125,50 };      // ネジ
 
-    param_.ATTACK_BOX[0] = { -125, 48, 80, 95 };   // 下長方形
-    param_.ATTACK_BOX[1] = { -10,-95,125,50 };      // ネジ
+    // 画像サイズ(128*64の半分)
+    param_.HIT_BOX[0] = { -64, -32, 64, 32 };    // 下長方形    
+    //param_.HIT_BOX[1] = { -10,-95,125,50 };      // ネジ
+
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];   // 下長方形
+    //param_.ATTACK_BOX[1] = param_.HIT_BOX[1];      // ネジ
 
     // 次のBehavior・Eraser（ドロップアイテム）
     param_.NEXT_BEHAVIOR = &dropTurret01Behavior;
@@ -270,6 +272,7 @@ void EraseEnemy::erase(OBJ2D* obj) const
     // スケールが0以下になったら消去
     if (obj->transform_->scale_.x <= 0)
     {
+        obj->actorComponent_->parent_ = nullptr; // 親情報をリセット
         obj->behavior_ = nullptr;
         return;
     }
@@ -299,12 +302,11 @@ void EraseEnemy::erase(OBJ2D* obj) const
     // HPが0以下になると
     if (!obj->actorComponent_->isAlive())
     {
+        obj->actorComponent_->parent_ = nullptr; // 親情報をリセット
+
         // 自分がコアでないならゴミアイテム化する
         if (obj != parent)
         {
-            obj->actorComponent_->parent_ = nullptr; // 親リセット
-
-
             // 次のbehavior・eraser（ドロップアイテム）を代入
             obj->behavior_ = &dropTrash01Behavior;
             obj->eraser_   = &eraseDropParts;

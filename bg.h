@@ -22,6 +22,9 @@ private:
     static constexpr float DISP_BG_SCALE_MIN = 0.0f;    // この値より背景のscaleが小さい場合は更新・描画しない
     static constexpr float DISP_BG_SCALE_MAX = 2.0f;    // この値より背景のscaleが大きい場合は更新・描画しない
 
+public:
+    static float subScale;    // scaleの縮小速度
+
 private:
     OBJ2D* player_;
     std::unique_ptr<OBJ2D> bg_[BG_MAX];

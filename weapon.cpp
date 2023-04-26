@@ -34,6 +34,12 @@ void BaseShotBehavior::move(OBJ2D* obj) const
         /*fallthrough*/
     case 1:
         //////// 通常時 ////////
+
+        startAllShrink(obj);    // 縮小開始
+        shrink(obj);            // 画像縮小
+
+        if (obj->collider_->isShrink_) break; // 縮小中なら飛ばす
+
         update(obj);        // 武器の位置更新
 
         break;
@@ -75,8 +81,8 @@ PlayerNormalShotBehavior::PlayerNormalShotBehavior()
     param_.SPR_WEAPON = &sprShot_NormalShot;
     param_.ERASER     = &eraseShot;
 
-    param_.SPEED_X      = PL_NORMAL_SHOT_SPEED;
-    param_.ATTACK_POWER = PL_NORMAL_SHOT_ATK;
+    param_.SPEED_X      = NORMAL_SHOT_SPEED;
+    param_.ATTACK_POWER = NORMAL_SHOT_ATK;
 
     // 変更予定
     param_.ATTACK_BOX[0] = { -24, -24, 24, 24 };
@@ -94,10 +100,10 @@ void PlayerNormalShotBehavior::update(OBJ2D* obj) const
 EnmNormalShotBehavior::EnmNormalShotBehavior()
 {
     param_.SPR_WEAPON = &sprShot_NormalShot;
-    param_.ERASER = &eraseShot;
+    param_.ERASER     = &eraseShot;
 
-    param_.SPEED_X = 30.0f;
-    param_.ATTACK_POWER = 1;
+    param_.SPEED_X      = NORMAL_SHOT_SPEED;
+    param_.ATTACK_POWER = NORMAL_SHOT_ATK;
 
     // 変更予定
     param_.ATTACK_BOX[0] = { -24, -24, 24, 24 };
@@ -122,14 +128,13 @@ PlSineWaveShotBehavior::PlSineWaveShotBehavior()
     param_.SPR_WEAPON = &sprShot_NormalShot;
     param_.ERASER = &eraseShot;
 
-    param_.SPEED_X = 20.0f;
-    param_.ATTACK_POWER = 1;
+    param_.SPEED_X      = SINE_WAVE_SHOT_SPEED;
+    param_.ATTACK_POWER = SINE_WAVE_SHOT_ATK;
 
     // 変更予定
     param_.ATTACK_BOX[0] = { -24, -24, 24, 24 };
 }
 
-static constexpr float SIN_YOFS = 64.0f;  // 振れ幅
 void PlSineWaveShotBehavior::update(OBJ2D* obj) const
 {
     Transform* transform = obj->transform_;
@@ -187,19 +192,17 @@ void PlSineWaveShotBehavior::update(OBJ2D* obj) const
 // プレイヤー
 PlSquareWaveShotBehavior::PlSquareWaveShotBehavior()
 {
-    param_.SPR_WEAPON = &sprShot_NormalShot;
-    param_.ERASER = &eraseShot;
+    param_.SPR_WEAPON   = &sprShot_NormalShot;
+    param_.ERASER       = &eraseShot;
 
-    param_.SPEED_X = 40.0f;
-    param_.SPEED_Y = 20.0f;
-    param_.ATTACK_POWER = 1;
+    param_.SPEED_X      = SQUARE_WAVE_SHOT_SPEED_X;
+    param_.SPEED_Y      = SQUARE_WAVE_SHOT_SPEED_Y;
+    param_.ATTACK_POWER = SQUARE_WAVE_SHOT_ATK;
 
     // 変更予定
     param_.ATTACK_BOX[0] = { -24, -24, 24, 24 };
 }
 
-static constexpr float SQUARE_WAVE_SHOT_POSX_LIMIT = 300.0f; // 一度に前に進める距離
-static constexpr float SQUARE_WAVE_SHOT_POSY_LIMIT = 75.0f;  // 上下移動できる限界
 void PlSquareWaveShotBehavior::update(OBJ2D* obj) const
 {
     Transform* transform = obj->transform_;
@@ -254,17 +257,15 @@ PlCurveShotBehavior::PlCurveShotBehavior()
     param_.SPR_WEAPON = &sprShot_NormalShot;
     param_.ERASER = &eraseShot;
 
-    param_.SPEED_X = -20.0f;
-    param_.SPEED_Y = -25.0f;
-    param_.ATTACK_POWER = 1;
+    param_.SPEED_X      = CURVE_SHOT_SPEED_Y;
+    param_.SPEED_Y      = CURVE_SHOT_SPEED_X;
+    param_.ATTACK_POWER = CURVE_SHOT_ATK;
 
     // 変更予定
     param_.ATTACK_BOX[0] = { -24, -24, 24, 24 };
 
 }
 
-static constexpr float CURVE_SHOT_ACCEL_X = 1.4f; // X速度に足すX加速度
-static constexpr float CURVE_SHOT_ACCEL_Y = 0.9f; // Y速度に足すY加速度
 void PlCurveShotBehavior::update(OBJ2D* obj) const
 {
     Transform* transform = obj->transform_;
@@ -281,7 +282,7 @@ void PlCurveShotBehavior::update(OBJ2D* obj) const
 
 //******************************************************************************
 //
-//      CurveShot（カーブ弾）
+//      PenetrateShot（貫通弾）
 //
 //******************************************************************************
 
@@ -291,8 +292,8 @@ PlPenetrateShotBehavior::PlPenetrateShotBehavior()
     param_.SPR_WEAPON = &sprShot_NormalShot;
     param_.ERASER = &eraseShot;
 
-    param_.SPEED_X = 100.0f;
-    param_.ATTACK_POWER = 1;
+    param_.SPEED_X      = PENETRATE_SHOT_SPEED;
+    param_.ATTACK_POWER = PENETRATE_SHOT_ATK;
 
     // 変更予定
     param_.ATTACK_BOX[0] = { -24, -24, 24, 24 };
@@ -344,9 +345,9 @@ EnmAimShotBehavior::EnmAimShotBehavior()
     param_.SPR_WEAPON = &sprShot_NormalShot;
     param_.ERASER     = &eraseShot;
 
-    param_.SPEED_X = 20.0f;
-    param_.SPEED_Y = 20.0f;
-    param_.ATTACK_POWER = 1;
+    param_.SPEED_X      = AIM_SHOT_SPEED_X;
+    param_.SPEED_Y      = AIM_SHOT_SPEED_Y;
+    param_.ATTACK_POWER = AIM_SHOT_ATK;
 
     // 変更予定
     param_.ATTACK_BOX[0] = { -24, -24, 24, 24 };

@@ -66,11 +66,13 @@ DropTurret01Behavior::DropTurret01Behavior()
     param_.ANIME_WAIT = animeTurret01;
 
     param_.SIZE = VECTOR2(player_size, player_size);
-    param_.HIT_BOX[0] = { -80, 48, 125, 95 };   // 下長方形
-    param_.HIT_BOX[1] = { -125,-95,10,50 };      // ネジ
 
-    param_.ATTACK_BOX[0] = { -80, 48, 125, 95 };   // 下長方形
-    param_.ATTACK_BOX[1] = { -125,-95,10,50 };      // ネジ
+    // 画像サイズ(128*64の半分)
+    param_.HIT_BOX[0] = { -64, -32, 64, 32 };    // 下長方形
+    //param_.HIT_BOX[1] = { -125,-95,10,50 };    // ネジ
+
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0]; // 下長方形
+    //param_.ATTACK_BOX[1] = param_.HIT_BOX[1];   // ネジ
 
     // 次のbehavior・eraser（プレイヤー）
     param_.NEXT_BEHAVIOR = &playerTurret01Behavior;

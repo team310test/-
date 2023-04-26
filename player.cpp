@@ -48,16 +48,14 @@ void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer = fa
     player->actorComponent_->parent_ = player;
 
     player->actorComponent_->No = ActorComponent::playerNum;
-    player->update_ = PLAYER_PUDATE;
+    player->update_ = PLAYER_UPDATE;
 
     if (makeOrgPlayer == true) 
     {
-        //Game::instance()->player_ = obj2dManager->add(player, &normalPlayerBehavior, pos); 
         Game::instance()->player_ = obj2dManager->add(player, &corePlayerBehavior, pos);
     }
     else
     {
-        //obj2dManager->add(player, &normalPlayerBehavior, pos);
         obj2dManager->add(player, &corePlayerBehavior, pos);
     }
 }
@@ -88,7 +86,8 @@ void setCursor(OBJ2DManager* obj2dManager, BG* bg)
 #define PL_SPEED_MAX 10.0f
 #define RATIO 0.7f
 #define PAD_MOVE		(PAD_RIGHT|PAD_LEFT|PAD_DOWN|PAD_UP)
-VECTOR2 speeData[16] = {
+
+VECTOR2 speedData[16] = {
     { 0, 0 },								        //----
     { 0, -PL_SPEED },						        //---u
     { 0,  PL_SPEED },						        //--d-
@@ -106,18 +105,18 @@ VECTOR2 speeData[16] = {
     { 0,  PL_SPEED },						        //rld-
     { 0, 0 },								        //rldu
 };
+
 // 自機本体のupdate
-void PLAYER_PUDATE(OBJ2D* obj)
+void PLAYER_UPDATE(OBJ2D* obj)
 {
     using namespace GameLib::input;
     ActorComponent* a = obj->actorComponent_;
-    Transform* t = obj->transform_;
+    Transform*      t = obj->transform_;
 
-    t->velocity_ += speeData
-        [a->padState_ & PAD_MOVE];
+    t->velocity_ += speedData[a->padState_ & PAD_MOVE];
 
     // y軸の減速
-    if (!(a->padState_ & (PAD_DOWN | PAD_UP)))
+    if ( !(a->padState_ & (PAD_DOWN | PAD_UP)) )
     {
         if (t->velocity_.y > 0)
         {
@@ -130,8 +129,9 @@ void PLAYER_PUDATE(OBJ2D* obj)
             if (t->velocity_.y > 0) t->velocity_.y = 0;
         }
     }
+
     // x軸の減速
-    if (!(a->padState_ & (PAD_RIGHT | PAD_LEFT)))
+    if ( !(a->padState_ & (PAD_RIGHT | PAD_LEFT)) )
     {
         if (t->velocity_.x > 0)
         {
@@ -152,16 +152,21 @@ void PLAYER_PUDATE(OBJ2D* obj)
     // 移動
     t->position_ += t->velocity_;
 }
+
+#undef RATIO
+#undef PAD_MOVE
+
+
 // パーツのupdate
 void PATRS_PLAYER_UPDATE(OBJ2D* obj)
 {
-    Transform* t = obj->transform_;
-    OBJ2D* parent = Game::instance()->player_;
+    Transform* t       = obj->transform_;
+    Transform* parentT = Game::instance()->player_->transform_;
 
-    t->velocity_ = parent->transform_->velocity_;
-
-    t->position_ += t->velocity_;
+    t->position_ += parentT->velocity_;
 }
+
+
 
 //******************************************************************************
 //
@@ -170,9 +175,9 @@ void PATRS_PLAYER_UPDATE(OBJ2D* obj)
 //******************************************************************************
 void BasePlayerBehavior::init(OBJ2D* obj) const
 {
-    obj->collider_->judgeFlag_ = true;
-    obj->collider_->isDrawHitRect_ = true;
-    obj->collider_->isDrawAttackRect_ = true;
+    obj->collider_->judgeFlag_         = true;
+    obj->collider_->isDrawHitRect_     = true;
+    obj->collider_->isDrawAttackRect_  = true;
 
     obj->eraser_ = &erasePlayer;
 }
@@ -264,22 +269,12 @@ void BasePlayerBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
 {
     // 敵のHPを減らす
     dst->actorComponent_->hp_ -= getParam()->ATTACK_POWER;
-
-    //if (!src->actorComponent_->parent_) return; // もし自分が親、または親持ちでないか、
-    //if (dst->actorComponent_->parent_) return;  // 相手が親を持っていない場合はcontinue;
-    //
-    //dst->actorComponent_->parent_ = src;        // 親を保存   
-}
-
-bool BasePlayerBehavior::isAlive(OBJ2D*) const
-{
-    return true;    // 生存している（仮）
 }
 
 void BasePlayerBehavior::damageProc(OBJ2D* obj) const
 {
     // 入力処理
-    obj->actorComponent_->padTrg_ = GameLib::input::TRG(0);
+    obj->actorComponent_->padTrg_   = GameLib::input::TRG(0);
     obj->actorComponent_->padState_ = GameLib::input::STATE(0);
 
     // ダメージ処理
@@ -379,7 +374,7 @@ void CorePlayerBehavior::attack(OBJ2D* obj) const
     }
 
 
-    setXAxisSclaeAnime(obj);
+    setXAxisScaleAnime(obj);
     obj->actorComponent_->attackTimer_ = 30;
 
 }
@@ -394,41 +389,26 @@ void CorePlayerBehavior::attack(OBJ2D* obj) const
 void PartsPlayerBehavior::shrink(OBJ2D* obj) const
 {
     Behavior::shrink(obj);  // 縮小処理
-    contact(obj);           // 縮小に伴って位置を移動させる処理
-}
-
-// 接触する関数
-void PartsPlayerBehavior::contact(OBJ2D* obj) const
-{
-    if (!obj->collider_->isShrink_) return; // 縮小していなければreturn
-
-    // オリジナル自機の方へ移動する処理
-    contactToOriginal(obj, Game::instance()->player_); 
-    
-
-    // contactToOriginal関数でobjと自機本体の距離に合わせて
-    // 速度調整できるようになっていたので必要なかった
-    // if (obj->actorComponent_->parent_->behavior_ == nullptr) return;        // 縮小中に親が消えている場合return
-    // if (obj->collider_->hitCheck(obj->actorComponent_->parent_)) return;    // 親と接触していればreturn
-    //
-    // 親の方へ移動する処理
-    // contactToParent(obj, obj->actorComponent_->parent_); // (親とくっついていないobjがオリジナル自機に向かって突っ込んでいくのを軽減)
+    contactToOriginal(obj, Game::instance()->player_); // 縮小に伴って位置を移動させる処理
 }
 
 // オリジナル自機の方に向かって移動する関数
 //static const float toCoreVelocity = 0.085f; // 元になる速度(オリジナル自機へ向かう速さに影響)
-static const float toCoreVelocity = 0.14f; // 元になる速度(オリジナル自機へ向かう速さに影響)
-void PartsPlayerBehavior::contactToOriginal(OBJ2D* obj, OBJ2D* original) const
+float PartsPlayerBehavior::toCoreVelocity = TO_CORE_SPEED;  // オリジナル自機へ向かう速度
+void PartsPlayerBehavior::contactToOriginal(OBJ2D* obj, OBJ2D* orgPl) const
 {    
-    const VECTOR2 orginalPos = original->transform_->position_; // 自機本体の位置
-    const VECTOR2 objPos     = obj->transform_->position_;      // objの位置
+    if (!obj->collider_->isShrink_) return; // 縮小していなければreturn
 
-    const VECTOR2 d  = { orginalPos - objPos };              // objから自機本体へ向かうベクトル
-    const float dist = sqrtf( (d.x * d.x) + (d.y * d.y) );   // objから自機本体までの距離
+    const VECTOR2 orgPlPos = orgPl->transform_->position_;  // 自機本体の位置
+    const VECTOR2 objPos     = obj->transform_->position_;  // objの位置
+
+    const VECTOR2 d  = { orgPlPos - objPos };               // objから自機本体へ向かうベクトル
+    const float dist = sqrtf( (d.x * d.x) + (d.y * d.y) );  // objから自機本体までの距離
                                                              
-    float addVelocity = 0.0f;                                // objのvelocityに足す速度
-    float num = 0.0f;                                        // for分のiみたいな役割
-    const float copyDist = dist > 0 ? dist : -dist;          //
+    float addVelocity = 0.0f;                               // objのvelocityに足す速度
+    float num = 0.0f;                                       // for分のiみたいな役割
+    const float copyDist = dist >= 0 ? dist : dist * (-1);
+
     while (true)
     {
         if (num > 999) // 念のために終点を設置
@@ -437,7 +417,7 @@ void PartsPlayerBehavior::contactToOriginal(OBJ2D* obj, OBJ2D* original) const
             break;
         }
 
-        // objから自機本体までの距離が遠くなる程速度を上昇させる
+        // objから自機本体までの距離が遠くなるたび速度を上昇させる
         // (距離が遠すぎるとobjが自機本体に追いつけないため)
         if ((copyDist >=  (50.0f * num) && copyDist <=  50.0f * (num + 1.0f)))  // ±0から±50、±50から±100、±100から±150...
         {
@@ -448,7 +428,7 @@ void PartsPlayerBehavior::contactToOriginal(OBJ2D* obj, OBJ2D* original) const
 
         // objから自機本体までの距離によって速度を上昇させる
         // (距離が遠すぎるとobjが自機本体に追いつけないため)
-        if ((copyDist >=  (50.0f * num) && copyDist <=  50.0f * (num + 1.0f)))  // ±0から±50、±50から±100、±100から±150...
+        if ((copyDist >= (50.0f * num) && copyDist <= 50.0f * (num + 1.0f)))  // ±0から±50、±50から±100、±100から±150...
         {
             addVelocity = (num != 0) ? (toCoreVelocity * num) : toCoreVelocity;   // ±0から±50までの距離はnumが0なので0.1fを代入
 
@@ -510,11 +490,13 @@ PlayerTurret01Behavior::PlayerTurret01Behavior()
     param_.ANIME_WAIT = animeTurret01;
 
     param_.SIZE = VECTOR2(player_size, player_size);
-    param_.HIT_BOX[0] = { -80, 48, 125, 95 };    // 下長方形
-    param_.HIT_BOX[1] = { -125,-95,10,50 };      // ネジ
 
-    param_.ATTACK_BOX[0] = { -80, 48, 125, 95 }; // 下長方形
-    param_.ATTACK_BOX[1] = { -125,-95,10,50 };   // ネジ
+    // 画像サイズ(128*64の半分)
+    param_.HIT_BOX[0] = { -64, -32, 64, 32 };    // 下長方形
+    //param_.HIT_BOX[1] = { -125,-95,10,50 };      // ネジ
+
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0]; // 下長方形
+    //param_.ATTACK_BOX[1] = param_.HIT_BOX[1];   // ネジ
 }
 
 void PlayerTurret01Behavior::attack(OBJ2D* obj) const
@@ -619,20 +601,26 @@ void ErasePlayer::erase(OBJ2D* obj) const
     // HPが0以下になったら
     if (!obj->actorComponent_->isAlive())
     {
+        obj->actorComponent_->parent_ = nullptr; // 親情報をリセット
         obj->behavior_ = nullptr;
+
+        // 縮小カウント減少
+        BasePlayerBehavior::plShrinkCount_ = std::max(0, BasePlayerBehavior::plShrinkCount_ - 1);
+
+        return; // returnを付ける
     }
 
-    if (obj->actorComponent_->parent_->behavior_) return;   // もし自分の親が存在するならreturn
+    if (obj->actorComponent_->parent_->behavior_) return;   // 自分の親が存在するならreturn
 
-#ifdef USE_FIND_PARENT
+
     // 新しい親を探す
+#ifdef USE_FIND_PARENT
     for (auto& dst : *Game::instance()->obj2dManager()->getList())
     {
         if (!dst->behavior_) continue;                      // 相手が存在しなければcontinue;
         if (obj == dst) continue;                           // 相手が自分ならcontinue;
 
-        if (!dst->actorComponent_) continue;
-        //if (dst->behavior_->getType() != OBJ_TYPE::PLAYER) continue; // 相手が自分と同じプレイヤーでなければcontinue
+        if (dst->behavior_->getType() != OBJ_TYPE::PLAYER) continue; // 相手が自分と同じプレイヤーでなければcontinue
 
         if (!dst->actorComponent_->parent_) continue;       // 相手が親を持っていなければcontinue;
         if (obj == dst->actorComponent_->parent_) continue; // 相手が自分の子ならcontinue;

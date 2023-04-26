@@ -1,14 +1,5 @@
 #pragma once
 
-//******************************************************************************
-//
-//
-//      OBJ2Dクラス
-//
-//
-//******************************************************************************
-
-//------< インクルード >---------------------------------------------------------
 #include <list>
 #include "../GameLib/vector.h"
 #include "../GameLib/obj2d_data.h"
@@ -29,18 +20,18 @@ enum class OBJ_TYPE
     PARTS, //　パーツ
     ENEMY, 
     SHOT, 
-    MAX, 
+    CURSOR, 
+    MAX,
 };
 
-//==============================================================================
 
 // 移動アルゴリズムクラス（抽象クラス）
 class Behavior
 {
 public:
-    virtual void move(OBJ2D*) const {};
-    virtual OBJ_TYPE getType() const { return OBJ_TYPE::NONE; };
-    virtual OBJ_TYPE getAttackType() const { return OBJ_TYPE::NONE; };
+    virtual void move(OBJ2D*) const  = 0;
+    virtual OBJ_TYPE getType() const = 0;
+    virtual OBJ_TYPE getAttackType() const = 0;
 
     virtual void hit(OBJ2D* src, OBJ2D* dst) const {};
 
@@ -48,6 +39,14 @@ public:
     virtual void shrink(OBJ2D*) const;          // 縮小関数
 
     static bool isObjShrink(); // shrinkしているobjがいるか調べる関数（shrinkしているobjがいたらtrue, いなければfalse）
+
+    OBJ_DATA update = nullptr;
+
+public:
+    static constexpr float SHRINK_DIVIDE_VALUE  = 0.5f;     // scaleを割る値(最終的なscaleの大きさに影響)
+
+public:
+    static float shrinkVelocity; // 縮小する速度
 };
 
 // 消去アルゴリズムクラス（抽象クラス）
