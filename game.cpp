@@ -33,7 +33,6 @@ void Game::deinit()
 }
 
 int num = 2;
-int shrinkNum = 0;
 
 void Game::update()
 {
@@ -90,7 +89,7 @@ void Game::update()
         {
             GameLib::debug::setString("num:%d", num);
             //if (player_->transform_) GameLib::debug::setString("playerScale:%f", player_->transform_->scale_.x);
-            GameLib::debug::setString("shrinkNum:%d", shrinkNum);
+            GameLib::debug::setString("shrinkNum:%d",stage_->getSrinkNum());
             GameLib::debug::setString("plShrinkCount_:%d", BasePlayerBehavior::plShrinkCount_);
         }
 
@@ -106,7 +105,7 @@ void Game::update()
 
                 if (BasePlayerBehavior::plShrinkCount_ >= 10)
                     BasePlayerBehavior::plShrinkCount_ -= 10; // プレイヤーのカウントをリセット
-                ++shrinkNum;
+                stage_->addSrinkNum();
             }
         }
 
@@ -169,7 +168,6 @@ void Game::draw()
     obj2dManager()->draw();
 
     drawLetterBox();
-
 }
 
 // 映画の黒帯描画（仮）

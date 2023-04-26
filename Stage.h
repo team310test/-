@@ -48,9 +48,16 @@ public:
     static constexpr float ENEMY_SPAWN_POS_X = (BG::WINDOW_W + 256.0f);
 
 private:
-    int timer;
-    STAGE_SCRIPT* pScript;
+    int timer_;
+    STAGE_SCRIPT* pScript_;
+
+    int stageNum_;
+    static int shrinkNum;
+    const int stageMax = 2;
+
 public:
     Stage();
     void update(OBJ2DManager* obj2dManager, BG* bg);
+    static int getSrinkNum() { return shrinkNum; }
+    static void addSrinkNum() { ++shrinkNum; }
 };
