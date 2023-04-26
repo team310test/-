@@ -1,26 +1,13 @@
 #include "all.h"
 
-#define X BG::WINDOW_W + 256.0f
-
-// addition_(追加変数)は省略できる
-STAGE_SCRIPT stageData01[] =
-{
-    SET_ENEMY_TARGET_X(180,enemy02, X,800.0f, 5.0f,0.0f, 1000.0f, 10.0f,-5.0f),
-    SET_ENEMY_LENE(360,enemy01, X,300.0f, 5.0f),
-    SET_ENEMY_END
-};
-STAGE_SCRIPT stageData02[] =
-{
-    SET_ENEMY_LENE(520,enemy01, X,300.0f, 10.0f),
-    SET_ENEMY_LENE(520,enemy01, X,900.0f, 10.0f),
-    SET_ENEMY_LENE(700,enemy01, X,500.0f, 5.0f),
-    SET_ENEMY_END
-};
-
 STAGE_SCRIPT* STAGE_DATA[] =
 {
-    stageData01,
-    stageData02,
+    //stageData01,
+    //stageData02,
+    stageData03,
+    stageData04,
+    //stageData05,
+    nullptr
 };
 
 Stage::Stage()
@@ -41,22 +28,24 @@ void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
     // ステージ遷移
     if (stageNum_ != shrinkNum)
     {
-        if (shrinkNum > 0 && shrinkNum < stageMax)
+        timer_ = 0;
+        stageNum_ = shrinkNum;
+        if (shrinkNum >= 0 && shrinkNum < stageMax)
         {
-            timer_ = 0;
             pScript_ = STAGE_DATA[stageNum_];
         }
-#ifdef error
         else
         {
+#ifdef error
             assert(!"shrinkNumに異常な値が入っています");
-        }
+#else
+            pScript_ = STAGE_DATA[stageMax - 1];
 #endif
-        stageNum_ = shrinkNum;
+        }
     }
 
     // 敵出現
-    while (pScript_->enemyData_ && pScript_->time_ == timer_)
+    while (pScript_ && pScript_->enemyData_ && pScript_->time_ == timer_)
     {
         OBJ2D* orgParent = nullptr;
         OBJ2D* Parent[10] = {};
@@ -108,9 +97,20 @@ void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
     ++timer_;
 
     // 最後の敵が出現するとループする
-    if (!pScript_->enemyData_)
+    if (pScript_ && !pScript_->enemyData_)
     {
         timer_ = 0;
-        pScript_ = STAGE_DATA[stageNum_];
+        if (shrinkNum >= 0 && shrinkNum < stageMax)
+        {
+            pScript_ = STAGE_DATA[stageNum_];
+        }
+        else 
+        {
+#ifdef error
+            assert(!"shrinkNumに異常な値が入っています");
+#else
+            pScript_ = STAGE_DATA[stageMax - 1];
+#endif
+        }
     }
 }

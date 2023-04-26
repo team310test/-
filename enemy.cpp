@@ -328,7 +328,7 @@ void EraseEnemy::erase(OBJ2D* obj) const
 //      エネミーのupdate
 //
 //******************************************************************************
-// コアのアップデータ
+// コアの直線移動
 void ENEMY_LINE(OBJ2D* obj)
 {
     Transform* t = obj->transform_;
