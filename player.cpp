@@ -149,21 +149,19 @@ void PLAYER_UPDATE(OBJ2D* obj)
     t->velocity_.x = clamp(t->velocity_.x, -PL_SPEED_MAX, PL_SPEED_MAX);
     t->velocity_.y = clamp(t->velocity_.y, -PL_SPEED_MAX, PL_SPEED_MAX);
 
+    GameLib::debug::setString("speedP:%lf", obj->transform_->velocity_.x);
     // ˆÚ“®
     t->position_ += t->velocity_;
 }
-
-#undef RATIO
-#undef PAD_MOVE
-
 
 // ƒp[ƒc‚Ìupdate
 void PATRS_PLAYER_UPDATE(OBJ2D* obj)
 {
     Transform* t       = obj->transform_;
-    Transform* parentT = Game::instance()->player_->transform_;
+    Transform* parent = Game::instance()->player_->transform_;
 
-    t->position_ += parentT->velocity_;
+    GameLib::debug::setString("speed:%lf", parent->velocity_.x);
+    t->position_ += parent->velocity_;
 }
 
 
