@@ -5,12 +5,8 @@
 // addition_(’Ç‰Á•Ï”)‚ÍÈ—ª‚Å‚«‚é
 STAGE_SCRIPT stageData01[] =
 {
-    SET_ENEMY_TARGET_X(0,enemy02,VECTOR2(X,800.0f),VECTOR2(5.0f,5.0f),100.0f),
-    //{0,enemy02,{X,800},ENEMY_TARGET_X,{5.0f,5.0f},{1500.f,0,0,0}},
-    
-    SET_ENEMY_LENE(180,enemy01,VECTOR2(X,300.0f),5.0f),
-    //{180,enemy01,{X,300},ENEMY_LINE,{5.0f,5.0f}},
-    
+    SET_ENEMY_TARGET_X(180,enemy02, X,800.0f, 5.0f,0.0f, 1000.0f, 10.0f,-5.0f),
+    SET_ENEMY_LENE(360,enemy01, X,300.0f, 5.0f),
     SET_ENEMY_END
 };
 
@@ -72,4 +68,11 @@ void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
     }
 
     ++timer;
+
+    // ÅŒã‚Ì“G‚ªoŒ»‚·‚é‚Æƒ‹[ƒv‚·‚é
+    if (!pScript->enemyData_)
+    {
+        timer = 0;
+        pScript = stageData01;
+    }
 }

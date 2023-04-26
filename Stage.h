@@ -38,9 +38,9 @@ public:
     void DataReset() { enemyData_ = begin_; }
 };
 
-#define SET_ENEMY_LENE(fream,enemyData,pos,accelX)              {(fream),(enemyData),{pos},(ENEMY_LINE),{accelX,0.0f}}
-#define SET_ENEMY_TARGET_X(fream,enemyData,pos,accel,targetX)   {(fream),(enemyData),{pos},(ENEMY_TARGET_X),{accel},{targetX,0.0f,0.0f,0.0f}}
-#define SET_ENEMY_END                     	                    {(0),(nullptr),{0,0},nullptr,{0,0}}
+#define SET_ENEMY_LENE(fream,enemyData,posX,posY,accelX)                                        {(fream),(enemyData),{posX,posY},(ENEMY_LINE),{accelX,0.0f}}
+#define SET_ENEMY_TARGET_X(fream,enemyData,posX,posY,accelX,accelY,targetX,NexsPosX,NexsPosY)   {(fream),(enemyData),{posX,posY},(ENEMY_TARGET_X),{accelX,accelY},{targetX,NexsPosX,NexsPosY,0.0f}}
+#define SET_ENEMY_END                                                                           {(0),(nullptr),{0,0},nullptr,{0,0}}
 
 class Stage
 {

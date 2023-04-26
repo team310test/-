@@ -341,18 +341,18 @@ void ENEMY_LINE(OBJ2D* obj)
 void ENEMY_TARGET_X(OBJ2D* obj)
 {
     Transform* t = obj->transform_;
-    VECTOR2 ACCEL = obj->actorComponent_->accel_;
-    const float targetPosX = obj->actorComponent_->addition_.x;
+    ActorComponent* a = obj->actorComponent_;
+    const float targetPosX = a->addition_.x;
 
     switch (obj->act_)
     {
     case 0:
         if (t->position_.x < targetPosX) obj->act_++;
 
-        t->velocity_ = { -ACCEL.x, 0.0f };
+        t->velocity_ = { -a->accel_.x, a->accel_.y };
         break;
     case 1:
-        t->velocity_ = { -ACCEL.x, -ACCEL.y };
+        t->velocity_ = { -a->addition_.y,a->addition_.z };
 
         break;
     default:break;
