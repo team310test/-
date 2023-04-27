@@ -148,8 +148,6 @@ void PLAYER_UPDATE(OBJ2D* obj)
     // 最大速度チェック
     t->velocity_.x = clamp(t->velocity_.x, -PL_SPEED_MAX, PL_SPEED_MAX);
     t->velocity_.y = clamp(t->velocity_.y, -PL_SPEED_MAX, PL_SPEED_MAX);
-    // 移動
-    t->position_ += t->velocity_;
 }
 
 // パーツのupdate
@@ -158,7 +156,7 @@ void PATRS_PLAYER_UPDATE(OBJ2D* obj)
     Transform* t       = obj->transform_;
     Transform* parent = Game::instance()->player_->transform_;
 
-    t->position_ += parent->velocity_;
+    t->velocity_ = parent->velocity_;
 }
 
 
@@ -292,24 +290,6 @@ void BasePlayerBehavior::damageProc(OBJ2D* obj) const
 
 void BasePlayerBehavior::areaCheck(OBJ2D* /*obj*/) const
 {
-    //// 仮
-    //if (obj->transform_->position_.x < obj->collider_->size_.x)
-    //{
-    //    obj->transform_->position_.x = obj->collider_->size_.x;
-    //}
-    //if (obj->transform_->position_.x > BG::WINDOW_W - obj->collider_->size_.x)
-    //{
-    //    obj->transform_->position_.x = BG::WINDOW_W - obj->collider_->size_.x;
-    //}
-
-    //if (obj->transform_->position_.y < obj->collider_->size_.y)
-    //{
-    //    obj->transform_->position_.y = obj->collider_->size_.y;
-    //}
-    //if (obj->transform_->position_.y > BG::WINDOW_H - obj->collider_->size_.y)
-    //{
-    //    obj->transform_->position_.y = BG::WINDOW_H - obj->collider_->size_.y;
-    //}
 }
 
 //******************************************************************************
@@ -372,6 +352,38 @@ void CorePlayerBehavior::attack(OBJ2D* obj) const
     setXAxisScaleAnime(obj);
     obj->actorComponent_->attackTimer_ = 30;
 
+}
+
+void CorePlayerBehavior::areaCheck(OBJ2D* obj) const
+{
+    Transform* t = obj->transform_;
+    Collider* c = obj->collider_;
+
+    const float leftLimit = c->size_.x * t->scale_.x;
+    const float rightLimit = BG::WINDOW_W - c->size_.x * t->scale_.x;
+    const float topLimit = c->size_.y * t->scale_.y;
+    const float bottomLimit = BG::WINDOW_H - c->size_.y * t->scale_.y;
+
+    if (t->position_.x >= rightLimit)
+    {
+        t->position_.x += rightLimit - t->position_.x;
+        if (t->velocity_.x > 0) t->velocity_.x = 0;
+    }
+    if (t->position_.x <= leftLimit)
+    {
+        t->position_.x += leftLimit - t->position_.x;
+        if (t->velocity_.x < 0) t->velocity_.x = 0;
+    }
+    if (t->position_.y >= bottomLimit)
+    {
+        t->position_.y += bottomLimit - t->position_.y;
+        if (t->velocity_.y > 0) t->velocity_.y = 0;
+    }
+    if (t->position_.y <= topLimit)
+    {
+        t->position_.y += topLimit - t->position_.y;
+        if (t->velocity_.y < 0) t->velocity_.y = 0;
+    }
 }
 
 

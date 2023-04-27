@@ -166,5 +166,4 @@ void PARTS_UPDATE(OBJ2D* obj)
     Transform* t = obj->transform_;
     
     t->velocity_.x = ITEM_SUPEED;
-    t->position_ += t->velocity_;
 }

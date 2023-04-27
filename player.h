@@ -39,6 +39,7 @@ public:
     CorePlayerBehavior();
 private:
     void attack(OBJ2D* obj) const override;
+    void areaCheck(OBJ2D* obj) const override;
 };
 EXTERN CorePlayerBehavior corePlayerBehavior;
 

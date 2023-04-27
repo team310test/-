@@ -11,11 +11,11 @@ private:
 
     static const int stageMax = 2;
     int stageNum_;
-    static int shrinkNum;
+    static int shrinkNum_;
 
 public:
     Stage();
     void update(OBJ2DManager* obj2dManager, BG* bg);
-    static int getSrinkNum() { return shrinkNum; }
-    static void addSrinkNum() { ++shrinkNum; }
+    static int getSrinkNum() { return shrinkNum_; }
+    static void addSrinkNum() { ++shrinkNum_; }
 };

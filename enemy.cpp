@@ -335,8 +335,6 @@ void ENEMY_LINE(OBJ2D* obj)
     const float speedX = obj->actorComponent_->accel_.x;
 
     t->velocity_ = { -speedX, 0.0f };
-    t->position_ += t->velocity_;
-
 }
 // x軸の目標地点に達すると別の方向へ移動する(仮)
 void ENEMY_TARGET_X(OBJ2D* obj)
@@ -358,13 +356,12 @@ void ENEMY_TARGET_X(OBJ2D* obj)
         break;
     default:break;
     }
-    t->position_ += t->velocity_;
 }
 // パーツのアップデート
 void ENEMY_PARTS(OBJ2D* obj)
 {
     Transform* t = obj->transform_;
-    OBJ2D* parent = obj->actorComponent_->orgParent_;
+    Transform* parent = obj->actorComponent_->orgParent_->transform_;
 
-    t->position_ += parent->transform_->velocity_;
+    t->velocity_ = parent->velocity_;
 }

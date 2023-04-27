@@ -10,14 +10,15 @@ STAGE_SCRIPT* STAGE_DATA[] =
     nullptr
 };
 
+int Stage::shrinkNum_ = 0;
 Stage::Stage()
     : timer_()
     , pScript_(nullptr)
     , stageNum_()
 {
+    shrinkNum_ = 0;
     pScript_ = STAGE_DATA[stageNum_];
 }
-int Stage::shrinkNum = 0;
 //#define error
 
 void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
@@ -26,11 +27,11 @@ void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
     GameLib::debug::setString("timer:%d", timer_);
 
     // ステージ遷移
-    if (stageNum_ != shrinkNum)
+    if (stageNum_ != shrinkNum_)
     {
         timer_ = 0;
-        stageNum_ = shrinkNum;
-        if (shrinkNum >= 0 && shrinkNum < stageMax)
+        stageNum_ = shrinkNum_;
+        if (shrinkNum_ >= 0 && shrinkNum_ < stageMax)
         {
             pScript_ = STAGE_DATA[stageNum_];
         }
@@ -100,7 +101,7 @@ void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
     if (pScript_ && !pScript_->enemyData_)
     {
         timer_ = 0;
-        if (shrinkNum >= 0 && shrinkNum < stageMax)
+        if (shrinkNum_ >= 0 && shrinkNum_ < stageMax)
         {
             pScript_ = STAGE_DATA[stageNum_];
         }
