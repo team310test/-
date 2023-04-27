@@ -27,10 +27,7 @@ public:
 
 private:
     OBJ2D* player_;
-    std::unique_ptr<OBJ2D> bg_[BG_MAX];
-
-    int bgSprNo_; // ƒXƒvƒ‰ƒCƒg‰æ‘œTEXNO
-
+    OBJ2D* bg_[BG_MAX];
 
 public:
     BG();
@@ -43,7 +40,6 @@ public:
     // ”wŒi•`‰æ
     void drawBack();
 
-
     // ”wŒi‚Ìk¬İ’è
     void setBGShrink(); 
 
@@ -53,7 +49,7 @@ private:
     void clear();
 
     // ”wŒi‚ÌXVˆ—
-    void moveBack() const;
+    void moveBack();
 };
 
 //******************************************************************************

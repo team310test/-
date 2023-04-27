@@ -336,6 +336,7 @@ void ENEMY_LINE(OBJ2D* obj)
 
     t->velocity_ = { -speedX, 0.0f };
     t->position_ += t->velocity_;
+
 }
 // x軸の目標地点に達すると別の方向へ移動する(仮)
 void ENEMY_TARGET_X(OBJ2D* obj)

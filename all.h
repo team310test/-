@@ -32,6 +32,7 @@
 #include "enemyData.h"
 #include "stageData.h"
 #include "stage.h"
+#include "UI.h"
 
 #include "scene.h"
 #include "game.h"

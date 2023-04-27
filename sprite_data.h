@@ -8,6 +8,8 @@ enum TEXNO
     // ÉQÅ[ÉÄ
     BACK01,
     BACK02,
+    UI_METER_FRAME,     // åväÌÇÃòg
+    UI_METER_NEEDLE,    // åväÌÇÃêj
     SHOT,
     PL_CORE01,
     ENM_CORE01,

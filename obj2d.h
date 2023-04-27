@@ -280,6 +280,8 @@ public:
     Eraser*   nextEraser_   = nullptr; // 次に変わるEraser
     OBJ_DATA  update_       = nullptr;
 
+    int bgSprNo_ = 0; // 背景スプライト画像TEXNO
+
     BG* bg_ = nullptr;
 
     Transform* transform_;

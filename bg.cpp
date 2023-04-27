@@ -3,31 +3,34 @@
 
 BG::BG()
     :player_(nullptr)
-    , bgSprNo_(0)
+    , bg_()
 {
 }
 
 
 BG::~BG()
 {
-    for (auto& bg : bg_) { if (bg) bg = nullptr; }
+    for (OBJ2D*& bg : bg_) safe_delete(bg);
+
+    player_ = nullptr;
 }
 
 
 void BG::init(OBJ2D* player)
 {
-    for (auto& bg : bg_)
+    //new char[1]; // メモリリーク確認
+    for (OBJ2D*& bg : bg_)
     {
-        bg = std::unique_ptr<OBJ2D>(
-                new OBJ2D(
-                    new Renderer,
-                    new Collider,
-                    new BG,
-                    nullptr,
-                    nullptr,
-                    nullptr)
-            );
+        bg = new OBJ2D(
+            new Renderer,
+            new Collider,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+        );
     }
+    //new char[2]; // メモリリーク確認
 
     player_ = player;
 
@@ -46,17 +49,17 @@ void BG::clear()
     bg_[6]->transform_->scale_ = bg_[7]->transform_->scale_ = { 8, 8 };
     bg_[8]->transform_->scale_ = bg_[9]->transform_->scale_ = { 16, 16 };
 
-    bg_[0]->bg_->bgSprNo_ = bg_[1]->bg_->bgSprNo_ = BACK01;
-    bg_[2]->bg_->bgSprNo_ = bg_[3]->bg_->bgSprNo_ = BACK02;
-    bg_[4]->bg_->bgSprNo_ = bg_[5]->bg_->bgSprNo_ = BACK01;
-    bg_[6]->bg_->bgSprNo_ = bg_[7]->bg_->bgSprNo_ = BACK02;
-    bg_[8]->bg_->bgSprNo_ = bg_[9]->bg_->bgSprNo_ = BACK01;
+    bg_[0]->bgSprNo_ = bg_[1]->bgSprNo_ = BACK01;
+    bg_[2]->bgSprNo_ = bg_[3]->bgSprNo_ = BACK02;
+    bg_[4]->bgSprNo_ = bg_[5]->bgSprNo_ = BACK01;
+    bg_[6]->bgSprNo_ = bg_[7]->bgSprNo_ = BACK02;
+    bg_[8]->bgSprNo_ = bg_[9]->bgSprNo_ = BACK01;
 
 
     int bgNum = 1; // スクロールの右左配置設定用
 
     // 初期設定
-    for (auto& bg : bg_)
+    for (OBJ2D*& bg : bg_)
     {
         Transform* t = bg->transform_;
         Collider*  c = bg->collider_;
@@ -91,9 +94,9 @@ void BG::update()
 float BG::subScale = -0.0035f;    // scaleの縮小速度
 static constexpr float ADD_ALPHA_COLOR     =  0.001f;  // 不透明度の増加速度
 static constexpr float SUBJECT_ALPHA_COLOR = -0.0025f; // 不透明度の減少速度
-void BG::moveBack() const
+void BG::moveBack()
 {
-    for (auto& bg : bg_)
+    for (OBJ2D*& bg : bg_)
     {
         Transform* t = bg->transform_;
         Renderer*  r = bg->renderer_;
@@ -156,7 +159,7 @@ void BG::moveBack() const
 void BG::drawBack()
 {
     // 背景描画する
-    for (auto& bg : bg_)
+    for (OBJ2D*& bg : bg_)
     {
         Transform* t = bg->transform_;
         Collider*  c = bg->collider_;
@@ -166,16 +169,16 @@ void BG::drawBack()
         if (t->scale_.x > DISP_BG_SCALE_MAX) continue; // scaleが最大表示より大きければcontinue
 
 
-        GameLib::texture::begin(bg->bg_->bgSprNo_);
+        GameLib::texture::begin(bg->bgSprNo_);
         GameLib::texture::draw(
-            bg->bg_->bgSprNo_,
+            bg->bgSprNo_,
             t->position_, t->scale_,
             { 0, 0 }, c->size_,
             { 0.0f,  (c->size_.y * 0.5f) }, 
             0,
             r->color_
         );
-        GameLib::texture::end(bg->bg_->bgSprNo_);
+        GameLib::texture::end(bg->bgSprNo_);
     }
 
 }
@@ -183,7 +186,7 @@ void BG::drawBack()
 
 void BG::setBGShrink()
 {
-    for (auto& bg : bg_)
+    for (OBJ2D*& bg : bg_)
     {
         Transform* t = bg->transform_;
         Collider*  c = bg->collider_;
