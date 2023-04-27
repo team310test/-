@@ -48,44 +48,43 @@ void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer = fa
     player->actorComponent_->parent_ = player;
 
     player->actorComponent_->No = ActorComponent::playerNum;
-    player->update_ = PLAYER_UPDATE;
+    player->update_ = PLAYER_CORE_UPDATE;
 
     if (makeOrgPlayer == true) 
     {
-        Game::instance()->player_ = obj2dManager->add(player, &corePlayerBehavior, pos);
+        Game::instance()->player_ = obj2dManager->add(player, &playerCoreBehavior, pos);
     }
     else
     {
-        obj2dManager->add(player, &corePlayerBehavior, pos);
+        obj2dManager->add(player, &playerCoreBehavior, pos);
     }
 }
-// 仮
-void setCursor(OBJ2DManager* obj2dManager, BG* bg)
-{
-    const VECTOR2 pos = { 100,100 };
+//// 仮
+//void setCursor(OBJ2DManager* obj2dManager, BG* bg)
+//{
+//    const VECTOR2 pos = { 100,100 };
+//
+//    OBJ2D* cursor = new OBJ2D(
+//        new Renderer,
+//        new Collider,
+//        bg,
+//        new ActorComponent,
+//        nullptr,
+//        nullptr
+//    );
+//
+//    cursor->zOrder_ = 4;
+//    cursor->actorComponent_->parent_ = cursor;
+//
+//    Game::instance()->cursor_ = obj2dManager->add(cursor, &cursorBehavior, pos);
+//}
 
-    OBJ2D* cursor = new OBJ2D(
-        new Renderer,
-        new Collider,
-        bg,
-        new ActorComponent,
-        nullptr,
-        nullptr
-    );
-
-    cursor->zOrder_ = 4;
-    cursor->actorComponent_->parent_ = cursor;
-
-    Game::instance()->cursor_ = obj2dManager->add(cursor, &cursorBehavior, pos);
-}
 
 //******************************************************************************
 //      プレイヤーのupdate
 //******************************************************************************
-#define PL_SPEED 3.0f
-#define PL_SPEED_MAX 10.0f
-#define RATIO 0.7f
-#define PAD_MOVE		(PAD_RIGHT|PAD_LEFT|PAD_DOWN|PAD_UP)
+#define RATIO       (0.7f)
+#define PAD_MOVE    (PAD_RIGHT|PAD_LEFT|PAD_DOWN|PAD_UP)
 
 VECTOR2 speedData[16] = {
     { 0, 0 },								        //----
@@ -107,7 +106,7 @@ VECTOR2 speedData[16] = {
 };
 
 // 自機本体のupdate
-void PLAYER_UPDATE(OBJ2D* obj)
+void PLAYER_CORE_UPDATE(OBJ2D* obj)
 {
     using namespace GameLib::input;
     ActorComponent* a = obj->actorComponent_;
@@ -153,7 +152,7 @@ void PLAYER_UPDATE(OBJ2D* obj)
 }
 
 // パーツのupdate
-void PATRS_PLAYER_UPDATE(OBJ2D* obj)
+void PLAYER_PATRS_UPDATE(OBJ2D* obj)
 {
     Transform* t       = obj->transform_;
     Transform* parent = Game::instance()->player_->transform_;
@@ -314,10 +313,10 @@ void BasePlayerBehavior::areaCheck(OBJ2D* /*obj*/) const
 
 //******************************************************************************
 //
-//      corePlayerBehavior（自機本体）
+//      PlayerCoreBehavior（自機本体）
 //
 //******************************************************************************
-CorePlayerBehavior::CorePlayerBehavior()
+PlayerCoreBehavior::PlayerCoreBehavior()
 {
     // アニメーション
     param_.ANIME_WAIT    = animePlayerCore01;
@@ -334,7 +333,7 @@ CorePlayerBehavior::CorePlayerBehavior()
     param_.OBJ_ANIME = scaleAnime;
 }
 
-void CorePlayerBehavior::attack(OBJ2D* obj) const
+void PlayerCoreBehavior::attack(OBJ2D* obj) const
 {
     // 攻撃クールタイム減少
     if (obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
@@ -384,13 +383,13 @@ void CorePlayerBehavior::attack(OBJ2D* obj) const
 void PartsPlayerBehavior::shrink(OBJ2D* obj) const
 {
     Behavior::shrink(obj);  // 縮小処理
-    contactToOriginal(obj, Game::instance()->player_); // 縮小に伴って位置を移動させる処理
+    contactToPlCore(obj, Game::instance()->player_); // 縮小に伴って位置を移動させる処理
 }
 
 // オリジナル自機の方に向かって移動する関数
 //static const float toCoreVelocity = 0.085f; // 元になる速度(オリジナル自機へ向かう速さに影響)
-float PartsPlayerBehavior::toCoreVelocity = TO_CORE_SPEED;  // オリジナル自機へ向かう速度
-void PartsPlayerBehavior::contactToOriginal(OBJ2D* obj, OBJ2D* orgPl) const
+float PartsPlayerBehavior::toCoreVelocity_ = TO_CORE_SPEED;  // オリジナル自機へ向かう速度
+void PartsPlayerBehavior::contactToPlCore(OBJ2D* obj, OBJ2D* orgPl) const
 {    
     if (!obj->collider_->isShrink_) return; // 縮小していなければreturn
 
@@ -408,7 +407,7 @@ void PartsPlayerBehavior::contactToOriginal(OBJ2D* obj, OBJ2D* orgPl) const
     {
         if (num > 999) // 念のために終点を設置
         {
-            addVelocity = toCoreVelocity * num;
+            addVelocity = toCoreVelocity_ * num;
             break;
         }
 
@@ -416,7 +415,7 @@ void PartsPlayerBehavior::contactToOriginal(OBJ2D* obj, OBJ2D* orgPl) const
         // (距離が遠すぎるとobjが自機本体に追いつけないため)
         if ((copyDist >=  (50.0f * num) && copyDist <=  50.0f * (num + 1.0f)))  // ±0から±50、±50から±100、±100から±150...
         {
-            addVelocity = (num != 0.0f) ? (toCoreVelocity * num ): toCoreVelocity; // ±0から±50までの距離はnumが0なのでデフォルトの値を代入
+            addVelocity = (num != 0.0f) ? (toCoreVelocity_ * num ): toCoreVelocity_; // ±0から±50までの距離はnumが0なのでデフォルトの値を代入
 
             break; // 代入したのでbreak;
         }
@@ -425,7 +424,7 @@ void PartsPlayerBehavior::contactToOriginal(OBJ2D* obj, OBJ2D* orgPl) const
         // (距離が遠すぎるとobjが自機本体に追いつけないため)
         if ((copyDist >= (50.0f * num) && copyDist <= 50.0f * (num + 1.0f)))  // ±0から±50、±50から±100、±100から±150...
         {
-            addVelocity = (num != 0) ? (toCoreVelocity * num) : toCoreVelocity;   // ±0から±50までの距離はnumが0なので0.1fを代入
+            addVelocity = (num != 0) ? (toCoreVelocity_ * num) : toCoreVelocity_;   // ±0から±50までの距離はnumが0なので0.1fを代入
 
             break; // 代入したのでbreak;
         }
@@ -438,13 +437,13 @@ void PartsPlayerBehavior::contactToOriginal(OBJ2D* obj, OBJ2D* orgPl) const
     };
 
 
-    // 最大速度チェックを行う
-    obj->transform_->velocity_.y = clamp(
-        obj->transform_->velocity_.y, -PL_SPEED_MAX, PL_SPEED_MAX
-    );
-    obj->transform_->velocity_.x = clamp(
-        obj->transform_->velocity_.x, -PL_SPEED_MAX, PL_SPEED_MAX
-    );
+    //// 最大速度チェックを行う
+    //obj->transform_->velocity_.y = clamp(
+    //    obj->transform_->velocity_.y, -PL_SPEED_MAX, PL_SPEED_MAX
+    //);
+    //obj->transform_->velocity_.x = clamp(
+    //    obj->transform_->velocity_.x, -PL_SPEED_MAX, PL_SPEED_MAX
+    //);
     // 位置更新
     obj->transform_->position_ += obj->transform_->velocity_;
 }
@@ -644,41 +643,41 @@ void ErasePlayer::erase(OBJ2D* obj) const
 //      CusorBehavior（カーソル）（仮）
 // 
 //****************************************************************************** 
-CursorBehavior::CursorBehavior()
-{
-    param_.SIZE = VECTOR2( 5, 5);
-    param_.HIT_BOX[0] = { -5, -5, 5 , 5 };
-    param_.ATTACK_BOX[0] = { -5, -5, 5 , 5 };
-
-}
+//CursorBehavior::CursorBehavior()
+//{
+//    param_.SIZE = VECTOR2( 5, 5);
+//    param_.HIT_BOX[0] = { -5, -5, 5 , 5 };
+//    param_.ATTACK_BOX[0] = { -5, -5, 5 , 5 };
+//
+//}
 
 // カーソルの座標取得
-VECTOR2 getCursorPoint()
-{
-    static POINT point_;
+//VECTOR2 getCursorPoint()
+//{
+//    static POINT point_;
+//
+//    GetCursorPos(&point_);
+//    ScreenToClient(GetActiveWindow(), &point_);
+//
+//    VECTOR2 pos = { static_cast<float>(point_.x), 
+//                    static_cast<float>(point_.y) 
+//    };
+//    return pos;
+//}
+//
+//void CursorBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
+//{
+    //if ( (GameLib::input::TRG(0) & GameLib::input::PAD_TRG4) ||
+    //     (GetAsyncKeyState(VK_LBUTTON) & 1) )
+    //{
+    //    dst->behavior_ = nullptr;
 
-    GetCursorPos(&point_);
-    ScreenToClient(GetActiveWindow(), &point_);
+    //    // 縮小カウント減少
+    //    BasePlayerBehavior::plShrinkCount_ = std::max(0, BasePlayerBehavior::plShrinkCount_ - 1);
+    //}
+//}
 
-    VECTOR2 pos = { static_cast<float>(point_.x), 
-                    static_cast<float>(point_.y) 
-    };
-    return pos;
-}
-
-void CursorBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
-{
-    if ( (GameLib::input::TRG(0) & GameLib::input::PAD_TRG4) ||
-         (GetAsyncKeyState(VK_LBUTTON) & 1) )
-    {
-        dst->behavior_ = nullptr;
-
-        // 縮小カウント減少
-        BasePlayerBehavior::plShrinkCount_ = std::max(0, BasePlayerBehavior::plShrinkCount_ - 1);
-    }
-}
-
-void CursorBehavior::damageProc(OBJ2D* obj) const
-{
-    obj->transform_->position_ = getCursorPoint();
-}
+//void CursorBehavior::damageProc(OBJ2D* obj) const
+//{
+//    obj->transform_->position_ = getCursorPoint();
+//}

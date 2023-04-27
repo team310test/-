@@ -56,6 +56,7 @@ void Game::update()
         timer_ = 0;
         num = 2;
         BasePlayerBehavior::plShrinkCount_ = 0;
+        Stage::resetShrinkNum();
 
         GameLib::setBlendMode(GameLib::Blender::BS_ALPHA);   // 通常のアルファ処理
 
@@ -68,8 +69,8 @@ void Game::update()
         // プレイヤーを追加する
         setPlayer(obj2dManager(), bg(), true); // trueならこのobjをplayer_に代入する
 
-        // カーソル追加(仮)
-        setCursor(obj2dManager(), bg());
+        //// カーソル追加(仮)
+        //setCursor(obj2dManager(), bg());
 
         bg()->init(player_); // BGの初期化
 
@@ -81,18 +82,18 @@ void Game::update()
         //////// 通常時の処理 ////////
 
         // 敵追加4
-        if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG2)
-        {
-            addEnemy(obj2dManager(), bg());
-            ++num;
-        }
+        //if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG2)
+        //{
+        //    addEnemy(obj2dManager(), bg());
+        //    ++num;
+        //}
 
         // debug::setString
         {
-            GameLib::debug::setString("num:%d", num);
+            //GameLib::debug::setString("num:%d", num);
             //if (player_->transform_) GameLib::debug::setString("playerScale:%f", player_->transform_->scale_.x);
-            GameLib::debug::setString("shrinkNum:%d",stage_->getSrinkNum());
-            GameLib::debug::setString("plShrinkCount_:%d", BasePlayerBehavior::plShrinkCount_);
+            //GameLib::debug::setString("shrinkNum_:%d",stage_->getSrinkNum());
+            //GameLib::debug::setString("plShrinkCount_:%d", BasePlayerBehavior::plShrinkCount_);
         }
 
         if (BasePlayerBehavior::plShrinkCount_ >= BasePlayerBehavior::PL_SHRINK_COUNT_MAX)  // プレイヤーの数がShrinkの規定数に達したら
@@ -136,14 +137,16 @@ void Game::update()
         //// 縮小とパーツプレイヤーへ向かう速度いじり
         if (Behavior::isObjShrink()) // ひとつでもobjが縮小していれば
         {
-            Behavior::shrinkVelocity            += (-SHRINK_SPEED)  * 0.015f;
-            PartsPlayerBehavior::toCoreVelocity += (-TO_CORE_SPEED) * 0.015f;
+            Behavior::shrinkVelocity_               += (-SHRINK_SPEED)  * 0.015f;
+            PartsPlayerBehavior::toCoreVelocity_    += (-TO_CORE_SPEED) * 0.015f;
+            BaseEnemyPartsBehavior::toCoreVelocity_ += (-TO_CORE_SPEED) * 0.015f;
             UI::letterBox_multiplySizeY_ = std::max(0.75f, UI::letterBox_multiplySizeY_ + LETTER_BOX_SUB_SPEED); // 0.0fより小さければ0.0fに修正
         }
         else // すべてのobjが縮小していなければ
         {
-            Behavior::shrinkVelocity = SHRINK_SPEED;
-            PartsPlayerBehavior::toCoreVelocity = TO_CORE_SPEED;
+            Behavior::shrinkVelocity_               = SHRINK_SPEED;
+            PartsPlayerBehavior::toCoreVelocity_    = TO_CORE_SPEED;
+            BaseEnemyPartsBehavior::toCoreVelocity_ = TO_CORE_SPEED;
             UI::letterBox_multiplySizeY_ = std::min(1.0f, UI::letterBox_multiplySizeY_ + LETTER_BOX_ADD_SPEED); // 1.0fより大きければ1.0fに修正
         }
 

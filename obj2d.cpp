@@ -193,29 +193,29 @@ void OBJ2DManager::draw()
             continue;
 
 
-        obj->renderer_->draw();
-        
-
-        static bool isDrawHitBox = false; // ヒットボックスを表示するか
-        // 1キーでヒットボックス表示・非表示
-        if (GetAsyncKeyState('1') & 1) 
+        if (obj->transform_->scale_.x > DRAW_OBJ_SCALE_MIN_LIMIT)
         {
-            if (!isDrawHitBox) isDrawHitBox = true;
-            else isDrawHitBox = false;
+            obj->renderer_->draw();
         }
-        if (isDrawHitBox) obj->collider_->draw();
 
+        //static bool isDrawHitBox = false; // ヒットボックスを表示するか
+        //// 1キーでヒットボックス表示・非表示
+        //if (GetAsyncKeyState('1') & 1) 
+        //{
+        //    isDrawHitBox = (!isDrawHitBox) ? true : false;
+        //}
+        //if (isDrawHitBox) obj->collider_->draw();
 
 
         // カーソルが見づらいのでプリミティブ描画
-        OBJ2D* cursor = Game::instance()->cursor_;
-        GameLib::primitive::rect(
-            cursor->transform_->position_,
-            { 10,10 },
-            { 0,0 },
-            0,
-            { 0,0,0,1 }
-        );
+        //OBJ2D* cursor = Game::instance()->cursor_;
+        //GameLib::primitive::rect(
+        //    cursor->transform_->position_,
+        //    { 10,10 },
+        //    { 0,0 },
+        //    0,
+        //    { 0,0,0,1 }
+        //);
     }
 }
 

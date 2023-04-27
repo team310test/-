@@ -154,6 +154,7 @@ void BaseEnemyBehavior::areaCheck(OBJ2D* obj) const
 }
 
 
+
 //******************************************************************************
 //
 //      EnemyCore01
@@ -177,6 +178,89 @@ EnemyCore01Behavior::EnemyCore01Behavior()
     param_.OBJ_ANIME = &rotateAnime;
     param_.ROT_SPEED = -0.05f;
 }
+
+
+
+//******************************************************************************
+// 
+//      BaseEnemyPartsBehavior（エネミーのパーツのベース）
+// 
+//******************************************************************************
+
+void BaseEnemyPartsBehavior::shrink(OBJ2D* obj) const
+{
+    Behavior::shrink(obj);
+
+    if (!obj->actorComponent_->orgParent_) return;
+    if (!obj->actorComponent_->orgParent_->behavior_) return;
+
+    contactToEnmCore(obj, obj->actorComponent_->orgParent_);
+}
+
+
+// オリジナル自機の方に向かって移動する関数
+//static const float toCoreVelocity = 0.085f; // 元になる速度(オリジナル自機へ向かう速さに影響)
+float BaseEnemyPartsBehavior::toCoreVelocity_ = TO_CORE_SPEED;
+// オリジナル自機へ向かう速度
+void BaseEnemyPartsBehavior::contactToEnmCore(OBJ2D* obj, OBJ2D* coreEnm) const
+{
+    if (!obj->collider_->isShrink_) return; // 縮小していなければreturn
+
+    const VECTOR2 coreEnmPos = coreEnm->transform_->position_;  // 自機本体の位置
+    const VECTOR2 objPos = obj->transform_->position_;  // objの位置
+
+    const VECTOR2 d = { coreEnmPos - objPos };               // objから自機本体へ向かうベクトル
+    const float dist = sqrtf((d.x * d.x) + (d.y * d.y));  // objから自機本体までの距離
+
+    float addVelocity = 0.0f;                               // objのvelocityに足す速度
+    float num = 0.0f;                                       // for分のiみたいな役割
+    const float copyDist = dist >= 0 ? dist : dist * (-1);
+
+    while (true)
+    {
+        if (num > 999) // 念のために終点を設置
+        {
+            addVelocity = toCoreVelocity_ * num;
+            break;
+        }
+
+        // objから自機本体までの距離が遠くなるたび速度を上昇させる
+        // (距離が遠すぎるとobjが自機本体に追いつけないため)
+        if ((copyDist >= (50.0f * num) && copyDist <= 50.0f * (num + 1.0f)))  // ±0から±50、±50から±100、±100から±150...
+        {
+            addVelocity = (num != 0.0f) ? (toCoreVelocity_ * num) : toCoreVelocity_; // ±0から±50までの距離はnumが0なのでデフォルトの値を代入
+
+            break; // 代入したのでbreak;
+        }
+
+        // objから自機本体までの距離によって速度を上昇させる
+        // (距離が遠すぎるとobjが自機本体に追いつけないため)
+        if ((copyDist >= (50.0f * num) && copyDist <= 50.0f * (num + 1.0f)))  // ±0から±50、±50から±100、±100から±150...
+        {
+            addVelocity = (num != 0) ? (toCoreVelocity_ * num) : toCoreVelocity_;   // ±0から±50までの距離はnumが0なので0.1fを代入
+
+            break; // 代入したのでbreak;
+        }
+        ++num; // numを加算していく
+    }
+
+    obj->transform_->velocity_ = {
+        (d.x / dist) * (addVelocity),
+        (d.y / dist) * (addVelocity),
+    };
+
+
+    //// 最大速度チェックを行う
+    //obj->transform_->velocity_.y = clamp(
+    //    obj->transform_->velocity_.y, -PL_SPEED_MAX, PL_SPEED_MAX
+    //);
+    //obj->transform_->velocity_.x = clamp(
+    //    obj->transform_->velocity_.x, -PL_SPEED_MAX, PL_SPEED_MAX
+    //);
+    // 位置更新
+    obj->transform_->position_ += obj->transform_->velocity_;
+}
+
 
 
 //******************************************************************************
@@ -289,7 +373,7 @@ void EraseEnemy::erase(OBJ2D* obj) const
         obj->eraser_   = obj->nextEraser_;
 
         if (obj->behavior_ == nullptr) return;
-        obj->update_ = PARTS_UPDATE;  // updateを変更
+        obj->update_ = DROP_PARTS_UPDATE;  // updateを変更
 
         obj->actorComponent_->hp_ = 0;  // HPを0にする
 
@@ -311,7 +395,7 @@ void EraseEnemy::erase(OBJ2D* obj) const
             obj->eraser_   = &eraseDropParts;
             
             if (obj->behavior_ == nullptr) return;
-            obj->update_ = PARTS_UPDATE;  // updateを変更
+            obj->update_ = DROP_PARTS_UPDATE;  // updateを変更
 
             return;
         }

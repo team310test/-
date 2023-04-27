@@ -148,7 +148,7 @@ void EraseDropParts::erase(OBJ2D* obj) const
         obj->eraser_   = obj->nextEraser_;   // 次のeraserを代入
 
         if (obj->behavior_ == nullptr) return;
-        obj->update_ = PATRS_PLAYER_UPDATE;  // updateを変更
+        obj->update_ = PLAYER_PATRS_UPDATE;  // updateを変更
 
         obj->actorComponent_->hp_ = obj->actorComponent_->nextHp_;  // 次のHPを代入
         
@@ -160,11 +160,11 @@ void EraseDropParts::erase(OBJ2D* obj) const
 //******************************************************************************
 //      パーツのupdate
 //******************************************************************************
-#define ITEM_SUPEED -2.0f
-void PARTS_UPDATE(OBJ2D* obj)
+void DROP_PARTS_UPDATE(OBJ2D* obj)
 {
     Transform* t = obj->transform_;
     
-    t->velocity_.x = ITEM_SUPEED;
+    t->velocity_.x = DROP_PARTS_SPEED;
+    t->velocity_.y = 0;
     t->position_ += t->velocity_;
 }

@@ -1,6 +1,7 @@
 #include "all.h"
 
-float UI::needleAngle_ = 0.0f;              // ŒvŠí‚Ìj‚ÌŠp“x
+float UI::frameAngle_   = 0.0f;             // ŒvŠí‚Ì˜g‚ÌŠp“x
+float UI::needleAngle_  = 0.0f;             // ŒvŠí‚Ìj‚ÌŠp“x
 float UI::letterBox_multiplySizeY_ = 0.0f;  // ‰f‰æ‚Ì•‘Ñ‚Ìc•
 
 
@@ -16,6 +17,7 @@ void UI::drawShrinkValueMeter()
 {
     using namespace GameLib;
 
+
     int sprNo       = {};
     VECTOR2 pos     = {};
     VECTOR2 scale   = {};
@@ -25,10 +27,34 @@ void UI::drawShrinkValueMeter()
     float   angle   = {};
     VECTOR4 color   = {};
 
+    static float alphaColor = 1.0f;
+    static bool isInArea = {};
+
+    isInArea = false;
+    for (auto& p : *Game::instance()->obj2dManager()->getList())
+    {
+        if (p->behavior_ == nullptr) continue;
+
+        Transform* t = p->transform_;
+        if (t->position_.x >= 0 && t->position_.x <= 500 &&
+            t->position_.y >= 575 && t->position_.y <= 1080)
+        {
+            isInArea = true;
+            break;
+        }
+    }
+
+    //if(isInArea) debug::setString("true");
+
+    if (isInArea)   alphaColor += (-0.05f);
+    else            alphaColor += 0.05f;
+
+    if (alphaColor > 1.0f) alphaColor = 1.0f;
+    if (alphaColor < 0.2f) alphaColor = 0.2f;
+
     // ŒvŠí‚Ì˜g
     {
-        static float frameAngle = {};
-        frameAngle += DirectX::XMConvertToRadians(1.0f);
+        frameAngle_ += DirectX::XMConvertToRadians(1.0f);
 
         sprNo   = UI_METER_FRAME;
         pos     = { 100, 1000 };
@@ -36,8 +62,8 @@ void UI::drawShrinkValueMeter()
         texPos  = {};
         size    = { 250, 250 };
         center  = { 125, 125 };
-        angle   = frameAngle;
-        color   = { 1, 1, 1, 1 };
+        angle   = frameAngle_;
+        color   = { 1, 1, 1, alphaColor };
 
         // ˜g•`‰æ
         texture::begin(sprNo);
@@ -45,6 +71,22 @@ void UI::drawShrinkValueMeter()
         texture::end(sprNo);
     }
 
+    // ŒvŠí‚Ì–Ú·‚è
+    //{
+    //    sprNo   = UI_METER_READ;
+    //    pos     = { 100, 1000 };
+    //    scale   = { 3, 3 };
+    //    texPos  = {};
+    //    size    = { 250, 250 };
+    //    center  = { 125, 125 };
+    //    angle   = {};
+    //    color   = { 1, 1, 1, alphaColor };
+    //
+    //    // ˜g•`‰æ
+    //    texture::begin(sprNo);
+    //    texture::draw(sprNo, pos, scale, texPos, size, center, angle, color);
+    //    texture::end(sprNo);
+    //}
 
     // ŒvŠí‚Ìj
     {
@@ -61,7 +103,7 @@ void UI::drawShrinkValueMeter()
             NEEDLE_ANGLE_MAX * (count / countMax)
         );
 
-        static float subNeedleAngle = {};
+        static float subNeedleAngle = {}; // Œ¸ŽZ‘¬“x‚ðã‚°‚Ä‚¢‚­
         // j‚Ì“®‚«‚ðŠŠ‚ç‚©‚É‚·‚éˆ—
         if (needleAngle_ < currentAngle) // angle‚ªŒ»Ý‚ÌŠp“x‚æ‚è¬‚³‚¢ê‡
         {
@@ -85,7 +127,7 @@ void UI::drawShrinkValueMeter()
         size    = { 250, 250 };
         center  = { 125, 250 };
         angle   = needleAngle_ + DirectX::XMConvertToRadians(-35);
-        color   = { 1, 1, 1, 1 };
+        color   = { 1, 1, 1, alphaColor };
 
         // j•`‰æ
         texture::begin(sprNo);

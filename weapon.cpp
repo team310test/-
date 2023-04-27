@@ -390,6 +390,11 @@ void EnmAimShotBehavior::update(OBJ2D* obj) const
 //******************************************************************************
 void ShotEraser::erase(OBJ2D* obj) const
 {
+    Transform* t = obj->transform_;
+
+    if (t->scale_.x <= DRAW_OBJ_SCALE_MIN_LIMIT) obj->behavior_ = nullptr;
+
+
     const VECTOR2* size = &obj->collider_->size_;
     const VECTOR2* pos = &obj->transform_->position_;
 

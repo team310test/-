@@ -71,7 +71,7 @@ void BG::clear()
         t->position_.x  = (bgNum % 2 == 0) ? c->size_.x : 0.0f; // 2で割れたらスクロールの右側担当にする
         t->position_.y  = bg->bg_->WINDOW_H * 0.5f;             // yだけ真ん中に設定（見栄え）
 
-        t->velocity_.x  = -5.0f;             // スクロール速度
+        t->velocity_.x  = BG_SCROLL_SPEED;             // スクロール速度
 
         r->color_   = { 1, 1, 1, 1 };        // カラー
         r->color_.w = (t->scale_.x < DISP_BG_SCALE_MAX) // 不透明度

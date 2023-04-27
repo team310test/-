@@ -9,6 +9,7 @@ enum TEXNO
     BACK01,
     BACK02,
     UI_METER_FRAME,     // ŒvŠí‚Ì˜g
+    //UI_METER_READ,      // ŒvŠí‚Ì–Ú·‚è
     UI_METER_NEEDLE,    // ŒvŠí‚Ìj
     SHOT,
     PL_CORE01,

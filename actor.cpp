@@ -41,13 +41,10 @@ void ActorBehavior::move(OBJ2D* obj) const
         shrink(obj);            // 画像縮小
 
 
-
         if (obj->collider_->isShrink_) break; // 縮小中なら飛ばす
+        // objがプレイヤーの場合
+        if (obj == Game::instance()->player_) { if (Behavior::isObjShrink()) break; }// すべてのobjが縮小終了していなければ飛ばす
 
-        if (obj == Game::instance()->player_) // objがプレイヤーの場合
-        {
-            if (Behavior::isObjShrink()) break; // すべてのobjが縮小終了していなければ飛ばす
-        }
 
         // PGによるアニメーション(objAnimeTemporary_を優先的に行う)
         if (obj->actorComponent_->objAnimeTemporary_)
@@ -59,7 +56,6 @@ void ActorBehavior::move(OBJ2D* obj) const
 
         damageProc(obj);
 
-
         // updateがあるならupdateを使用する(仮)
         if (obj->update_)
         {
@@ -69,8 +65,10 @@ void ActorBehavior::move(OBJ2D* obj) const
         areaCheck(obj);
 
 
-        if (obj->transform_->scale_.x >= 0) attack(obj); // scaleが0より大きければ攻撃処理を行う
-
+        if (obj->transform_->scale_.x > UPDATE_OBJ_SCALE_MIN_LIMIT)
+        {
+            attack(obj); // スケールがスケール更新最低値より大きければ攻撃処理を行う
+        }
 
         break;
     }
@@ -105,14 +103,14 @@ void Behavior::startAllShrink(OBJ2D* obj) const
 }
 
 // 縮小関数
-float Behavior::shrinkVelocity = SHRINK_SPEED; // 縮小する速度
+float Behavior::shrinkVelocity_ = SHRINK_SPEED; // 縮小する速度
 void Behavior::shrink(OBJ2D* obj) const
 {
     Transform* t = obj->transform_;
     Collider*  c = obj->collider_;
 
     // オリジナル自機でscaleが0.5f以下ならshrinkを強制終了
-    if (obj->behavior_ == &corePlayerBehavior && t->scale_.x <= 0.5f)
+    if (obj->behavior_ == &playerCoreBehavior && t->scale_.x <= 0.5f)
     {
         c->isShrink_ = false;
         return; 
@@ -126,8 +124,8 @@ void Behavior::shrink(OBJ2D* obj) const
     if (t->scale_.x > c->targetScale_.x) // 現在のscaleが最終目標より大きければ
     {
         t->scale_ += {                // 縮小
-            shrinkVelocity * t->scale_.x, 
-            shrinkVelocity * t->scale_.y
+            shrinkVelocity_ * t->scale_.x, 
+            shrinkVelocity_ * t->scale_.y
         };  
         if (t->scale_.x < c->targetScale_.x)  t->scale_ = c->targetScale_; // 最終目標より小さくなったら値を修正
     }

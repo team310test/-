@@ -33,7 +33,7 @@ public:
     virtual OBJ_TYPE getType() const = 0;
     virtual OBJ_TYPE getAttackType() const = 0;
 
-    virtual void hit(OBJ2D* src, OBJ2D* dst) const {};
+    virtual void hit(OBJ2D* /*src*/, OBJ2D* /*dst*/) const {};
 
     virtual void startAllShrink(OBJ2D*) const;  // すべてのobjのShrinkを開始させる関数
     virtual void shrink(OBJ2D*) const;          // 縮小関数
@@ -46,7 +46,7 @@ public:
     static constexpr float SHRINK_DIVIDE_VALUE  = 0.5f;     // scaleを割る値(最終的なscaleの大きさに影響)
 
 public:
-    static float shrinkVelocity; // 縮小する速度
+    static float shrinkVelocity_; // 縮小する速度
 };
 
 // 消去アルゴリズムクラス（抽象クラス）

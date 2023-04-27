@@ -3,7 +3,7 @@
 class UI
 {
 public:
-    static void init();
+    static void init(); // ‰Šúİ’è
 
     static void drawShrinkValueMeter(); // k¬ƒJƒEƒ“ƒg‚ÌŒvŠí•`‰æ
     static void drawLetterBox();        // ‰f‰æ‚Ì•‘Ñ•`‰æ
@@ -15,6 +15,7 @@ private:
     static constexpr float SUB_NEEDLE_ANGLE = DirectX::XMConvertToRadians(-0.02f); // Œ¸Z
 
 public:
+    static float frameAngle_;               // ŒvŠí‚Ì˜g‚ÌŠp“x
     static float needleAngle_;              // ŒvŠí‚Ìj‚ÌŠp“x
     static float letterBox_multiplySizeY_;  // ‰f‰æ‚Ì•‘Ñ‚Ìc•
 

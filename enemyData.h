@@ -18,17 +18,16 @@ public:
     {}
 };
 
-OBJ2D* setEnemy
-(
-    OBJ2DManager* obj2dManager
-    , BG* bg
-    , VECTOR2 pos
-    , Behavior* behavior
-    , OBJ_DATA update
-    , OBJ2D* parent
-    , OBJ2D* orgParent
-    , int zOrder
-    , VECTOR4 addition = { 0,0,0,0 }
+OBJ2D* setEnemy(
+    OBJ2DManager* obj2dManager,
+    BG* bg,
+    VECTOR2 pos,
+    Behavior* behavior,
+    OBJ_DATA update,
+    OBJ2D* parent,
+    OBJ2D* orgParent,
+    int zOrder,
+    VECTOR4 addition = { 0,0,0,0 }
 );
 
 enum PARENT_NO

@@ -77,4 +77,4 @@ EXTERN EraseDropParts eraseDropParts;
 //******************************************************************************
 //      ÉpÅ[ÉcÇÃupdate
 //******************************************************************************
-extern void PARTS_UPDATE(OBJ2D* obj);
+extern void DROP_PARTS_UPDATE(OBJ2D* obj);
