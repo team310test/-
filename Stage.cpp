@@ -19,10 +19,8 @@ Stage::Stage()
     shrinkNum_ = 0;
     pScript_ = STAGE_DATA[stageNum_];
 }
-<<<<<<< HEAD
-int Stage::shrinkNum_ = 0;
-=======
->>>>>>> maeyama
+
+
 //#define error
 
 void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
@@ -35,11 +33,7 @@ void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
     {
         timer_ = 0;
         stageNum_ = shrinkNum_;
-<<<<<<< HEAD
         if (shrinkNum_ >= 0 && shrinkNum_ < STAGE_MAX)
-=======
-        if (shrinkNum_ >= 0 && shrinkNum_ < stageMax)
->>>>>>> maeyama
         {
             pScript_ = STAGE_DATA[stageNum_];
         }
@@ -109,11 +103,7 @@ void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
     if (pScript_ && !pScript_->enemyData_)
     {
         timer_ = 0;
-<<<<<<< HEAD
         if (shrinkNum_ >= 0 && shrinkNum_ < STAGE_MAX)
-=======
-        if (shrinkNum_ >= 0 && shrinkNum_ < stageMax)
->>>>>>> maeyama
         {
             pScript_ = STAGE_DATA[stageNum_];
         }
