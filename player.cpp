@@ -147,8 +147,6 @@ void PLAYER_CORE_UPDATE(OBJ2D* obj)
     // 最大速度チェック
     t->velocity_.x = clamp(t->velocity_.x, -PL_SPEED_MAX, PL_SPEED_MAX);
     t->velocity_.y = clamp(t->velocity_.y, -PL_SPEED_MAX, PL_SPEED_MAX);
-    // 移動
-    t->position_ += t->velocity_;
 }
 
 // パーツのupdate
@@ -157,7 +155,7 @@ void PLAYER_PATRS_UPDATE(OBJ2D* obj)
     Transform* t       = obj->transform_;
     Transform* parent = Game::instance()->player_->transform_;
 
-    t->position_ += parent->velocity_;
+    t->velocity_ = parent->velocity_;
 }
 
 
@@ -291,24 +289,6 @@ void BasePlayerBehavior::damageProc(OBJ2D* obj) const
 
 void BasePlayerBehavior::areaCheck(OBJ2D* /*obj*/) const
 {
-    //// 仮
-    //if (obj->transform_->position_.x < obj->collider_->size_.x)
-    //{
-    //    obj->transform_->position_.x = obj->collider_->size_.x;
-    //}
-    //if (obj->transform_->position_.x > BG::WINDOW_W - obj->collider_->size_.x)
-    //{
-    //    obj->transform_->position_.x = BG::WINDOW_W - obj->collider_->size_.x;
-    //}
-
-    //if (obj->transform_->position_.y < obj->collider_->size_.y)
-    //{
-    //    obj->transform_->position_.y = obj->collider_->size_.y;
-    //}
-    //if (obj->transform_->position_.y > BG::WINDOW_H - obj->collider_->size_.y)
-    //{
-    //    obj->transform_->position_.y = BG::WINDOW_H - obj->collider_->size_.y;
-    //}
 }
 
 //******************************************************************************
@@ -373,6 +353,38 @@ void PlayerCoreBehavior::attack(OBJ2D* obj) const
 
 }
 
+void PlayerCoreBehavior::areaCheck(OBJ2D* obj) const
+{
+    Transform* t = obj->transform_;
+    Collider*  c = obj->collider_;
+
+    const float leftLimit   = c->size_.x * t->scale_.x;
+    const float rightLimit  = BG::WINDOW_W - c->size_.x * t->scale_.x;
+    const float topLimit    = c->size_.y * t->scale_.y;
+    const float bottomLimit = BG::WINDOW_H - c->size_.y * t->scale_.y;
+
+    if (t->position_.x >= rightLimit)
+    {
+        t->position_.x += rightLimit - t->position_.x;
+        if (t->velocity_.x > 0) t->velocity_.x = 0;
+    }
+    if (t->position_.x <= leftLimit)
+    {
+        t->position_.x += leftLimit - t->position_.x;
+        if (t->velocity_.x < 0) t->velocity_.x = 0;
+    }
+    if (t->position_.y >= bottomLimit)
+    {
+        t->position_.y += bottomLimit - t->position_.y;
+        if (t->velocity_.y > 0) t->velocity_.y = 0;
+    }
+    if (t->position_.y <= topLimit)
+    {
+        t->position_.y += topLimit - t->position_.y;
+        if (t->velocity_.y < 0) t->velocity_.y = 0;
+    }
+}
+
 
 //******************************************************************************
 //
@@ -380,7 +392,7 @@ void PlayerCoreBehavior::attack(OBJ2D* obj) const
 //
 //******************************************************************************
 // パーツの縮小関数
-void PartsPlayerBehavior::shrink(OBJ2D* obj) const
+void PlayerPartsBehavior::shrink(OBJ2D* obj) const
 {
     Behavior::shrink(obj);  // 縮小処理
     contactToPlCore(obj, Game::instance()->player_); // 縮小に伴って位置を移動させる処理
@@ -388,8 +400,8 @@ void PartsPlayerBehavior::shrink(OBJ2D* obj) const
 
 // オリジナル自機の方に向かって移動する関数
 //static const float toCoreVelocity = 0.085f; // 元になる速度(オリジナル自機へ向かう速さに影響)
-float PartsPlayerBehavior::toCoreVelocity_ = TO_CORE_SPEED;  // オリジナル自機へ向かう速度
-void PartsPlayerBehavior::contactToPlCore(OBJ2D* obj, OBJ2D* orgPl) const
+float PlayerPartsBehavior::toCoreVelocity_ = TO_CORE_SPEED;  // オリジナル自機へ向かう速度
+void PlayerPartsBehavior::contactToPlCore(OBJ2D* obj, OBJ2D* orgPl) const
 {    
     if (!obj->collider_->isShrink_) return; // 縮小していなければreturn
 

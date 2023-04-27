@@ -39,16 +39,17 @@ public:
     PlayerCoreBehavior();
 private:
     void attack(OBJ2D* obj) const override;
+    void areaCheck(OBJ2D* obj) const override;
 };
 EXTERN PlayerCoreBehavior playerCoreBehavior;
 
 
 //******************************************************************************
 // 
-//      PartsPlayerBehavior（パーツのベース）
+//      PlayerPartsBehavior（パーツのベース）
 // 
 //******************************************************************************
-class PartsPlayerBehavior : public BasePlayerBehavior
+class PlayerPartsBehavior : public BasePlayerBehavior
 {
 private:
     void shrink(OBJ2D*) const override;             // 縮小関数
@@ -90,7 +91,7 @@ public:
 //******************************************************************************
 
 // Turret01
-class PlayerTurret01Behavior : public PartsPlayerBehavior
+class PlayerTurret01Behavior : public PlayerPartsBehavior
 {
 public:
     PlayerTurret01Behavior();
@@ -107,7 +108,7 @@ EXTERN PlayerTurret01Behavior playerTurret01Behavior;
 //******************************************************************************
 
 // Buff01
-class PlayerBuff01Behavior : public PartsPlayerBehavior
+class PlayerBuff01Behavior : public PlayerPartsBehavior
 {
 public:
     PlayerBuff01Behavior();
@@ -125,7 +126,7 @@ EXTERN PlayerBuff01Behavior playerBuff01Behavior;
 //******************************************************************************
 
 // Trach01
-class  PlayerTrash01Behavior : public PartsPlayerBehavior
+class  PlayerTrash01Behavior : public PlayerPartsBehavior
 {
 public:
     PlayerTrash01Behavior();

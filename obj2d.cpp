@@ -50,6 +50,7 @@ void OBJ2D::move()
 
 void Renderer::draw()
 {
+
     VECTOR2 scale = drawXFlip_ 
                   ? VECTOR2( -obj_->renderer_->drawScale_.x, obj_->renderer_->drawScale_.y)
                   : obj_->renderer_->drawScale_;

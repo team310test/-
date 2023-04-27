@@ -18,7 +18,8 @@ public:
     Stage();
     void update(OBJ2DManager* obj2dManager, BG* bg);
 
+    static void resetShrinkNum() { shrinkNum_ = 0; } // k¬‰ñ”ƒŠƒZƒbƒg
+
     static int getSrinkNum()    { return shrinkNum_; }
-    static void resetShrinkNum() { shrinkNum_ = 0; }
     static void addSrinkNum()   { ++shrinkNum_; }
 };

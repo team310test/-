@@ -56,14 +56,12 @@ void ActorBehavior::move(OBJ2D* obj) const
 
         damageProc(obj);
 
-        // updateがあるならupdateを使用する(仮)
-        if (obj->update_)
-        {
-            obj->update_(obj);
-        }
+        // updateがあるならupdateを使用する
+        if (obj->update_) obj->update_(obj);
 
         areaCheck(obj);
 
+        obj->transform_->position_ += obj->transform_->velocity_;   // 速度を位置に加算
 
         if (obj->transform_->scale_.x > UPDATE_OBJ_SCALE_MIN_LIMIT)
         {

@@ -138,14 +138,14 @@ void Game::update()
         if (Behavior::isObjShrink()) // ‚Ğ‚Æ‚Â‚Å‚àobj‚ªk¬‚µ‚Ä‚¢‚ê‚Î
         {
             Behavior::shrinkVelocity_               += (-SHRINK_SPEED)  * 0.015f;
-            PartsPlayerBehavior::toCoreVelocity_    += (-TO_CORE_SPEED) * 0.015f;
+            PlayerPartsBehavior::toCoreVelocity_    += (-TO_CORE_SPEED) * 0.015f;
             BaseEnemyPartsBehavior::toCoreVelocity_ += (-TO_CORE_SPEED) * 0.015f;
             UI::letterBox_multiplySizeY_ = std::max(0.75f, UI::letterBox_multiplySizeY_ + LETTER_BOX_SUB_SPEED); // 0.0f‚æ‚è¬‚³‚¯‚ê‚Î0.0f‚ÉC³
         }
         else // ‚·‚×‚Ä‚Ìobj‚ªk¬‚µ‚Ä‚¢‚È‚¯‚ê‚Î
         {
             Behavior::shrinkVelocity_               = SHRINK_SPEED;
-            PartsPlayerBehavior::toCoreVelocity_    = TO_CORE_SPEED;
+            PlayerPartsBehavior::toCoreVelocity_    = TO_CORE_SPEED;
             BaseEnemyPartsBehavior::toCoreVelocity_ = TO_CORE_SPEED;
             UI::letterBox_multiplySizeY_ = std::min(1.0f, UI::letterBox_multiplySizeY_ + LETTER_BOX_ADD_SPEED); // 1.0f‚æ‚è‘å‚«‚¯‚ê‚Î1.0f‚ÉC³
         }
