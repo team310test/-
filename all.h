@@ -34,6 +34,7 @@
 #include "stage.h"
 #include "UI.h"
 
+#include "command.h"
 #include "scene.h"
 #include "game.h"
 #include "title.h"

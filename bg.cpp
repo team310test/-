@@ -2,8 +2,7 @@
 
 
 BG::BG()
-    :player_(nullptr)
-    , bg_()
+    :bg_()
 {
 }
 
@@ -11,12 +10,10 @@ BG::BG()
 BG::~BG()
 {
     for (OBJ2D*& bg : bg_) safe_delete(bg);
-
-    player_ = nullptr;
 }
 
 
-void BG::init(OBJ2D* player)
+void BG::init()
 {
     //new char[1]; // メモリリーク確認
     for (OBJ2D*& bg : bg_)
@@ -31,8 +28,6 @@ void BG::init(OBJ2D* player)
         );
     }
     //new char[2]; // メモリリーク確認
-
-    player_ = player;
 
     // BG用データのクリア
     clear();

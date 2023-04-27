@@ -59,6 +59,29 @@ void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer = fa
         obj2dManager->add(player, &corePlayerBehavior, pos);
     }
 }
+
+void setTitlePlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer = false)
+{
+    const VECTOR2 pos = { BG::WINDOW_W * 0.5f,0.0f };
+
+    OBJ2D* player = new OBJ2D(
+        new Renderer,
+        new Collider,
+        bg,
+        new ActorComponent,
+        nullptr,
+        nullptr
+    );
+
+    player->zOrder_ = 3;
+    player->actorComponent_->parent_ = player;
+
+    player->actorComponent_->No = ActorComponent::playerNum;
+    player->update_ = TITLE_PLAYER_UPDATE;
+
+    obj2dManager->add(player, &ttileCorePlayerBehavior, pos);
+}
+
 // 仮
 void setCursor(OBJ2DManager* obj2dManager, BG* bg)
 {
@@ -158,7 +181,49 @@ void PATRS_PLAYER_UPDATE(OBJ2D* obj)
 
     t->velocity_ = parent->velocity_;
 }
+// タイトル用のupdate
+void TITLE_PLAYER_UPDATE(OBJ2D* obj)
+{
+    using namespace GameLib::input;
+    ActorComponent* a = obj->actorComponent_;
+    Transform* t = obj->transform_;
 
+    t->velocity_ += speedData[a->padState_ & PAD_MOVE];
+
+    // y軸の減速
+    if (!(a->padState_ & (PAD_DOWN | PAD_UP)))
+    {
+        if (t->velocity_.y > 0)
+        {
+            t->velocity_.y -= PL_SPEED / 2;
+            if (t->velocity_.y < 0) t->velocity_.y = 0;
+        }
+        if (t->velocity_.y < 0)
+        {
+            t->velocity_.y += PL_SPEED / 2;
+            if (t->velocity_.y > 0) t->velocity_.y = 0;
+        }
+    }
+
+    // x軸の減速
+    if (!(a->padState_ & (PAD_RIGHT | PAD_LEFT)))
+    {
+        if (t->velocity_.x > 0)
+        {
+            t->velocity_.x -= PL_SPEED / 2;
+            if (t->velocity_.x < 0) t->velocity_.x = 0;
+        }
+        if (t->velocity_.x < 0)
+        {
+            t->velocity_.x += PL_SPEED / 2;
+            if (t->velocity_.x > 0) t->velocity_.x = 0;
+        }
+    }
+
+    // 最大速度チェック
+    t->velocity_.x = clamp(t->velocity_.x, -PL_SPEED_MAX, PL_SPEED_MAX);
+    t->velocity_.y = clamp(t->velocity_.y, -PL_SPEED_MAX, PL_SPEED_MAX);
+}
 
 
 //******************************************************************************
@@ -653,6 +718,22 @@ void ErasePlayer::erase(OBJ2D* obj) const
 
 //******************************************************************************
 // 
+//      TtileCorePlayerBehavior（タイトル用の自機）
+// 
+//******************************************************************************
+TtileCorePlayerBehavior::TtileCorePlayerBehavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT = animePlayerCore01;
+
+    param_.SIZE = VECTOR2(player_size, player_size);
+    param_.HIT_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+}
+
+
+//******************************************************************************
+// 
 //      CusorBehavior（カーソル）（仮）
 // 
 //****************************************************************************** 
@@ -661,7 +742,6 @@ CursorBehavior::CursorBehavior()
     param_.SIZE = VECTOR2( 5, 5);
     param_.HIT_BOX[0] = { -5, -5, 5 , 5 };
     param_.ATTACK_BOX[0] = { -5, -5, 5 , 5 };
-
 }
 
 // カーソルの座標取得

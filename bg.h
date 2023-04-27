@@ -26,7 +26,6 @@ public:
     static float subScale;    // scale‚Ìk¬‘¬“x
 
 private:
-    OBJ2D* player_;
     OBJ2D* bg_[BG_MAX];
 
 public:
@@ -34,7 +33,7 @@ public:
     ~BG();
 
     // ‰Šú‰»
-    void init(OBJ2D* player);
+    void init();
     // XV
     void update();
     // ”wŒi•`‰æ

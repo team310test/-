@@ -1,6 +1,7 @@
 #pragma once
 
 void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer);
+void setTitlePlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer);
 void setCursor(OBJ2DManager* obj2dManager, BG* bg);
 
 
@@ -134,6 +135,19 @@ public:
 EXTERN PlayerTrash01Behavior playerTrash01Behavior;
 
 
+//******************************************************************************
+// 
+//      TtileCorePlayerBehavior（タイトル用の自機）
+// 
+//******************************************************************************
+class TtileCorePlayerBehavior : public BasePlayerBehavior
+{
+public:
+    TtileCorePlayerBehavior();
+};
+EXTERN TtileCorePlayerBehavior ttileCorePlayerBehavior;
+
+
 //==============================================================================
 //
 //      消去アルゴリズム
@@ -153,3 +167,5 @@ EXTERN ErasePlayer erasePlayer;
 void PLAYER_UPDATE(OBJ2D* obj);
 // パーツのupdate
 void PATRS_PLAYER_UPDATE(OBJ2D* obj);
+// タイトル用のupdate
+void TITLE_PLAYER_UPDATE(OBJ2D*);

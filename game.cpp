@@ -71,7 +71,7 @@ void Game::update()
         // カーソル追加(仮)
         setCursor(obj2dManager(), bg());
 
-        bg()->init(player_); // BGの初期化
+        bg()->init(); // BGの初期化
 
         UI::init();
 
@@ -176,6 +176,16 @@ void Game::draw()
 
     // オブジェクトの描画
     obj2dManager()->draw();
+
+    // カーソルが見づらいのでプリミティブ描画
+    OBJ2D* cursor = Game::instance()->cursor_;
+    GameLib::primitive::rect(
+        cursor->transform_->position_,
+        { 10,10 },
+        { 0,0 },
+        0,
+        { 0,0,0,1 }
+    );
 
     UI::drawShrinkValueMeter();
     UI::drawLetterBox();

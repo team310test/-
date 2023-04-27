@@ -180,7 +180,7 @@ void OBJ2DManager::draw()
 {
     constexpr float LIMIT = 256.0f;
 
-    Game::instance()->obj2dManager()->getList()->sort([](OBJ2D* obj1, OBJ2D* obj2)->bool {
+    this->getList()->sort([](OBJ2D* obj1, OBJ2D* obj2)->bool {
         return obj1->zOrder_ < obj2->zOrder_;
         });
 
@@ -205,18 +205,6 @@ void OBJ2DManager::draw()
             else isDrawHitBox = false;
         }
         if (isDrawHitBox) obj->collider_->draw();
-
-
-
-        // カーソルが見づらいのでプリミティブ描画
-        OBJ2D* cursor = Game::instance()->cursor_;
-        GameLib::primitive::rect(
-            cursor->transform_->position_,
-            { 10,10 },
-            { 0,0 },
-            0,
-            { 0,0,0,1 }
-        );
     }
 }
 

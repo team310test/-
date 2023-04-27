@@ -24,7 +24,6 @@ void ActorBehavior::move(OBJ2D* obj) const
         // アニメ用パラメータ
         obj->actorComponent_->objAnimeAlways_ = getParam()->OBJ_ANIME;
         obj->actorComponent_->rotSpeed_ = getParam()->ROT_SPEED;
-
         init(obj);
 
         obj->state_++;
