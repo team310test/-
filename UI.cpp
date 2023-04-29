@@ -142,19 +142,19 @@ void UI::drawShrinkValueMeter()
 
     // åväÌÇÃñ⁄ê∑ÇË(ïségóp)    
     {
-    //    sprNo   = UI_METER_READ;
-    //    pos     = { 100, 1000 };
-    //    scale   = { 3, 3 };
-    //    texPos  = {};
-    //    size    = { 250, 250 };
-    //    center  = { 125, 125 };
-    //    angle   = {};
-    //    color   = { 1, 1, 1, alphaColor };
-    //
-    //    // ògï`âÊ
-    //    texture::begin(sprNo);
-    //    texture::draw(sprNo, pos, scale, texPos, size, center, angle, color);
-    //    texture::end(sprNo);
+        sprNo   = UI_METER_READ;
+        pos     = { 100, 1000 };
+        scale   = { 3, 3 };
+        texPos  = {};
+        size    = { 250, 250 };
+        center  = { 125, 125 };
+        angle   = {};
+        color   = { 1, 1, 1, meterAlphaColor_ - 0.1f };
+    
+        // ògï`âÊ
+        texture::begin(sprNo);
+        texture::draw(sprNo, pos, scale, texPos, size, center, angle, color);
+        texture::end(sprNo);
     }
 
 
@@ -191,10 +191,10 @@ void UI::drawShrinkValueMeter()
         {
             sprNo   = UI_METER_NEEDLE;
             pos     = { 100, 1000 };
-            scale   = { 1, 1 };
+            scale   = { 1.225f, 1.225f };
             texPos  = {};
             size    = { 250, 250 };
-            center  = { 125, 250 };
+            center  = { 125, 125 };
             angle   = meterNeedleAngle_ + DirectX::XMConvertToRadians(-35);
             color   = { 1, 1, 1, meterAlphaColor_ };
         }

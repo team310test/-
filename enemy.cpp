@@ -5,7 +5,7 @@ namespace
 {   
     //  コア01
     GameLib::AnimeData animeCore01[] = {
-        { &sprPartsCore01, 10 },
+        { &sprEnemyCore01, 10 },
         { nullptr, -1 },// 終了フラグ
     };
 

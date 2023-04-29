@@ -199,13 +199,13 @@ void OBJ2DManager::draw()
             obj->renderer_->draw();
         }
 
-        //static bool isDrawHitBox = false; // ヒットボックスを表示するか
-        //// 1キーでヒットボックス表示・非表示
-        //if (GetAsyncKeyState('1') & 1) 
-        //{
-        //    isDrawHitBox = (!isDrawHitBox) ? true : false;
-        //}
-        //if (isDrawHitBox) obj->collider_->draw();
+        static bool isDrawHitBox = false; // ヒットボックスを表示するか
+        // 1キーでヒットボックス表示・非表示
+        if (GetAsyncKeyState('1') & 1) 
+        {
+            isDrawHitBox = (!isDrawHitBox) ? true : false;
+        }
+        if (isDrawHitBox) obj->collider_->draw();
 
 
         // カーソルが見づらいのでプリミティブ描画
