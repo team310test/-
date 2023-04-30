@@ -142,19 +142,19 @@ void UI::drawShrinkValueMeter()
 
     // åväÌÇÃñ⁄ê∑ÇË(ïségóp)    
     {
-        sprNo   = UI_METER_READ;
-        pos     = { 100, 1000 };
-        scale   = { 3, 3 };
-        texPos  = {};
-        size    = { 250, 250 };
-        center  = { 125, 125 };
-        angle   = {};
-        color   = { 1, 1, 1, meterAlphaColor_ - 0.1f };
+        //sprNo   = UI_METER_READ;
+        //pos     = { 100, 1000 };
+        //scale   = { 3, 3 };
+        //texPos  = {};
+        //size    = { 250, 250 };
+        //center  = { 125, 125 };
+        //angle   = {};
+        //color   = { 1, 1, 1, meterAlphaColor_ - 0.1f };
     
-        // ògï`âÊ
-        texture::begin(sprNo);
-        texture::draw(sprNo, pos, scale, texPos, size, center, angle, color);
-        texture::end(sprNo);
+        //// ògï`âÊ
+        //texture::begin(sprNo);
+        //texture::draw(sprNo, pos, scale, texPos, size, center, angle, color);
+        //texture::end(sprNo);
     }
 
 
