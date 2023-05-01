@@ -178,10 +178,12 @@ void Game::draw()
     // ‰æ–ÊƒNƒŠƒA
     GameLib::clear(VECTOR4(0.75f, 0.45f, 0.3f, 1));
 
-    bg()->drawBack();     // ”wŒi‚Ì•`‰æ
+    // ”wŒi‚Ì•`‰æ
+    bg()->drawBack();     
 
     // ƒIƒuƒWƒFƒNƒg‚Ì•`‰æ
     obj2dManager()->draw();
+
 
     UI::drawShrinkValueMeter();
     UI::drawLetterBox();

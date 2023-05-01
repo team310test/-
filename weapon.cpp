@@ -13,7 +13,6 @@ void BaseShotBehavior::move(OBJ2D* obj) const
     case 0:
         //////// ‰Šúİ’è ////////
         obj->renderer_->data_ = getParam()->SPR_WEAPON;
-
         //obj->transform_->scale_ = getParam()->SCALE;
         obj->transform_->scale_ = obj->weaponComponent_->parent_->transform_->scale_;
         obj->renderer_->drawScale_ = obj->weaponComponent_->parent_->transform_->scale_;
@@ -409,6 +408,7 @@ void ShotEraser::erase(OBJ2D* obj) const
         pos->y > bottomLimit)
     {
         obj->behavior_ = nullptr; // ‰æ–ÊŠO‚És‚Á‚½‚çÁ‹
+        return;
     }
 
 }

@@ -24,6 +24,7 @@
 
 #include "bg.h"
 #include "weapon.h"
+#include "Effect.h"
 #include "actor.h"
 #include "objAnime.h"
 #include "player.h"

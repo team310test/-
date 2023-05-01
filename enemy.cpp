@@ -345,6 +345,7 @@ EnemyBuff01Behavior::EnemyBuff01Behavior()
 }
 
 
+
 //******************************************************************************
 //
 //      erase（消去）
@@ -352,20 +353,42 @@ EnemyBuff01Behavior::EnemyBuff01Behavior()
 //******************************************************************************
 void EraseEnemy::erase(OBJ2D* obj) const
 {
-    // スケールが0以下になったら消去
-    if (obj->transform_->scale_.x <= 0)
+    // スケールが一定以下になったら消去
+    if (obj->transform_->scale_.x <= UPDATE_OBJ_SCALE_MIN_LIMIT)
     {
         obj->actorComponent_->parent_ = nullptr; // 親情報をリセット
         obj->behavior_ = nullptr;
+
+        // 爆発エフェクト（予定）
+        {
+            //const VECTOR2 pos = obj->transform_->position_;
+
+            //OBJ2D* effect = Game::instance()->obj2dManager()->add(
+            //    new OBJ2D(
+            //        new Renderer,
+            //        new Collider,
+            //        obj->bg_,
+            //        nullptr,
+            //        nullptr,
+            //        nullptr,
+            //        new EffectComponent
+            //    ),
+            //    &efcBombBehavior,
+            //    pos
+            //);
+            //effect->zOrder_ = 1;
+        }
+
         return;
     }
+
 
     OBJ2D* parent = obj->actorComponent_->parent_; // 長いので省略
 
     // 親が存在していて、親が自分でなく、親が消滅するか親の体力が0になるとアイテム化する
-    if (parent && (parent->behavior_ == nullptr || !parent->actorComponent_->isAlive()) )
+    if (parent && obj != parent && (parent->behavior_ == nullptr || !parent->actorComponent_->isAlive()) )
     {
-        obj->actorComponent_->parent_ = nullptr; // 親リセット
+        parent = nullptr; // 親リセット
         obj->actorComponent_->orgParent_ = nullptr; // 元の親をリセット
 
         // 次のbehavior・eraser（ドロップアイテム）を代入
@@ -373,11 +396,31 @@ void EraseEnemy::erase(OBJ2D* obj) const
         obj->eraser_   = obj->nextEraser_;
 
         if (obj->behavior_ == nullptr) return;
+
         obj->update_ = DROP_PARTS_UPDATE;  // updateを変更
 
         obj->actorComponent_->hp_ = 0;  // HPを0にする
-
         obj->renderer_->flip(); // 反転させる
+
+        // 爆発エフェクト（予定）
+        {
+            //const VECTOR2 pos = obj->transform_->position_;
+
+            //OBJ2D* effect = Game::instance()->obj2dManager()->add(
+            //    new OBJ2D(
+            //        new Renderer,
+            //        new Collider,
+            //        obj->bg_,
+            //        nullptr,
+            //        nullptr,
+            //        nullptr,
+            //        new EffectComponent
+            //    ),
+            //    &efcBombBehavior,
+            //    pos
+            //);
+            //effect->zOrder_ = 1;
+        }
 
         return;
     }
@@ -385,12 +428,13 @@ void EraseEnemy::erase(OBJ2D* obj) const
     // HPが0以下になると
     if (!obj->actorComponent_->isAlive())
     {
-        obj->actorComponent_->parent_ = nullptr; // 親情報をリセット
+        parent = nullptr; // 親情報をリセット
+        obj->actorComponent_->orgParent_ = nullptr; // 元の親をリセット
 
         // 自分がコアでないならゴミアイテム化する
         if (obj != parent)
         {
-            // 次のbehavior・eraser（ドロップアイテム）を代入
+            // 次のbehavior・eraser（ドロップごみアイテム）を代入
             obj->behavior_ = &dropTrash01Behavior;
             obj->eraser_   = &eraseDropParts;
             
@@ -402,6 +446,28 @@ void EraseEnemy::erase(OBJ2D* obj) const
 
         // コアなら消滅する
         obj->behavior_ = nullptr;
+
+
+        // 爆発エフェクト（予定）
+        {
+            //const VECTOR2 pos = obj->transform_->position_;
+
+            //OBJ2D* effect = Game::instance()->obj2dManager()->add(
+            //    new OBJ2D(
+            //        new Renderer,
+            //        new Collider,
+            //        obj->bg_,
+            //        nullptr,
+            //        nullptr,
+            //        nullptr,
+            //        new EffectComponent
+            //    ),
+            //    &efcBombBehavior,
+            //    pos
+            //);
+            //effect->zOrder_ = 1;
+        }
+
         return;
     }
 

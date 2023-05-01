@@ -21,6 +21,7 @@ enum class OBJ_TYPE
     ENEMY, 
     SHOT, 
     CURSOR, 
+    EFFECT,
     MAX,
 };
 
@@ -265,6 +266,21 @@ public:
     }
 };
 
+class EffectComponent : public Component
+{
+public:
+    float animeX_;
+    int   animeTimer_;
+
+public:
+    EffectComponent()
+        :animeX_(0.0f)
+        , animeTimer_(0)
+    {
+    }
+
+};
+
 class BG;
 class OBJ2D
 {
@@ -290,6 +306,7 @@ public:
     ActorComponent* actorComponent_;
     ItemComponent* itemComponent_;
     WeaponComponent* weaponComponent_;
+    EffectComponent* effectComponent_;
 
 public:
     // ƒƒ“ƒoŠÖ”
@@ -298,7 +315,8 @@ public:
         BG* bg,
         ActorComponent* actorComponent,
         ItemComponent* itemComponent, 
-        WeaponComponent* weaponComponent
+        WeaponComponent* weaponComponent,
+        EffectComponent* effectComponent = nullptr  // ˆø”‚ğ‘‚­èŠÔ‚ğÈ‚­
     );
     ~OBJ2D();
     void move();    // ˆÚ“®
