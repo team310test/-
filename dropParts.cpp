@@ -65,7 +65,7 @@ DropTurret01Behavior::DropTurret01Behavior()
 {
     param_.ANIME_WAIT = animeTurret01;
 
-    param_.SIZE = VECTOR2(player_size, player_size);
+    param_.SIZE = VECTOR2(PARTS_OBJ_SIZE, PARTS_OBJ_SIZE);
 
     // 画像サイズ(128*64の半分)
     param_.HIT_BOX[0] = { -64, -32, 64, 32 };    // 下長方形
@@ -91,10 +91,10 @@ DropBuff01Behavior::DropBuff01Behavior()
 {
     param_.ANIME_WAIT = animeBuff01;
 
-    param_.SIZE = { player_size, player_size };
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
     param_.HIT_BOX[0] = {
-        -player_hitBox, -player_hitBox,
-         player_hitBox,  player_hitBox,
+        -PL_CORE_HITBOX, -PL_CORE_HITBOX,
+         PL_CORE_HITBOX,  PL_CORE_HITBOX,
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
@@ -114,10 +114,10 @@ DropTrash01Behavior::DropTrash01Behavior()
     // アニメーション
     param_.ANIME_WAIT = animeTrash01;
 
-    param_.SIZE = { player_size, player_size };
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
     param_.HIT_BOX[0] = {
-        -player_hitBox, -player_hitBox,
-         player_hitBox,  player_hitBox,
+        -PL_CORE_HITBOX, -PL_CORE_HITBOX,
+         PL_CORE_HITBOX,  PL_CORE_HITBOX,
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 

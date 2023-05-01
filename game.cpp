@@ -92,11 +92,14 @@ void Game::update()
         {
             //GameLib::debug::setString("num:%d", num);
             //if (player_->transform_) GameLib::debug::setString("playerScale:%f", player_->transform_->scale_.x);
-            //GameLib::debug::setString("shrinkNum_:%d",stage_->getSrinkNum());
+            GameLib::debug::setString("shrinkNum_:%d",stage_->getSrinkNum());
             //GameLib::debug::setString("plShrinkCount_:%d", BasePlayerBehavior::plShrinkCount_);
         }
 
-        if (BasePlayerBehavior::plShrinkCount_ >= BasePlayerBehavior::PL_SHRINK_COUNT_MAX)  // プレイヤーの数がShrinkの規定数に達したら
+
+        if (BasePlayerBehavior::plShrinkCount_ >= BasePlayerBehavior::PL_SHRINK_COUNT_MAX || 
+            GameLib::input::TRG(0) & GameLib::input::PAD_TRG1)  // プレイヤーの数がShrinkの規定数に達したら
+        //if (BasePlayerBehavior::plShrinkCount_ >= BasePlayerBehavior::PL_SHRINK_COUNT_MAX)  // プレイヤーの数がShrinkの規定数に達したら
         {
             if (Collider::isAllShrink_  == false && // Shrinkが開始されておらず、
                 Behavior::isObjShrink() == false)   // すべてのobjが縮小していなければ

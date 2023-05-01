@@ -108,8 +108,9 @@ void Behavior::shrink(OBJ2D* obj) const
     Collider*  c = obj->collider_;
 
     // オリジナル自機でscaleが0.5f以下ならshrinkを強制終了
-    if (obj->behavior_ == &playerCoreBehavior && t->scale_.x <= 0.5f)
+    if (obj->behavior_ == &playerCoreBehavior && t->scale_.x <= 0.75f)
     {
+        obj->collider_->judgeFlag_ = true;
         c->isShrink_ = false;
         return; 
     }

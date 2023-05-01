@@ -301,13 +301,12 @@ PlayerCoreBehavior::PlayerCoreBehavior()
     // アニメーション
     param_.ANIME_WAIT    = animePlayerCore01;
 
-    param_.SIZE    = VECTOR2(player_size, player_size);
-    param_.HIT_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
-    //param_.HIT_BOX = { -50, -175, 50, -75 };
+    param_.SIZE    = VECTOR2(PARTS_OBJ_SIZE, PARTS_OBJ_SIZE);
+
+    param_.HIT_BOX[0]    = { -PL_CORE_HITBOX, -PL_CORE_HITBOX, PL_CORE_HITBOX,  PL_CORE_HITBOX };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
-    //param_.HP = 1000;
-    param_.HP = CORE_PLAYER_HP;
+    param_.HP = PL_CORE_HP;
 
     // アニメ用データ
     param_.OBJ_ANIME = scaleAnime;
@@ -358,10 +357,10 @@ void PlayerCoreBehavior::areaCheck(OBJ2D* obj) const
     Transform* t = obj->transform_;
     Collider*  c = obj->collider_;
 
-    const float leftLimit   = c->size_.x * t->scale_.x;
-    const float rightLimit  = BG::WINDOW_W - c->size_.x * t->scale_.x;
-    const float topLimit    = c->size_.y * t->scale_.y;
-    const float bottomLimit = BG::WINDOW_H - c->size_.y * t->scale_.y;
+    const float leftLimit   =                (c->size_.x * 0.5f) * t->scale_.x;
+    const float rightLimit  = BG::WINDOW_W - (c->size_.x * 0.5f) * t->scale_.x;
+    const float topLimit    =                (c->size_.y * 0.5f) * t->scale_.y;
+    const float bottomLimit = BG::WINDOW_H - (c->size_.y * 0.5f) * t->scale_.y;
 
     if (t->position_.x >= rightLimit)
     {
@@ -495,7 +494,7 @@ PlayerTurret01Behavior::PlayerTurret01Behavior()
 {
     param_.ANIME_WAIT = animeTurret01;
 
-    param_.SIZE = VECTOR2(player_size, player_size);
+    param_.SIZE = VECTOR2(PARTS_OBJ_SIZE, PARTS_OBJ_SIZE);
 
     // 画像サイズ(128*64の半分)
     param_.HIT_BOX[0] = { -64, -32, 64, 32 };    // 下長方形
@@ -550,16 +549,16 @@ PlayerBuff01Behavior::PlayerBuff01Behavior()
 {
     param_.ANIME_WAIT = animeBuff01;
 
-    param_.SIZE = { player_size, player_size };
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
     param_.HIT_BOX[0] = { 
-        -player_hitBox, -player_hitBox, 
-         player_hitBox,  player_hitBox,
+        -PL_CORE_HITBOX, -PL_CORE_HITBOX, 
+         PL_CORE_HITBOX,  PL_CORE_HITBOX,
     };
     param_.ATTACK_BOX[0] = { 
-        -player_hitBox * BUFF_MALTIPLY_VALUE, 
-        -player_hitBox * BUFF_MALTIPLY_VALUE,
-         player_hitBox * BUFF_MALTIPLY_VALUE,  
-         player_hitBox * BUFF_MALTIPLY_VALUE,
+        -PL_CORE_HITBOX * BUFF_MALTIPLY_VALUE, 
+        -PL_CORE_HITBOX * BUFF_MALTIPLY_VALUE,
+         PL_CORE_HITBOX * BUFF_MALTIPLY_VALUE,  
+         PL_CORE_HITBOX * BUFF_MALTIPLY_VALUE,
     };
 }                            
 
@@ -579,16 +578,16 @@ PlayerTrash01Behavior::PlayerTrash01Behavior()
 {
     param_.ANIME_WAIT = animeTrash01;
 
-    param_.SIZE = { player_size, player_size };
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
     param_.HIT_BOX[0] = {
-        -player_hitBox, -player_hitBox,
-         player_hitBox,  player_hitBox,
+        -PL_CORE_HITBOX, -PL_CORE_HITBOX,
+         PL_CORE_HITBOX,  PL_CORE_HITBOX,
     };
     param_.ATTACK_BOX[0] = {
-        -player_hitBox,
-        -player_hitBox,
-         player_hitBox,
-         player_hitBox,
+        -PL_CORE_HITBOX,
+        -PL_CORE_HITBOX,
+         PL_CORE_HITBOX,
+         PL_CORE_HITBOX,
     };
 
 }

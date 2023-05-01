@@ -1,7 +1,7 @@
 #pragma once
 
 void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer);
-void setCursor(OBJ2DManager* obj2dManager, BG* bg);
+//void setCursor(OBJ2DManager* obj2dManager, BG* bg);
 
 
 //******************************************************************************
