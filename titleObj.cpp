@@ -72,9 +72,9 @@ void TitleStateObjBehavior::hit(OBJ2D* src, OBJ2D* dst) const
     src->renderer_->color_.w = 0.0f;    // 透明にする
 
     // 自機を変更　操作できなくする
-    dst->behavior_ = &corePlayerBehavior;
-    dst->transform_->velocity_ = { 0.0f,0.0f };
     dst->update_ = nullptr;
+    dst->behavior_ = &playerCoreBehavior;
+    dst->transform_->velocity_ = { 0.0f,0.0f };
 }
 
 // エンド

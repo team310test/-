@@ -6,24 +6,38 @@
 enum TEXNO
 {
     // ゲーム
+    
+    // 背景
     BACK01,
     BACK02,
+    // UI
     UI_METER_FRAME,     // 計器の枠
+    UI_METER_READ,      // 計器の目盛り
     UI_METER_NEEDLE,    // 計器の針
-    SHOT,
+
+
+    // コア
     PL_CORE01,
     ENM_CORE01,
-    ENM_CORE02,
+
+    // 攻撃パーツ
     TURRET01,
     TURRET02,
     TURRET03,
+    // バフパーツ
     BUFF01,
+    // ごみパーツ
     TRASH01,
-    TITLE_CORE,
+
+    // 弾丸
+    SHOT,
+
+    // タイトル
+    TITLE_FRAME,
     TITLE_USER,
     TITLE_TRASH,
     TITLE_LOGO,
-    TITLE_HEART
+    TITLE_HEART,
 };
 
 extern GameLib::LoadTexture loadTexture[];
@@ -33,7 +47,7 @@ extern GameLib::LoadTexture loadTexture[];
 extern GameLib::SpriteData sprPlayerCore01;
 
 //------< パーツ >------------------------------------------------------------------
-extern GameLib::SpriteData sprPartsCore01;
+extern GameLib::SpriteData sprEnemyCore01;
 extern GameLib::SpriteData sprPartsCore02;
 extern GameLib::SpriteData sprPartsTurret01;
 extern GameLib::SpriteData sprPartsTurret03;

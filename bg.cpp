@@ -39,17 +39,19 @@ void BG::init()
 void BG::clear()
 {
     // スケールとスプライト画像の設定
-    bg_[0]->transform_->scale_ = bg_[1]->transform_->scale_ = { 1, 1 };
-    bg_[2]->transform_->scale_ = bg_[3]->transform_->scale_ = { 2, 2 };
-    bg_[4]->transform_->scale_ = bg_[5]->transform_->scale_ = { 4, 4 };
-    bg_[6]->transform_->scale_ = bg_[7]->transform_->scale_ = { 8, 8 };
-    bg_[8]->transform_->scale_ = bg_[9]->transform_->scale_ = { 16, 16 };
+    bg_[0]->transform_->scale_  = bg_[1]->transform_->scale_  = { 1, 1 };
+    bg_[2]->transform_->scale_  = bg_[3]->transform_->scale_  = { 2, 2 };
+    bg_[4]->transform_->scale_  = bg_[5]->transform_->scale_  = { 4, 4 };
+    bg_[6]->transform_->scale_  = bg_[7]->transform_->scale_  = { 8, 8 };
+    bg_[8]->transform_->scale_  = bg_[9]->transform_->scale_  = { 16, 16 };
+    bg_[10]->transform_->scale_ = bg_[11]->transform_->scale_ = { 32, 32 };
 
-    bg_[0]->bgSprNo_ = bg_[1]->bgSprNo_ = BACK01;
-    bg_[2]->bgSprNo_ = bg_[3]->bgSprNo_ = BACK02;
-    bg_[4]->bgSprNo_ = bg_[5]->bgSprNo_ = BACK01;
-    bg_[6]->bgSprNo_ = bg_[7]->bgSprNo_ = BACK02;
-    bg_[8]->bgSprNo_ = bg_[9]->bgSprNo_ = BACK01;
+    bg_[0]->bgSprNo_  = bg_[1]->bgSprNo_  = BACK01;
+    bg_[2]->bgSprNo_  = bg_[3]->bgSprNo_  = BACK02;
+    bg_[4]->bgSprNo_  = bg_[5]->bgSprNo_  = BACK01;
+    bg_[6]->bgSprNo_  = bg_[7]->bgSprNo_  = BACK02;
+    bg_[8]->bgSprNo_  = bg_[9]->bgSprNo_  = BACK01;
+    bg_[10]->bgSprNo_ = bg_[11]->bgSprNo_ = BACK02;
 
 
     int bgNum = 1; // スクロールの右左配置設定用
@@ -67,12 +69,12 @@ void BG::clear()
         t->position_.x  = (bgNum % 2 == 0) ? c->size_.x : 0.0f; // 2で割れたらスクロールの右側担当にする
         t->position_.y  = bg->bg_->WINDOW_H * 0.5f;             // yだけ真ん中に設定（見栄え）
 
-        t->velocity_.x  = -5.0f;             // スクロール速度
+        t->velocity_.x  = BG_SCROLL_SPEED;                      // スクロール速度
 
-        r->color_   = { 1, 1, 1, 1 };        // カラー
-        r->color_.w = (t->scale_.x < DISP_BG_SCALE_MAX) // 不透明度
-                    ? DEFAULT_ALPHA_COLOR : 0.0f; 
-        r->targetColor_ = r->color_;         // 目標カラー
+        r->color_       = { 1, 1, 1, 1 };                       // カラー
+        r->color_.w     = (t->scale_.x < DISP_BG_SCALE_MAX)     // 不透明度
+                        ? DEFAULT_ALPHA_COLOR : 0.0f; 
+        r->targetColor_ = r->color_;                            // 目標カラー
 
         ++bgNum;
     }
@@ -92,6 +94,9 @@ static constexpr float ADD_ALPHA_COLOR     =  0.001f;  // 不透明度の増加速度
 static constexpr float SUBJECT_ALPHA_COLOR = -0.0025f; // 不透明度の減少速度
 void BG::moveBack()
 {
+
+    GameLib::debug::setString("bg[0]Scale:%f", bg_[0]->transform_->scale_.x);
+    GameLib::debug::setString("bg[11]Scale:%f", bg_[11]->transform_->scale_.x);
     for (OBJ2D*& bg : bg_)
     {
         Transform* t = bg->transform_;
@@ -104,9 +109,6 @@ void BG::moveBack()
             //GameLib::debug::setString("scale:%f", t->scale_.x); // スケール
             //GameLib::debug::setString("color.z:%f", r->color_.w); // 不透明度
         }
-
-        if (t->scale_.x < DISP_BG_SCALE_MIN) continue;  // scaleが最小表示より小さければcontinue
-
 
 /////////////// スケール更新 //////////////////////////
         if (t->scale_.x > c->targetScale_.x)
@@ -190,13 +192,20 @@ void BG::setBGShrink()
 
         if (t->scale_.x < DISP_BG_SCALE_MIN) continue; // scaleが最小表示より小さければcontinue
 
-        t->velocity_ *= 1.25f;
+        t->velocity_ *= 1.15f;
+
+
+        if (t->scale_.x <= DISP_BG_SCALE_MIN) // scaleが最小表示より小さければ
+        {
+            t->scale_ = { 2,2 }; // この時点でbgの最前面のscaleが1なので倍の2を代入
+            r->color_ = { 1,1,1,0 };
+        }
 
         // scaleの半分を目標値に設定
         c->targetScale_ = t->scale_ * 0.5f;
 
         // 不透明度はデフォルトのscaleの値の1.0f以下なら減らし、最大表示より小さければ増やす
-        if (t->scale_.x <= 1.0f) r->targetColor_.w = r->color_.w * 0.75f;
+        if (t->scale_.x <= 1.0f) r->targetColor_.w = r->color_.w * 0.6f;
         else if (t->scale_.x <= DISP_BG_SCALE_MAX) r->targetColor_.w = DEFAULT_ALPHA_COLOR;
     }
 

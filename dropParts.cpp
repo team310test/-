@@ -65,7 +65,7 @@ DropTurret01Behavior::DropTurret01Behavior()
 {
     param_.ANIME_WAIT = animeTurret01;
 
-    param_.SIZE = VECTOR2(player_size, player_size);
+    param_.SIZE = VECTOR2(PARTS_OBJ_SIZE, PARTS_OBJ_SIZE);
 
     // 画像サイズ(128*64の半分)
     param_.HIT_BOX[0] = { -64, -32, 64, 32 };    // 下長方形
@@ -91,10 +91,10 @@ DropBuff01Behavior::DropBuff01Behavior()
 {
     param_.ANIME_WAIT = animeBuff01;
 
-    param_.SIZE = { player_size, player_size };
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
     param_.HIT_BOX[0] = {
-        -player_hitBox, -player_hitBox,
-         player_hitBox,  player_hitBox,
+        -PL_CORE_HITBOX, -PL_CORE_HITBOX,
+         PL_CORE_HITBOX,  PL_CORE_HITBOX,
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
@@ -114,10 +114,10 @@ DropTrash01Behavior::DropTrash01Behavior()
     // アニメーション
     param_.ANIME_WAIT = animeTrash01;
 
-    param_.SIZE = { player_size, player_size };
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
     param_.HIT_BOX[0] = {
-        -player_hitBox, -player_hitBox,
-         player_hitBox,  player_hitBox,
+        -PL_CORE_HITBOX, -PL_CORE_HITBOX,
+         PL_CORE_HITBOX,  PL_CORE_HITBOX,
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
@@ -148,7 +148,7 @@ void EraseDropParts::erase(OBJ2D* obj) const
         obj->eraser_   = obj->nextEraser_;   // 次のeraserを代入
 
         if (obj->behavior_ == nullptr) return;
-        obj->update_ = PATRS_PLAYER_UPDATE;  // updateを変更
+        obj->update_ = PLAYER_PATRS_UPDATE;  // updateを変更
 
         obj->actorComponent_->hp_ = obj->actorComponent_->nextHp_;  // 次のHPを代入
         
@@ -160,10 +160,11 @@ void EraseDropParts::erase(OBJ2D* obj) const
 //******************************************************************************
 //      パーツのupdate
 //******************************************************************************
-#define ITEM_SUPEED -2.0f
-void PARTS_UPDATE(OBJ2D* obj)
+void DROP_PARTS_UPDATE(OBJ2D* obj)
 {
     Transform* t = obj->transform_;
     
-    t->velocity_.x = ITEM_SUPEED;
+    t->velocity_.x = DROP_PARTS_SPEED;
+    t->velocity_.y = 0;
+    t->position_ += t->velocity_;
 }

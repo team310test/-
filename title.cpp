@@ -169,7 +169,7 @@ bool Title::statePerform()
         if (objFadeIn())
         {
             // player‚Ìupdate•ÏX
-            if (player_->update_ != PLAYER_UPDATE) player_->update_ = PLAYER_UPDATE;
+            if (player_->update_ != PLAYER_CORE_UPDATE) player_->update_ = PLAYER_CORE_UPDATE;
             isStatePerform_ = false;
             return true;
         }

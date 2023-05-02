@@ -21,6 +21,7 @@ enum class OBJ_TYPE
     ENEMY, 
     SHOT, 
     CURSOR, 
+    EFFECT,
     MAX,
 };
 
@@ -33,7 +34,7 @@ public:
     virtual OBJ_TYPE getType() const = 0;
     virtual OBJ_TYPE getAttackType() const = 0;
 
-    virtual void hit(OBJ2D* src, OBJ2D* dst) const {};
+    virtual void hit(OBJ2D* /*src*/, OBJ2D* /*dst*/) const {};
 
     virtual void startAllShrink(OBJ2D*) const;  // すべてのobjのShrinkを開始させる関数
     virtual void shrink(OBJ2D*) const;          // 縮小関数
@@ -46,7 +47,7 @@ public:
     static constexpr float SHRINK_DIVIDE_VALUE  = 0.5f;     // scaleを割る値(最終的なscaleの大きさに影響)
 
 public:
-    static float shrinkVelocity; // 縮小する速度
+    static float shrinkVelocity_; // 縮小する速度
 };
 
 // 消去アルゴリズムクラス（抽象クラス）
@@ -283,6 +284,21 @@ public:
 };
 
 
+class EffectComponent : public Component
+{
+public:
+    float animeX_;
+    int   animeTimer_;
+
+public:
+    EffectComponent()
+        :animeX_(0.0f)
+        , animeTimer_(0)
+    {
+    }
+
+};
+
 class BG;
 class OBJ2D
 {
@@ -309,6 +325,7 @@ public:
     ItemComponent* itemComponent_;
     WeaponComponent* weaponComponent_;
     TitleComponent* titleComponent_;
+    EffectComponent* effectComponent_;
 
 public:
     // メンバ関数
@@ -318,7 +335,8 @@ public:
         ActorComponent* actorComponent,
         ItemComponent* itemComponent, 
         WeaponComponent* weaponComponent,
-        TitleComponent* titleComponent
+        TitleComponent* titleComponent = nullptr,
+        EffectComponent* effectComponent = nullptr  // 引数を書く手間を省く
     );
     ~OBJ2D();
     void move();    // 移動

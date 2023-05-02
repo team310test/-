@@ -2,25 +2,38 @@
 
 // 2D画像ロードデータ
 GameLib::LoadTexture loadTexture[] = {
-    { TEXNO::BACK01,    L"./Data/Images/BackGround01.png", 1U },
-    { TEXNO::BACK02,    L"./Data/Images/BackGround02.png", 1U },
-    { TEXNO::UI_METER_FRAME,    L"./Data/Images/Meter_Frame.png",   1U },   // 計器の枠
-    { TEXNO::UI_METER_NEEDLE,   L"./Data/Images/Meter_Needle.png",  1U },   // 計器の針
-    { TEXNO::SHOT,      L"./Data/Images/Bullet01.png",     1U },
-    //{TEXNO::TURRET01, L"./Data/Images/Lzi250.png",     1U },        // パーツ01(L字)
-    //{TEXNO::CORE01,   L"./Data/Images/core.png",       1U }, 
-    { TEXNO::PL_CORE01,  L"./Data/Images/PlayerCore01.png",   1U },
-    { TEXNO::ENM_CORE01, L"./Data/Images/core01.png", 1U },
-    { TEXNO::TURRET01,   L"./Data/Images/Turret01.png", 1U },
-    { TEXNO::TURRET02,   L"./Data/Images/Turret02.png", 1U },
-    { TEXNO::TURRET03,   L"./Data/Images/Turret03.png", 1U },
-    { TEXNO::BUFF01,     L"./Data/Images/Trash02.png",  1U },
-    { TEXNO::TRASH01,    L"./Data/Images/Trash01.png",    1U},
-    { TEXNO::TITLE_CORE, L"./Data/Images/Core_Frame.png",    1U},
-    { TEXNO::TITLE_USER, L"./Data/Images/title_user.png",    1U},
-    { TEXNO::TITLE_TRASH,L"./Data/Images/title_trash.png",    1U},
-    { TEXNO::TITLE_LOGO,L"./Data/Images/title_logo.png",    1U},
-    { TEXNO::TITLE_HEART,L"./Data/Images/Core_Heart2.png",    1U},
+    // 背景
+    { TEXNO::BACK01,    L"./Data/Images/BackGround/BackGround01.png", 1U },
+    { TEXNO::BACK02,    L"./Data/Images/BackGround/BackGround02.png", 1U },
+    // UI
+    { TEXNO::UI_METER_FRAME,    L"./Data/Images/UI/Meter_Frame.png",    1U },   // 計器の枠
+    { TEXNO::UI_METER_READ,     L"./Data/Images/UI/Meter_Read.png",     1U },   // 計器の目盛り
+    { TEXNO::UI_METER_NEEDLE,   L"./Data/Images/UI/Meter_Needle.png",   1U },   // 計器の針
+
+    // コア
+    { TEXNO::PL_CORE01,  L"./Data/Images/Core/PlayerCore01.png", 1U },
+    { TEXNO::ENM_CORE01, L"./Data/Images/Core/EnemyCore01.png",  1U },
+
+    // 攻撃パーツ
+    { TEXNO::TURRET01,   L"./Data/Images/Turret/Turret01.png", 1U },
+    { TEXNO::TURRET02,   L"./Data/Images/Turret/Turret02.png", 1U },
+    { TEXNO::TURRET03,   L"./Data/Images/Turret/Turret03.png", 1U },
+    // バフパーツ
+    { TEXNO::BUFF01,     L"./Data/Images/Buff/Buff01.png",     1U },
+    // ごみパーツ
+    { TEXNO::TRASH01,    L"./Data/Images/Trash/Trash01.png",   1U },
+
+
+    // 弾
+    { TEXNO::SHOT,       L"./Data/Images/Bullet/Bullet01.png", 1U },
+
+
+    // タイトル画像
+    { TEXNO::TITLE_FRAME, L"./Data/Images/Core/Core_Frame.png",    1U},
+    { TEXNO::TITLE_USER, L"./Data/Images/UI/title_user.png",    1U},
+    { TEXNO::TITLE_TRASH,L"./Data/Images/UI/title_trash.png",    1U},
+    { TEXNO::TITLE_LOGO,L"./Data/Images/UI/title_logo.png",    1U},
+    { TEXNO::TITLE_HEART,L"./Data/Images/Core/Core_Heart2.png",    1U},
 
     { -1, nullptr }	// 終了フラグ
 };
@@ -29,22 +42,22 @@ GameLib::LoadTexture loadTexture[] = {
 #define SPRITE_CENTER(texno,left,top,width,height)	{ (texno),(left),(top),(width),(height),(width)/2,(height)/2 }  // 画像の真ん中が中心
 #define SPRITE_BOTTOM(texno,left,top,width,height)	{ (texno),(left),(top),(width),(height),(width)/2,(height)   }  // 画像の足元が中心
 
-//------< プレイヤー >------------------------------------------------------------------
-GameLib::SpriteData sprPlayerCore01 = SPRITE_CENTER(TEXNO::PL_CORE01, 0, 0, 250, 250);
+//------< コア>------------------------------------------------------------------
+GameLib::SpriteData sprPlayerCore01 = SPRITE_CENTER(TEXNO::PL_CORE01,   0, 0, 128, 128);
+GameLib::SpriteData sprEnemyCore01  = SPRITE_CENTER(TEXNO::ENM_CORE01,  0, 0, 128, 128);
 
 //------< パーツ >------------------------------------------------------------------
-GameLib::SpriteData sprPartsCore01   = SPRITE_CENTER(TEXNO::ENM_CORE01, 0, 0, 128, 128);
-GameLib::SpriteData sprPartsTurret01 = SPRITE_CENTER(TEXNO::TURRET01, 0, 0, 128, 64);
-GameLib::SpriteData sprPartsTurret02 = SPRITE_CENTER(TEXNO::TURRET02, 0, 0, 250, 250);
-GameLib::SpriteData sprPartsTurret03 = SPRITE_CENTER(TEXNO::TURRET02, 0, 0, 250, 250);
-GameLib::SpriteData sprPartsBuff01   = SPRITE_CENTER(TEXNO::BUFF01, 0, 0, 250, 250);
-GameLib::SpriteData sprPartsTrash01  = SPRITE_CENTER(TEXNO::TRASH01, 0, 0, 128, 128);
+GameLib::SpriteData sprPartsTurret01 = SPRITE_CENTER(TEXNO::TURRET01,   0, 0, 128, 128);
+GameLib::SpriteData sprPartsTurret02 = SPRITE_CENTER(TEXNO::TURRET02,   0, 0, 128, 128);
+GameLib::SpriteData sprPartsTurret03 = SPRITE_CENTER(TEXNO::TURRET03,   0, 0, 128, 128);
+GameLib::SpriteData sprPartsBuff01   = SPRITE_CENTER(TEXNO::BUFF01,     0, 0, 250, 250);
+GameLib::SpriteData sprPartsTrash01  = SPRITE_CENTER(TEXNO::TRASH01,    0, 0, 128, 128);
 
 //------< ショット >----------------------------------------------------------------
-GameLib::SpriteData sprShot_NormalShot = SPRITE_CENTER(TEXNO::SHOT, 0, 0, 100, 100);
+GameLib::SpriteData sprShot_NormalShot = SPRITE_CENTER(TEXNO::SHOT,     0, 0, 64, 64);
 
 //------< タイトル >----------------------------------------------------------------
-GameLib::SpriteData sprTitleCore = SPRITE_CENTER(TEXNO::TITLE_CORE, 0, 0, 128, 128);
+GameLib::SpriteData sprTitleCore = SPRITE_CENTER(TEXNO::TITLE_FRAME, 0, 0, 128, 128);
 GameLib::SpriteData sprTitleUser = SPRITE_CENTER(TEXNO::TITLE_USER, 0, 0, 640, 128);
 GameLib::SpriteData sprTitleTrash = SPRITE_CENTER(TEXNO::TITLE_TRASH, 0, 0, 128, 128);
 GameLib::SpriteData sprTitleLogo = SPRITE_CENTER(TEXNO::TITLE_LOGO, 0, 0, 640, 128);

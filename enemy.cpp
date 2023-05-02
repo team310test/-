@@ -5,7 +5,7 @@ namespace
 {   
     //  コア01
     GameLib::AnimeData animeCore01[] = {
-        { &sprPartsCore01, 10 },
+        { &sprEnemyCore01, 10 },
         { nullptr, -1 },// 終了フラグ
     };
 
@@ -156,6 +156,7 @@ void BaseEnemyBehavior::areaCheck(OBJ2D* obj) const
 }
 
 
+
 //******************************************************************************
 //
 //      EnemyCore01
@@ -166,7 +167,7 @@ EnemyCore01Behavior::EnemyCore01Behavior()
     // アニメーション
     param_.ANIME_WAIT = animeCore01;
 
-    param_.SIZE = VECTOR2(player_size, player_size);
+    param_.SIZE = VECTOR2(PARTS_OBJ_SIZE, PARTS_OBJ_SIZE);
     param_.HIT_BOX[0] = { -125,-125,125,125 };
 
     param_.ATTACK_BOX[0] = { -125, -125, 125, 125 };
@@ -181,6 +182,89 @@ EnemyCore01Behavior::EnemyCore01Behavior()
 }
 
 
+
+//******************************************************************************
+// 
+//      BaseEnemyPartsBehavior（エネミーのパーツのベース）
+// 
+//******************************************************************************
+
+void BaseEnemyPartsBehavior::shrink(OBJ2D* obj) const
+{
+    Behavior::shrink(obj);
+
+    if (!obj->actorComponent_->orgParent_) return;
+    if (!obj->actorComponent_->orgParent_->behavior_) return;
+
+    contactToEnmCore(obj, obj->actorComponent_->orgParent_);
+}
+
+
+// オリジナル自機の方に向かって移動する関数
+//static const float toCoreVelocity = 0.085f; // 元になる速度(オリジナル自機へ向かう速さに影響)
+float BaseEnemyPartsBehavior::toCoreVelocity_ = TO_CORE_SPEED;
+// オリジナル自機へ向かう速度
+void BaseEnemyPartsBehavior::contactToEnmCore(OBJ2D* obj, OBJ2D* coreEnm) const
+{
+    if (!obj->collider_->isShrink_) return; // 縮小していなければreturn
+
+    const VECTOR2 coreEnmPos = coreEnm->transform_->position_;  // 自機本体の位置
+    const VECTOR2 objPos = obj->transform_->position_;  // objの位置
+
+    const VECTOR2 d = { coreEnmPos - objPos };               // objから自機本体へ向かうベクトル
+    const float dist = sqrtf((d.x * d.x) + (d.y * d.y));  // objから自機本体までの距離
+
+    float addVelocity = 0.0f;                               // objのvelocityに足す速度
+    float num = 0.0f;                                       // for分のiみたいな役割
+    const float copyDist = dist >= 0 ? dist : dist * (-1);
+
+    while (true)
+    {
+        if (num > 999) // 念のために終点を設置
+        {
+            addVelocity = toCoreVelocity_ * num;
+            break;
+        }
+
+        // objから自機本体までの距離が遠くなるたび速度を上昇させる
+        // (距離が遠すぎるとobjが自機本体に追いつけないため)
+        if ((copyDist >= (50.0f * num) && copyDist <= 50.0f * (num + 1.0f)))  // ±0から±50、±50から±100、±100から±150...
+        {
+            addVelocity = (num != 0.0f) ? (toCoreVelocity_ * num) : toCoreVelocity_; // ±0から±50までの距離はnumが0なのでデフォルトの値を代入
+
+            break; // 代入したのでbreak;
+        }
+
+        // objから自機本体までの距離によって速度を上昇させる
+        // (距離が遠すぎるとobjが自機本体に追いつけないため)
+        if ((copyDist >= (50.0f * num) && copyDist <= 50.0f * (num + 1.0f)))  // ±0から±50、±50から±100、±100から±150...
+        {
+            addVelocity = (num != 0) ? (toCoreVelocity_ * num) : toCoreVelocity_;   // ±0から±50までの距離はnumが0なので0.1fを代入
+
+            break; // 代入したのでbreak;
+        }
+        ++num; // numを加算していく
+    }
+
+    obj->transform_->velocity_ = {
+        (d.x / dist) * (addVelocity),
+        (d.y / dist) * (addVelocity),
+    };
+
+
+    //// 最大速度チェックを行う
+    //obj->transform_->velocity_.y = clamp(
+    //    obj->transform_->velocity_.y, -PL_SPEED_MAX, PL_SPEED_MAX
+    //);
+    //obj->transform_->velocity_.x = clamp(
+    //    obj->transform_->velocity_.x, -PL_SPEED_MAX, PL_SPEED_MAX
+    //);
+    // 位置更新
+    obj->transform_->position_ += obj->transform_->velocity_;
+}
+
+
+
 //******************************************************************************
 //
 //      Turret
@@ -192,7 +276,7 @@ EnemyTurret01Behavior::EnemyTurret01Behavior()
 {
     param_.ANIME_WAIT = animeTurret01;
 
-    param_.SIZE = { player_size, player_size };
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
 
     // 画像サイズ(128*64の半分)
     param_.HIT_BOX[0] = { -64, -32, 64, 32 };    // 下長方形    
@@ -251,10 +335,10 @@ EnemyBuff01Behavior::EnemyBuff01Behavior()
 {
     param_.ANIME_WAIT = animeBuff01;
 
-    param_.SIZE = { player_size, player_size };
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
     param_.HIT_BOX[0] = {
-        -player_hitBox, -player_hitBox,
-         player_hitBox,  player_hitBox,
+        -PL_CORE_HITBOX, -PL_CORE_HITBOX,
+         PL_CORE_HITBOX,  PL_CORE_HITBOX,
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
@@ -264,6 +348,7 @@ EnemyBuff01Behavior::EnemyBuff01Behavior()
 }
 
 
+
 //******************************************************************************
 //
 //      erase（消去）
@@ -271,20 +356,42 @@ EnemyBuff01Behavior::EnemyBuff01Behavior()
 //******************************************************************************
 void EraseEnemy::erase(OBJ2D* obj) const
 {
-    // スケールが0以下になったら消去
-    if (obj->transform_->scale_.x <= 0)
+    // スケールが一定以下になったら消去
+    if (obj->transform_->scale_.x <= UPDATE_OBJ_SCALE_MIN_LIMIT)
     {
         obj->actorComponent_->parent_ = nullptr; // 親情報をリセット
         obj->behavior_ = nullptr;
+
+        // 爆発エフェクト（予定）
+        {
+            //const VECTOR2 pos = obj->transform_->position_;
+
+            //OBJ2D* effect = Game::instance()->obj2dManager()->add(
+            //    new OBJ2D(
+            //        new Renderer,
+            //        new Collider,
+            //        obj->bg_,
+            //        nullptr,
+            //        nullptr,
+            //        nullptr,
+            //        new EffectComponent
+            //    ),
+            //    &efcBombBehavior,
+            //    pos
+            //);
+            //effect->zOrder_ = 1;
+        }
+
         return;
     }
+
 
     OBJ2D* parent = obj->actorComponent_->parent_; // 長いので省略
 
     // 親が存在していて、親が自分でなく、親が消滅するか親の体力が0になるとアイテム化する
-    if (parent && (parent->behavior_ == nullptr || !parent->actorComponent_->isAlive()) )
+    if (parent && obj != parent && (parent->behavior_ == nullptr || !parent->actorComponent_->isAlive()) )
     {
-        obj->actorComponent_->parent_ = nullptr; // 親リセット
+        parent = nullptr; // 親リセット
         obj->actorComponent_->orgParent_ = nullptr; // 元の親をリセット
 
         // 次のbehavior・eraser（ドロップアイテム）を代入
@@ -292,11 +399,31 @@ void EraseEnemy::erase(OBJ2D* obj) const
         obj->eraser_   = obj->nextEraser_;
 
         if (obj->behavior_ == nullptr) return;
-        obj->update_ = PARTS_UPDATE;  // updateを変更
+
+        obj->update_ = DROP_PARTS_UPDATE;  // updateを変更
 
         obj->actorComponent_->hp_ = 0;  // HPを0にする
-
         obj->renderer_->flip(); // 反転させる
+
+        // 爆発エフェクト（予定）
+        {
+            //const VECTOR2 pos = obj->transform_->position_;
+
+            //OBJ2D* effect = Game::instance()->obj2dManager()->add(
+            //    new OBJ2D(
+            //        new Renderer,
+            //        new Collider,
+            //        obj->bg_,
+            //        nullptr,
+            //        nullptr,
+            //        nullptr,
+            //        new EffectComponent
+            //    ),
+            //    &efcBombBehavior,
+            //    pos
+            //);
+            //effect->zOrder_ = 1;
+        }
 
         return;
     }
@@ -304,23 +431,46 @@ void EraseEnemy::erase(OBJ2D* obj) const
     // HPが0以下になると
     if (!obj->actorComponent_->isAlive())
     {
-        obj->actorComponent_->parent_ = nullptr; // 親情報をリセット
+        parent = nullptr; // 親情報をリセット
+        obj->actorComponent_->orgParent_ = nullptr; // 元の親をリセット
 
         // 自分がコアでないならゴミアイテム化する
         if (obj != parent)
         {
-            // 次のbehavior・eraser（ドロップアイテム）を代入
+            // 次のbehavior・eraser（ドロップごみアイテム）を代入
             obj->behavior_ = &dropTrash01Behavior;
             obj->eraser_   = &eraseDropParts;
             
             if (obj->behavior_ == nullptr) return;
-            obj->update_ = PARTS_UPDATE;  // updateを変更
+            obj->update_ = DROP_PARTS_UPDATE;  // updateを変更
 
             return;
         }
 
         // コアなら消滅する
         obj->behavior_ = nullptr;
+
+
+        // 爆発エフェクト（予定）
+        {
+            //const VECTOR2 pos = obj->transform_->position_;
+
+            //OBJ2D* effect = Game::instance()->obj2dManager()->add(
+            //    new OBJ2D(
+            //        new Renderer,
+            //        new Collider,
+            //        obj->bg_,
+            //        nullptr,
+            //        nullptr,
+            //        nullptr,
+            //        new EffectComponent
+            //    ),
+            //    &efcBombBehavior,
+            //    pos
+            //);
+            //effect->zOrder_ = 1;
+        }
+
         return;
     }
 

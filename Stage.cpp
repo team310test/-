@@ -19,19 +19,21 @@ Stage::Stage()
     shrinkNum_ = 0;
     pScript_ = STAGE_DATA[stageNum_];
 }
+
+
 //#define error
 
 void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
 {
     // timer表示
-    GameLib::debug::setString("timer:%d", timer_);
+    //GameLib::debug::setString("timer:%d", timer_);
 
     // ステージ遷移
     if (stageNum_ != shrinkNum_)
     {
         timer_ = 0;
         stageNum_ = shrinkNum_;
-        if (shrinkNum_ >= 0 && shrinkNum_ < stageMax)
+        if (shrinkNum_ >= 0 && shrinkNum_ < STAGE_MAX)
         {
             pScript_ = STAGE_DATA[stageNum_];
         }
@@ -40,7 +42,7 @@ void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
 #ifdef error
             assert(!"shrinkNumに異常な値が入っています");
 #else
-            pScript_ = STAGE_DATA[stageMax - 1];
+            pScript_ = STAGE_DATA[STAGE_MAX - 1];
 #endif
         }
     }
@@ -101,7 +103,7 @@ void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
     if (pScript_ && !pScript_->enemyData_)
     {
         timer_ = 0;
-        if (shrinkNum_ >= 0 && shrinkNum_ < stageMax)
+        if (shrinkNum_ >= 0 && shrinkNum_ < STAGE_MAX)
         {
             pScript_ = STAGE_DATA[stageNum_];
         }
@@ -110,7 +112,7 @@ void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
 #ifdef error
             assert(!"shrinkNumに異常な値が入っています");
 #else
-            pScript_ = STAGE_DATA[stageMax - 1];
+            pScript_ = STAGE_DATA[STAGE_MAX - 1];
 #endif
         }
     }

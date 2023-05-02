@@ -1,48 +1,160 @@
 #include "all.h"
+#include <sstream>
+#include <iomanip>
 
-float UI::needleAngle_ = 0.0f;              // 計器の針の角度
-float UI::letterBox_multiplySizeY_ = 0.0f;  // 映画の黒帯の縦幅
+float UI::meterAlphaColor_;              // 計器の不透明度
+bool  UI::isInAreaMeter_;                // OBJが計器の範囲内に入っているか
+int   UI::meterShrinkCount_;             // プレイヤー縮小カウントに合わせて変動するカウント
+int   UI::dispMeterShrinkCountMaxTimer_; // 最大縮小カウント数を少しの間見せるタイマー
+float UI::meterFrameAngle_;              // 計器の枠の角度
+float UI::meterNeedleAngle_;             // 計器の針の角度
+float UI::subMeterNeedleAngle_;          // 計器の針の角度を減算
+float UI::letterBox_multiplySizeY_;      // 映画の黒帯の縦幅(特殊)
 
 
 // 初期設定
 void UI::init()
 {
-    needleAngle_ = 0.0f;
-    letterBox_multiplySizeY_ = 1.0f;
+    meterAlphaColor_                = 1.0f;
+    isInAreaMeter_                  = false;
+    meterShrinkCount_               = 0;
+    dispMeterShrinkCountMaxTimer_   = 0;
+    meterFrameAngle_                = 0.0f;
+    meterNeedleAngle_               = 0.0f;
+    subMeterNeedleAngle_            = 0.0f;
+    letterBox_multiplySizeY_        = 1.0f;
 }
+
 
 // 縮小カウントの計器描画
 void UI::drawShrinkValueMeter()
 {
     using namespace GameLib;
 
-    int sprNo       = {};
+    // 使いまわし変数
+    int     sprNo   = 0;
     VECTOR2 pos     = {};
     VECTOR2 scale   = {};
     VECTOR2 texPos  = {};
     VECTOR2 size    = {};
     VECTOR2 center  = {};
-    float   angle   = {};
+    float   angle   = 0.0f;
     VECTOR4 color   = {};
+
+
+    // メーターの範囲内にOBJが侵入していなければこのfalseが反映される
+    isInAreaMeter_ = false; 
+
+    // メーターの範囲内にOBJが侵入していたら計器を透かす
+    for (auto& p : *Game::instance()->obj2dManager()->getList())
+    {
+        if (p->behavior_ == nullptr) continue;
+
+        Transform* t = p->transform_;
+
+        // 範囲チェック
+        if (t->position_.x >= 50  && t->position_.x <= 500 &&
+            t->position_.y >= 575 && t->position_.y <= 1100)
+        {
+            isInAreaMeter_ = true;
+            break;
+        }
+    }
+
+    if (isInAreaMeter_) meterAlphaColor_ += (-0.05f); // 侵入していたら透かす
+    else                meterAlphaColor_ +=   0.05f;  // でなければ戻す
+
+    // 不透明度超過チェック
+    if (meterAlphaColor_ < METER_ALPHA_COLOR_MIN) meterAlphaColor_ = 0.2f;
+    if (meterAlphaColor_ > METER_ALPHA_COLOR_MAX) meterAlphaColor_ = 1.0f;
+
+
+    // 縮小カウントの数字
+    {
+        if (dispMeterShrinkCountMaxTimer_ > 0)  // timerに値が入っている場合
+        {
+            --dispMeterShrinkCountMaxTimer_;    // カウントダウン
+
+             // タイマーセットループ回避のためにカウントを1減らす
+            if (dispMeterShrinkCountMaxTimer_ <= 0) --meterShrinkCount_;
+        }
+        else if (meterShrinkCount_ == BasePlayerBehavior::PL_SHRINK_COUNT_MAX) // カウントが最大縮小カウントと同じ場合
+        {
+            // タイマーセット
+            dispMeterShrinkCountMaxTimer_ = DISP_METER_SHRINK_COUNT_MAX_TIME; 
+        }
+        else // カウントを滑らかに変動させる
+        {
+            if (meterShrinkCount_ < BasePlayerBehavior::plShrinkCount_) ++meterShrinkCount_;
+            if (meterShrinkCount_ > BasePlayerBehavior::plShrinkCount_) --meterShrinkCount_;
+        }
+
+        std::ostringstream ss;
+        ss << std::setw(2) << std::setfill('0') << meterShrinkCount_;
+
+        // 使いまわし変数セット
+        {
+            sprNo   = 0;
+            pos     = { 135, 990 };
+            scale   = { 3.75f, 3.75f };
+            texPos  = {};
+            size    = {};
+            center  = {};
+            angle   = 0;
+            color   = { 0, 0, 0, 0.2f };
+        }
+
+        // 数字描画
+        font::textOut(6, ss.str(), pos, scale, color, TEXT_ALIGN::MIDDLE);
+    }
+
 
     // 計器の枠
     {
-        static float frameAngle = {};
-        frameAngle += DirectX::XMConvertToRadians(1.0f);
+        // 回転
+        meterFrameAngle_ += DirectX::XMConvertToRadians(1.0f);
 
-        sprNo   = UI_METER_FRAME;
-        pos     = { 100, 1000 };
-        scale   = { 3, 3 };
-        texPos  = {};
-        size    = { 250, 250 };
-        center  = { 125, 125 };
-        angle   = frameAngle;
-        color   = { 1, 1, 1, 1 };
+        if (meterFrameAngle_ > DirectX::XMConvertToRadians(360.0f))
+        {
+            //360度回ったら角度リセット
+            meterFrameAngle_ = 0.0f; 
+        }
+
+
+        // 使いまわし変数セット
+        {
+            sprNo   = UI_METER_FRAME;
+            pos     = { 100, 1000 };
+            scale   = { 3, 3 };
+            texPos  = {};
+            size    = { 250, 250 };
+            center  = { 125, 125 };
+            angle   = meterFrameAngle_;
+            color   = { 1, 1, 1, meterAlphaColor_ };
+        }
 
         // 枠描画
         texture::begin(sprNo);
         texture::draw(sprNo, pos, scale, texPos, size, center, angle, color);
         texture::end(sprNo);
+    }
+
+
+    // 計器の目盛り(不使用)    
+    {
+        //sprNo   = UI_METER_READ;
+        //pos     = { 100, 1000 };
+        //scale   = { 3, 3 };
+        //texPos  = {};
+        //size    = { 250, 250 };
+        //center  = { 125, 125 };
+        //angle   = {};
+        //color   = { 1, 1, 1, meterAlphaColor_ - 0.1f };
+    
+        //// 枠描画
+        //texture::begin(sprNo);
+        //texture::draw(sprNo, pos, scale, texPos, size, center, angle, color);
+        //texture::end(sprNo);
     }
 
 
@@ -58,34 +170,34 @@ void UI::drawShrinkValueMeter()
         // （縮小カウントが5なら （ 5 / 10 = ）0.5倍で（90 * 0.5 = ）45度、）
         // （縮小カウントが10なら（10 / 10 = ） 等倍で（90 *   1 = ）90度  ）
         const float currentAngle = DirectX::XMConvertToRadians(
-            NEEDLE_ANGLE_MAX * (count / countMax)
+            METER_NEEDLE_ANGLE_MAX * (count / countMax)
         );
 
-        static float subNeedleAngle = {};
         // 針の動きを滑らかにする処理
-        if (needleAngle_ < currentAngle) // angleが現在の角度より小さい場合
+        if (meterNeedleAngle_ < currentAngle) // angleが現在の角度より小さい場合
         {
-            subNeedleAngle = 0.0f;
-            needleAngle_ += ADD_NEEDLE_ANGLE;    // 加算
-            if (needleAngle_ > currentAngle) needleAngle_ = currentAngle; // 超過修正
+            subMeterNeedleAngle_ = 0.0f;
+            meterNeedleAngle_    += ADD_NEEDLE_ANGLE;       // 加算
+            if (meterNeedleAngle_ > currentAngle) meterNeedleAngle_ = currentAngle; // 超過修正
         }
-        if (needleAngle_ > currentAngle) // angleが現在の角度より大きい場合
+        if (meterNeedleAngle_ > currentAngle) // angleが現在の角度より大きい場合
         {
-
-            subNeedleAngle += SUB_NEEDLE_ANGLE;
-            needleAngle_ += subNeedleAngle;    // 減算
-            if (needleAngle_ < currentAngle) needleAngle_ = currentAngle; // 超過修正
+            subMeterNeedleAngle_ += SUB_NEEDLE_ANGLE;
+            meterNeedleAngle_    += subMeterNeedleAngle_;   // 減算
+            if (meterNeedleAngle_ < currentAngle) meterNeedleAngle_ = currentAngle; // 超過修正
         }
 
-
-        sprNo   = UI_METER_NEEDLE;
-        pos     = { 100, 1000 };
-        scale   = { 1, 1 };
-        texPos  = {};
-        size    = { 250, 250 };
-        center  = { 125, 250 };
-        angle   = needleAngle_ + DirectX::XMConvertToRadians(-35);
-        color   = { 1, 1, 1, 1 };
+        // 使いまわし変数セット
+        {
+            sprNo   = UI_METER_NEEDLE;
+            pos     = { 100, 1000 };
+            scale   = { 1.225f, 1.225f };
+            texPos  = {};
+            size    = { 250, 250 };
+            center  = { 125, 125 };
+            angle   = meterNeedleAngle_ + DirectX::XMConvertToRadians(-35);
+            color   = { 1, 1, 1, meterAlphaColor_ };
+        }
 
         // 針描画
         texture::begin(sprNo);
@@ -96,23 +208,25 @@ void UI::drawShrinkValueMeter()
 }
 
 
-// 映画の黒帯描画
+// 映画の黒帯描画(マスク処理で行っている)
 void UI::drawLetterBox()
 {
+    // 使いまわし変数
     VECTOR2 pos     = {};
     VECTOR2 size    = {};
     VECTOR2 center  = {};
-    float   angle   = {};
+    float   angle   = 0;
     VECTOR4 color   = {};
 
     // マスクで消す方  
     {
         DepthStencil::instance().set(DepthStencil::MODE::MASK);
 
+        // 使いまわし変数セット
         pos     = { BG::WINDOW_W * 0.5f, BG::WINDOW_H * 0.5f };
         size    = { BG::WINDOW_W, BG::WINDOW_H * letterBox_multiplySizeY_ };
         center  = size * 0.5f;
-        angle   = {};
+        angle   = 0;
         color   = {};
 
         GameLib::primitive::rect(pos, size, center);
@@ -122,10 +236,11 @@ void UI::drawLetterBox()
     {
         DepthStencil::instance().set(DepthStencil::MODE::EXCLUSIVE);
 
+        // 使いまわし変数セット
         pos     = {};
         size    = { BG::WINDOW_W, BG::WINDOW_H };
         center  = {};
-        angle   = {};
+        angle   = 0;
         color   = { 0, 0, 0, 0.7f };
 
         GameLib::primitive::rect(pos, size, center, angle, color);

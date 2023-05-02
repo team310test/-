@@ -10,7 +10,8 @@ OBJ2D::OBJ2D(
     ActorComponent* actorComponent,
     ItemComponent* itemComponent, 
     WeaponComponent* weaponComponent,
-    TitleComponent* titleComponent
+    TitleComponent* titleComponent,
+    EffectComponent* effectComponent
 )
     :transform_(new Transform)
     , renderer_(renderer)
@@ -20,13 +21,15 @@ OBJ2D::OBJ2D(
     , itemComponent_(itemComponent)
     , weaponComponent_(weaponComponent)
     , titleComponent_(titleComponent)
+    , effectComponent_(effectComponent)
 {
-    if (transform_) transform_->setOBJ2D(this);
-    if (renderer_) renderer_->setOBJ2D(this);
-    if (collider_) collider_->setOBJ2D(this);
-    if (actorComponent_) actorComponent_->setOBJ2D(this);
-    if (itemComponent_) itemComponent_->setOBJ2D(this);
-    if (weaponComponent_) weaponComponent_->setOBJ2D(this);
+    if (transform_)         transform_->setOBJ2D(this);
+    if (renderer_)          renderer_->setOBJ2D(this);
+    if (collider_)          collider_->setOBJ2D(this);
+    if (actorComponent_)    actorComponent_->setOBJ2D(this);
+    if (itemComponent_)     itemComponent_->setOBJ2D(this);
+    if (weaponComponent_)   weaponComponent_->setOBJ2D(this);
+    if (effectComponent_)   effectComponent_->setOBJ2D(this);
     if (titleComponent_) titleComponent_->setOBJ2D(this);
 }
 
@@ -37,6 +40,8 @@ OBJ2D::~OBJ2D()
     safe_delete(weaponComponent_);
     safe_delete(itemComponent_);
     safe_delete(actorComponent_);
+    safe_delete(weaponComponent_);
+    safe_delete(effectComponent_);
     safe_delete(collider_);
     safe_delete(renderer_);
     safe_delete(titleComponent_);
@@ -198,17 +203,29 @@ void OBJ2DManager::draw()
             continue;
 
 
-        obj->renderer_->draw();
-        
+        if (obj->transform_->scale_.x > DRAW_OBJ_SCALE_MIN_LIMIT)
+        {
+            obj->renderer_->draw();
+        }
 
         static bool isDrawHitBox = false; // ヒットボックスを表示するか
         // 1キーでヒットボックス表示・非表示
-        if (GetAsyncKeyState('1') & 1) 
+        if (GetAsyncKeyState('1') & 1)
         {
-            if (!isDrawHitBox) isDrawHitBox = true;
-            else isDrawHitBox = false;
+            isDrawHitBox = (!isDrawHitBox) ? true : false;
         }
         if (isDrawHitBox) obj->collider_->draw();
+
+
+        // カーソルが見づらいのでプリミティブ描画
+        //OBJ2D* cursor = Game::instance()->cursor_;
+        //GameLib::primitive::rect(
+        //    cursor->transform_->position_,
+        //    { 10,10 },
+        //    { 0,0 },
+        //    0,
+        //    { 0,0,0,1 }
+        //);
     }
 }
 

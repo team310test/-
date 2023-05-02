@@ -40,12 +40,30 @@ EXTERN EnemyCore01Behavior enemyCore01Behavior;
 
 //******************************************************************************
 // 
+//      BaseEnemyPartsBehavior（エネミーのパーツのベース）
+// 
+//******************************************************************************
+
+class BaseEnemyPartsBehavior : public BaseEnemyBehavior
+{
+private:
+    void shrink(OBJ2D* obj) const override;
+    void contactToEnmCore(OBJ2D*, OBJ2D*) const;
+
+public:
+    static float toCoreVelocity_;
+};
+
+
+
+//******************************************************************************
+// 
 //      Turret（攻撃パーツ）
 // 
 //******************************************************************************
 
 // Turret01
-class EnemyTurret01Behavior : public BaseEnemyBehavior
+class EnemyTurret01Behavior : public BaseEnemyPartsBehavior
 {
 public:
     EnemyTurret01Behavior();
@@ -62,7 +80,7 @@ EXTERN EnemyTurret01Behavior enemyTurret01Behavior;
 //******************************************************************************
 
 // Buff01
-class EnemyBuff01Behavior : public BaseEnemyBehavior
+class EnemyBuff01Behavior : public BaseEnemyPartsBehavior
 {
 public:
     EnemyBuff01Behavior();

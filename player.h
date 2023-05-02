@@ -2,7 +2,7 @@
 
 void setPlayer(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos, VECTOR2 scale,bool isDrawShrink, const bool makeOrgPlayer);
 OBJ2D* setTitlePlayer(OBJ2DManager* obj2dManager, BG* bg);
-void setCursor(OBJ2DManager* obj2dManager, BG* bg);
+//void setCursor(OBJ2DManager* obj2dManager, BG* bg);
 
 
 //******************************************************************************
@@ -31,57 +31,57 @@ public:
 
 //******************************************************************************
 // 
-//      CorePlayerBehavior（自機本体）
+//      PlayerCoreBehavior（自機本体）
 // 
 //******************************************************************************
-class CorePlayerBehavior : public BasePlayerBehavior
+class PlayerCoreBehavior : public BasePlayerBehavior
 {
 public:
-    CorePlayerBehavior();
+    PlayerCoreBehavior();
 private:
     void attack(OBJ2D* obj) const override;
     void areaCheck(OBJ2D* obj) const override;
 };
-EXTERN CorePlayerBehavior corePlayerBehavior;
+EXTERN PlayerCoreBehavior playerCoreBehavior;
 
 
 //******************************************************************************
 // 
-//      PartsPlayerBehavior（パーツのベース）
+//      PlayerPartsBehavior（パーツのベース）
 // 
 //******************************************************************************
-class PartsPlayerBehavior : public BasePlayerBehavior
+class PlayerPartsBehavior : public BasePlayerBehavior
 {
 private:
     void shrink(OBJ2D*) const override;             // 縮小関数
-    void contactToOriginal(OBJ2D*, OBJ2D*) const;   // オリジナル自機に向かって接触しに行く関数
+    void contactToPlCore(OBJ2D*, OBJ2D*) const;   // オリジナル自機に向かって接触しに行く関数
 
 public:
-    static float toCoreVelocity;  // オリジナル自機へ向かう速度
+    static float toCoreVelocity_;  // オリジナル自機へ向かう速度
 };
 
-
-//******************************************************************************
-// 
-//      CursorBehavior（カーソル）
-// 
-//******************************************************************************
-class CursorBehavior : public BasePlayerBehavior
-{
-public:
-    CursorBehavior();
-private:
-    OBJ_TYPE getType() const override { return OBJ_TYPE::CURSOR; }
-    OBJ_TYPE getAttackType() const override { return OBJ_TYPE::PLAYER; }
-    void hit(OBJ2D*, OBJ2D*) const override;
-
-    void damageProc(OBJ2D*) const override;
-
-    // カーソルは縮小しないので｛｝で除外
-    void startAllShrink(OBJ2D*) const override {} 
-    void shrink(OBJ2D*) const override {}         
-};
-EXTERN CursorBehavior cursorBehavior;
+//
+////******************************************************************************
+//// 
+////      CursorBehavior（カーソル）
+//// 
+////******************************************************************************
+//class CursorBehavior : public BasePlayerBehavior
+//{
+//public:
+//    CursorBehavior();
+//private:
+//    OBJ_TYPE getType() const override { return OBJ_TYPE::CURSOR; }
+//    OBJ_TYPE getAttackType() const override { return OBJ_TYPE::PLAYER; }
+//    void hit(OBJ2D*, OBJ2D*) const override;
+//
+//    void damageProc(OBJ2D*) const override;
+//
+//    // カーソルは縮小しないので｛｝で除外
+//    void startAllShrink(OBJ2D*) const override {} 
+//    void shrink(OBJ2D*) const override {}         
+//};
+//EXTERN CursorBehavior cursorBehavior;
 
 
 
@@ -92,7 +92,7 @@ EXTERN CursorBehavior cursorBehavior;
 //******************************************************************************
 
 // Turret01
-class PlayerTurret01Behavior : public PartsPlayerBehavior
+class PlayerTurret01Behavior : public PlayerPartsBehavior
 {
 public:
     PlayerTurret01Behavior();
@@ -109,7 +109,7 @@ EXTERN PlayerTurret01Behavior playerTurret01Behavior;
 //******************************************************************************
 
 // Buff01
-class PlayerBuff01Behavior : public PartsPlayerBehavior
+class PlayerBuff01Behavior : public PlayerPartsBehavior
 {
 public:
     PlayerBuff01Behavior();
@@ -127,7 +127,7 @@ EXTERN PlayerBuff01Behavior playerBuff01Behavior;
 //******************************************************************************
 
 // Trach01
-class  PlayerTrash01Behavior : public PartsPlayerBehavior
+class  PlayerTrash01Behavior : public PlayerPartsBehavior
 {
 public:
     PlayerTrash01Behavior();
@@ -160,11 +160,11 @@ EXTERN ErasePlayer erasePlayer;
 
 
 //******************************************************************************
-//      エネミーのupdate
+//      プレイヤーのupdate
 //******************************************************************************
 // 自機本体のupdate
-void PLAYER_UPDATE(OBJ2D* obj);
+void PLAYER_CORE_UPDATE(OBJ2D* obj);
 // パーツのupdate
-void PATRS_PLAYER_UPDATE(OBJ2D* obj);
+void PLAYER_PATRS_UPDATE(OBJ2D* obj);
 // タイトル用のupdate
 void TITLE_PLAYER_UPDATE(OBJ2D*);
