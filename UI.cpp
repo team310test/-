@@ -184,7 +184,7 @@ void UI::drawShrinkValueMeter()
         {
             subMeterNeedleAngle_ += SUB_NEEDLE_ANGLE;
             meterNeedleAngle_    += subMeterNeedleAngle_;   // Œ¸ŽZ
-            if (meterNeedleAngle_ < currentAngle) meterNeedleAngle_ = currentAngle; // ’´‰ßC³
+        //    if (meterNeedleAngle_ < currentAngle) meterNeedleAngle_ = currentAngle; // ’´‰ßC³
         }
 
         // Žg‚¢‚Ü‚í‚µ•Ï”ƒZƒbƒg

@@ -166,9 +166,9 @@ EnemyCore01Behavior::EnemyCore01Behavior()
     param_.ANIME_WAIT = animeCore01;
 
     param_.SIZE = VECTOR2(PARTS_OBJ_SIZE, PARTS_OBJ_SIZE);
-    param_.HIT_BOX[0] = { -125,-125,125,125 };
 
-    param_.ATTACK_BOX[0] = { -125, -125, 125, 125 };
+    param_.HIT_BOX[0]    = { -64, -64, 64, 64 };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
     // 次のBehaviorなし
     param_.NEXT_BEHAVIOR = nullptr;
@@ -297,25 +297,8 @@ void EnemyTurret01Behavior::attack(OBJ2D* obj) const
     // 攻撃クールタイムが終わっていなければreturn
     if (obj->actorComponent_->attackTimer_ > 0) return;
 
-    // 後々(inline)関数化したい
-    {
-        const VECTOR2 pos = obj->transform_->position_/* + VECTOR2(0, -120)*/;
-
-        OBJ2D* shot = Game::instance()->obj2dManager()->add(
-            new OBJ2D(
-                new Renderer,
-                new Collider,
-                obj->bg_,
-                nullptr,
-                nullptr,
-                new WeaponComponent
-            ),
-            &enmAimShotBehavior,
-            pos
-        );
-        shot->zOrder_ = 2;
-        shot->weaponComponent_->parent_ = obj;
-    }
+    // 弾を追加
+    AddObj::addShot(obj, &enmAimShotBehavior, obj->transform_->position_);
 
     obj->actorComponent_->attackTimer_ = 120;
 }
@@ -353,121 +336,77 @@ EnemyBuff01Behavior::EnemyBuff01Behavior()
 //******************************************************************************
 void EraseEnemy::erase(OBJ2D* obj) const
 {
+    // parentを省略すると正常に動作しないので撤廃
+    //OBJ2D* parent    = obj->actorComponent_->parent_;
+    //OBJ2D* orgParent = obj->actorComponent_->orgParent_;
+
+    ActorComponent* a = obj->actorComponent_;
+
+
     // スケールが一定以下になったら消去
     if (obj->transform_->scale_.x <= UPDATE_OBJ_SCALE_MIN_LIMIT)
     {
-        obj->actorComponent_->parent_ = nullptr; // 親情報をリセット
-        obj->behavior_ = nullptr;
+        a->parent_      = nullptr; // 親をリセット
+        a->orgParent_   = nullptr; // 元の親をリセット
+        obj->behavior_  = nullptr; // 自分を消去
 
-        // 爆発エフェクト（予定）
-        {
-            //const VECTOR2 pos = obj->transform_->position_;
-
-            //OBJ2D* effect = Game::instance()->obj2dManager()->add(
-            //    new OBJ2D(
-            //        new Renderer,
-            //        new Collider,
-            //        obj->bg_,
-            //        nullptr,
-            //        nullptr,
-            //        nullptr,
-            //        new EffectComponent
-            //    ),
-            //    &efcBombBehavior,
-            //    pos
-            //);
-            //effect->zOrder_ = 1;
-        }
+        // 爆発エフェクト
+        AddObj::addEffect(obj, &efcBombBehavior);
 
         return;
     }
 
 
-    OBJ2D* parent = obj->actorComponent_->parent_; // 長いので省略
-
-    // 親が存在していて、親が自分でなく、親が消滅するか親の体力が0になるとアイテム化する
-    if (parent && obj != parent && (parent->behavior_ == nullptr || !parent->actorComponent_->isAlive()) )
+    // 親を持っていて、自分が親ではなく、親が消滅するとアイテム化する
+    if (a->parent_ && obj != a->parent_ && a->parent_->behavior_ == nullptr)
     {
-        parent = nullptr; // 親リセット
-        obj->actorComponent_->orgParent_ = nullptr; // 元の親をリセット
+        a->parent_      = nullptr; // 親をリセット
+        a->orgParent_   = nullptr; // 元の親をリセット
 
         // 次のbehavior・eraser（ドロップアイテム）を代入
         obj->behavior_ = obj->nextBehavior_;
         obj->eraser_   = obj->nextEraser_;
 
+        // 爆発エフェクト
+        AddObj::addEffect(obj, &efcBombBehavior);
+
         if (obj->behavior_ == nullptr) return;
 
         obj->update_ = DROP_PARTS_UPDATE;  // updateを変更
 
-        obj->actorComponent_->hp_ = 0;  // HPを0にする
+        a->hp_ = 0;             // HPを0にする
         obj->renderer_->flip(); // 反転させる
-
-        // 爆発エフェクト（予定）
-        {
-            //const VECTOR2 pos = obj->transform_->position_;
-
-            //OBJ2D* effect = Game::instance()->obj2dManager()->add(
-            //    new OBJ2D(
-            //        new Renderer,
-            //        new Collider,
-            //        obj->bg_,
-            //        nullptr,
-            //        nullptr,
-            //        nullptr,
-            //        new EffectComponent
-            //    ),
-            //    &efcBombBehavior,
-            //    pos
-            //);
-            //effect->zOrder_ = 1;
-        }
 
         return;
     }
 
+
     // HPが0以下になると
-    if (!obj->actorComponent_->isAlive())
+    if (!a->isAlive())
     {
-        parent = nullptr; // 親情報をリセット
-        obj->actorComponent_->orgParent_ = nullptr; // 元の親をリセット
+        a->parent_ = nullptr; // 親をリセット
+
+        // 爆発エフェクト
+        AddObj::addEffect(obj, &efcBombBehavior);
+
 
         // 自分がコアでないならゴミアイテム化する
-        if (obj != parent)
+        if (obj != a->orgParent_)
         {
+            a->orgParent_ = nullptr; // 元の親をリセット
+
             // 次のbehavior・eraser（ドロップごみアイテム）を代入
             obj->behavior_ = &dropTrash01Behavior;
-            obj->eraser_   = &eraseDropParts;
-            
-            if (obj->behavior_ == nullptr) return;
-            obj->update_ = DROP_PARTS_UPDATE;  // updateを変更
+            obj->eraser_   = &eraseDropParts;         
+            obj->update_   = DROP_PARTS_UPDATE;  // updateを変更
 
             return;
         }
 
-        // コアなら消滅する
+        a->orgParent_ = nullptr; // 元の親をリセット
+
+        // コアなので消滅する
         obj->behavior_ = nullptr;
-
-
-        // 爆発エフェクト（予定）
-        {
-            //const VECTOR2 pos = obj->transform_->position_;
-
-            //OBJ2D* effect = Game::instance()->obj2dManager()->add(
-            //    new OBJ2D(
-            //        new Renderer,
-            //        new Collider,
-            //        obj->bg_,
-            //        nullptr,
-            //        nullptr,
-            //        nullptr,
-            //        new EffectComponent
-            //    ),
-            //    &efcBombBehavior,
-            //    pos
-            //);
-            //effect->zOrder_ = 1;
-        }
-
         return;
     }
 
@@ -486,6 +425,7 @@ void ENEMY_LINE(OBJ2D* obj)
 
     t->velocity_ = { -speedX, 0.0f };
 }
+
 // x軸の目標地点に達すると別の方向へ移動する(仮)
 void ENEMY_TARGET_X(OBJ2D* obj)
 {

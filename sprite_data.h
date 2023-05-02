@@ -15,7 +15,6 @@ enum TEXNO
     UI_METER_READ,      // 計器の目盛り
     UI_METER_NEEDLE,    // 計器の針
 
-
     // コア
     PL_CORE01,
     ENM_CORE01,
@@ -29,9 +28,11 @@ enum TEXNO
     // ごみパーツ
     TRASH01,
 
-
     // 弾丸
-    SHOT,
+    BULLET01,
+
+    // エフェクト
+    EFC_BOMB,
 };
 
 extern GameLib::LoadTexture loadTexture[];
@@ -50,5 +51,12 @@ extern GameLib::SpriteData sprPartsTrash01;
 
 //------< 弾 >----------------------------------------------------------------
 extern GameLib::SpriteData sprShot_NormalShot;
+
+//------< エフェクト >----------------------------------------------------------------
+extern GameLib::SpriteData sprEfcBomb_anime0;
+extern GameLib::SpriteData sprEfcBomb_anime1;
+extern GameLib::SpriteData sprEfcBomb_anime2;
+extern GameLib::SpriteData sprEfcBomb_anime3;
+
 
 //******************************************************************************

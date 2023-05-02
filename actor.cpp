@@ -143,6 +143,7 @@ void Behavior::shrink(OBJ2D* obj) const
     {
         obj->collider_->judgeFlag_ = true;
         c->isShrink_ = false;   // ShrinkI—¹
+        return;
     }
 }
 

@@ -97,24 +97,16 @@ void Game::update()
         }
 
 
-        if (BasePlayerBehavior::plShrinkCount_ >= BasePlayerBehavior::PL_SHRINK_COUNT_MAX || 
-            GameLib::input::TRG(0) & GameLib::input::PAD_TRG1)  // プレイヤーの数がShrinkの規定数に達したら
-        //if (BasePlayerBehavior::plShrinkCount_ >= BasePlayerBehavior::PL_SHRINK_COUNT_MAX)  // プレイヤーの数がShrinkの規定数に達したら
+        if (BasePlayerBehavior::plShrinkCount_ >= BasePlayerBehavior::PL_SHRINK_COUNT_MAX)  // プレイヤーの数がShrinkの規定数に達したら
         {
             if (Collider::isAllShrink_  == false && // Shrinkが開始されておらず、
                 Behavior::isObjShrink() == false)   // すべてのobjが縮小していなければ
             {
                 Collider::isAllShrink_ = true;      // Shrinkを開始
 
-
                 bg()->BG::setBGShrink();       // 背景の縮小設定
 
-                if (BasePlayerBehavior::plShrinkCount_ >= 10)
-                    BasePlayerBehavior::plShrinkCount_ -= 10; // プレイヤーのカウントをリセット
                 stage_->addSrinkNum();
-
-                //if (BasePlayerBehavior::plShrinkCount_ >= BasePlayerBehavior::PL_SHRINK_COUNT_MAX)
-                //    BasePlayerBehavior::plShrinkCount_ -= BasePlayerBehavior::PL_SHRINK_COUNT_MAX; // プレイヤーのカウントをリセット
 
             }
         }
@@ -177,6 +169,7 @@ void Game::draw()
 {
     // 画面クリア
     GameLib::clear(VECTOR4(0.75f, 0.45f, 0.3f, 1));
+    //GameLib::clear(VECTOR4(1,1,1,1));
 
     // 背景の描画
     bg()->drawBack();     

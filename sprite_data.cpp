@@ -15,17 +15,20 @@ GameLib::LoadTexture loadTexture[] = {
     { TEXNO::ENM_CORE01, L"./Data/Images/Core/EnemyCore01.png",  1U },
 
     // 攻撃パーツ
-    { TEXNO::TURRET01,   L"./Data/Images/Turret/Turret01.png", 1U },
-    { TEXNO::TURRET02,   L"./Data/Images/Turret/Turret02.png", 1U },
-    { TEXNO::TURRET03,   L"./Data/Images/Turret/Turret03.png", 1U },
+    { TEXNO::TURRET01,  L"./Data/Images/Parts/Turret/Turret01.png", 1U },
+    { TEXNO::TURRET02,  L"./Data/Images/Parts/Turret/Turret02.png", 1U },
+    { TEXNO::TURRET03,  L"./Data/Images/Parts/Turret/Turret03.png", 1U },
     // バフパーツ
-    { TEXNO::BUFF01,     L"./Data/Images/Buff/Buff01.png",     1U },
+    { TEXNO::BUFF01,    L"./Data/Images/Parts/Buff/Buff01.png",     1U },
     // ごみパーツ
-    { TEXNO::TRASH01,    L"./Data/Images/Trash/Trash01.png",   1U },
+    { TEXNO::TRASH01,   L"./Data/Images/Parts/Trash/Trash01.png",   1U },
 
 
     // 弾
-    { TEXNO::SHOT,       L"./Data/Images/Bullet/Bullet01.png", 1U },
+    { TEXNO::BULLET01,  L"./Data/Images/Bullet/Bullet01.png",   1U },
+
+    // エフェクト
+    { TEXNO::EFC_BOMB,  L"./Data/Images/Effect/Effect_Bomb.png", 1U },
     
 
     { -1, nullptr }	// 終了フラグ
@@ -46,8 +49,15 @@ GameLib::SpriteData sprPartsTurret03 = SPRITE_CENTER(TEXNO::TURRET03,   0, 0, 12
 GameLib::SpriteData sprPartsBuff01   = SPRITE_CENTER(TEXNO::BUFF01,     0, 0, 250, 250);
 GameLib::SpriteData sprPartsTrash01  = SPRITE_CENTER(TEXNO::TRASH01,    0, 0, 128, 128);
 
-//------< ショット >----------------------------------------------------------------
-GameLib::SpriteData sprShot_NormalShot = SPRITE_CENTER(TEXNO::SHOT,     0, 0, 64, 64);
+//------< 弾 >----------------------------------------------------------------
+GameLib::SpriteData sprShot_NormalShot  = SPRITE_CENTER(TEXNO::BULLET01, 0, 0, 64, 64);
+
+//------< エフェクト >----------------------------------------------------------------
+GameLib::SpriteData sprEfcBomb_anime0   = SPRITE_CENTER(TEXNO::EFC_BOMB, (256 * 0), 0, 256, 256);
+GameLib::SpriteData sprEfcBomb_anime1   = SPRITE_CENTER(TEXNO::EFC_BOMB, (256 * 1), 0, 256, 256);
+GameLib::SpriteData sprEfcBomb_anime2   = SPRITE_CENTER(TEXNO::EFC_BOMB, (256 * 2), 0, 256, 256);
+GameLib::SpriteData sprEfcBomb_anime3   = SPRITE_CENTER(TEXNO::EFC_BOMB, (256 * 3), 0, 256, 256);
+
 
 //------------------------------------------------------------------------------
 #undef SPRITE_CENTER

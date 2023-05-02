@@ -99,8 +99,9 @@ static constexpr float SUBJECT_ALPHA_COLOR = -0.0025f; // •s“§–¾“x‚ÌŒ¸­‘¬“x
 void BG::moveBack()
 {
 
-    GameLib::debug::setString("bg[0]Scale:%f", bg_[0]->transform_->scale_.x);
-    GameLib::debug::setString("bg[11]Scale:%f", bg_[11]->transform_->scale_.x);
+    //GameLib::debug::setString("bg[0]Scale:%f", bg_[0]->transform_->scale_.x);
+    //GameLib::debug::setString("bg[11]Scale:%f", bg_[11]->transform_->scale_.x);
+
     for (OBJ2D*& bg : bg_)
     {
         Transform* t = bg->transform_;

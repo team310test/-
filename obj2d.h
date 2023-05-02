@@ -122,10 +122,10 @@ public:
     Renderer()
         :data_()
         , color_({ 1,1,1,1 })
-        , targetColor_({1,1,1,1})
+        , targetColor_({ 1,1,1,1 })
         , anime_()
         , animeData_()
-        , drawScale_()
+        , drawScale_({ 1,1 })
         , isDrawShrink_()
         , drawXFlip_()
         , pad_()
@@ -269,16 +269,12 @@ public:
 class EffectComponent : public Component
 {
 public:
-    float animeX_;
-    int   animeTimer_;
-
+    VECTOR2 parentScale_;
 public:
     EffectComponent()
-        :animeX_(0.0f)
-        , animeTimer_(0)
+        :parentScale_()
     {
     }
-
 };
 
 class BG;
@@ -306,7 +302,6 @@ public:
     ActorComponent* actorComponent_;
     ItemComponent* itemComponent_;
     WeaponComponent* weaponComponent_;
-    EffectComponent* effectComponent_;
 
 public:
     // ƒƒ“ƒoŠÖ”
@@ -315,8 +310,7 @@ public:
         BG* bg,
         ActorComponent* actorComponent,
         ItemComponent* itemComponent, 
-        WeaponComponent* weaponComponent,
-        EffectComponent* effectComponent = nullptr  // ˆø”‚ğ‘‚­èŠÔ‚ğÈ‚­
+        WeaponComponent* weaponComponent
     );
     ~OBJ2D();
     void move();    // ˆÚ“®

@@ -1,5 +1,17 @@
 #include "all.h"
 
+namespace 
+{
+    GameLib::AnimeData animeEfcBomb[] = {
+        { &sprEfcBomb_anime0,  2  },
+        { &sprEfcBomb_anime1,  2  },
+        { &sprEfcBomb_anime2,  2  },
+        { &sprEfcBomb_anime3,  3  },
+        { nullptr,            -1  },    // 終了フラグ
+    };
+}
+
+
 //******************************************************************************
 //
 //      BaseEffectBehavior（エフェクトのベース）
@@ -7,31 +19,43 @@
 //******************************************************************************
 void BaseEffectBehavior::move(OBJ2D* obj) const
 {
+    Collider*  c = obj->collider_;
+    Renderer*  r = obj->renderer_;
+
     switch (obj->state_)
     {
     case 0:
-        obj->renderer_->animeData_   = getParam()->ANIME;
-        obj->transform_->scale_ = obj->weaponComponent_->parent_->transform_->scale_;
+        r->animeData_   = getParam()->ANIME;
 
-        obj->collider_->judgeFlag_          = false;    // あたり判定を行わない
-        obj->collider_->isDrawAttackRect_   = false;    // あたり判定の領域を描画しない
+        c->judgeFlag_           = false;    // あたり判定を行わない
+        c->isDrawAttackRect_    = false;    // あたり判定の領域を描画しない
 
         ++obj->state_;
         /*fallthrough*/
     case 1:
-        startAllShrink(obj);    // 縮小開始
-        shrink(obj);            // 画像縮小
-
-        if (obj->collider_->isShrink_) break; // 縮小中なら飛ばす
-
-        // 位置更新
         update(obj);        
-
-        // アニメーション更新
-        if (obj->renderer_->animeData_) obj->renderer_->animeUpdate();
 
         break;
     }
+}
+
+void BaseEffectBehavior::update(OBJ2D* obj) const
+{
+    Renderer* r = obj->renderer_;
+
+    // 徐々に薄くする
+    //float addColor = -0.04f;
+    //r->color_ = {
+    //    r->color_.x + addColor, r->color_.y + addColor, 
+    //    r->color_.z + addColor, r->color_.w + addColor
+    //};
+    //r->targetColor_ = r->color_;
+
+    if (!r->animeData_) return; // アニメデータがなければreturn
+
+    // アニメが回り切ったら消去
+    if (r->animeUpdate()) obj->behavior_ = nullptr;
+
 }
 
 
@@ -40,10 +64,5 @@ void BaseEffectBehavior::move(OBJ2D* obj) const
 //******************************************************************************
 EffectBombBehavior::EffectBombBehavior()
 {
-    //param_.ANIME = spr;
-}
-
-void EffectBombBehavior::update(OBJ2D* obj) const
-{
-    //EffectComponent* e = obj->effectComponent_;
+    param_.ANIME = animeEfcBomb;
 }

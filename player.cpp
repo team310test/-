@@ -321,31 +321,8 @@ void PlayerCoreBehavior::attack(OBJ2D* obj) const
     if ( !(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG3) ||
            obj->actorComponent_->attackTimer_ > 0) return; 
 
-    // 後々(inline)関数化したい
-    {
-        const VECTOR2 pos = obj->transform_->position_/* + VECTOR2(0, -120)*/;
-
-        OBJ2D* shot = Game::instance()->obj2dManager()->add(
-            new OBJ2D(
-                new Renderer,
-                new Collider,
-                obj->bg_,
-                nullptr,
-                nullptr,
-                new WeaponComponent
-            ),
-            &plNormalShotBehavior,     // ノーマル
-            //&plSineWaveShotBehavior,   // 正弦波
-            //&plSquareWaveShotBehavior, // 矩形波
-            //&plCurveWaveShotBehavior,  // 上カーブ
-            //&plPenetrateShotBehavior,  // 高速・貫通(予定)
-            pos
-        );
-        shot->zOrder_ = 2;
-        shot->weaponComponent_->parent_ = obj;
-
-    }
-
+    // 弾を追加
+    AddObj::addShot(obj, &plNormalShotBehavior, obj->transform_->position_);
 
     setXAxisScaleAnime(obj);
     obj->actorComponent_->attackTimer_ = 30;
@@ -459,29 +436,6 @@ void PlayerPartsBehavior::contactToPlCore(OBJ2D* obj, OBJ2D* orgPl) const
     obj->transform_->position_ += obj->transform_->velocity_;
 }
 
-// 親の方に向かって移動する関数
-//static const float toParentVelocity = 0.5f; // 足す速度(親へ向かう速さに影響)
-//void PartsPlayerBehavior::contactToParent(OBJ2D* obj, OBJ2D* parent) const
-//{    
-//    const VECTOR2 parentPos = parent->transform_->position_;    // 親の位置
-//    const VECTOR2 objPos    = obj->transform_->position_;       // objの位置
-//
-//    const VECTOR2 d  = { parentPos - objPos };               // objから親へ向かうベクトル
-//    const float dist = sqrtf( (d.x * d.x) + (d.y * d.y) );   // objから親までの距離
-//
-//    obj->transform_->velocity_ = {
-//        (d.x / dist) * (toParentVelocity),
-//        (d.y / dist) * (toParentVelocity)
-//    };
-//
-//    ActorBehavior::moveY(obj);
-//    ActorBehavior::moveX(obj);
-//
-//    //obj->collider_->calcHitBox(getParam()->HIT_BOX);
-//    //obj->collider_->calcAttackBox(getParam()->ATTACK_BOX);
-//}
-
-
 
 //******************************************************************************
 // 
@@ -512,25 +466,8 @@ void PlayerTurret01Behavior::attack(OBJ2D* obj) const
     // 攻撃クールタイムが終わっていなければreturn
     if (obj->actorComponent_->attackTimer_ > 0) return;
 
-    // 後々(inline)関数化したい
-    {
-        const VECTOR2 pos = obj->transform_->position_/* + VECTOR2(0, -120)*/;
-
-        OBJ2D* shot = Game::instance()->obj2dManager()->add(
-            new OBJ2D(
-                new Renderer,
-                new Collider,
-                obj->bg_,
-                nullptr,
-                nullptr,
-                new WeaponComponent
-            ),
-            &plNormalShotBehavior,
-            pos
-        );
-        shot->zOrder_ = 2;
-        shot->weaponComponent_->parent_ = obj;
-    }
+    // 弾を追加
+    AddObj::addShot(obj, &plNormalShotBehavior, obj->transform_->position_);
 
     obj->actorComponent_->attackTimer_ = 30;
 
@@ -612,6 +549,9 @@ void ErasePlayer::erase(OBJ2D* obj) const
         // 縮小カウント減少
         BasePlayerBehavior::plShrinkCount_ = std::max(0, BasePlayerBehavior::plShrinkCount_ - 1);
 
+        // 爆発エフェクト
+        AddObj::addEffect(obj, &efcBombBehavior);
+
         return; // returnを付ける
     }
 
@@ -644,6 +584,10 @@ void ErasePlayer::erase(OBJ2D* obj) const
 
     // 縮小カウント減少
     BasePlayerBehavior::plShrinkCount_ = std::max(0, BasePlayerBehavior::plShrinkCount_ - 1);
+
+    // 爆発エフェクト
+    AddObj::addEffect(obj, &efcBombBehavior);
+
     return;
 }
 #undef USE_FIND_PARENT

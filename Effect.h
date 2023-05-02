@@ -1,5 +1,6 @@
 #pragma once
 
+
 //******************************************************************************
 //
 //      BaseEffectBehavior（エフェクトのベース）
@@ -22,7 +23,10 @@ private:
     OBJ_TYPE getType() const override       { return OBJ_TYPE::EFFECT; }
     OBJ_TYPE getAttackType() const override { return OBJ_TYPE::NONE; };
 
-    virtual void update(OBJ2D* obj) const = 0;
+    void startAllShrink(OBJ2D* /*obj*/) const override {}
+    void shrink(OBJ2D* /*obj*/) const override {}
+
+    virtual void update(OBJ2D* obj) const;
 };
 
 
@@ -33,7 +37,5 @@ class EffectBombBehavior : public BaseEffectBehavior
 {
 public:
     EffectBombBehavior();
-
-private:
-    void update(OBJ2D* obj) const override;
 };
+EXTERN EffectBombBehavior efcBombBehavior;

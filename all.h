@@ -22,6 +22,7 @@
 
 #include "Parameter.h"
 
+#include "AddObj.h"
 #include "bg.h"
 #include "weapon.h"
 #include "Effect.h"

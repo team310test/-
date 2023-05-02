@@ -136,7 +136,7 @@ DropTrash01Behavior::DropTrash01Behavior()
 //******************************************************************************
 void EraseDropParts::erase(OBJ2D* obj) const
 {
-    if (obj->transform_->scale_.x <= 0) // スケールが0以下になったら
+    if (obj->transform_->scale_.x <= UPDATE_OBJ_SCALE_MIN_LIMIT) // スケールが0以下になったら
     {
         obj->behavior_ = nullptr; // 消去
         return;
