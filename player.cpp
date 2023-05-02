@@ -29,11 +29,19 @@ namespace
         { &sprPartsTrash01, 10 },
         { nullptr, -1 },// 終了フラグ
     };
+
+    // タイトル用コア
+    GameLib::AnimeData animeTitleCore[] =
+    {
+        {&sprTitleHeart,10},
+        {nullptr,-1},// 終了フラグ
+    };
 }
 
-void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer = false) // trueならこのobjをplayer_に代入する
+void setPlayer(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos, VECTOR2 scale, bool isDrawShrink, const bool makeOrgPlayer = false)
+// trueならこのobjをplayer_に代入する
 {
-    const VECTOR2 pos = { 500,500 };
+    //const VECTOR2 pos = { 500,500 };
 
     OBJ2D* player = new OBJ2D(
         new Renderer,
@@ -41,11 +49,16 @@ void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer = fa
         bg,
         new ActorComponent,
         nullptr,
+        nullptr,
         nullptr
     );
 
     player->zOrder_ = 3;
     player->actorComponent_->parent_ = player;
+
+    player->transform_->position_ = pos;
+    player->renderer_->drawScale_ = scale;
+    player->renderer_->isDrawShrink_ = isDrawShrink;
 
     player->actorComponent_->No = ActorComponent::playerNum;
     player->update_ = PLAYER_UPDATE;
@@ -60,9 +73,9 @@ void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer = fa
     }
 }
 
-void setTitlePlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer = false)
+OBJ2D* setTitlePlayer(OBJ2DManager* obj2dManager, BG* bg)
 {
-    const VECTOR2 pos = { BG::WINDOW_W * 0.5f,0.0f };
+    const VECTOR2 pos = { BG::WINDOW_W * 0.5f,-250.0f };
 
     OBJ2D* player = new OBJ2D(
         new Renderer,
@@ -70,7 +83,8 @@ void setTitlePlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer
         bg,
         new ActorComponent,
         nullptr,
-        nullptr
+        nullptr,
+        new TitleComponent
     );
 
     player->zOrder_ = 3;
@@ -79,7 +93,7 @@ void setTitlePlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer
     player->actorComponent_->No = ActorComponent::playerNum;
     player->update_ = TITLE_PLAYER_UPDATE;
 
-    obj2dManager->add(player, &ttileCorePlayerBehavior, pos);
+    return obj2dManager->add(player, &ttileCorePlayerBehavior, pos);
 }
 
 // 仮
@@ -92,6 +106,7 @@ void setCursor(OBJ2DManager* obj2dManager, BG* bg)
         new Collider,
         bg,
         new ActorComponent,
+        nullptr,
         nullptr,
         nullptr
     );
@@ -187,42 +202,27 @@ void TITLE_PLAYER_UPDATE(OBJ2D* obj)
     using namespace GameLib::input;
     ActorComponent* a = obj->actorComponent_;
     Transform* t = obj->transform_;
+    float floor = 800.0f;
+    static bool isBound = false;
 
-    t->velocity_ += speedData[a->padState_ & PAD_MOVE];
+    t->velocity_ += {0.1f, 2.5f};
 
-    // y軸の減速
-    if (!(a->padState_ & (PAD_DOWN | PAD_UP)))
+    // 床判定
+    if (t->position_.y >= floor)
     {
-        if (t->velocity_.y > 0)
+        // 超過修正
+        if (t->position_.y > floor) t->position_.y = floor;
+
+        // バウンド
+        t->velocity_.y = -t->velocity_.y * 0.5f;
+
+        // バウンド力が一定以下になったら
+        if (t->velocity_.y >= -10)
         {
-            t->velocity_.y -= PL_SPEED / 2;
-            if (t->velocity_.y < 0) t->velocity_.y = 0;
-        }
-        if (t->velocity_.y < 0)
-        {
-            t->velocity_.y += PL_SPEED / 2;
-            if (t->velocity_.y > 0) t->velocity_.y = 0;
+            t->velocity_ = { 0.0f,0.0f };
+            obj->titleComponent_->isTrigger = true;
         }
     }
-
-    // x軸の減速
-    if (!(a->padState_ & (PAD_RIGHT | PAD_LEFT)))
-    {
-        if (t->velocity_.x > 0)
-        {
-            t->velocity_.x -= PL_SPEED / 2;
-            if (t->velocity_.x < 0) t->velocity_.x = 0;
-        }
-        if (t->velocity_.x < 0)
-        {
-            t->velocity_.x += PL_SPEED / 2;
-            if (t->velocity_.x > 0) t->velocity_.x = 0;
-        }
-    }
-
-    // 最大速度チェック
-    t->velocity_.x = clamp(t->velocity_.x, -PL_SPEED_MAX, PL_SPEED_MAX);
-    t->velocity_.y = clamp(t->velocity_.y, -PL_SPEED_MAX, PL_SPEED_MAX);
 }
 
 
@@ -399,7 +399,8 @@ void CorePlayerBehavior::attack(OBJ2D* obj) const
                 obj->bg_,
                 nullptr,
                 nullptr,
-                new WeaponComponent
+                new WeaponComponent,
+                nullptr
             ),
             &plNormalShotBehavior,     // ノーマル
             //&plSineWaveShotBehavior,   // 正弦波
@@ -590,7 +591,8 @@ void PlayerTurret01Behavior::attack(OBJ2D* obj) const
                 obj->bg_,
                 nullptr,
                 nullptr,
-                new WeaponComponent
+                new WeaponComponent,
+                nullptr
             ),
             &plNormalShotBehavior,
             pos
@@ -724,13 +726,13 @@ void ErasePlayer::erase(OBJ2D* obj) const
 TtileCorePlayerBehavior::TtileCorePlayerBehavior()
 {
     // アニメーション
-    param_.ANIME_WAIT = animePlayerCore01;
+    param_.ANIME_WAIT = animeTitleCore;
 
     param_.SIZE = VECTOR2(player_size, player_size);
-    param_.HIT_BOX[0] = { -player_hitBox, -player_hitBox, player_hitBox, player_hitBox };
+    param_.SCALE = { 2.0f,2.0f };
+    param_.HIT_BOX[0] = { -10, -10, 10, 10 };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 }
-
 
 //******************************************************************************
 // 

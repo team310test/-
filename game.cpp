@@ -66,7 +66,7 @@ void Game::update()
         obj2dManager()->init();
 
         // プレイヤーを追加する
-        setPlayer(obj2dManager(), bg(), true); // trueならこのobjをplayer_に代入する
+        setPlayer(obj2dManager(), bg(),takeOverPos_,takeOverScale_, takeOverIsDrawShrink_, true); // trueならこのobjをplayer_に代入する
 
         // カーソル追加(仮)
         setCursor(obj2dManager(), bg());

@@ -9,7 +9,8 @@ OBJ2D::OBJ2D(
     BG* bg,
     ActorComponent* actorComponent,
     ItemComponent* itemComponent, 
-    WeaponComponent* weaponComponent
+    WeaponComponent* weaponComponent,
+    TitleComponent* titleComponent
 )
     :transform_(new Transform)
     , renderer_(renderer)
@@ -18,6 +19,7 @@ OBJ2D::OBJ2D(
     , actorComponent_(actorComponent)
     , itemComponent_(itemComponent)
     , weaponComponent_(weaponComponent)
+    , titleComponent_(titleComponent)
 {
     if (transform_) transform_->setOBJ2D(this);
     if (renderer_) renderer_->setOBJ2D(this);
@@ -25,6 +27,7 @@ OBJ2D::OBJ2D(
     if (actorComponent_) actorComponent_->setOBJ2D(this);
     if (itemComponent_) itemComponent_->setOBJ2D(this);
     if (weaponComponent_) weaponComponent_->setOBJ2D(this);
+    if (titleComponent_) titleComponent_->setOBJ2D(this);
 }
 
 
@@ -36,6 +39,7 @@ OBJ2D::~OBJ2D()
     safe_delete(actorComponent_);
     safe_delete(collider_);
     safe_delete(renderer_);
+    safe_delete(titleComponent_);
 }
 
 //--------------------------------------------------------------

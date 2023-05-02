@@ -19,6 +19,11 @@ enum TEXNO
     TURRET03,
     BUFF01,
     TRASH01,
+    TITLE_CORE,
+    TITLE_USER,
+    TITLE_TRASH,
+    TITLE_LOGO,
+    TITLE_HEART
 };
 
 extern GameLib::LoadTexture loadTexture[];
@@ -37,5 +42,12 @@ extern GameLib::SpriteData sprPartsTrash01;
 
 //------< ’e >----------------------------------------------------------------
 extern GameLib::SpriteData sprShot_NormalShot;
+
+//------< ƒ^ƒCƒgƒ‹ >----------------------------------------------------------------
+extern GameLib::SpriteData sprTitleCore;
+extern GameLib::SpriteData sprTitleUser;
+extern GameLib::SpriteData sprTitleTrash;
+extern GameLib::SpriteData sprTitleLogo;
+extern GameLib::SpriteData sprTitleHeart;
 
 //******************************************************************************

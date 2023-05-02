@@ -9,8 +9,11 @@ void ActorBehavior::move(OBJ2D* obj) const
         //////// 初期設定 ////////
         // アニメの初期設定
         obj->renderer_->animeData_  = getParam()->ANIME_WAIT;
-        obj->transform_->scale_     = getParam()->SCALE;
-        obj->renderer_->drawScale_  = getParam()->SCALE;
+        obj->transform_->scale_ = getParam()->SCALE;
+
+        if (!obj->renderer_->drawScale_.x && !obj->renderer_->drawScale_.y)
+            obj->renderer_->drawScale_ = getParam()->SCALE;
+        
         obj->collider_->size_ = {
             getParam()->SIZE.x * getParam()->SCALE.x, 
             getParam()->SIZE.y * getParam()->SCALE.y
@@ -34,6 +37,10 @@ void ActorBehavior::move(OBJ2D* obj) const
         // 現在のbehavior・eraserがparamと違う場合、paramの方を代入
         if (obj->nextBehavior_ != getParam()->NEXT_BEHAVIOR) obj->nextBehavior_ = getParam()->NEXT_BEHAVIOR;
         if (obj->nextEraser_   != getParam()->NEXT_ERASER)   obj->nextEraser_   = getParam()->NEXT_ERASER;
+
+        // 現在のアニメ用パラメータとparamが違う場合、paramを代入
+        if (obj->actorComponent_->objAnimeAlways_ != getParam()->OBJ_ANIME) obj->actorComponent_->objAnimeAlways_ = getParam()->OBJ_ANIME;
+        if (obj->actorComponent_->rotSpeed_ != getParam()->ROT_SPEED)obj->actorComponent_->rotSpeed_ = getParam()->ROT_SPEED;
 
 
         startAllShrink(obj);    // 縮小開始

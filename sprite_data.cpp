@@ -16,6 +16,11 @@ GameLib::LoadTexture loadTexture[] = {
     { TEXNO::TURRET03,   L"./Data/Images/Turret03.png", 1U },
     { TEXNO::BUFF01,     L"./Data/Images/Trash02.png",  1U },
     { TEXNO::TRASH01,    L"./Data/Images/Trash01.png",    1U},
+    { TEXNO::TITLE_CORE, L"./Data/Images/Core_Frame.png",    1U},
+    { TEXNO::TITLE_USER, L"./Data/Images/title_user.png",    1U},
+    { TEXNO::TITLE_TRASH,L"./Data/Images/title_trash.png",    1U},
+    { TEXNO::TITLE_LOGO,L"./Data/Images/title_logo.png",    1U},
+    { TEXNO::TITLE_HEART,L"./Data/Images/Core_Heart2.png",    1U},
 
     { -1, nullptr }	// 終了フラグ
 };
@@ -37,6 +42,13 @@ GameLib::SpriteData sprPartsTrash01  = SPRITE_CENTER(TEXNO::TRASH01, 0, 0, 128, 
 
 //------< ショット >----------------------------------------------------------------
 GameLib::SpriteData sprShot_NormalShot = SPRITE_CENTER(TEXNO::SHOT, 0, 0, 100, 100);
+
+//------< タイトル >----------------------------------------------------------------
+GameLib::SpriteData sprTitleCore = SPRITE_CENTER(TEXNO::TITLE_CORE, 0, 0, 128, 128);
+GameLib::SpriteData sprTitleUser = SPRITE_CENTER(TEXNO::TITLE_USER, 0, 0, 640, 128);
+GameLib::SpriteData sprTitleTrash = SPRITE_CENTER(TEXNO::TITLE_TRASH, 0, 0, 128, 128);
+GameLib::SpriteData sprTitleLogo = SPRITE_CENTER(TEXNO::TITLE_LOGO, 0, 0, 640, 128);
+GameLib::SpriteData sprTitleHeart = SPRITE_CENTER(TEXNO::TITLE_HEART, 0, 0, 128, 128);
 
 //------------------------------------------------------------------------------
 #undef SPRITE_CENTER

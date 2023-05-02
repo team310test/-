@@ -45,6 +45,7 @@ OBJ2D* TsetMainEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* beha
         bg,
         new ActorComponent,
         nullptr,
+        nullptr,
         nullptr
     );
 
@@ -63,6 +64,7 @@ OBJ2D* TsetSubEnemy(OBJ2DManager* obj2dManager, BG* bg, BaseEnemyBehavior* behav
         new Collider,
         bg,
         new ActorComponent,
+        nullptr,
         nullptr,
         nullptr
     );
@@ -224,7 +226,8 @@ void EnemyTurret01Behavior::attack(OBJ2D* obj) const
                 obj->bg_,
                 nullptr,
                 nullptr,
-                new WeaponComponent
+                new WeaponComponent,
+                nullptr
             ),
             &enmAimShotBehavior,
             pos

@@ -1,5 +1,8 @@
 #include "all.h"
 
+VECTOR2 Scene::takeOverPos_ = {};
+VECTOR2 Scene::takeOverScale_ = {};
+bool Scene::takeOverIsDrawShrink_ = false;
 
 //--------------------------------------------------------------
 //  é¿çs

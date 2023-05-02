@@ -1,7 +1,7 @@
 #pragma once
 
-void setPlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer);
-void setTitlePlayer(OBJ2DManager* obj2dManager, BG* bg, const bool makeOrgPlayer);
+void setPlayer(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos, VECTOR2 scale,bool isDrawShrink, const bool makeOrgPlayer);
+OBJ2D* setTitlePlayer(OBJ2DManager* obj2dManager, BG* bg);
 void setCursor(OBJ2DManager* obj2dManager, BG* bg);
 
 
@@ -146,7 +146,6 @@ public:
     TtileCorePlayerBehavior();
 };
 EXTERN TtileCorePlayerBehavior ttileCorePlayerBehavior;
-
 
 //==============================================================================
 //

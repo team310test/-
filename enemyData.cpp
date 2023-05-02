@@ -19,6 +19,7 @@ OBJ2D* setEnemy
         bg,
         new ActorComponent,
         nullptr,
+        nullptr,
         nullptr
     );
 

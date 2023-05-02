@@ -24,6 +24,7 @@ void BG::init()
             nullptr,
             nullptr,
             nullptr,
+            nullptr,
             nullptr
         );
     }

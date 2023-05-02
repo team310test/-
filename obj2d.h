@@ -265,6 +265,24 @@ public:
     }
 };
 
+//----------------------------------------------------------------------
+//  TitleComponent
+//----------------------------------------------------------------------
+class TitleComponent : public Component
+{
+public:
+    OBJ2D* parent_;  // ‚±‚Ì•Ší‚Ì‚¿å
+    bool isTrigger;
+    bool isDraw;
+public:
+    TitleComponent()
+        :parent_(nullptr)
+        , isDraw(false)
+        , isTrigger(false)
+    {}
+};
+
+
 class BG;
 class OBJ2D
 {
@@ -290,6 +308,7 @@ public:
     ActorComponent* actorComponent_;
     ItemComponent* itemComponent_;
     WeaponComponent* weaponComponent_;
+    TitleComponent* titleComponent_;
 
 public:
     // ƒƒ“ƒoŠÖ”
@@ -298,7 +317,8 @@ public:
         BG* bg,
         ActorComponent* actorComponent,
         ItemComponent* itemComponent, 
-        WeaponComponent* weaponComponent
+        WeaponComponent* weaponComponent,
+        TitleComponent* titleComponent
     );
     ~OBJ2D();
     void move();    // ˆÚ“®

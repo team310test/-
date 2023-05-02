@@ -1,21 +1,44 @@
 #include "all.h"
 
 Title Title::instance_;
-bool Title::isFallPerform_ = false;
+
+OBJ2D* setTitleObj(OBJ2DManager* obj2dManager, Behavior* behavior,VECTOR2 pos)
+{
+    OBJ2D* obj = new OBJ2D(
+        new Renderer,
+        new Collider,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr,
+        new TitleComponent
+    );
+
+    return obj2dManager->add(obj, behavior, pos);
+}
+
 
 void Title::init()
 {
     Scene::init();
-    isFallPerform_ = false;
 
     obj2dManager_ = new OBJ2DManager;
     bg_ = new BG;
+
+    isStatePerform_ = true;
+
+    // //フェード(イン)アウトの初期化
+    FADE::clear();
 }
 
 void Title::deinit()
 {
     safe_delete(bg_);
     safe_delete(obj2dManager_);
+
+    player_ = nullptr;
+    stateCommand_ = nullptr;
+    endCommand_ = nullptr;
 
     // テクスチャの解放
     GameLib::texture::releaseAll();
@@ -38,9 +61,12 @@ void Title::update()
         GameLib::texture::load(loadTexture);
         obj2dManager()->init();
 
-        //setPlayer(obj2dManager(), bg(), true); // trueならこのobjをplayer_に代入する
-        setTitlePlayer(obj2dManager(),bg(),true);
         
+        player_ = setTitlePlayer(obj2dManager(),bg());
+        stateCommand_ = setTitleObj(obj2dManager(), &titleStateObjBehavior, { 500,500 });
+        endCommand_ = setTitleObj(obj2dManager(), &titleEndObjBehavior, { 1420,500 });
+        titleLoge_ = setTitleObj(obj2dManager(), &titleLogoObjBehavior, { 960.0f,200.0f });
+
         bg()->init();
 
         state_++;                                    // 初期化処理の終了
@@ -49,14 +75,16 @@ void Title::update()
     case 1:
         //////// 通常時の処理 ////////
 
-        if (GameLib::input::TRG(0) & GameLib::input::PAD_START)             // PAD_TRG1が押されたら
-            changeScene(Game::instance());  // ゲームシーンに切り替え
-
-        // 落下演出をしていなかったら
-        if (isFallPerform_);
 
         obj2dManager()->update();           // オブジェクト更新
         bg()->update();                     // BGの更新
+        
+        // 演出が終わっていなかったらreturn
+        if (isStatePerform_ && !statePerform()) return;
+
+        judge();
+        changeSceneGame();                  // 画面遷移(Game)
+        endGame();                          // ゲーム終了
 
         ++timer_;                           // タイマーを足す
         break;
@@ -66,10 +94,13 @@ void Title::update()
 void Title::draw()
 {
     // 画面クリア
-    GameLib::clear(VECTOR4(0.0f, 1.0f, 0.0f, 1));
+    GameLib::clear(VECTOR4(0.75f, 0.45f, 0.3f, 1));
 
     // オブジェクトの描画
     obj2dManager()->draw();
+
+    //フェード(イン)アウト
+    FADE::getInstance()->draw();
 }
 
 void Title::judge()
@@ -99,4 +130,119 @@ void Title::judge()
             }
         }
     }
+}
+
+void Title::changeSceneGame()
+{
+    // 自機が接触したら
+    if (stateCommand_ && stateCommand_->titleComponent_->isTrigger)
+    {
+        // フェードアウトしたら画面遷移
+        if (objFadeOut())
+        {
+            takeOverPos_ = player_->transform_->position_;
+            takeOverScale_ = player_->renderer_->drawScale_;
+            takeOverIsDrawShrink_ = player_->renderer_->isDrawShrink_;
+            changeScene(Game::instance());
+        }
+    }
+}
+
+void Title::endGame()
+{
+    // 自機が接触したら
+    if (endCommand_ && endCommand_->titleComponent_->isTrigger)
+    {
+        // 画面が暗転したらゲーム終了
+        if (FADE::getInstance()->fadeOut(0.01f))
+        {
+            exit(0);
+        }
+    }
+}
+
+bool Title::statePerform()
+{
+    if (player_->titleComponent_->isTrigger)
+    {
+        // フェードインしたらtreuを返す
+        if (objFadeIn())
+        {
+            // playerのupdate変更
+            if (player_->update_ != PLAYER_UPDATE) player_->update_ = PLAYER_UPDATE;
+            isStatePerform_ = false;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool Title::objFadeOut()
+{
+    const float fadeSpeed = 0.01f;
+
+    if (endCommand_->renderer_->color_.w >= 0)
+    {
+        endCommand_->renderer_->color_.w -= fadeSpeed;
+        // 超過修正
+        if(endCommand_->renderer_->color_.w < 0)
+            endCommand_->renderer_->color_.w = 0.0f;
+    }
+    if (titleLoge_->renderer_->color_.w >= 0)
+    {
+        titleLoge_->renderer_->color_.w -= fadeSpeed;
+        // 超過修正
+        if (titleLoge_->renderer_->color_.w < 0)
+            titleLoge_->renderer_->color_.w = 0.0f;
+    }
+
+    // 全て透明になったらtreuを返す
+    if (
+        (endCommand_->renderer_->color_.w == 0)
+        && (titleLoge_->renderer_->color_.w == 0)
+        )
+    {
+        return true;
+    }
+
+    return false;
+}
+
+bool Title::objFadeIn()
+{
+    const float fadeSpeed = 0.01f;
+
+    if (stateCommand_->renderer_->color_.w <= 1.0f)
+    {
+        stateCommand_->renderer_->color_.w += fadeSpeed;
+        // 超過修正
+        if (stateCommand_->renderer_->color_.w > 1.0f)
+            stateCommand_->renderer_->color_.w = 1.0f;
+    }
+    if (endCommand_->renderer_->color_.w <= 1.0f)
+    {
+        endCommand_->renderer_->color_.w += fadeSpeed;
+        // 超過修正
+        if (endCommand_->renderer_->color_.w > 1.0f)
+            endCommand_->renderer_->color_.w = 1.0f;
+    }
+    if (titleLoge_->renderer_->color_.w <= 1.0f)
+    {
+        titleLoge_->renderer_->color_.w += fadeSpeed;
+        // 超過修正
+        if (titleLoge_->renderer_->color_.w > 1.0f)
+            titleLoge_->renderer_->color_.w = 1.0f;
+    }
+
+    // 全てフェードインしたらtreuを返す
+    if (
+        (endCommand_->renderer_->color_.w == 1.0f)
+        && (titleLoge_->renderer_->color_.w == 1.0f)
+        )
+    {
+        return true;
+    }
+
+    return false;
 }

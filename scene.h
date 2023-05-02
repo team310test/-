@@ -6,6 +6,9 @@ protected:
     int state_ = 0;              // 状態
     int timer_ = 0;              // タイマー
     Scene* nextScene_ = nullptr; // 次のシーン
+    static VECTOR2 takeOverPos_;        // シーン切り替え後引き継ぐ座標
+    static VECTOR2 takeOverScale_;        // シーン切り替え後引き継ぐ座標
+    static bool takeOverIsDrawShrink_;
 
 public:
     Scene* execute();   // 実行処理
