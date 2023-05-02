@@ -137,8 +137,12 @@ void Title::changeSceneGame()
     // 自機が接触したら
     if (stateCommand_ && stateCommand_->titleComponent_->isTrigger)
     {
-        // フェードアウトしたら画面遷移
-        if (objFadeOut())
+
+        bool fadeOut = objFadeOut();    // フェードアウト
+        bool shrink = objShrink();      // 縮小
+        
+        // 両方の処理が完了したら画面を遷移する
+        if (fadeOut && shrink)
         {
             takeOverPos_ = player_->transform_->position_;
             takeOverScale_ = player_->renderer_->drawScale_;
@@ -239,6 +243,40 @@ bool Title::objFadeIn()
     if (
         (endCommand_->renderer_->color_.w == 1.0f)
         && (titleLoge_->renderer_->color_.w == 1.0f)
+        )
+    {
+        return true;
+    }
+
+    return false;
+}
+
+bool Title::objShrink()
+{
+    const float fadeSpeed = 0.01f;
+
+    // Y軸
+    if (player_->renderer_->drawScale_.y >= 1.0f)
+    {
+        player_->renderer_->drawScale_.y -= fadeSpeed;
+        // 超過修正
+        if (player_->renderer_->drawScale_.y < 1.0f)
+            player_->renderer_->drawScale_.y = 1.0f;
+    }
+
+    // X軸
+    if (player_->renderer_->drawScale_.x >= 1.0f)
+    {
+        player_->renderer_->drawScale_.x -= fadeSpeed;
+        // 超過修正
+        if (player_->renderer_->drawScale_.x < 1.0f)
+            player_->renderer_->drawScale_.x = 1.0f;
+    }
+
+    // 両方ともscaleが1.0fになったらtrueえお返す
+    if (
+        (player_->renderer_->drawScale_.y == 1.0f)
+        && (player_->renderer_->drawScale_.x == 1.0f)
         )
     {
         return true;

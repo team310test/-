@@ -11,7 +11,7 @@ void ActorBehavior::move(OBJ2D* obj) const
         obj->renderer_->animeData_  = getParam()->ANIME_WAIT;
         obj->transform_->scale_ = getParam()->SCALE;
 
-        if (!obj->renderer_->drawScale_.x && !obj->renderer_->drawScale_.y)
+        if (obj->renderer_->drawScale_.x == 1.0f && obj->renderer_->drawScale_.y == 1.0f)
             obj->renderer_->drawScale_ = getParam()->SCALE;
         
         obj->collider_->size_ = {

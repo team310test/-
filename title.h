@@ -30,6 +30,7 @@ public:
 
 	bool objFadeOut();			// フェードアウト
 	bool objFadeIn();			// フェードイン
+	bool objShrink();			// obj(player)の縮小
 
 	OBJ2DManager* obj2dManager() { return obj2dManager_; }
 	BG* bg() { return bg_; }

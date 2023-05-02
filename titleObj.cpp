@@ -1,5 +1,15 @@
 #include "all.h"
 
+// アニメデータ
+namespace
+{
+    // 待機(player)
+    GameLib::AnimeData animePlayerCore01[] = {
+        { &sprPlayerCore01, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
+}
+
 //******************************************************************************
 //
 //      BaseTitleObjBehavior
@@ -64,16 +74,30 @@ TitleStateObjBehavior::TitleStateObjBehavior()
 
 void TitleStateObjBehavior::hit(OBJ2D* src, OBJ2D* dst) const
 {
-    // コアのある位置に自機の座標を変更
-    dst->transform_->position_ = src->transform_->position_;
+    static bool wait = false;
+
+    // 画像が切り替わる前のplayerをframeと重なる位置に変更する
+    VECTOR2 pos = src->transform_->position_;
+    dst->transform_->position_ = { pos.x - 7.0f,pos.y + 28 };
 
     src->titleComponent_->isTrigger = true;
-    src->collider_->judgeFlag_ = false;
-    src->renderer_->color_.w = 0.0f;    // 透明にする
 
-    // 自機を変更　操作できなくする
-    dst->update_ = nullptr;
-    dst->behavior_ = &playerCoreBehavior;
+    // 1フレーム処理を遅らせる
+    if (wait)
+    {
+        // 画像が切り替わったplayerをframeの合った位置に変更する
+        dst->transform_->position_ = src->transform_->position_;
+        src->collider_->judgeFlag_ = false; // 判定を取らないようにする
+        src->renderer_->color_.w = 0.0f;    // 透明にする
+        src->zOrder_ = 4;                   // 処理の順番を変更
+        wait = false;                       // 変数初期化
+
+        return;
+    }
+
+    wait = true;
+    dst->update_ = nullptr;                 // 自機を変更　操作できなくする
+    dst->behavior_ = &playerCoreBehavior;   // 画像(Behavior)変更
     dst->transform_->velocity_ = { 0.0f,0.0f };
 }
 
