@@ -19,9 +19,10 @@
 #include "common.h"
 #include "obj2d.h"
 #include "sprite_data.h"
-#include "fade.h"
+
 
 #include "Parameter.h"
+#include "fade.h"
 
 #include "bg.h"
 #include "weapon.h"

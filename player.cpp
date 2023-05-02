@@ -719,6 +719,17 @@ void ErasePlayer::erase(OBJ2D* obj) const
 //      TtileCorePlayerBehavior（タイトル用の自機）
 // 
 //******************************************************************************
+TtileCorePlayerBehavior::TtileCorePlayerBehavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT = animeTitleCore;
+
+    param_.SIZE = VECTOR2(PARTS_OBJ_SIZE, PARTS_OBJ_SIZE);
+    param_.SCALE = { 2.0f,2.0f };
+    param_.HIT_BOX[0] = { -10, -10, 10, 10 };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+}
+
 // カーソルの座標取得
 //VECTOR2 getCursorPoint()
 //{

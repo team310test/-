@@ -356,125 +356,82 @@ EnemyBuff01Behavior::EnemyBuff01Behavior()
 //******************************************************************************
 void EraseEnemy::erase(OBJ2D* obj) const
 {
+    // parentを省略すると正常に動作しないので撤廃
+    //OBJ2D* parent    = obj->actorComponent_->parent_;
+    //OBJ2D* orgParent = obj->actorComponent_->orgParent_;
+
+    ActorComponent* a = obj->actorComponent_;
+
+
     // スケールが一定以下になったら消去
     if (obj->transform_->scale_.x <= UPDATE_OBJ_SCALE_MIN_LIMIT)
     {
-        obj->actorComponent_->parent_ = nullptr; // 親情報をリセット
-        obj->behavior_ = nullptr;
+        a->parent_ = nullptr; // 親をリセット
+        a->orgParent_ = nullptr; // 元の親をリセット
+        obj->behavior_ = nullptr; // 自分を消去
 
         // 爆発エフェクト（予定）
-        {
-            //const VECTOR2 pos = obj->transform_->position_;
-
-            //OBJ2D* effect = Game::instance()->obj2dManager()->add(
-            //    new OBJ2D(
-            //        new Renderer,
-            //        new Collider,
-            //        obj->bg_,
-            //        nullptr,
-            //        nullptr,
-            //        nullptr,
-            //        new EffectComponent
-            //    ),
-            //    &efcBombBehavior,
-            //    pos
-            //);
-            //effect->zOrder_ = 1;
-        }
+        AddEffect::addEffect(obj, &efcBombBehavior);
 
         return;
     }
 
 
-    OBJ2D* parent = obj->actorComponent_->parent_; // 長いので省略
-
-    // 親が存在していて、親が自分でなく、親が消滅するか親の体力が0になるとアイテム化する
-    if (parent && obj != parent && (parent->behavior_ == nullptr || !parent->actorComponent_->isAlive()) )
+    // 親を持っていて、自分が親ではなく、親が消滅するか親の体力が0になるとアイテム化する
+    if (a->parent_ && obj != a->parent_ && (a->parent_->behavior_ == nullptr || !a->parent_->actorComponent_->isAlive()))
     {
-        parent = nullptr; // 親リセット
-        obj->actorComponent_->orgParent_ = nullptr; // 元の親をリセット
+        a->parent_ = nullptr; // 親をリセット
+        a->orgParent_ = nullptr; // 元の親をリセット
 
         // 次のbehavior・eraser（ドロップアイテム）を代入
         obj->behavior_ = obj->nextBehavior_;
-        obj->eraser_   = obj->nextEraser_;
+        obj->eraser_ = obj->nextEraser_;
+
+        // 爆発エフェクト（予定）
+        AddEffect::addEffect(obj, &efcBombBehavior);
 
         if (obj->behavior_ == nullptr) return;
 
         obj->update_ = DROP_PARTS_UPDATE;  // updateを変更
 
-        obj->actorComponent_->hp_ = 0;  // HPを0にする
+        a->hp_ = 0;  // HPを0にする
         obj->renderer_->flip(); // 反転させる
-
-        // 爆発エフェクト（予定）
-        {
-            //const VECTOR2 pos = obj->transform_->position_;
-
-            //OBJ2D* effect = Game::instance()->obj2dManager()->add(
-            //    new OBJ2D(
-            //        new Renderer,
-            //        new Collider,
-            //        obj->bg_,
-            //        nullptr,
-            //        nullptr,
-            //        nullptr,
-            //        new EffectComponent
-            //    ),
-            //    &efcBombBehavior,
-            //    pos
-            //);
-            //effect->zOrder_ = 1;
-        }
 
         return;
     }
 
+
     // HPが0以下になると
-    if (!obj->actorComponent_->isAlive())
+    if (!a->isAlive())
     {
-        parent = nullptr; // 親情報をリセット
-        obj->actorComponent_->orgParent_ = nullptr; // 元の親をリセット
+        a->parent_ = nullptr; // 親をリセット
+
+        // 爆発エフェクト（予定）
+        AddEffect::addEffect(obj, &efcBombBehavior);
+
 
         // 自分がコアでないならゴミアイテム化する
-        if (obj != parent)
+        if (obj != a->orgParent_)
         {
+            a->orgParent_ = nullptr; // 元の親をリセット
+
             // 次のbehavior・eraser（ドロップごみアイテム）を代入
             obj->behavior_ = &dropTrash01Behavior;
-            obj->eraser_   = &eraseDropParts;
-            
-            if (obj->behavior_ == nullptr) return;
+            obj->eraser_ = &eraseDropParts;
             obj->update_ = DROP_PARTS_UPDATE;  // updateを変更
 
             return;
         }
 
+        a->orgParent_ = nullptr; // 元の親をリセット
+
         // コアなら消滅する
         obj->behavior_ = nullptr;
-
-
-        // 爆発エフェクト（予定）
-        {
-            //const VECTOR2 pos = obj->transform_->position_;
-
-            //OBJ2D* effect = Game::instance()->obj2dManager()->add(
-            //    new OBJ2D(
-            //        new Renderer,
-            //        new Collider,
-            //        obj->bg_,
-            //        nullptr,
-            //        nullptr,
-            //        nullptr,
-            //        new EffectComponent
-            //    ),
-            //    &efcBombBehavior,
-            //    pos
-            //);
-            //effect->zOrder_ = 1;
-        }
-
         return;
     }
 
 }
+
 
 //******************************************************************************
 //

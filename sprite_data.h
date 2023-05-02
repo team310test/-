@@ -30,7 +30,10 @@ enum TEXNO
     TRASH01,
 
     // 弾丸
-    SHOT,
+    BULLET01,
+
+    // エフェクト
+    EFC_BOMB,
 
     // タイトル
     TITLE_FRAME,
@@ -56,6 +59,11 @@ extern GameLib::SpriteData sprPartsTrash01;
 
 //------< 弾 >----------------------------------------------------------------
 extern GameLib::SpriteData sprShot_NormalShot;
+
+//------< エフェクト >----------------------------------------------------------------
+extern GameLib::SpriteData sprEfcBomb_anime0;
+extern GameLib::SpriteData sprEfcBomb_anime1;
+extern GameLib::SpriteData sprEfcBomb_anime2;
 
 //------< タイトル >----------------------------------------------------------------
 extern GameLib::SpriteData sprTitleCore;

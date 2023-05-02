@@ -1,5 +1,16 @@
 #include "all.h"
 
+namespace
+{
+    GameLib::AnimeData animeEfcBomb[] = {
+        { &sprEfcBomb_anime0,  10 },
+        { &sprEfcBomb_anime1,  10 },
+        { &sprEfcBomb_anime2,  10 },
+        { nullptr,      -1 },    // 終了フラグ
+    };
+}
+
+
 //******************************************************************************
 //
 //      BaseEffectBehavior（エフェクトのベース）
@@ -7,14 +18,16 @@
 //******************************************************************************
 void BaseEffectBehavior::move(OBJ2D* obj) const
 {
+    Collider* c = obj->collider_;
+    Renderer* r = obj->renderer_;
+
     switch (obj->state_)
     {
     case 0:
-        obj->renderer_->animeData_   = getParam()->ANIME;
-        obj->transform_->scale_ = obj->weaponComponent_->parent_->transform_->scale_;
+        r->animeData_ = getParam()->ANIME;
 
-        obj->collider_->judgeFlag_          = false;    // あたり判定を行わない
-        obj->collider_->isDrawAttackRect_   = false;    // あたり判定の領域を描画しない
+        c->judgeFlag_ = false;    // あたり判定を行わない
+        c->isDrawAttackRect_ = false;    // あたり判定の領域を描画しない
 
         ++obj->state_;
         /*fallthrough*/
@@ -22,13 +35,15 @@ void BaseEffectBehavior::move(OBJ2D* obj) const
         startAllShrink(obj);    // 縮小開始
         shrink(obj);            // 画像縮小
 
-        if (obj->collider_->isShrink_) break; // 縮小中なら飛ばす
+        //if (c->isShrink_) break; // 縮小中なら飛ばす
 
-        // 位置更新
-        update(obj);        
 
-        // アニメーション更新
-        if (obj->renderer_->animeData_) obj->renderer_->animeUpdate();
+        // 更新
+        update(obj);
+
+        r->animeData_ = param_.ANIME;
+        // アニメーション更新(アニメーションが終了すると自身を削除する)
+        if (r->animeData_) if (r->animeUpdate())obj->behavior_ = nullptr;
 
         break;
     }
@@ -40,10 +55,13 @@ void BaseEffectBehavior::move(OBJ2D* obj) const
 //******************************************************************************
 EffectBombBehavior::EffectBombBehavior()
 {
-    //param_.ANIME = spr;
+    param_.ANIME = animeEfcBomb;
 }
 
 void EffectBombBehavior::update(OBJ2D* obj) const
 {
-    //EffectComponent* e = obj->effectComponent_;
+    //if (obj->renderer_->animeData_->data == nullptr)
+    //{
+    //    obj->behavior_ = nullptr;
+    //}
 }

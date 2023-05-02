@@ -125,7 +125,7 @@ public:
         , targetColor_({1,1,1,1})
         , anime_()
         , animeData_()
-        , drawScale_()
+        , drawScale_({1,1})
         , isDrawShrink_()
         , drawXFlip_()
         , pad_()

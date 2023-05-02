@@ -9,23 +9,26 @@ GameLib::LoadTexture loadTexture[] = {
     { TEXNO::UI_METER_FRAME,    L"./Data/Images/UI/Meter_Frame.png",    1U },   // 計器の枠
     { TEXNO::UI_METER_READ,     L"./Data/Images/UI/Meter_Read.png",     1U },   // 計器の目盛り
     { TEXNO::UI_METER_NEEDLE,   L"./Data/Images/UI/Meter_Needle.png",   1U },   // 計器の針
-
+    
     // コア
     { TEXNO::PL_CORE01,  L"./Data/Images/Core/PlayerCore01.png", 1U },
     { TEXNO::ENM_CORE01, L"./Data/Images/Core/EnemyCore01.png",  1U },
-
+    
     // 攻撃パーツ
-    { TEXNO::TURRET01,   L"./Data/Images/Turret/Turret01.png", 1U },
-    { TEXNO::TURRET02,   L"./Data/Images/Turret/Turret02.png", 1U },
-    { TEXNO::TURRET03,   L"./Data/Images/Turret/Turret03.png", 1U },
+    { TEXNO::TURRET01,   L"./Data/Images/Parts/Turret/Turret01.png", 1U },
+    { TEXNO::TURRET02,   L"./Data/Images/Parts/Turret/Turret02.png", 1U },
+    { TEXNO::TURRET03,   L"./Data/Images/Parts/Turret/Turret03.png", 1U },
     // バフパーツ
-    { TEXNO::BUFF01,     L"./Data/Images/Buff/Buff01.png",     1U },
+    { TEXNO::BUFF01,     L"./Data/Images/Parts/Buff/Buff01.png",     1U },
     // ごみパーツ
-    { TEXNO::TRASH01,    L"./Data/Images/Trash/Trash01.png",   1U },
-
-
+    { TEXNO::TRASH01,    L"./Data/Images/Parts/Trash/Trash01.png",   1U },
+    
+    
     // 弾
-    { TEXNO::SHOT,       L"./Data/Images/Bullet/Bullet01.png", 1U },
+    { TEXNO::BULLET01,       L"./Data/Images/Bullet/Bullet01.png", 1U },
+
+    // エフェクト
+    { TEXNO::EFC_BOMB,  L"./Data/Images/Effect/Effect_Bomb.png", 1U },
 
 
     // タイトル画像
@@ -33,7 +36,7 @@ GameLib::LoadTexture loadTexture[] = {
     { TEXNO::TITLE_USER, L"./Data/Images/UI/title_user.png",    1U},
     { TEXNO::TITLE_TRASH,L"./Data/Images/UI/title_trash.png",    1U},
     { TEXNO::TITLE_LOGO,L"./Data/Images/UI/title_logo.png",    1U},
-    { TEXNO::TITLE_HEART,L"./Data/Images/Core/Core_Heart2.png",    1U},
+    { TEXNO::TITLE_HEART,L"./Data/Images/Core/Core_Heart.png",    1U},
 
     { -1, nullptr }	// 終了フラグ
 };
@@ -53,8 +56,13 @@ GameLib::SpriteData sprPartsTurret03 = SPRITE_CENTER(TEXNO::TURRET03,   0, 0, 12
 GameLib::SpriteData sprPartsBuff01   = SPRITE_CENTER(TEXNO::BUFF01,     0, 0, 250, 250);
 GameLib::SpriteData sprPartsTrash01  = SPRITE_CENTER(TEXNO::TRASH01,    0, 0, 128, 128);
 
-//------< ショット >----------------------------------------------------------------
-GameLib::SpriteData sprShot_NormalShot = SPRITE_CENTER(TEXNO::SHOT,     0, 0, 64, 64);
+//------< 弾 >----------------------------------------------------------------
+GameLib::SpriteData sprShot_NormalShot = SPRITE_CENTER(TEXNO::BULLET01,     0, 0, 64, 64);
+
+//------< エフェクト >----------------------------------------------------------------
+GameLib::SpriteData sprEfcBomb_anime0 = SPRITE_CENTER(TEXNO::EFC_BOMB, (256 * 0), 0, 256, 256);
+GameLib::SpriteData sprEfcBomb_anime1 = SPRITE_CENTER(TEXNO::EFC_BOMB, (256 * 1), 0, 256, 256);
+GameLib::SpriteData sprEfcBomb_anime2 = SPRITE_CENTER(TEXNO::EFC_BOMB, (256 * 2), 0, 256, 256);
 
 //------< タイトル >----------------------------------------------------------------
 GameLib::SpriteData sprTitleCore = SPRITE_CENTER(TEXNO::TITLE_FRAME, 0, 0, 128, 128);
