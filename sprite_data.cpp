@@ -28,7 +28,8 @@ GameLib::LoadTexture loadTexture[] = {
     { TEXNO::BULLET01,  L"./Data/Images/Bullet/Bullet01.png",   1U },
 
     // エフェクト
-    { TEXNO::EFC_BOMB,  L"./Data/Images/Effect/Effect_Bomb.png", 1U },
+    { TEXNO::EFC_BOMB,      L"./Data/Images/Effect/Effect_Bomb.png",    1U },
+    { TEXNO::EFC_COMBINE,   L"./Data/Images/Effect/Effect_Combine.png", 1U },
     
 
     { -1, nullptr }	// 終了フラグ
@@ -53,10 +54,18 @@ GameLib::SpriteData sprPartsTrash01  = SPRITE_CENTER(TEXNO::TRASH01,    0, 0, 12
 GameLib::SpriteData sprShot_NormalShot  = SPRITE_CENTER(TEXNO::BULLET01, 0, 0, 64, 64);
 
 //------< エフェクト >----------------------------------------------------------------
-GameLib::SpriteData sprEfcBomb_anime0   = SPRITE_CENTER(TEXNO::EFC_BOMB, (256 * 0), 0, 256, 256);
-GameLib::SpriteData sprEfcBomb_anime1   = SPRITE_CENTER(TEXNO::EFC_BOMB, (256 * 1), 0, 256, 256);
-GameLib::SpriteData sprEfcBomb_anime2   = SPRITE_CENTER(TEXNO::EFC_BOMB, (256 * 2), 0, 256, 256);
-GameLib::SpriteData sprEfcBomb_anime3   = SPRITE_CENTER(TEXNO::EFC_BOMB, (256 * 3), 0, 256, 256);
+
+// 爆発エフェクト
+GameLib::SpriteData sprEfcBomb_anime0       = SPRITE_CENTER(TEXNO::EFC_BOMB, (256 * 0), 0, 256, 256);
+GameLib::SpriteData sprEfcBomb_anime1       = SPRITE_CENTER(TEXNO::EFC_BOMB, (256 * 1), 0, 256, 256);
+GameLib::SpriteData sprEfcBomb_anime2       = SPRITE_CENTER(TEXNO::EFC_BOMB, (256 * 2), 0, 256, 256);
+GameLib::SpriteData sprEfcBomb_anime3       = SPRITE_CENTER(TEXNO::EFC_BOMB, (256 * 3), 0, 256, 256);
+
+// 合体エフェクト
+GameLib::SpriteData sprEfcCombine_anime0    = SPRITE_CENTER(TEXNO::EFC_COMBINE, (256 * 0), 0, 256, 256);
+GameLib::SpriteData sprEfcCombine_anime1    = SPRITE_CENTER(TEXNO::EFC_COMBINE, (256 * 1), 0, 256, 256);
+GameLib::SpriteData sprEfcCombine_anime2    = SPRITE_CENTER(TEXNO::EFC_COMBINE, (256 * 2), 0, 256, 256);
+GameLib::SpriteData sprEfcCombine_anime3    = SPRITE_CENTER(TEXNO::EFC_COMBINE, (256 * 3), 0, 256, 256);
 
 
 //------------------------------------------------------------------------------

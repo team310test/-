@@ -14,7 +14,6 @@ public:
     template <typename T>
     inline static void addShot(OBJ2D* obj, T* behavior, const VECTOR2& pos)
     {
-
         OBJ2D* shot = Game::instance()->obj2dManager()->add(
             new OBJ2D(
                 new Renderer,
@@ -34,7 +33,7 @@ public:
 
     // エフェクト追加
     template <typename T>
-    inline static void addEffect(const OBJ2D* obj, T* behavior)
+    inline static void addEffect(OBJ2D*& obj, T* behavior) // objは直接参照
     {
         const VECTOR2 pos = obj->transform_->position_;
 
@@ -45,7 +44,8 @@ public:
                 obj->bg_,
                 nullptr,
                 nullptr,
-                nullptr
+                nullptr,
+                new EffectComponent
             ),
             behavior,
             pos
@@ -54,5 +54,7 @@ public:
 
         effect->transform_->scale_    = obj->transform_->scale_;
         effect->renderer_->drawScale_ = obj->transform_->scale_;
+
+        //effect->effectComponent_->parent_ = obj;
     }
 };

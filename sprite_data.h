@@ -33,6 +33,7 @@ enum TEXNO
 
     // エフェクト
     EFC_BOMB,
+    EFC_COMBINE,
 };
 
 extern GameLib::LoadTexture loadTexture[];
@@ -53,10 +54,18 @@ extern GameLib::SpriteData sprPartsTrash01;
 extern GameLib::SpriteData sprShot_NormalShot;
 
 //------< エフェクト >----------------------------------------------------------------
+
+//　爆発エフェクト
 extern GameLib::SpriteData sprEfcBomb_anime0;
 extern GameLib::SpriteData sprEfcBomb_anime1;
 extern GameLib::SpriteData sprEfcBomb_anime2;
 extern GameLib::SpriteData sprEfcBomb_anime3;
+
+// 合体エフェクト
+extern GameLib::SpriteData sprEfcCombine_anime0;
+extern GameLib::SpriteData sprEfcCombine_anime1;
+extern GameLib::SpriteData sprEfcCombine_anime2;
+extern GameLib::SpriteData sprEfcCombine_anime3;
 
 
 //******************************************************************************

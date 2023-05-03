@@ -26,6 +26,7 @@ private:
     void startAllShrink(OBJ2D* /*obj*/) const override {}
     void shrink(OBJ2D* /*obj*/) const override {}
 
+protected:
     virtual void update(OBJ2D* obj) const;
 };
 
@@ -39,3 +40,16 @@ public:
     EffectBombBehavior();
 };
 EXTERN EffectBombBehavior efcBombBehavior;
+
+
+//******************************************************************************
+//      EffectCombineBehavior（合体エフェクト）
+//******************************************************************************
+class EffectCombineBehavior : public BaseEffectBehavior
+{
+public:
+    EffectCombineBehavior();
+public:
+    void update(OBJ2D* obj) const override;
+};
+EXTERN EffectCombineBehavior efcCombineBehavior;

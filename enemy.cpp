@@ -142,13 +142,14 @@ void BaseEnemyBehavior::areaCheck(OBJ2D* obj) const
     const float topLimit = size->y - margin;
     const float bottomLimit = BG::WINDOW_H + size->y + margin;
 
-    if (pos->x < leftLimit ||
+    if (pos->x < leftLimit  ||
         pos->x > rightLimit ||
-        pos->y < topLimit ||
+        pos->y < topLimit   ||
         pos->y > bottomLimit)
     {
         obj->actorComponent_->hp_ = 0;              // ‰æ–ÊŠO‚És‚Á‚½‚çÁ‹(‘Ì—Í‚ğ0‚É‚·‚é)
         obj->actorComponent_->parent_ = nullptr;    
+        return;
     }
 #endif
 }

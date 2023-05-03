@@ -138,14 +138,21 @@ void EraseDropParts::erase(OBJ2D* obj) const
 {
     if (obj->transform_->scale_.x <= UPDATE_OBJ_SCALE_MIN_LIMIT) // スケールが0以下になったら
     {
+        // 爆発エフェクト追加
+        AddObj::addEffect(obj, &efcBombBehavior);
+
         obj->behavior_ = nullptr; // 消去
         return;
     }
 
     if (obj->actorComponent_->parent_) // 親を手に入れたらプレイヤーのパーツになる
     {
+        // 合体エフェクト追加
+        AddObj::addEffect(obj, &efcCombineBehavior);
+
         obj->behavior_ = obj->nextBehavior_; // 次のbehaviorを代入
         obj->eraser_   = obj->nextEraser_;   // 次のeraserを代入
+
 
         if (obj->behavior_ == nullptr) return;
         obj->update_ = PLAYER_PATRS_UPDATE;  // updateを変更
@@ -153,6 +160,7 @@ void EraseDropParts::erase(OBJ2D* obj) const
         obj->actorComponent_->hp_ = obj->actorComponent_->nextHp_;  // 次のHPを代入
         
         ++BasePlayerBehavior::plShrinkCount_; // 縮小までのカウントを加算
+
         return;
     }
 }

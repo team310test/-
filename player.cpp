@@ -543,14 +543,15 @@ void ErasePlayer::erase(OBJ2D* obj) const
     // HPが0以下になったら
     if (!obj->actorComponent_->isAlive())
     {
+        // 爆発エフェクト
+        AddObj::addEffect(obj, &efcBombBehavior);
+
         obj->actorComponent_->parent_ = nullptr; // 親情報をリセット
         obj->behavior_ = nullptr;
 
         // 縮小カウント減少
         BasePlayerBehavior::plShrinkCount_ = std::max(0, BasePlayerBehavior::plShrinkCount_ - 1);
 
-        // 爆発エフェクト
-        AddObj::addEffect(obj, &efcBombBehavior);
 
         return; // returnを付ける
     }
@@ -578,15 +579,15 @@ void ErasePlayer::erase(OBJ2D* obj) const
     }
 #endif
 
+    // 爆発エフェクト
+    AddObj::addEffect(obj, &efcBombBehavior);
+
     // 親が見つからなかった場合
     obj->actorComponent_->parent_ = nullptr; // 親情報をリセット
     obj->behavior_ = nullptr;                // 自分を消去
 
     // 縮小カウント減少
     BasePlayerBehavior::plShrinkCount_ = std::max(0, BasePlayerBehavior::plShrinkCount_ - 1);
-
-    // 爆発エフェクト
-    AddObj::addEffect(obj, &efcBombBehavior);
 
     return;
 }

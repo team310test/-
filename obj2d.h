@@ -258,7 +258,7 @@ public:
 class WeaponComponent : public Component
 {
 public:
-    OBJ2D* parent_;  // この武器の持ち主
+    OBJ2D* parent_;
 public:
     WeaponComponent()
         :parent_(nullptr)
@@ -269,10 +269,10 @@ public:
 class EffectComponent : public Component
 {
 public:
-    VECTOR2 parentScale_;
+    OBJ2D* parent_; // 親が消滅して出るエフェクトはこれを使用しない方が良い
 public:
     EffectComponent()
-        :parentScale_()
+        :parent_(nullptr)
     {
     }
 };
@@ -296,12 +296,13 @@ public:
 
     BG* bg_ = nullptr;
 
-    Transform* transform_;
-    Renderer* renderer_;
-    Collider* collider_;
-    ActorComponent* actorComponent_;
-    ItemComponent* itemComponent_;
-    WeaponComponent* weaponComponent_;
+    Transform*          transform_;
+    Renderer*           renderer_;
+    Collider*           collider_;
+    ActorComponent*     actorComponent_;
+    ItemComponent*      itemComponent_;
+    WeaponComponent*    weaponComponent_;
+    EffectComponent*    effectComponent_;
 
 public:
     // メンバ関数
@@ -310,7 +311,8 @@ public:
         BG* bg,
         ActorComponent* actorComponent,
         ItemComponent* itemComponent, 
-        WeaponComponent* weaponComponent
+        WeaponComponent* weaponComponent,
+        EffectComponent* effectComponent = nullptr // わざわざ書かなくて済むようにあらかじめnullptrを代入
     );
     ~OBJ2D();
     void move();    // 移動
