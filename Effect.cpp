@@ -55,7 +55,7 @@ void BaseEffectBehavior::update(OBJ2D* obj) const
     Renderer* r = obj->renderer_;
 
     // 徐々に薄くする
-    const float addColor = -0.035f;
+    const float addColor = -0.04f;
     r->color_ = {
         r->color_.x + addColor, r->color_.y + addColor,
         r->color_.z + addColor, r->color_.w + addColor
@@ -87,24 +87,14 @@ EffectCombineBehavior::EffectCombineBehavior()
 
 void EffectCombineBehavior::update(OBJ2D* obj) const
 {
-    Transform*  t = obj->transform_;
+    Transform* t       = obj->transform_;
+    Transform* plCoreT = Game::instance()->player_->transform_;
 
-    //// 親がいれば親の位置を代入して親に追従する
-    //// 読み取りアクセス違反のエラーが起きる
-    //if (e->parent_ != nullptr)
-    //{
-    //    if (e->parent_->behavior_ != nullptr)
-    //    {
-    //        t->position_.x = e->parent_->transform_->position_.x;
-    //        t->position_.y = e->parent_->transform_->position_.y;
-    //    }
-    //}
-
-    // パーツと同じ処理でエフェクトを追従させる
-    Transform* plCore = Game::instance()->player_->transform_;
-
-    t->velocity_  = plCore->velocity_;
-    t->position_ += plCore->velocity_;
+    // プレイヤーパーツと同じ処理でエフェクトを追従させる  
+    // プレイヤーコアの速度を代入
+    t->velocity_ = plCoreT->velocity_;
+    // 縮小中でなければ位置に速度を足す
+    if (!Behavior::isObjShrink()) t->position_ += plCoreT->velocity_;
 
     // アニメーション更新
     BaseEffectBehavior::update(obj);

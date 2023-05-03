@@ -463,12 +463,14 @@ void PlayerTurret01Behavior::attack(OBJ2D* obj) const
     // 攻撃クールタイム減少
     if (obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
 
-    // 攻撃クールタイムが終わっていなければreturn
-    if (obj->actorComponent_->attackTimer_ > 0) return;
+    // 指定ボタンが押されていない、または攻撃クールタイムが終わっていなければreturn
+    if (!(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG3) ||
+        obj->actorComponent_->attackTimer_ > 0) return;
 
     // 弾を追加
     AddObj::addShot(obj, &plNormalShotBehavior, obj->transform_->position_);
 
+    setXAxisScaleAnime(obj);
     obj->actorComponent_->attackTimer_ = 30;
 
 }

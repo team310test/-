@@ -43,7 +43,10 @@ void ActorBehavior::move(OBJ2D* obj) const
 
         if (obj->collider_->isShrink_) break; // 縮小中なら飛ばす
         // objがプレイヤーの場合
-        if (obj == Game::instance()->player_) { if (Behavior::isObjShrink()) break; }// すべてのobjが縮小終了していなければ飛ばす
+        if (obj == Game::instance()->player_) 
+        { 
+            if (Behavior::isObjShrink()) break; // すべてのobjが縮小終了していなければ飛ばす
+        }
 
 
         // PGによるアニメーション(objAnimeTemporary_を優先的に行う)
