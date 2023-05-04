@@ -261,30 +261,39 @@ void BasePlayerBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
 {
     // 敵のHPを減らす
     dst->actorComponent_->hp_ -= getParam()->ATTACK_POWER;
+
 }
 
 void BasePlayerBehavior::damageProc(OBJ2D* obj) const
 {
+    ActorComponent* a = obj->actorComponent_;
+
     // 入力処理
-    obj->actorComponent_->padTrg_   = GameLib::input::TRG(0);
-    obj->actorComponent_->padState_ = GameLib::input::STATE(0);
+    a->padTrg_   = GameLib::input::TRG(0);
+    a->padState_ = GameLib::input::STATE(0);
 
     // ダメージ処理
-    obj->actorComponent_->damaged();
+    //obj->actorComponent_->damaged();
 
     // 無敵処理
-    obj->actorComponent_->muteki();
+    //obj->actorComponent_->muteki();
 
-    //if (GameLib::input::STATE(0) & GameLib::input::PAD_TRG2)
-    //if (obj->actorComponent_->parent_->behavior_ != nullptr)
-    //{
-    //    GameLib::debug::setString("No:%d→[%d]", obj->actorComponent_->No,
-    //        obj->actorComponent_->parent_->actorComponent_->No);
-    //}
-    //else
-    //{
-    //    GameLib::debug::setString("No:%d→[×]", obj->actorComponent_->No);
-    //}
+    // 点滅させる
+    if (a->damageTimer_ > 0)
+    {
+        VECTOR4 color = obj->renderer_->color_;
+        color.w = a->damageTimer_ & 0x02 ? 1.0f : 0.2f;
+        obj->renderer_->color_ = color;
+
+        --a->damageTimer_;
+        if (a->damageTimer_ <= 0) obj->renderer_->color_ = { 1,1,1,1 };
+    }
+
+    if (!obj->actorComponent_->isQuake_) return;
+
+    // 揺らす
+    static Quake quake;
+    quake.quakeDamage(obj);
 }
 
 void BasePlayerBehavior::areaCheck(OBJ2D* /*obj*/) const
@@ -451,17 +460,17 @@ PlayerTurret01Behavior::PlayerTurret01Behavior()
     param_.SIZE = VECTOR2(PARTS_OBJ_SIZE, PARTS_OBJ_SIZE);
 
     // 画像サイズ(128*64の半分)
-    param_.HIT_BOX[0] = { -64, -32, 64, 32 };    // 下長方形
-    //param_.HIT_BOX[1] = { -125,-95,10,50 };      // ネジ
+    param_.HIT_BOX[0] = { -64, -32, 64, 32 };   // 長方形
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];   // 長方形
 
-    param_.ATTACK_BOX[0] = param_.HIT_BOX[0]; // 下長方形
-    //param_.ATTACK_BOX[1] = param_.HIT_BOX[1];   // ネジ
 }
 
 void PlayerTurret01Behavior::attack(OBJ2D* obj) const
 {
     // 攻撃クールタイム減少
-    if (obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
+    // （バラバラに打たせるために指定ボタンを押しているときだけ減らす）
+    if (obj->actorComponent_->padState_ & GameLib::input::PAD_TRG3 && 
+        obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
 
     // 指定ボタンが押されていない、または攻撃クールタイムが終わっていなければreturn
     if (!(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG3) ||
@@ -490,15 +499,16 @@ PlayerBuff01Behavior::PlayerBuff01Behavior()
 
     param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
     param_.HIT_BOX[0] = { 
-        -PL_CORE_HITBOX, -PL_CORE_HITBOX, 
-         PL_CORE_HITBOX,  PL_CORE_HITBOX,
+        -64, -64, 
+         64,  64,
     };
     param_.ATTACK_BOX[0] = { 
-        -PL_CORE_HITBOX * BUFF_MALTIPLY_VALUE, 
-        -PL_CORE_HITBOX * BUFF_MALTIPLY_VALUE,
-         PL_CORE_HITBOX * BUFF_MALTIPLY_VALUE,  
-         PL_CORE_HITBOX * BUFF_MALTIPLY_VALUE,
+        -64 * BUFF_MALTIPLY_VALUE, 
+        -64 * BUFF_MALTIPLY_VALUE,
+         64 * BUFF_MALTIPLY_VALUE,  
+         64 * BUFF_MALTIPLY_VALUE,
     };
+
 }                            
 
 // 攻撃タイプがPLAYERなのでdstは味方(プレイヤー)になる
@@ -518,16 +528,8 @@ PlayerTrash01Behavior::PlayerTrash01Behavior()
     param_.ANIME_WAIT = animeTrash01;
 
     param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
-    param_.HIT_BOX[0] = {
-        -PL_CORE_HITBOX, -PL_CORE_HITBOX,
-         PL_CORE_HITBOX,  PL_CORE_HITBOX,
-    };
-    param_.ATTACK_BOX[0] = {
-        -PL_CORE_HITBOX,
-        -PL_CORE_HITBOX,
-         PL_CORE_HITBOX,
-         PL_CORE_HITBOX,
-    };
+    param_.HIT_BOX[0] = { -64, -64, 64, 64 };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
 }
 
@@ -554,8 +556,7 @@ void ErasePlayer::erase(OBJ2D* obj) const
         // 縮小カウント減少
         BasePlayerBehavior::plShrinkCount_ = std::max(0, BasePlayerBehavior::plShrinkCount_ - 1);
 
-
-        return; // returnを付ける
+        return;
     }
 
     if (obj->actorComponent_->parent_->behavior_) return;   // 自分の親が存在するならreturn

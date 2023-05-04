@@ -196,6 +196,8 @@ public:
     static int playerNum;
     int No;
 
+    bool isQuake_;
+
     // 速度関連パラメータ
     VECTOR2 accel_;
     VECTOR4 addition_;
@@ -219,6 +221,7 @@ public:
         , obj(nullptr)
 
         , No(1)
+        , isQuake_(false)
 
         // 速度関連パラメータ
         , accel_()
@@ -293,6 +296,8 @@ public:
     OBJ_DATA  update_       = nullptr;
 
     int bgSprNo_ = 0; // 背景スプライト画像TEXNO
+
+    bool isBlink_ = false;
 
     BG* bg_ = nullptr;
 

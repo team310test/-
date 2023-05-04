@@ -16,13 +16,13 @@ protected:
         GameLib::fRECT ATTACK_BOX[Collider::boxMax] = {};
 
         int HP = 1;
+        int NEXT_HP = 1;
         int ATTACK_POWER = 1;
 
         int BOX_NUM = 1;
         Behavior* NEXT_BEHAVIOR = nullptr;
         Eraser* NEXT_ERASER = nullptr;
 
-        int NEXT_HP = 1;
 
         // アニメーション用パラメータ
         OBJ_DATA OBJ_ANIME = nullptr;

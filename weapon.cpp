@@ -49,10 +49,21 @@ void BaseShotBehavior::move(OBJ2D* obj) const
 
 void BaseShotBehavior::hit(OBJ2D* src, OBJ2D* dst) const
 {
-    // hp‚©‚çUŒ‚—Í‚ğˆø‚¢‚½’l‚ª0‚æ‚è¬‚³‚©‚Á‚½‚ç0‚ÉC³A‚»‚¤‚Å‚È‚¯‚ê‚Îhp‚©‚çUŒ‚‚ğˆø‚­
-    dst->actorComponent_->hp_ = std::max(
-        dst->actorComponent_->hp_ - getParam()->ATTACK_POWER, 0
-    );
+    ActorComponent* dstA = dst->actorComponent_;
+
+    if (dstA->damageTimer_ > 0) return;
+
+    // HP‚ğŒ¸‚ç‚µA0‚ğ‰º‰ñ‚éê‡‚Í0‚ğ‘ã“ü
+    dstA->hp_ = std::max(dstA->hp_ -= getParam()->ATTACK_POWER, 0);
+
+    // ‘Šè‚ª‚Ü‚¾¶‚«‚Ä‚¢‚éê‡
+    if (dstA->hp_ > 0)
+    {
+        // ‘Šè‚ğ—h‚ç‚·
+        dstA->isQuake_ = true;
+        // ‘Šè‚ğ“_–Å‚³‚¹‚é–³“GŠÔ
+        dstA->damageTimer_ = 40;
+    }
 
     src->behavior_ = nullptr; // ’e‚ğÁ‹
 }

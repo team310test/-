@@ -104,8 +104,23 @@ void BaseEnemyBehavior::init(OBJ2D* obj) const
 
 void BaseEnemyBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
 {
+    ActorComponent* dstA = dst->actorComponent_;
+
+    if (dstA->damageTimer_ > 0) return;
+
+
     // プレイヤーのHPを減らす
-    dst->actorComponent_->hp_ -= getParam()->ATTACK_POWER;
+    dstA->hp_ = std::max(dstA->hp_ - getParam()->ATTACK_POWER, 0);
+
+
+    // 相手がまだ生きている場合
+    if (dstA->hp_ > 0)
+    {
+        // 相手を揺らす
+        dstA->isQuake_ = true;
+        // 相手を点滅させる無敵時間
+        dstA->damageTimer_ = 40;
+    }
 }
 
 bool BaseEnemyBehavior::isAlive(OBJ2D* obj) const
@@ -113,13 +128,32 @@ bool BaseEnemyBehavior::isAlive(OBJ2D* obj) const
     return obj->actorComponent_->hp_ > 0;
 }
 
-void BaseEnemyBehavior::damageProc(OBJ2D* /*obj*/) const
+void BaseEnemyBehavior::damageProc(OBJ2D* obj) const
 {
+    ActorComponent* a = obj->actorComponent_;
+
     // ダメージ処理
     //obj->actorComponent_->damaged();
 
     // 無敵処理
     //obj->actorComponent_->muteki();
+
+        // 点滅させる
+    if (a->damageTimer_ > 0)
+    {
+        VECTOR4 color = obj->renderer_->color_;
+        color.w = a->damageTimer_ & 0x02 ? 1.0f : 0.2f;
+        obj->renderer_->color_ = color;
+
+        --a->damageTimer_;
+        if (a->damageTimer_ <= 0) obj->renderer_->color_ = { 1,1,1,1 };
+}
+
+    if (!obj->actorComponent_->isQuake_) return;
+
+    // 揺らす
+    static Quake quake;
+    quake.quakeDamage(obj);
 }
 
 void BaseEnemyBehavior::areaCheck(OBJ2D* obj) const
@@ -278,11 +312,8 @@ EnemyTurret01Behavior::EnemyTurret01Behavior()
     param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
 
     // 画像サイズ(128*64の半分)
-    param_.HIT_BOX[0] = { -64, -32, 64, 32 };    // 下長方形    
-    //param_.HIT_BOX[1] = { -10,-95,125,50 };      // ネジ
-
+    param_.HIT_BOX[0] = { -64, -32, 64, 32 };   // 下長方形    
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];   // 下長方形
-    //param_.ATTACK_BOX[1] = param_.HIT_BOX[1];      // ネジ
 
     // 次のBehavior・Eraser（ドロップアイテム）
     param_.NEXT_BEHAVIOR = &dropTurret01Behavior;
@@ -378,6 +409,8 @@ void EraseEnemy::erase(OBJ2D* obj) const
         a->hp_ = 0;             // HPを0にする
         obj->renderer_->flip(); // 反転させる
 
+        obj->isBlink_ = true;     // 明滅させる
+
         return;
     }
 
@@ -400,6 +433,11 @@ void EraseEnemy::erase(OBJ2D* obj) const
             obj->behavior_ = &dropTrash01Behavior;
             obj->eraser_   = &eraseDropParts;         
             obj->update_   = DROP_PARTS_UPDATE;  // updateを変更
+
+            a->hp_ = 0;             // HPを0にする
+            obj->renderer_->flip(); // 反転させる（マスク処理に重要）
+
+            obj->isBlink_ = true; // 明滅させる
 
             return;
         }

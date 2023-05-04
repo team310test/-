@@ -48,6 +48,12 @@
 
 #define DROP_PARTS_SPEED (-2.0f)
 
+
+// ドロップパーツの明滅
+#define ADD_BLINK_COLOR (0.025f)    // 明滅する速度に影響
+#define BLINK_COLOR_MAX (0.6f)      // 明滅カラーの最大値
+#define BLINK_COLOR_MIN (-0.5f)     // 明滅カラーの最低値
+
 ////////////////////////////////////////////////
 
 

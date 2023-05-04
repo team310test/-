@@ -189,21 +189,29 @@ void OBJ2DManager::draw()
         return obj1->zOrder_ < obj2->zOrder_;
         });
 
+
     for (auto& obj : objList_)
     {
         const VECTOR2 screenPos = obj->transform_->position_;
-        if (screenPos.x < -LIMIT ||
-            screenPos.x > GameLib::window::getWidth() + LIMIT ||
-            screenPos.y < -LIMIT ||
-            screenPos.y > GameLib::window::getHeight() + LIMIT)
+        if (screenPos.x < -LIMIT || screenPos.x > GameLib::window::getWidth() + LIMIT ||
+            screenPos.y < -LIMIT || screenPos.y > GameLib::window::getHeight() + LIMIT)
+        {
             continue;
+        }
 
+        // isBlink_がtrueならマスクを適用
+        // ※※マスクはsizeかscaleが0を下回る（マイナス・反転）と適用されなくなる※※
+        // （flip()などの反転処理に注意）
+        if (obj->isBlink_) DepthStencil::instance().set(DepthStencil::MODE::MASK);
+        else               DepthStencil::instance().set(DepthStencil::MODE::NONE);
 
         if (obj->transform_->scale_.x > DRAW_OBJ_SCALE_MIN_LIMIT)
         {
             obj->renderer_->draw();
         }
 
+
+        DepthStencil::instance().set(DepthStencil::MODE::NONE);
         static bool isDrawHitBox = false; // ヒットボックスを表示するか
         // 1キーでヒットボックス表示・非表示
         if (GetAsyncKeyState('1') & 1) 
@@ -212,7 +220,9 @@ void OBJ2DManager::draw()
         }
         if (isDrawHitBox) obj->collider_->draw();
 
+
     }
+
 }
 
 //--------------------------------------------------------------
@@ -318,7 +328,7 @@ void ActorComponent::damaged()
 
 void ActorComponent::muteki()
 {
-    if (mutekiTimer_ <= 0)return;
+    if (mutekiTimer_ <= 0) return;
 
     //VECTOR4 color = obj_->renderer_->color_;
     //color.w = mutekiTimer_ & 0x01 ? 1.0f : 0.0f;
