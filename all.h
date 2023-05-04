@@ -24,6 +24,8 @@
 #include "Parameter.h"
 #include "fade.h"
 
+#include "AddObj.h"
+#include "Quake.h"
 #include "bg.h"
 #include "weapon.h"
 #include "Effect.h"

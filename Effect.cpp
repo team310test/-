@@ -1,12 +1,23 @@
 #include "all.h"
 
-namespace
+namespace 
 {
+    // 爆発アニメ
     GameLib::AnimeData animeEfcBomb[] = {
-        { &sprEfcBomb_anime0,  10 },
-        { &sprEfcBomb_anime1,  10 },
-        { &sprEfcBomb_anime2,  10 },
-        { nullptr,      -1 },    // 終了フラグ
+        { &sprEfcBomb_anime0,  2  },
+        { &sprEfcBomb_anime1,  2  },
+        { &sprEfcBomb_anime2,  2  },
+        { &sprEfcBomb_anime3,  3  },
+        { nullptr,            -1  },    // 終了フラグ
+    };
+
+    // 合体アニメ
+    GameLib::AnimeData animeEfcCombine[] = {
+    { &sprEfcCombine_anime0,  4  },
+    { &sprEfcCombine_anime1,  4  },
+    { &sprEfcCombine_anime2,  4  },
+    { &sprEfcCombine_anime3,  4  },
+    { nullptr,            -1  },    // 終了フラグ
     };
 }
 
@@ -18,8 +29,8 @@ namespace
 //******************************************************************************
 void BaseEffectBehavior::move(OBJ2D* obj) const
 {
-    Collider* c = obj->collider_;
-    Renderer* r = obj->renderer_;
+    Collider*  c = obj->collider_;
+    Renderer*  r = obj->renderer_;
 
     switch (obj->state_)
     {
@@ -32,21 +43,28 @@ void BaseEffectBehavior::move(OBJ2D* obj) const
         ++obj->state_;
         /*fallthrough*/
     case 1:
-        startAllShrink(obj);    // 縮小開始
-        shrink(obj);            // 画像縮小
-
-        //if (c->isShrink_) break; // 縮小中なら飛ばす
-
-
-        // 更新
         update(obj);
-
-        r->animeData_ = param_.ANIME;
-        // アニメーション更新(アニメーションが終了すると自身を削除する)
-        if (r->animeData_) if (r->animeUpdate())obj->behavior_ = nullptr;
 
         break;
     }
+}
+
+void BaseEffectBehavior::update(OBJ2D* obj) const
+{
+    Renderer* r = obj->renderer_;
+
+    // 徐々に薄くする
+    const float addColor = -0.04f;
+    r->color_ = {
+        r->color_.x + addColor, r->color_.y + addColor,
+        r->color_.z + addColor, r->color_.w + addColor
+    };
+    r->targetColor_ = r->color_;
+
+    if (!r->animeData_) return; // アニメデータがなければreturn
+
+    // アニメが回り切ったら消去
+    if (r->animeUpdate()) obj->behavior_ = nullptr;
 }
 
 
@@ -58,10 +76,25 @@ EffectBombBehavior::EffectBombBehavior()
     param_.ANIME = animeEfcBomb;
 }
 
-void EffectBombBehavior::update(OBJ2D* obj) const
+//******************************************************************************
+//      EffectBombBehavior（爆発エフェクト）
+//******************************************************************************
+EffectCombineBehavior::EffectCombineBehavior()
 {
-    //if (obj->renderer_->animeData_->data == nullptr)
-    //{
-    //    obj->behavior_ = nullptr;
-    //}
+    param_.ANIME = animeEfcCombine;
+}
+
+void EffectCombineBehavior::update(OBJ2D* obj) const
+{
+    Transform* t       = obj->transform_;
+    Transform* plCoreT = Game::instance()->player_->transform_;
+
+    // プレイヤーパーツと同じ処理でエフェクトを追従させる  
+    // プレイヤーコアの速度を代入
+    t->velocity_ = plCoreT->velocity_;
+    // 縮小中でなければ位置に速度を足す
+    if (!Behavior::isObjShrink()) t->position_ += plCoreT->velocity_;
+
+    // アニメーション更新
+    BaseEffectBehavior::update(obj);
 }

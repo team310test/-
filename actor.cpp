@@ -18,7 +18,7 @@ void ActorBehavior::move(OBJ2D* obj) const
             getParam()->SIZE.x * getParam()->SCALE.x, 
             getParam()->SIZE.y * getParam()->SCALE.y
         };
-        obj->actorComponent_->hp_     = getParam()->HP;
+        obj->actorComponent_->hp_ = getParam()->HP;
         obj->actorComponent_->nextHp_ = getParam()->NEXT_HP;
 
         obj->nextBehavior_ = getParam()->NEXT_BEHAVIOR;
@@ -34,14 +34,13 @@ void ActorBehavior::move(OBJ2D* obj) const
 
     case 1:
         //////// 通常時 ////////
-        // 現在のbehavior・eraserがparamと違う場合、paramの方を代入
+        // 現在のbehavior・eraser・hpがparamと違う場合、paramの方を代入
         if (obj->nextBehavior_ != getParam()->NEXT_BEHAVIOR) obj->nextBehavior_ = getParam()->NEXT_BEHAVIOR;
         if (obj->nextEraser_   != getParam()->NEXT_ERASER)   obj->nextEraser_   = getParam()->NEXT_ERASER;
-
-        // 現在のアニメ用パラメータとparamが違う場合、paramを代入
-        if (obj->actorComponent_->objAnimeAlways_ != getParam()->OBJ_ANIME) obj->actorComponent_->objAnimeAlways_ = getParam()->OBJ_ANIME;
-        if (obj->actorComponent_->rotSpeed_ != getParam()->ROT_SPEED)obj->actorComponent_->rotSpeed_ = getParam()->ROT_SPEED;
-
+        if (obj->actorComponent_->nextHp_ != getParam()->NEXT_HP)
+        {
+            obj->actorComponent_->nextHp_ = getParam()->NEXT_HP;
+        }
 
         startAllShrink(obj);    // 縮小開始
         shrink(obj);            // 画像縮小
@@ -49,7 +48,10 @@ void ActorBehavior::move(OBJ2D* obj) const
 
         if (obj->collider_->isShrink_) break; // 縮小中なら飛ばす
         // objがプレイヤーの場合
-        if (obj == Game::instance()->player_) { if (Behavior::isObjShrink()) break; }// すべてのobjが縮小終了していなければ飛ばす
+        if (obj == Game::instance()->player_) 
+        { 
+            if (Behavior::isObjShrink()) break; // すべてのobjが縮小終了していなければ飛ばす
+        }
 
 
         // PGによるアニメーション(objAnimeTemporary_を優先的に行う)
@@ -60,10 +62,10 @@ void ActorBehavior::move(OBJ2D* obj) const
         }
         else if (obj->actorComponent_->objAnimeAlways_) obj->actorComponent_->objAnimeAlways_(obj);
 
-        damageProc(obj);
-
         // updateがあるならupdateを使用する
         if (obj->update_) obj->update_(obj);
+
+        damageProc(obj);
 
         areaCheck(obj);
 
@@ -149,6 +151,7 @@ void Behavior::shrink(OBJ2D* obj) const
     {
         obj->collider_->judgeFlag_ = true;
         c->isShrink_ = false;   // Shrink終了
+        return;
     }
 }
 

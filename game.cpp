@@ -97,24 +97,16 @@ void Game::update()
         }
 
 
-        if (BasePlayerBehavior::plShrinkCount_ >= BasePlayerBehavior::PL_SHRINK_COUNT_MAX || 
-            GameLib::input::TRG(0) & GameLib::input::PAD_TRG1)  // プレイヤーの数がShrinkの規定数に達したら
-        //if (BasePlayerBehavior::plShrinkCount_ >= BasePlayerBehavior::PL_SHRINK_COUNT_MAX)  // プレイヤーの数がShrinkの規定数に達したら
+        if (BasePlayerBehavior::plShrinkCount_ >= BasePlayerBehavior::PL_SHRINK_COUNT_MAX)  // プレイヤーの数がShrinkの規定数に達したら
         {
             if (Collider::isAllShrink_  == false && // Shrinkが開始されておらず、
                 Behavior::isObjShrink() == false)   // すべてのobjが縮小していなければ
             {
                 Collider::isAllShrink_ = true;      // Shrinkを開始
 
-
                 bg()->BG::setBGShrink();       // 背景の縮小設定
 
-                if (BasePlayerBehavior::plShrinkCount_ >= 10)
-                    BasePlayerBehavior::plShrinkCount_ -= 10; // プレイヤーのカウントをリセット
                 stage_->addSrinkNum();
-
-                //if (BasePlayerBehavior::plShrinkCount_ >= BasePlayerBehavior::PL_SHRINK_COUNT_MAX)
-                //    BasePlayerBehavior::plShrinkCount_ -= BasePlayerBehavior::PL_SHRINK_COUNT_MAX; // プレイヤーのカウントをリセット
 
             }
         }
@@ -170,6 +162,30 @@ void Game::update()
 }
 
 
+// ドロップパーツを明滅させる関数
+void drawblink()
+{
+    static float blinkColor       = 0.0f;   // 明滅カラー
+    static bool  isBlinkColorFlip = false;  // カラーの増減を決める(falseなら加算、trueなら減算)
+
+    blinkColor += (!isBlinkColorFlip) ? ADD_BLINK_COLOR : -ADD_BLINK_COLOR;
+
+    // カラーが規定値を超えたら増減を反転させる
+         if (blinkColor >= BLINK_COLOR_MAX) isBlinkColorFlip = true;
+    else if (blinkColor <= BLINK_COLOR_MIN) isBlinkColorFlip = false;
+
+
+    // マスクに描画
+    DepthStencil::instance().set(DepthStencil::MODE::APPLY_MASK);
+    GameLib::primitive::rect(
+        { 0,0 }, { BG::WINDOW_W, BG::WINDOW_H },
+        { 0,0 }, 0, { blinkColor,blinkColor,blinkColor,1 }
+    );
+    // ステンシルリセット
+    DepthStencil::instance().clear();
+    DepthStencil::instance().set(DepthStencil::MODE::NONE);
+}
+
 //--------------------------------------------------------------
 //  描画処理
 //--------------------------------------------------------------
@@ -177,14 +193,23 @@ void Game::draw()
 {
     // 画面クリア
     GameLib::clear(VECTOR4(0.75f, 0.45f, 0.3f, 1));
+    //GameLib::clear(VECTOR4(1,1,1,1));
 
     // 背景の描画
     bg()->drawBack();     
 
+
     // オブジェクトの描画
     obj2dManager()->draw();
 
+    // ドロップパーツを明滅させる
+    drawblink();
+
+
+    // 縮小カウントメーターの描画
     UI::drawShrinkValueMeter();
+
+    // 映画の黒帯の描画
     UI::drawLetterBox();
 }
 

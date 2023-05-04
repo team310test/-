@@ -65,14 +65,11 @@ DropTurret01Behavior::DropTurret01Behavior()
 {
     param_.ANIME_WAIT = animeTurret01;
 
-    param_.SIZE = VECTOR2(PARTS_OBJ_SIZE, PARTS_OBJ_SIZE);
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
 
     // 画像サイズ(128*64の半分)
-    param_.HIT_BOX[0] = { -64, -32, 64, 32 };    // 下長方形
-    //param_.HIT_BOX[1] = { -125,-95,10,50 };    // ネジ
-
-    param_.ATTACK_BOX[0] = param_.HIT_BOX[0]; // 下長方形
-    //param_.ATTACK_BOX[1] = param_.HIT_BOX[1];   // ネジ
+    param_.HIT_BOX[0]    = { -64, -32, 64, 32 };   // 下長方形
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];   // 下長方形
 
     // 次のbehavior・eraser（プレイヤー）
     param_.NEXT_BEHAVIOR = &playerTurret01Behavior;
@@ -93,8 +90,8 @@ DropBuff01Behavior::DropBuff01Behavior()
 
     param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
     param_.HIT_BOX[0] = {
-        -PL_CORE_HITBOX, -PL_CORE_HITBOX,
-         PL_CORE_HITBOX,  PL_CORE_HITBOX,
+        -64, -64,
+         64,  64,
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
@@ -116,8 +113,8 @@ DropTrash01Behavior::DropTrash01Behavior()
 
     param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
     param_.HIT_BOX[0] = {
-        -PL_CORE_HITBOX, -PL_CORE_HITBOX,
-         PL_CORE_HITBOX,  PL_CORE_HITBOX,
+        -64, -64,
+         64,  64,
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
@@ -136,23 +133,36 @@ DropTrash01Behavior::DropTrash01Behavior()
 //******************************************************************************
 void EraseDropParts::erase(OBJ2D* obj) const
 {
-    if (obj->transform_->scale_.x <= 0) // スケールが0以下になったら
+    ActorComponent* a = obj->actorComponent_;
+
+
+    if (obj->transform_->scale_.x <= UPDATE_OBJ_SCALE_MIN_LIMIT) // スケールが0以下になったら
     {
+        // 爆発エフェクト追加
+        AddObj::addEffect(obj, &efcBombBehavior);
+
         obj->behavior_ = nullptr; // 消去
         return;
     }
 
-    if (obj->actorComponent_->parent_) // 親を手に入れたらプレイヤーのパーツになる
+
+    if (a->parent_) // 親を手に入れたらプレイヤーのパーツになる
     {
-        obj->behavior_ = obj->nextBehavior_; // 次のbehaviorを代入
-        obj->eraser_   = obj->nextEraser_;   // 次のeraserを代入
+        // 合体エフェクト追加
+        AddObj::addEffect(obj, &efcCombineBehavior);
+
+        obj->behavior_ = obj->nextBehavior_;    // 次のbehaviorを代入
+        obj->eraser_   = obj->nextEraser_;      // 次のeraserを代入
 
         if (obj->behavior_ == nullptr) return;
-        obj->update_ = PLAYER_PATRS_UPDATE;  // updateを変更
-
-        obj->actorComponent_->hp_ = obj->actorComponent_->nextHp_;  // 次のHPを代入
+        obj->update_ = PLAYER_PATRS_UPDATE;     // updateを変更
         
-        ++BasePlayerBehavior::plShrinkCount_; // 縮小までのカウントを加算
+        a->hp_ = a->nextHp_;
+
+        obj->isBlink_ = false;    // 明滅終了
+       
+        ++BasePlayerBehavior::plShrinkCount_;   // 縮小までのカウントを加算
+
         return;
     }
 }

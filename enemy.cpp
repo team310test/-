@@ -106,8 +106,23 @@ void BaseEnemyBehavior::init(OBJ2D* obj) const
 
 void BaseEnemyBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
 {
+    ActorComponent* dstA = dst->actorComponent_;
+
+    if (dstA->damageTimer_ > 0) return;
+
+
     // プレイヤーのHPを減らす
-    dst->actorComponent_->hp_ -= getParam()->ATTACK_POWER;
+    dstA->hp_ = std::max(dstA->hp_ - getParam()->ATTACK_POWER, 0);
+
+
+    // 相手がまだ生きている場合
+    if (dstA->hp_ > 0)
+    {
+        // 相手を揺らす
+        dstA->isQuake_ = true;
+        // 相手を点滅させる無敵時間
+        dstA->damageTimer_ = 40;
+    }
 }
 
 bool BaseEnemyBehavior::isAlive(OBJ2D* obj) const
@@ -115,13 +130,32 @@ bool BaseEnemyBehavior::isAlive(OBJ2D* obj) const
     return obj->actorComponent_->hp_ > 0;
 }
 
-void BaseEnemyBehavior::damageProc(OBJ2D* /*obj*/) const
+void BaseEnemyBehavior::damageProc(OBJ2D* obj) const
 {
+    ActorComponent* a = obj->actorComponent_;
+
     // ダメージ処理
     //obj->actorComponent_->damaged();
 
     // 無敵処理
     //obj->actorComponent_->muteki();
+
+        // 点滅させる
+    if (a->damageTimer_ > 0)
+    {
+        VECTOR4 color = obj->renderer_->color_;
+        color.w = a->damageTimer_ & 0x02 ? 1.0f : 0.2f;
+        obj->renderer_->color_ = color;
+
+        --a->damageTimer_;
+        if (a->damageTimer_ <= 0) obj->renderer_->color_ = { 1,1,1,1 };
+}
+
+    if (!obj->actorComponent_->isQuake_) return;
+
+    // 揺らす
+    static Quake quake;
+    quake.quakeDamage(obj);
 }
 
 void BaseEnemyBehavior::areaCheck(OBJ2D* obj) const
@@ -144,13 +178,14 @@ void BaseEnemyBehavior::areaCheck(OBJ2D* obj) const
     const float topLimit = size->y - margin;
     const float bottomLimit = BG::WINDOW_H + size->y + margin;
 
-    if (pos->x < leftLimit ||
+    if (pos->x < leftLimit  ||
         pos->x > rightLimit ||
-        pos->y < topLimit ||
+        pos->y < topLimit   ||
         pos->y > bottomLimit)
     {
         obj->actorComponent_->hp_ = 0;              // 画面外に行ったら消去(体力を0にする)
         obj->actorComponent_->parent_ = nullptr;    
+        return;
     }
 #endif
 }
@@ -168,9 +203,9 @@ EnemyCore01Behavior::EnemyCore01Behavior()
     param_.ANIME_WAIT = animeCore01;
 
     param_.SIZE = VECTOR2(PARTS_OBJ_SIZE, PARTS_OBJ_SIZE);
-    param_.HIT_BOX[0] = { -125,-125,125,125 };
 
-    param_.ATTACK_BOX[0] = { -125, -125, 125, 125 };
+    param_.HIT_BOX[0]    = { -64, -64, 64, 64 };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
     // 次のBehaviorなし
     param_.NEXT_BEHAVIOR = nullptr;
@@ -279,11 +314,8 @@ EnemyTurret01Behavior::EnemyTurret01Behavior()
     param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
 
     // 画像サイズ(128*64の半分)
-    param_.HIT_BOX[0] = { -64, -32, 64, 32 };    // 下長方形    
-    //param_.HIT_BOX[1] = { -10,-95,125,50 };      // ネジ
-
+    param_.HIT_BOX[0] = { -64, -32, 64, 32 };   // 下長方形    
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];   // 下長方形
-    //param_.ATTACK_BOX[1] = param_.HIT_BOX[1];      // ネジ
 
     // 次のBehavior・Eraser（ドロップアイテム）
     param_.NEXT_BEHAVIOR = &dropTurret01Behavior;
@@ -299,26 +331,8 @@ void EnemyTurret01Behavior::attack(OBJ2D* obj) const
     // 攻撃クールタイムが終わっていなければreturn
     if (obj->actorComponent_->attackTimer_ > 0) return;
 
-    // 後々(inline)関数化したい
-    {
-        const VECTOR2 pos = obj->transform_->position_/* + VECTOR2(0, -120)*/;
-
-        OBJ2D* shot = Game::instance()->obj2dManager()->add(
-            new OBJ2D(
-                new Renderer,
-                new Collider,
-                obj->bg_,
-                nullptr,
-                nullptr,
-                new WeaponComponent,
-                nullptr
-            ),
-            &enmAimShotBehavior,
-            pos
-        );
-        shot->zOrder_ = 2;
-        shot->weaponComponent_->parent_ = obj;
-    }
+    // 弾を追加
+    AddObj::addShot(obj, &enmAimShotBehavior, obj->transform_->position_);
 
     obj->actorComponent_->attackTimer_ = 120;
 }
@@ -366,36 +380,38 @@ void EraseEnemy::erase(OBJ2D* obj) const
     // スケールが一定以下になったら消去
     if (obj->transform_->scale_.x <= UPDATE_OBJ_SCALE_MIN_LIMIT)
     {
-        a->parent_ = nullptr; // 親をリセット
-        a->orgParent_ = nullptr; // 元の親をリセット
-        obj->behavior_ = nullptr; // 自分を消去
+        a->parent_      = nullptr; // 親をリセット
+        a->orgParent_   = nullptr; // 元の親をリセット
+        obj->behavior_  = nullptr; // 自分を消去
 
-        // 爆発エフェクト（予定）
-        AddEffect::addEffect(obj, &efcBombBehavior);
+        // 爆発エフェクト
+        AddObj::addEffect(obj, &efcBombBehavior);
 
         return;
     }
 
 
-    // 親を持っていて、自分が親ではなく、親が消滅するか親の体力が0になるとアイテム化する
-    if (a->parent_ && obj != a->parent_ && (a->parent_->behavior_ == nullptr || !a->parent_->actorComponent_->isAlive()))
+    // 親を持っていて、自分が親ではなく、親が消滅するとアイテム化する
+    if (a->parent_ && obj != a->parent_ && a->parent_->behavior_ == nullptr)
     {
-        a->parent_ = nullptr; // 親をリセット
-        a->orgParent_ = nullptr; // 元の親をリセット
+        a->parent_      = nullptr; // 親をリセット
+        a->orgParent_   = nullptr; // 元の親をリセット
 
         // 次のbehavior・eraser（ドロップアイテム）を代入
         obj->behavior_ = obj->nextBehavior_;
         obj->eraser_ = obj->nextEraser_;
 
-        // 爆発エフェクト（予定）
-        AddEffect::addEffect(obj, &efcBombBehavior);
+        // 爆発エフェクト
+        AddObj::addEffect(obj, &efcBombBehavior);
 
         if (obj->behavior_ == nullptr) return;
 
         obj->update_ = DROP_PARTS_UPDATE;  // updateを変更
 
-        a->hp_ = 0;  // HPを0にする
+        a->hp_ = 0;             // HPを0にする
         obj->renderer_->flip(); // 反転させる
+
+        obj->isBlink_ = true;     // 明滅させる
 
         return;
     }
@@ -406,9 +422,8 @@ void EraseEnemy::erase(OBJ2D* obj) const
     {
         a->parent_ = nullptr; // 親をリセット
 
-        // 爆発エフェクト（予定）
-        AddEffect::addEffect(obj, &efcBombBehavior);
-
+        // 爆発エフェクト
+        AddObj::addEffect(obj, &efcBombBehavior);
 
         // 自分がコアでないならゴミアイテム化する
         if (obj != a->orgParent_)
@@ -417,15 +432,19 @@ void EraseEnemy::erase(OBJ2D* obj) const
 
             // 次のbehavior・eraser（ドロップごみアイテム）を代入
             obj->behavior_ = &dropTrash01Behavior;
-            obj->eraser_ = &eraseDropParts;
-            obj->update_ = DROP_PARTS_UPDATE;  // updateを変更
+            obj->eraser_   = &eraseDropParts;         
+            obj->update_   = DROP_PARTS_UPDATE;  // updateを変更
+
+            a->hp_ = 0;             // HPを0にする
+            obj->renderer_->flip(); // 反転させる（マスク処理に重要）
+
+            obj->isBlink_ = true; // 明滅させる
 
             return;
         }
 
         a->orgParent_ = nullptr; // 元の親をリセット
 
-        // コアなら消滅する
         obj->behavior_ = nullptr;
         return;
     }
@@ -446,6 +465,7 @@ void ENEMY_LINE(OBJ2D* obj)
 
     t->velocity_ = { -speedX, 0.0f };
 }
+
 // x軸の目標地点に達すると別の方向へ移動する(仮)
 void ENEMY_TARGET_X(OBJ2D* obj)
 {

@@ -15,7 +15,6 @@ enum TEXNO
     UI_METER_READ,      // 計器の目盛り
     UI_METER_NEEDLE,    // 計器の針
 
-
     // コア
     PL_CORE01,
     ENM_CORE01,
@@ -34,6 +33,7 @@ enum TEXNO
 
     // エフェクト
     EFC_BOMB,
+    EFC_COMBINE,
 
     // タイトル
     TITLE_FRAME,
@@ -61,9 +61,18 @@ extern GameLib::SpriteData sprPartsTrash01;
 extern GameLib::SpriteData sprShot_NormalShot;
 
 //------< エフェクト >----------------------------------------------------------------
+
+//　爆発エフェクト
 extern GameLib::SpriteData sprEfcBomb_anime0;
 extern GameLib::SpriteData sprEfcBomb_anime1;
 extern GameLib::SpriteData sprEfcBomb_anime2;
+extern GameLib::SpriteData sprEfcBomb_anime3;
+
+// 合体エフェクト
+extern GameLib::SpriteData sprEfcCombine_anime0;
+extern GameLib::SpriteData sprEfcCombine_anime1;
+extern GameLib::SpriteData sprEfcCombine_anime2;
+extern GameLib::SpriteData sprEfcCombine_anime3;
 
 //------< タイトル >----------------------------------------------------------------
 extern GameLib::SpriteData sprTitleCore;

@@ -122,10 +122,10 @@ public:
     Renderer()
         :data_()
         , color_({ 1,1,1,1 })
-        , targetColor_({1,1,1,1})
+        , targetColor_({ 1,1,1,1 })
         , anime_()
         , animeData_()
-        , drawScale_({1,1})
+        , drawScale_({ 1,1 })
         , isDrawShrink_()
         , drawXFlip_()
         , pad_()
@@ -196,6 +196,8 @@ public:
     static int playerNum;
     int No;
 
+    bool isQuake_;
+
     // 速度関連パラメータ
     VECTOR2 accel_;
     VECTOR4 addition_;
@@ -219,6 +221,7 @@ public:
         , obj(nullptr)
 
         , No(1)
+        , isQuake_(false)
 
         // 速度関連パラメータ
         , accel_()
@@ -258,7 +261,7 @@ public:
 class WeaponComponent : public Component
 {
 public:
-    OBJ2D* parent_;  // この武器の持ち主
+    OBJ2D* parent_;
 public:
     WeaponComponent()
         :parent_(nullptr)
@@ -287,16 +290,12 @@ public:
 class EffectComponent : public Component
 {
 public:
-    float animeX_;
-    int   animeTimer_;
-
+    OBJ2D* parent_; // 親が消滅して出るエフェクトはこれを使用しない方が良い
 public:
     EffectComponent()
-        :animeX_(0.0f)
-        , animeTimer_(0)
+        :parent_(nullptr)
     {
     }
-
 };
 
 class BG;
@@ -315,6 +314,8 @@ public:
     OBJ_DATA  update_       = nullptr;
 
     int bgSprNo_ = 0; // 背景スプライト画像TEXNO
+
+    bool isBlink_ = false;
 
     BG* bg_ = nullptr;
 
@@ -336,7 +337,7 @@ public:
         ItemComponent* itemComponent, 
         WeaponComponent* weaponComponent,
         TitleComponent* titleComponent = nullptr,
-        EffectComponent* effectComponent = nullptr  // 引数を書く手間を省く
+        EffectComponent* effectComponent = nullptr // わざわざ書かなくて済むようにあらかじめnullptrを代入
     );
     ~OBJ2D();
     void move();    // 移動

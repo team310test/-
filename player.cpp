@@ -324,30 +324,39 @@ void BasePlayerBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
 {
     // 敵のHPを減らす
     dst->actorComponent_->hp_ -= getParam()->ATTACK_POWER;
+
 }
 
 void BasePlayerBehavior::damageProc(OBJ2D* obj) const
 {
+    ActorComponent* a = obj->actorComponent_;
+
     // 入力処理
-    obj->actorComponent_->padTrg_   = GameLib::input::TRG(0);
-    obj->actorComponent_->padState_ = GameLib::input::STATE(0);
+    a->padTrg_   = GameLib::input::TRG(0);
+    a->padState_ = GameLib::input::STATE(0);
 
     // ダメージ処理
-    obj->actorComponent_->damaged();
+    //obj->actorComponent_->damaged();
 
     // 無敵処理
-    obj->actorComponent_->muteki();
+    //obj->actorComponent_->muteki();
 
-    //if (GameLib::input::STATE(0) & GameLib::input::PAD_TRG2)
-    //if (obj->actorComponent_->parent_->behavior_ != nullptr)
-    //{
-    //    GameLib::debug::setString("No:%d→[%d]", obj->actorComponent_->No,
-    //        obj->actorComponent_->parent_->actorComponent_->No);
-    //}
-    //else
-    //{
-    //    GameLib::debug::setString("No:%d→[×]", obj->actorComponent_->No);
-    //}
+    // 点滅させる
+    if (a->damageTimer_ > 0)
+    {
+        VECTOR4 color = obj->renderer_->color_;
+        color.w = a->damageTimer_ & 0x02 ? 1.0f : 0.2f;
+        obj->renderer_->color_ = color;
+
+        --a->damageTimer_;
+        if (a->damageTimer_ <= 0) obj->renderer_->color_ = { 1,1,1,1 };
+    }
+
+    if (!obj->actorComponent_->isQuake_) return;
+
+    // 揺らす
+    static Quake quake;
+    quake.quakeDamage(obj);
 }
 
 void BasePlayerBehavior::areaCheck(OBJ2D* /*obj*/) const
@@ -384,32 +393,10 @@ void PlayerCoreBehavior::attack(OBJ2D* obj) const
     if ( !(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG3) ||
            obj->actorComponent_->attackTimer_ > 0) return; 
 
-    // 後々(inline)関数化したい
-    {
-        const VECTOR2 pos = obj->transform_->position_/* + VECTOR2(0, -120)*/;
 
-        OBJ2D* shot = Game::instance()->obj2dManager()->add(
-            new OBJ2D(
-                new Renderer,
-                new Collider,
-                obj->bg_,
-                nullptr,
-                nullptr,
-                new WeaponComponent,
-                nullptr
-            ),
-            &plNormalShotBehavior,     // ノーマル
-            //&plSineWaveShotBehavior,   // 正弦波
-            //&plSquareWaveShotBehavior, // 矩形波
-            //&plCurveWaveShotBehavior,  // 上カーブ
-            //&plPenetrateShotBehavior,  // 高速・貫通(予定)
-            pos
-        );
-        shot->zOrder_ = 2;
-        shot->weaponComponent_->parent_ = obj;
 
-    }
-
+    // 弾を追加
+    AddObj::addShot(obj, &plNormalShotBehavior, obj->transform_->position_);
 
     setXAxisScaleAnime(obj);
     obj->actorComponent_->attackTimer_ = 30;
@@ -523,29 +510,6 @@ void PlayerPartsBehavior::contactToPlCore(OBJ2D* obj, OBJ2D* orgPl) const
     obj->transform_->position_ += obj->transform_->velocity_;
 }
 
-// 親の方に向かって移動する関数
-//static const float toParentVelocity = 0.5f; // 足す速度(親へ向かう速さに影響)
-//void PartsPlayerBehavior::contactToParent(OBJ2D* obj, OBJ2D* parent) const
-//{    
-//    const VECTOR2 parentPos = parent->transform_->position_;    // 親の位置
-//    const VECTOR2 objPos    = obj->transform_->position_;       // objの位置
-//
-//    const VECTOR2 d  = { parentPos - objPos };               // objから親へ向かうベクトル
-//    const float dist = sqrtf( (d.x * d.x) + (d.y * d.y) );   // objから親までの距離
-//
-//    obj->transform_->velocity_ = {
-//        (d.x / dist) * (toParentVelocity),
-//        (d.y / dist) * (toParentVelocity)
-//    };
-//
-//    ActorBehavior::moveY(obj);
-//    ActorBehavior::moveX(obj);
-//
-//    //obj->collider_->calcHitBox(getParam()->HIT_BOX);
-//    //obj->collider_->calcAttackBox(getParam()->ATTACK_BOX);
-//}
-
-
 
 //******************************************************************************
 // 
@@ -561,42 +525,26 @@ PlayerTurret01Behavior::PlayerTurret01Behavior()
     param_.SIZE = VECTOR2(PARTS_OBJ_SIZE, PARTS_OBJ_SIZE);
 
     // 画像サイズ(128*64の半分)
-    param_.HIT_BOX[0] = { -64, -32, 64, 32 };    // 下長方形
-    //param_.HIT_BOX[1] = { -125,-95,10,50 };      // ネジ
+    param_.HIT_BOX[0] = { -64, -32, 64, 32 };   // 長方形
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];   // 長方形
 
-    param_.ATTACK_BOX[0] = param_.HIT_BOX[0]; // 下長方形
-    //param_.ATTACK_BOX[1] = param_.HIT_BOX[1];   // ネジ
 }
 
 void PlayerTurret01Behavior::attack(OBJ2D* obj) const
 {
     // 攻撃クールタイム減少
-    if (obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
+    // （バラバラに打たせるために指定ボタンを押しているときだけ減らす）
+    if (obj->actorComponent_->padState_ & GameLib::input::PAD_TRG3 && 
+        obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
 
-    // 攻撃クールタイムが終わっていなければreturn
-    if (obj->actorComponent_->attackTimer_ > 0) return;
+    // 指定ボタンが押されていない、または攻撃クールタイムが終わっていなければreturn
+    if (!(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG3) ||
+        obj->actorComponent_->attackTimer_ > 0) return;
 
-    // 後々(inline)関数化したい
-    {
-        const VECTOR2 pos = obj->transform_->position_/* + VECTOR2(0, -120)*/;
+    // 弾を追加
+    AddObj::addShot(obj, &plNormalShotBehavior, obj->transform_->position_);
 
-        OBJ2D* shot = Game::instance()->obj2dManager()->add(
-            new OBJ2D(
-                new Renderer,
-                new Collider,
-                obj->bg_,
-                nullptr,
-                nullptr,
-                new WeaponComponent,
-                nullptr
-            ),
-            &plNormalShotBehavior,
-            pos
-        );
-        shot->zOrder_ = 2;
-        shot->weaponComponent_->parent_ = obj;
-    }
-
+    setXAxisScaleAnime(obj);
     obj->actorComponent_->attackTimer_ = 30;
 
 }
@@ -616,15 +564,16 @@ PlayerBuff01Behavior::PlayerBuff01Behavior()
 
     param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
     param_.HIT_BOX[0] = { 
-        -PL_CORE_HITBOX, -PL_CORE_HITBOX, 
-         PL_CORE_HITBOX,  PL_CORE_HITBOX,
+        -64, -64, 
+         64,  64,
     };
     param_.ATTACK_BOX[0] = { 
-        -PL_CORE_HITBOX * BUFF_MALTIPLY_VALUE, 
-        -PL_CORE_HITBOX * BUFF_MALTIPLY_VALUE,
-         PL_CORE_HITBOX * BUFF_MALTIPLY_VALUE,  
-         PL_CORE_HITBOX * BUFF_MALTIPLY_VALUE,
+        -64 * BUFF_MALTIPLY_VALUE, 
+        -64 * BUFF_MALTIPLY_VALUE,
+         64 * BUFF_MALTIPLY_VALUE,  
+         64 * BUFF_MALTIPLY_VALUE,
     };
+
 }                            
 
 // 攻撃タイプがPLAYERなのでdstは味方(プレイヤー)になる
@@ -644,16 +593,8 @@ PlayerTrash01Behavior::PlayerTrash01Behavior()
     param_.ANIME_WAIT = animeTrash01;
 
     param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
-    param_.HIT_BOX[0] = {
-        -PL_CORE_HITBOX, -PL_CORE_HITBOX,
-         PL_CORE_HITBOX,  PL_CORE_HITBOX,
-    };
-    param_.ATTACK_BOX[0] = {
-        -PL_CORE_HITBOX,
-        -PL_CORE_HITBOX,
-         PL_CORE_HITBOX,
-         PL_CORE_HITBOX,
-    };
+    param_.HIT_BOX[0] = { -64, -64, 64, 64 };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
 }
 
@@ -671,13 +612,16 @@ void ErasePlayer::erase(OBJ2D* obj) const
     // HPが0以下になったら
     if (!obj->actorComponent_->isAlive())
     {
+        // 爆発エフェクト
+        AddObj::addEffect(obj, &efcBombBehavior);
+
         obj->actorComponent_->parent_ = nullptr; // 親情報をリセット
         obj->behavior_ = nullptr;
 
         // 縮小カウント減少
         BasePlayerBehavior::plShrinkCount_ = std::max(0, BasePlayerBehavior::plShrinkCount_ - 1);
 
-        return; // returnを付ける
+        return;
     }
 
     if (obj->actorComponent_->parent_->behavior_) return;   // 自分の親が存在するならreturn
@@ -703,12 +647,16 @@ void ErasePlayer::erase(OBJ2D* obj) const
     }
 #endif
 
+    // 爆発エフェクト
+    AddObj::addEffect(obj, &efcBombBehavior);
+
     // 親が見つからなかった場合
     obj->actorComponent_->parent_ = nullptr; // 親情報をリセット
     obj->behavior_ = nullptr;                // 自分を消去
 
     // 縮小カウント減少
     BasePlayerBehavior::plShrinkCount_ = std::max(0, BasePlayerBehavior::plShrinkCount_ - 1);
+
     return;
 }
 #undef USE_FIND_PARENT
