@@ -137,15 +137,27 @@ EXTERN PlayerTrash01Behavior playerTrash01Behavior;
 
 //******************************************************************************
 // 
+//      TitlePlayerHeartBehavior（タイトル用の自機・ハートのみ）
+// 
+//******************************************************************************
+class TitlePlayerHeartBehavior : public BasePlayerBehavior
+{
+public:
+    TitlePlayerHeartBehavior();
+};
+EXTERN TitlePlayerHeartBehavior titlePlayerHeartBehavior;
+
+//******************************************************************************
+// 
 //      TtileCorePlayerBehavior（タイトル用の自機）
 // 
 //******************************************************************************
-class TtileCorePlayerBehavior : public BasePlayerBehavior
+class TitlePlayerCoreBehavior : public BasePlayerBehavior
 {
 public:
-    TtileCorePlayerBehavior();
+    TitlePlayerCoreBehavior();
 };
-EXTERN TtileCorePlayerBehavior ttileCorePlayerBehavior;
+EXTERN TitlePlayerCoreBehavior titlePlayerCoreBehavior;
 
 //==============================================================================
 //

@@ -25,7 +25,9 @@ void Title::init()
     obj2dManager_ = new OBJ2DManager;
     bg_ = new BG;
 
+    // 変数の初期化
     isStatePerform_ = true;
+    pushCount_ = 0;
 
     // //フェード(イン)アウトの初期化
     FADE::clear();
@@ -134,20 +136,37 @@ void Title::judge()
 
 void Title::changeSceneGame()
 {
+
     // 自機が接触したら
     if (stateCommand_ && stateCommand_->titleComponent_->isTrigger)
     {
+        static bool isAnime = false;
+        // キーを押すとアニメーション再生
+        if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG3 && !isAnime) 
+            isAnime = true;
 
-        bool fadeOut = objFadeOut();    // フェードアウト
-        bool shrink = objShrink();      // 縮小
-        
-        // 両方の処理が完了したら画面を遷移する
-        if (fadeOut && shrink)
+        // キーが押されアニメーションが再生終わるとカウントを増やす
+        if (isAnime && xAxisSclaeAnime(player_))
         {
-            takeOverPos_ = player_->transform_->position_;
-            takeOverScale_ = player_->renderer_->drawScale_;
-            takeOverIsDrawShrink_ = player_->renderer_->isDrawShrink_;
-            changeScene(Game::instance());
+            ++pushCount_;
+            isAnime = false;
+        }
+
+        // 一定回数アニメーションするとゲーム画面に遷移
+        if (pushCount_ >= 3)
+        {
+
+            bool fadeOut = objFadeOut();    // フェードアウト
+            bool shrink = objShrink();      // 縮小
+
+            // 両方の処理が完了したら画面を遷移する
+            if (fadeOut && shrink)
+            {
+                takeOverPos_ = player_->transform_->position_;
+                takeOverScale_ = player_->renderer_->drawScale_;
+                takeOverIsDrawShrink_ = player_->renderer_->isDrawShrink_;
+                changeScene(Game::instance());
+            }
         }
     }
 }

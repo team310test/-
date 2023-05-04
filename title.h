@@ -14,6 +14,8 @@ private:
 
 	//<’Ç‰Á>
 	bool isStatePerform_;
+	int pushCount_;
+	//bool is
 public:
 	static Title* instance() { return &instance_; }
 
@@ -45,6 +47,7 @@ private:
 		, endCommand_(nullptr)
 		, titleLoge_(nullptr)
 		, isStatePerform_(true)
+		, pushCount_(0)
 	{
 	}
 	Title(const Title&) = delete;

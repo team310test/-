@@ -97,7 +97,7 @@ void TitleStateObjBehavior::hit(OBJ2D* src, OBJ2D* dst) const
 
     wait = true;
     dst->update_ = nullptr;                 // 自機を変更　操作できなくする
-    dst->behavior_ = &playerCoreBehavior;   // 画像(Behavior)変更
+    dst->behavior_ = &titlePlayerCoreBehavior;   // 画像(Behavior)変更
     dst->transform_->velocity_ = { 0.0f,0.0f };
 }
 

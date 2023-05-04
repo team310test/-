@@ -93,7 +93,7 @@ OBJ2D* setTitlePlayer(OBJ2DManager* obj2dManager, BG* bg)
     player->actorComponent_->No = ActorComponent::playerNum;
     player->update_ = TITLE_PLAYER_UPDATE;
 
-    return obj2dManager->add(player, &ttileCorePlayerBehavior, pos);
+    return obj2dManager->add(player, &titlePlayerHeartBehavior, pos);
 }
 
 //// 仮
@@ -719,10 +719,26 @@ void ErasePlayer::erase(OBJ2D* obj) const
 //      TtileCorePlayerBehavior（タイトル用の自機）
 // 
 //******************************************************************************
-TtileCorePlayerBehavior::TtileCorePlayerBehavior()
+TitlePlayerHeartBehavior::TitlePlayerHeartBehavior()
 {
     // アニメーション
     param_.ANIME_WAIT = animeTitleCore;
+
+    param_.SIZE = VECTOR2(PARTS_OBJ_SIZE, PARTS_OBJ_SIZE);
+    param_.SCALE = { 2.0f,2.0f };
+    param_.HIT_BOX[0] = { -10, -10, 10, 10 };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+}
+
+//******************************************************************************
+// 
+//      TtileCorePlayerBehavior（タイトル用の自機）
+// 
+//******************************************************************************
+TitlePlayerCoreBehavior::TitlePlayerCoreBehavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT = animePlayerCore01;
 
     param_.SIZE = VECTOR2(PARTS_OBJ_SIZE, PARTS_OBJ_SIZE);
     param_.SCALE = { 2.0f,2.0f };
