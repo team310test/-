@@ -42,17 +42,17 @@ void FADE::draw()
 {
     VECTOR2 pos = { 0.0f,0.0f };
     VECTOR2 size = { BG::WINDOW_W, BG::WINDOW_H };
-    VECTOR2 texpos = { 0.0f,0.0f };
-    VECTOR4 coler[] = { {0.0f,0.0f,0.0f,alpha},{1.0f,1.0f,1.0f,alpha} };
+    VECTOR2 texPos = { 0.0f,0.0f };
+    VECTOR4 color[] = { {0.0f,0.0f,0.0f,alpha},{1.0f,1.0f,1.0f,alpha} };
 
-    GameLib::primitive::rect(pos, size, texpos, 0, coler[colerNum]);
+    GameLib::primitive::rect(pos, size, texPos, 0, color[colorNum]);
 }
 
 // èâä˙âª
 void FADE::clear()
 {
     instance_.SetAlpha(0.0f);
-    instance_.SetColerNum(COLER::BLACK);
+    instance_.SetColorNum(COLER::BLACK);
     instance2_.SetAlpha(0.0f);
-    instance2_.SetColerNum(COLER::BLACK);
+    instance2_.SetColorNum(COLER::BLACK);
 }

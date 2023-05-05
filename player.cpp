@@ -33,7 +33,7 @@ namespace
     // タイトル用コア
     GameLib::AnimeData animeTitleCore[] =
     {
-        {&sprTitleHeart,10},
+        {&sprTitleCoreHeart,10},
         {nullptr,-1},// 終了フラグ
     };
 }
@@ -197,9 +197,9 @@ void PLAYER_PATRS_UPDATE(OBJ2D* obj)
 void TITLE_PLAYER_UPDATE(OBJ2D* obj)
 {
     using namespace GameLib::input;
-    ActorComponent* a = obj->actorComponent_;
-    Transform* t = obj->transform_;
-    float floor = 800.0f;
+    //ActorComponent* a = obj->actorComponent_;
+    Transform* t        = obj->transform_;
+    const float floor   = 800.0f;
     static bool isBound = false;
 
     t->velocity_ += {0.1f, 2.5f};

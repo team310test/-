@@ -12,7 +12,7 @@ public:
     static constexpr float ADJUST_Y = 0.25f;         // あたり判定での位置調整用（縦）
     static constexpr float ADJUST_X = 0.025f;        // あたり判定での位置調整用（横）
 
-    static constexpr float AREA_LIMIT = 256.0f;      // 世界からこれ以上はみ出たら消えるS
+    static constexpr float AREA_LIMIT = 256.0f;      // 世界からこれ以上はみ出たら消える
     
 private:
     static const int BG_MAX = 12;                       // 背景の最大数

@@ -10,18 +10,18 @@ public:
     };
 private:
     float alpha;        // ìßñæìx
-    int colerNum;       // êFî‘çÜ
+    int colorNum;       // êFî‘çÜ
 
     static FADE instance_;
     static FADE instance2_;
 public:
     FADE()
         :alpha(0.0f)
-        , colerNum(COLER::BLACK){}
+        , colorNum(COLER::BLACK){}
     bool fadeOut(float);
     bool fadeOutPoint(float, float);
     bool fadeIn(float);
-    void SetColerNum(int coler) { colerNum = coler; }
+    void SetColorNum(int color) { colorNum = color; }
     void SetAlpha(float a) { alpha = a; }
     void draw();
     static void clear();

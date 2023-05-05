@@ -8,12 +8,12 @@ private:
 	BG* bg_;
 
 	OBJ2D* player_;
-	OBJ2D* stateCommand_;
+	OBJ2D* startCommand_;
 	OBJ2D* endCommand_;
 	OBJ2D* titleLoge_;	// ‚·‚®‚É‰‰on‚Ü‚é‚Ì‚Å‰Šú’l‚Ítrue
 
 	//<’Ç‰Á>
-	bool isStatePerform_;
+	bool isStartPerform_;
 	int pushCount_;
 	//bool is
 public:
@@ -43,10 +43,10 @@ private:
 		, player_(nullptr)
 
 		//<’Ç‰Á>
-		, stateCommand_(nullptr)
+		, startCommand_(nullptr)
 		, endCommand_(nullptr)
 		, titleLoge_(nullptr)
-		, isStatePerform_(true)
+		, isStartPerform_(true)
 		, pushCount_(0)
 	{
 	}

@@ -30,7 +30,7 @@ void BaseTitleObjBehavior::move(OBJ2D* obj) const
             getParam()->SIZE.y
         };
         obj->renderer_->color_ = getParam()->COLOR;
-        obj->renderer_->data_ = getParam()->SPR_DETA;
+        obj->renderer_->data_ = getParam()->SPR_DATA;
 
         init(obj);
 
@@ -63,16 +63,16 @@ void BaseTitleObjBehavior::init(OBJ2D* obj) const
 //
 //******************************************************************************
 // スタート
-TitleStateObjBehavior::TitleStateObjBehavior()
+TitleStartObjBehavior::TitleStartObjBehavior()
 {
-    param_.SPR_DETA = &sprTitleCore;
+    param_.SPR_DATA = &sprTitleCoreFrame;
     param_.SIZE = {100,100};
     param_.SCALE = {2.0f,2.0f};
     //param_.ATTACK_BOX[0] = { -33, 0,19,53 };
     param_.ATTACK_BOX[0] = { -13, 20,-1,33 };
 }
 
-void TitleStateObjBehavior::hit(OBJ2D* src, OBJ2D* dst) const
+void TitleStartObjBehavior::hit(OBJ2D* src, OBJ2D* dst) const
 {
     static bool wait = false;
 
@@ -104,7 +104,7 @@ void TitleStateObjBehavior::hit(OBJ2D* src, OBJ2D* dst) const
 // エンド
 TitleEndObjBehavior::TitleEndObjBehavior()
 {
-    param_.SPR_DETA = &sprTitleTrash;
+    param_.SPR_DATA = &sprTitleTrashBox;
     param_.SIZE = { 128,128 };
     param_.ATTACK_BOX[0] = { -30, -30,30,30 };
     //param_.ATTACK_BOX[0] = { -47, 20,18,85 };
@@ -126,7 +126,7 @@ void TitleEndObjBehavior::hit(OBJ2D* src, OBJ2D* dst) const
 // タイトルロゴ
 TitleLogoObjBehavior::TitleLogoObjBehavior()
 {
-    param_.SPR_DETA = &sprTitleLogo;
+    param_.SPR_DATA = &sprTitleLogo;
 }
 
 void TitleLogoObjBehavior::init(OBJ2D* obj) const
