@@ -141,21 +141,10 @@ void Title::changeSceneGame()
     if (stateCommand_ && stateCommand_->titleComponent_->isTrigger)
     {
         static bool isAnime = false;
-        // キーを押すとアニメーション再生
-        if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG3 && !isAnime) 
-            isAnime = true;
-
-        // キーが押されアニメーションが再生終わるとカウントを増やす
-        if (isAnime && xAxisSclaeAnime(player_))
-        {
-            ++pushCount_;
-            isAnime = false;
-        }
-
+        
         // 一定回数アニメーションするとゲーム画面に遷移
         if (pushCount_ >= 3)
         {
-
             bool fadeOut = objFadeOut();    // フェードアウト
             bool shrink = objShrink();      // 縮小
 
@@ -166,6 +155,19 @@ void Title::changeSceneGame()
                 takeOverScale_ = player_->renderer_->drawScale_;
                 takeOverIsDrawShrink_ = player_->renderer_->isDrawShrink_;
                 changeScene(Game::instance());
+            }
+        }
+        else
+        {
+            // キーを押すとアニメーション再生
+            if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG3 && !isAnime)
+                isAnime = true;
+
+            // キーが押されアニメーションが再生終わるとカウントを増やす
+            if (isAnime && xAxisSclaeAnime(player_))
+            {
+                ++pushCount_;
+                isAnime = false;
             }
         }
     }
