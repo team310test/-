@@ -50,3 +50,21 @@ private:
 	void init(OBJ2D*) const override;
 };
 EXTERN TitleLogoObjBehavior titleLogoObjBehavior;
+// ‘€ìà–¾[ˆÚ“®]
+class TitleHintMoveObjBehavior :public BaseTitleObjBehavior
+{
+public:
+	TitleHintMoveObjBehavior();
+private:
+	void init(OBJ2D*) const override;
+};
+EXTERN TitleHintMoveObjBehavior titleHintMoveObjBehavior;
+// ‘€ìà–¾[UŒ‚]
+class TitleHintShotObjBehavior :public BaseTitleObjBehavior
+{
+public:
+	TitleHintShotObjBehavior();
+private:
+	void init(OBJ2D*) const override;
+};
+EXTERN TitleHintShotObjBehavior titleHintShotObjBehavior;

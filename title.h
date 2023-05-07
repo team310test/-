@@ -7,13 +7,18 @@ private:
 	OBJ2DManager* obj2dManager_;
 	BG* bg_;
 
+	//<追加>
 	OBJ2D* player_;
 	OBJ2D* stateCommand_;
 	OBJ2D* endCommand_;
 	OBJ2D* titleLoge_;	// すぐに演出始まるので初期値はtrue
+	OBJ2D* userHintMove_; // 移動方法
+	OBJ2D* userHintShot_;	// 攻撃方法
 
-	//<追加>
 	bool isStatePerform_;
+	bool isPlayerMove_;
+	bool isPlayerShot_;
+	int oldTImer_;
 	int pushCount_;
 	//bool is
 public:
@@ -30,9 +35,11 @@ public:
 	void endGame();				// ゲーム終了処理
 	bool statePerform();		// スタート演出
 
-	bool objFadeOut();			// フェードアウト
-	bool objFadeIn();			// フェードイン
+	bool objFadeOut(OBJ2D*, float);			// フェードアウト
+	bool objFadeIn(OBJ2D*,float);			// フェードイン
 	bool objShrink();			// obj(player)の縮小
+	void userHintMove();		// プレイヤーへのヒント
+	void userHintShot();		// プレイヤーへのヒント
 
 	OBJ2DManager* obj2dManager() { return obj2dManager_; }
 	BG* bg() { return bg_; }
@@ -46,7 +53,12 @@ private:
 		, stateCommand_(nullptr)
 		, endCommand_(nullptr)
 		, titleLoge_(nullptr)
-		, isStatePerform_(true)
+		, userHintMove_(nullptr)
+		, userHintShot_(nullptr)
+		, isStatePerform_(true)	
+		, isPlayerMove_(false)
+		, isPlayerShot_(false)	
+		, oldTImer_(0)
 		, pushCount_(0)
 	{
 	}

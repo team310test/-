@@ -33,7 +33,8 @@ GameLib::LoadTexture loadTexture[] = {
 
     // タイトル画像
     { TEXNO::TITLE_FRAME, L"./Data/Images/Core/Core_Frame.png",    1U},
-    { TEXNO::TITLE_USER, L"./Data/Images/UI/title_user.png",    1U},
+    { TEXNO::TITLE_USER01, L"./Data/Images/UI/title_user.png",    1U},
+    { TEXNO::TITLE_USER02, L"./Data/Images/UI/title_user02.png",    1U},
     { TEXNO::TITLE_TRASH,L"./Data/Images/UI/title_trash.png",    1U},
     { TEXNO::TITLE_LOGO,L"./Data/Images/UI/title_logo.png",    1U},
     { TEXNO::TITLE_HEART,L"./Data/Images/Core/Core_Heart.png",    1U},
@@ -74,11 +75,12 @@ GameLib::SpriteData sprEfcCombine_anime2    = SPRITE_CENTER(TEXNO::EFC_COMBINE, 
 GameLib::SpriteData sprEfcCombine_anime3    = SPRITE_CENTER(TEXNO::EFC_COMBINE, (256 * 3), 0, 256, 256);
 
 //------< タイトル >----------------------------------------------------------------
-GameLib::SpriteData sprTitleCore = SPRITE_CENTER(TEXNO::TITLE_FRAME, 0, 0, 128, 128);
-GameLib::SpriteData sprTitleUser = SPRITE_CENTER(TEXNO::TITLE_USER, 0, 0, 640, 128);
-GameLib::SpriteData sprTitleTrash = SPRITE_CENTER(TEXNO::TITLE_TRASH, 0, 0, 128, 128);
-GameLib::SpriteData sprTitleLogo = SPRITE_CENTER(TEXNO::TITLE_LOGO, 0, 0, 640, 128);
-GameLib::SpriteData sprTitleHeart = SPRITE_CENTER(TEXNO::TITLE_HEART, 0, 0, 128, 128);
+GameLib::SpriteData sprTitleCore            = SPRITE_CENTER(TEXNO::TITLE_FRAME, 0, 0, 128, 128);
+GameLib::SpriteData sprTitleUser01          = SPRITE_CENTER(TEXNO::TITLE_USER01, 0, 0, 640, 128);
+GameLib::SpriteData sprTitleUser02          = SPRITE_CENTER(TEXNO::TITLE_USER02, 0, 0, 128, 128);
+GameLib::SpriteData sprTitleTrash           = SPRITE_CENTER(TEXNO::TITLE_TRASH, 0, 0, 128, 128);
+GameLib::SpriteData sprTitleLogo            = SPRITE_CENTER(TEXNO::TITLE_LOGO, 0, 0, 640, 128);
+GameLib::SpriteData sprTitleHeart           = SPRITE_CENTER(TEXNO::TITLE_HEART, 0, 0, 128, 128);
 
 
 //------------------------------------------------------------------------------

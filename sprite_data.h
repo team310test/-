@@ -37,7 +37,8 @@ enum TEXNO
 
     // タイトル
     TITLE_FRAME,
-    TITLE_USER,
+    TITLE_USER01,
+    TITLE_USER02,
     TITLE_TRASH,
     TITLE_LOGO,
     TITLE_HEART,
@@ -76,7 +77,8 @@ extern GameLib::SpriteData sprEfcCombine_anime3;
 
 //------< タイトル >----------------------------------------------------------------
 extern GameLib::SpriteData sprTitleCore;
-extern GameLib::SpriteData sprTitleUser;
+extern GameLib::SpriteData sprTitleUser01;
+extern GameLib::SpriteData sprTitleUser02;
 extern GameLib::SpriteData sprTitleTrash;
 extern GameLib::SpriteData sprTitleLogo;
 extern GameLib::SpriteData sprTitleHeart;

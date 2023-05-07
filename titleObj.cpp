@@ -136,3 +136,29 @@ void TitleLogoObjBehavior::init(OBJ2D* obj) const
     obj->collider_->isDrawHitRect_ = false;
     obj->collider_->isDrawAttackRect_ = false;
 }
+// ‘€ìà–¾[ˆÚ“®]
+TitleHintMoveObjBehavior::TitleHintMoveObjBehavior()
+{
+    param_.SPR_DETA = &sprTitleUser01;
+}
+
+void TitleHintMoveObjBehavior::init(OBJ2D* obj) const
+{
+    // •`‰æˆÈŠO‚Ì”»’è‚ðs‚í‚È‚¢
+    obj->collider_->judgeFlag_ = false;
+    obj->collider_->isDrawHitRect_ = false;
+    obj->collider_->isDrawAttackRect_ = false;
+}
+// ‘€ìà–¾[UŒ‚]
+TitleHintShotObjBehavior::TitleHintShotObjBehavior()
+{
+    param_.SPR_DETA = &sprTitleUser02;
+}
+
+void TitleHintShotObjBehavior::init(OBJ2D* obj) const
+{
+    // •`‰æˆÈŠO‚Ì”»’è‚ðs‚í‚È‚¢
+    obj->collider_->judgeFlag_ = false;
+    obj->collider_->isDrawHitRect_ = false;
+    obj->collider_->isDrawAttackRect_ = false;
+}

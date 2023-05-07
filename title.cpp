@@ -27,6 +27,7 @@ void Title::init()
 
     // 変数の初期化
     isStatePerform_ = true;
+    oldTImer_ = 0;
     pushCount_ = 0;
 
     // //フェード(イン)アウトの初期化
@@ -76,13 +77,15 @@ void Title::update()
 
     case 1:
         //////// 通常時の処理 ////////
-
+        GameLib::debug::setString("time:%d", timer_);
 
         obj2dManager()->update();           // オブジェクト更新
         bg()->update();                     // BGの更新
         
         // 演出が終わっていなかったらreturn
-        if (isStatePerform_ && !statePerform()) return;
+        if (!statePerform()) return;
+
+        userHintMove();
 
         judge();
         changeSceneGame();                  // 画面遷移(Game)
@@ -136,20 +139,28 @@ void Title::judge()
 
 void Title::changeSceneGame()
 {
-
     // 自機が接触したら
     if (stateCommand_ && stateCommand_->titleComponent_->isTrigger)
     {
+        // 時間経過でヒント描画
+        userHintShot();
+
         static bool isAnime = false;
         
         // 一定回数アニメーションするとゲーム画面に遷移
         if (pushCount_ >= 3)
         {
-            bool fadeOut = objFadeOut();    // フェードアウト
-            bool shrink = objShrink();      // 縮小
+            const float fadeSpeed = 0.01f;
+
+            // フェードアウト
+            const bool endFadeOut = objFadeOut(endCommand_, fadeSpeed);    
+            const bool logoFadeOut = objFadeOut(titleLoge_, fadeSpeed);
+
+
+            const bool shrink = objShrink();      // 縮小
 
             // 両方の処理が完了したら画面を遷移する
-            if (fadeOut && shrink)
+            if (endFadeOut && logoFadeOut && shrink)
             {
                 takeOverPos_ = player_->transform_->position_;
                 takeOverScale_ = player_->renderer_->drawScale_;
@@ -188,10 +199,19 @@ void Title::endGame()
 
 bool Title::statePerform()
 {
+    // 演出が終わっていたらtrueを返す
+    if (!isStatePerform_) return true;
+
     if (player_->titleComponent_->isTrigger)
     {
-        // フェードインしたらtreuを返す
-        if (objFadeIn())
+        const float fadeSpeed = 0.01f;
+
+        const bool state = objFadeIn(stateCommand_, fadeSpeed);
+        const bool end = objFadeIn(endCommand_, fadeSpeed);
+        const bool logo = objFadeIn(titleLoge_, fadeSpeed);
+
+        // フェードインが完了したら
+        if (state && end && logo)
         {
             // playerのupdate変更
             if (player_->update_ != PLAYER_CORE_UPDATE) player_->update_ = PLAYER_CORE_UPDATE;
@@ -203,30 +223,28 @@ bool Title::statePerform()
     return false;
 }
 
-bool Title::objFadeOut()
+bool Title::objFadeOut(OBJ2D* obj, float fadeSpeed)
 {
-    const float fadeSpeed = 0.01f;
+    //const float fadeSpeed = 0.01f;
 
-    if (endCommand_->renderer_->color_.w >= 0)
+    // 透明度0未満の場合
+    if (obj->renderer_->color_.w < 0.0f)
     {
-        endCommand_->renderer_->color_.w -= fadeSpeed;
-        // 超過修正
-        if(endCommand_->renderer_->color_.w < 0)
-            endCommand_->renderer_->color_.w = 0.0f;
+        obj->renderer_->color_.w = 0.0f;
+        return true;
     }
-    if (titleLoge_->renderer_->color_.w >= 0)
+
+    // 透明度0.0を超えているなら減少
+    if (obj->renderer_->color_.w >= 0)
     {
-        titleLoge_->renderer_->color_.w -= fadeSpeed;
+        obj->renderer_->color_.w -= fadeSpeed;
         // 超過修正
-        if (titleLoge_->renderer_->color_.w < 0)
-            titleLoge_->renderer_->color_.w = 0.0f;
+        if(obj->renderer_->color_.w < 0)
+            obj->renderer_->color_.w = 0.0f;
     }
 
     // 全て透明になったらtreuを返す
-    if (
-        (endCommand_->renderer_->color_.w == 0)
-        && (titleLoge_->renderer_->color_.w == 0)
-        )
+    if (obj->renderer_->color_.w == 0)
     {
         return true;
     }
@@ -234,37 +252,26 @@ bool Title::objFadeOut()
     return false;
 }
 
-bool Title::objFadeIn()
+bool Title::objFadeIn(OBJ2D* obj, float fadeSpeed)
 {
-    const float fadeSpeed = 0.01f;
-
-    if (stateCommand_->renderer_->color_.w <= 1.0f)
+    // 透明度1.0を超えていた場合
+    if (obj->renderer_->color_.w > 1.0f)
     {
-        stateCommand_->renderer_->color_.w += fadeSpeed;
-        // 超過修正
-        if (stateCommand_->renderer_->color_.w > 1.0f)
-            stateCommand_->renderer_->color_.w = 1.0f;
-    }
-    if (endCommand_->renderer_->color_.w <= 1.0f)
-    {
-        endCommand_->renderer_->color_.w += fadeSpeed;
-        // 超過修正
-        if (endCommand_->renderer_->color_.w > 1.0f)
-            endCommand_->renderer_->color_.w = 1.0f;
-    }
-    if (titleLoge_->renderer_->color_.w <= 1.0f)
-    {
-        titleLoge_->renderer_->color_.w += fadeSpeed;
-        // 超過修正
-        if (titleLoge_->renderer_->color_.w > 1.0f)
-            titleLoge_->renderer_->color_.w = 1.0f;
+        obj->renderer_->color_.w = 1.0f;
+        return true;
     }
 
-    // 全てフェードインしたらtreuを返す
-    if (
-        (endCommand_->renderer_->color_.w == 1.0f)
-        && (titleLoge_->renderer_->color_.w == 1.0f)
-        )
+    // 透明度1.0未満なら増加
+    if (obj->renderer_->color_.w <= 1.0f)
+    {
+        obj->renderer_->color_.w += fadeSpeed;
+        // 超過修正
+        if (obj->renderer_->color_.w > 1.0f)
+            obj->renderer_->color_.w = 1.0f;
+    }
+
+    // 透明度1.0になったらtrueを返す
+    if (obj->renderer_->color_.w == 1.0f)
     {
         return true;
     }
@@ -304,4 +311,86 @@ bool Title::objShrink()
     }
 
     return false;
+}
+
+void Title::userHintMove()
+{
+    // PLが移動したら
+    if (isPlayerMove_)
+    {
+        // userHintMove_がnullpyrならreturn
+        if (!userHintMove_) return;
+
+        // userHintMove_がnullptrでないならフェードアウトした後nullptrにする
+        if (objFadeOut(userHintMove_, 0.05f))
+        {
+            userHintMove_->behavior_ = nullptr;
+            userHintMove_ = nullptr;
+        }
+        return;
+    }
+
+    // oldTImer_が0ならtimerの値を代入
+    if (!oldTImer_) oldTImer_ = timer_;
+
+    // PLの移動入力チェック
+    if (GameLib::input::TRG(0) & (GameLib::input::PAD_UP | GameLib::input::PAD_DOWN | GameLib::input::PAD_LEFT | GameLib::input::PAD_RIGHT))
+    {
+        isPlayerMove_ = true;
+        oldTImer_ = 0;
+        return;
+    }
+
+    // 一定時間立つとヒントを描画
+    if (timer_ - oldTImer_ > 200)
+    {
+        if (!userHintMove_)
+        {
+            VECTOR2 pos = player_->transform_->position_;
+            pos += {0.0f, -100.0f};
+            userHintMove_ = setTitleObj(obj2dManager(), &titleHintMoveObjBehavior, pos);
+        }
+        objFadeIn(userHintMove_, 0.01f);
+    }
+}
+
+void Title::userHintShot()
+{
+    // PLが攻撃したら
+    if (isPlayerShot_)
+    {
+        // userHintMove_がnullpyrならreturn
+        if (!userHintShot_) return;
+
+        // userHintMove_がnullptrでないならフェードアウトした後nullptrにする
+        if (objFadeOut(userHintShot_, 0.05f))
+        {
+            userHintShot_->behavior_ = nullptr;
+            userHintShot_ = nullptr;
+        }
+        return;
+    }
+
+    // oldTImer_が0ならtimerの値を代入
+    if (!oldTImer_) oldTImer_ = timer_;
+
+    // PLの攻撃入力チェック
+    if (GameLib::input::TRG(0) & (GameLib::input::PAD_TRG3))
+    {
+        isPlayerShot_ = true;
+        oldTImer_ = 0;
+        return;
+    }
+
+    // 一定時間立つとヒントを描画
+    if (timer_ - oldTImer_ > 200)
+    {
+        if (!userHintShot_)
+        {
+            VECTOR2 pos = player_->transform_->position_;
+            pos += {0.0f, -200.0f};
+            userHintShot_ = setTitleObj(obj2dManager(), &titleHintShotObjBehavior, pos);
+        }
+        objFadeIn(userHintShot_, 0.01f);
+    }
 }
