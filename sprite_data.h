@@ -27,6 +27,10 @@ enum TEXNO
     BUFF01,
     // ごみパーツ
     TRASH01,
+    // コモンパーツ(効果なしパーツ)
+    COMMON01,
+    COMMON02,
+    COMMON03,
 
     // 弾丸
     BULLET01,
@@ -57,6 +61,9 @@ extern GameLib::SpriteData sprPartsTurret01;
 extern GameLib::SpriteData sprPartsTurret03;
 extern GameLib::SpriteData sprPartsBuff01;
 extern GameLib::SpriteData sprPartsTrash01;
+extern GameLib::SpriteData sprPartsCommon01;
+extern GameLib::SpriteData sprPartsCommon02;
+extern GameLib::SpriteData sprPartsCommon03;
 
 //------< 弾 >----------------------------------------------------------------
 extern GameLib::SpriteData sprShot_NormalShot;

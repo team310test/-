@@ -90,6 +90,61 @@ EXTERN EnemyBuff01Behavior enemyBuff01Behavior;
 
 //******************************************************************************
 // 
+//      Common(効果なしパーツ)
+// 
+//******************************************************************************
+
+// Common01
+class EnemyCommon01Behavior : public BaseEnemyPartsBehavior
+{
+public:
+    EnemyCommon01Behavior();
+};
+EXTERN EnemyCommon01Behavior enemyCommon01Behavior;
+
+// Common01_2(90度回転)
+class EnemyCommon01_2Behavior : public BaseEnemyPartsBehavior
+{
+public:
+    EnemyCommon01_2Behavior();
+};
+EXTERN EnemyCommon01_2Behavior enemyCommon01_2Behavior;
+
+// Common02
+class EnemyCommon02Behavior : public BaseEnemyPartsBehavior
+{
+public:
+    EnemyCommon02Behavior();
+};
+EXTERN EnemyCommon02Behavior enemyCommon02Behavior;
+
+// Common01_2(90度回転)
+class EnemyCommon02_2Behavior : public BaseEnemyPartsBehavior
+{
+public:
+    EnemyCommon02_2Behavior();
+};
+EXTERN EnemyCommon02_2Behavior enemyCommon02_2Behavior;
+
+// Common03
+class EnemyCommon03Behavior : public BaseEnemyPartsBehavior
+{
+public:
+    EnemyCommon03Behavior();
+};
+EXTERN EnemyCommon03Behavior enemyCommon03Behavior;
+
+// Common03_2(90度回転)
+class EnemyCommon03_2Behavior : public BaseEnemyPartsBehavior
+{
+public:
+    EnemyCommon03_2Behavior();
+};
+EXTERN EnemyCommon03_2Behavior enemyCommon03_2Behavior;
+
+
+//******************************************************************************
+// 
 //      erase(消去)
 // 
 //******************************************************************************

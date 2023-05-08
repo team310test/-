@@ -20,6 +20,24 @@ namespace
         { &sprPartsTrash01, 10 },
         { nullptr, -1 },// 終了フラグ
     };
+
+    // コモン01
+    GameLib::AnimeData animeCommon01[] = {
+    { &sprPartsCommon01, 10 },
+    { nullptr, -1 },// 終了フラグ
+    };
+
+    // コモン02
+    GameLib::AnimeData animeCommon02[] = {
+    { &sprPartsCommon02, 10 },
+    { nullptr, -1 },// 終了フラグ
+    };
+
+    // コモン03
+    GameLib::AnimeData animeCommon03[] = {
+    { &sprPartsCommon03, 10 },
+    { nullptr, -1 },// 終了フラグ
+    };
 }
 
 void BaseDropPartsBehavior::init(OBJ2D* obj) const
@@ -125,6 +143,132 @@ DropTrash01Behavior::DropTrash01Behavior()
     param_.NEXT_HP = 3;
 }
 
+
+//******************************************************************************
+// 
+//      Common(効果なしパーツ)
+// 
+//******************************************************************************
+
+// Common01
+DropCommon01Behavior::DropCommon01Behavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT = animeCommon01;
+
+    param_.SIZE = { 128.0f, 36.0f };
+    param_.HIT_BOX[0] = {
+        -64.0f, -18.0f,
+         64.0f,  18.0f,
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    // 次のbehavior・eraser（プレイヤー）
+    param_.NEXT_BEHAVIOR = &playerCommon01Behavior;
+    param_.NEXT_ERASER = &erasePlayer;
+
+    param_.NEXT_HP = 3;
+}
+
+// Common01_2(90度回転)
+DropCommon01_2Behavior::DropCommon01_2Behavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT = animeCommon01;
+
+    param_.SIZE = { 128.0f, 36.0f };
+    param_.HIT_BOX[0] = {
+         -18.0f,-64.0f,
+          18.0f, 64.0f,
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    // 次のbehavior・eraser（プレイヤー）
+    param_.NEXT_BEHAVIOR = &playerCommon01_2Behavior;
+    param_.NEXT_ERASER = &erasePlayer;
+
+    param_.NEXT_HP = 3;
+}
+
+// Common02
+DropCommon02Behavior::DropCommon02Behavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT = animeCommon02;
+
+    param_.SIZE = { 128.0f, 36.0f };
+    param_.HIT_BOX[0] = {
+        -64.0f, -18.0f,
+         64.0f,  18.0f,
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    // 次のbehavior・eraser（プレイヤー）
+    param_.NEXT_BEHAVIOR = &playerCommon02Behavior;
+    param_.NEXT_ERASER = &erasePlayer;
+
+    param_.NEXT_HP = 3;
+}
+
+// Common02_2(90度回転)
+DropCommon02_2Behavior::DropCommon02_2Behavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT = animeCommon02;
+
+    param_.SIZE = { 128.0f, 36.0f };
+    param_.HIT_BOX[0] = {
+         -18.0f,-64.0f,
+          18.0f, 64.0f,
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    // 次のbehavior・eraser（プレイヤー）
+    param_.NEXT_BEHAVIOR = &playerCommon02_2Behavior;
+    param_.NEXT_ERASER = &erasePlayer;
+
+    param_.NEXT_HP = 3;
+}
+
+// Common03
+DropCommon03Behavior::DropCommon03Behavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT = animeCommon03;
+
+    param_.SIZE = { 128.0f, 36.0f };
+    param_.HIT_BOX[0] = {
+        -64.0f, -18.0f,
+         64.0f,  18.0f,
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    // 次のbehavior・eraser（プレイヤー）
+    param_.NEXT_BEHAVIOR = &playerCommon03Behavior;
+    param_.NEXT_ERASER = &erasePlayer;
+
+    param_.NEXT_HP = 3;
+}
+
+// Common03_2(90度回転)
+DropCommon03_2Behavior::DropCommon03_2Behavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT = animeCommon03;
+
+    param_.SIZE = { 128.0f, 36.0f };
+    param_.HIT_BOX[0] = {
+         -18.0f,-64.0f,
+          18.0f, 64.0f,
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    // 次のbehavior・eraser（プレイヤー）
+    param_.NEXT_BEHAVIOR = &playerCommon03_2Behavior;
+    param_.NEXT_ERASER = &erasePlayer;
+
+    param_.NEXT_HP = 3;
+}
 
 //******************************************************************************
 // 

@@ -17,7 +17,6 @@ OBJ2D* setTitleObj(OBJ2DManager* obj2dManager, Behavior* behavior,VECTOR2 pos)
     return obj2dManager->add(obj, behavior, pos);
 }
 
-
 void Title::init()
 {
     Scene::init();

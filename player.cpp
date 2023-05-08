@@ -30,6 +30,24 @@ namespace
         { nullptr, -1 },// 終了フラグ
     };
 
+    // コモン01
+    GameLib::AnimeData animeCommon01[] = {
+    { &sprPartsCommon01, 10 },
+    { nullptr, -1 },// 終了フラグ
+    };
+
+    // コモン02
+    GameLib::AnimeData animeCommon02[] = {
+    { &sprPartsCommon02, 10 },
+    { nullptr, -1 },// 終了フラグ
+    };
+
+    // コモン03
+    GameLib::AnimeData animeCommon03[] = {
+    { &sprPartsCommon03, 10 },
+    { nullptr, -1 },// 終了フラグ
+    };
+
     // タイトル用コア
     GameLib::AnimeData animeTitleCore[] =
     {
@@ -601,6 +619,158 @@ PlayerTrash01Behavior::PlayerTrash01Behavior()
 
 //******************************************************************************
 // 
+//      Common(効果なしパーツ)
+// 
+//******************************************************************************
+
+// Common01
+PlayerCommon01Behavior::PlayerCommon01Behavior()
+{
+    param_.ANIME_WAIT = animeCommon01;
+
+    param_.SIZE = { 128.0f, 36.0f };
+    param_.HIT_BOX[0] = {
+        -64.0f, -18.0f,
+         64.0f,  18.0f,
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+}
+
+// Common01_2(90度回転)
+PlayerCommon01_2Behavior::PlayerCommon01_2Behavior()
+{
+    param_.ANIME_WAIT = animeCommon01;
+
+    param_.SIZE = { 128.0f, 36.0f };
+    param_.HIT_BOX[0] = {
+         -18.0f,-64.0f,
+          18.0f, 64.0f,
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+}
+
+// Common02
+PlayerCommon02Behavior::PlayerCommon02Behavior()
+{
+    param_.ANIME_WAIT = animeCommon02;
+
+    param_.SIZE = { 128.0f, 36.0f };
+    param_.HIT_BOX[0] = {
+        -64.0f, -18.0f,
+         64.0f,  18.0f,
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+}
+
+// Common02_2(90度回転)
+PlayerCommon02_2Behavior::PlayerCommon02_2Behavior()
+{
+    param_.ANIME_WAIT = animeCommon02;
+
+    param_.SIZE = { 128.0f, 36.0f };
+    param_.HIT_BOX[0] = {
+         -18.0f,-64.0f,
+          18.0f, 64.0f,
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+}
+
+// Common03
+PlayerCommon03Behavior::PlayerCommon03Behavior()
+{
+    param_.ANIME_WAIT = animeCommon03;
+
+    param_.SIZE = { 128.0f, 36.0f };
+    param_.HIT_BOX[0] = {
+        -64.0f, -18.0f,
+         64.0f,  18.0f,
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+}
+
+// Common03_2(90度回転)
+PlayerCommon03_2Behavior::PlayerCommon03_2Behavior()
+{
+    param_.ANIME_WAIT = animeCommon03;
+
+    param_.SIZE = { 128.0f, 36.0f };
+    param_.HIT_BOX[0] = {
+         -18.0f,-64.0f,
+          18.0f, 64.0f,
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+}
+
+//******************************************************************************
+// 
+//      TitlePlayer（タイトル用の自機)
+// 
+//******************************************************************************
+
+// ハートのみ
+TitlePlayerHeartBehavior::TitlePlayerHeartBehavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT = animeTitleCore;
+
+    param_.SIZE = VECTOR2(42.0f, 37.0f);
+    param_.SCALE = { 2.0f,2.0f };
+    param_.HIT_BOX[0] = { -10, -10, 10, 10 };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+}
+
+void TitlePlayerHeartBehavior::areaCheck(OBJ2D* obj) const
+{
+    Transform* t = obj->transform_;
+    Collider* c = obj->collider_;
+
+    const float leftSize = 42.0f;
+    const float rightSize = 42.0f;
+    const float topSize = 30.0f;
+    const float bottomSize = 44.0f;
+
+    const float leftLimit = leftSize;
+    const float rightLimit = BG::WINDOW_W - rightSize;
+    const float topLimit = topSize;
+    const float bottomLimit = BG::WINDOW_H - bottomSize;
+
+    if (t->position_.x >= rightLimit)
+    {
+        t->position_.x = rightLimit;
+        if (t->velocity_.x > 0) t->velocity_.x = 0;
+    }
+    if (t->position_.x <= leftLimit)
+    {
+        t->position_.x = leftLimit;
+        if (t->velocity_.x < 0) t->velocity_.x = 0;
+    }
+    if (t->position_.y >= bottomLimit)
+    {
+        t->position_.y = bottomLimit;
+        if (t->velocity_.y > 0) t->velocity_.y = 0;
+    }
+    if (t->position_.y <= topLimit)
+    {
+        t->position_.y = topLimit;
+        if (t->velocity_.y < 0) t->velocity_.y = 0;
+    }
+}
+
+// コア
+TitlePlayerCoreBehavior::TitlePlayerCoreBehavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT = animePlayerCore01;
+
+    param_.SIZE = VECTOR2(PARTS_OBJ_SIZE, PARTS_OBJ_SIZE);
+    param_.SCALE = { 2.0f,2.0f };
+    param_.HIT_BOX[0] = { -10, -10, 10, 10 };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+}
+
+
+//******************************************************************************
+// 
 //      erase（消去）
 // 
 //******************************************************************************
@@ -661,38 +831,6 @@ void ErasePlayer::erase(OBJ2D* obj) const
 }
 #undef USE_FIND_PARENT
 
-
-//******************************************************************************
-// 
-//      TtileCorePlayerBehavior（タイトル用の自機）
-// 
-//******************************************************************************
-TitlePlayerHeartBehavior::TitlePlayerHeartBehavior()
-{
-    // アニメーション
-    param_.ANIME_WAIT = animeTitleCore;
-
-    param_.SIZE = VECTOR2(PARTS_OBJ_SIZE, PARTS_OBJ_SIZE);
-    param_.SCALE = { 2.0f,2.0f };
-    param_.HIT_BOX[0] = { -10, -10, 10, 10 };
-    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
-}
-
-//******************************************************************************
-// 
-//      TtileCorePlayerBehavior（タイトル用の自機）
-// 
-//******************************************************************************
-TitlePlayerCoreBehavior::TitlePlayerCoreBehavior()
-{
-    // アニメーション
-    param_.ANIME_WAIT = animePlayerCore01;
-
-    param_.SIZE = VECTOR2(PARTS_OBJ_SIZE, PARTS_OBJ_SIZE);
-    param_.SCALE = { 2.0f,2.0f };
-    param_.HIT_BOX[0] = { -10, -10, 10, 10 };
-    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
-}
 
 // カーソルの座標取得
 //VECTOR2 getCursorPoint()

@@ -137,21 +137,75 @@ EXTERN PlayerTrash01Behavior playerTrash01Behavior;
 
 //******************************************************************************
 // 
-//      TitlePlayerHeartBehavior（タイトル用の自機・ハートのみ）
+//      Common(効果なしパーツ)
 // 
 //******************************************************************************
+
+// Common01
+class  PlayerCommon01Behavior : public PlayerPartsBehavior
+{
+public:
+    PlayerCommon01Behavior();
+};
+EXTERN PlayerCommon01Behavior playerCommon01Behavior;
+
+// Common01_2(90度回転)
+class  PlayerCommon01_2Behavior : public PlayerPartsBehavior
+{
+public:
+    PlayerCommon01_2Behavior();
+};
+EXTERN PlayerCommon01_2Behavior playerCommon01_2Behavior;
+
+// Common02
+class  PlayerCommon02Behavior : public PlayerPartsBehavior
+{
+public:
+    PlayerCommon02Behavior();
+};
+EXTERN PlayerCommon02Behavior playerCommon02Behavior;
+
+// Common02_2(90度回転)
+class  PlayerCommon02_2Behavior : public PlayerPartsBehavior
+{
+public:
+    PlayerCommon02_2Behavior();
+};
+EXTERN PlayerCommon02_2Behavior playerCommon02_2Behavior;
+
+// Common03
+class  PlayerCommon03Behavior : public PlayerPartsBehavior
+{
+public:
+    PlayerCommon03Behavior();
+};
+EXTERN PlayerCommon03Behavior playerCommon03Behavior;
+
+// Common03_2(90度回転)
+class  PlayerCommon03_2Behavior : public PlayerPartsBehavior
+{
+public:
+    PlayerCommon03_2Behavior();
+};
+EXTERN PlayerCommon03_2Behavior playerCommon03_2Behavior;
+
+
+//******************************************************************************
+// 
+//      TitlePlayer（タイトル用の自機)
+// 
+//******************************************************************************
+
+// ハートのみ
 class TitlePlayerHeartBehavior : public BasePlayerBehavior
 {
 public:
     TitlePlayerHeartBehavior();
+    void areaCheck(OBJ2D*) const override;
 };
 EXTERN TitlePlayerHeartBehavior titlePlayerHeartBehavior;
 
-//******************************************************************************
-// 
-//      TtileCorePlayerBehavior（タイトル用の自機）
-// 
-//******************************************************************************
+// コア
 class TitlePlayerCoreBehavior : public BasePlayerBehavior
 {
 public:

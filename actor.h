@@ -22,7 +22,7 @@ protected:
         int BOX_NUM = 1;
         Behavior* NEXT_BEHAVIOR = nullptr;
         Eraser* NEXT_ERASER = nullptr;
-
+        float ROTATION = 0.0f;
 
         // アニメーション用パラメータ
         OBJ_DATA OBJ_ANIME = nullptr;

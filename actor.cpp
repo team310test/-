@@ -24,6 +24,8 @@ void ActorBehavior::move(OBJ2D* obj) const
         obj->nextBehavior_ = getParam()->NEXT_BEHAVIOR;
         obj->nextEraser_   = getParam()->NEXT_ERASER;
 
+        obj->transform_->rotation_ = getParam()->ROTATION;
+
         // アニメ用パラメータ
         obj->actorComponent_->objAnimeAlways_ = getParam()->OBJ_ANIME;
         obj->actorComponent_->rotSpeed_ = getParam()->ROT_SPEED;

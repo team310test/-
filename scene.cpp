@@ -1,7 +1,7 @@
 #include "all.h"
 
-VECTOR2 Scene::takeOverPos_ = {};
-VECTOR2 Scene::takeOverScale_ = {};
+VECTOR2 Scene::takeOverPos_ = { 200.0f,500.0f };
+VECTOR2 Scene::takeOverScale_ = { 1.0f,1.0f };
 bool Scene::takeOverIsDrawShrink_ = false;
 
 //--------------------------------------------------------------

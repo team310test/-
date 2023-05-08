@@ -63,6 +63,61 @@ public:
 };
 EXTERN DropTrash01Behavior dropTrash01Behavior;
 
+
+//******************************************************************************
+// 
+//      Common(効果なしパーツ)
+// 
+//******************************************************************************
+
+// Common01
+class DropCommon01Behavior : public BaseDropPartsBehavior
+{
+public:
+    DropCommon01Behavior();
+};
+EXTERN DropCommon01Behavior dropCommon01Behavior;
+
+// Common01_2(90度回転)
+class DropCommon01_2Behavior : public BaseDropPartsBehavior
+{
+public:
+    DropCommon01_2Behavior();
+};
+EXTERN DropCommon01_2Behavior dropCommon01_2Behavior;
+
+// Common02
+class DropCommon02Behavior : public BaseDropPartsBehavior
+{
+public:
+    DropCommon02Behavior();
+};
+EXTERN DropCommon02Behavior dropCommon02Behavior;
+
+// Common02_2(90度回転)
+class DropCommon02_2Behavior : public BaseDropPartsBehavior
+{
+public:
+    DropCommon02_2Behavior();
+};
+EXTERN DropCommon02_2Behavior dropCommon02_2Behavior;
+
+// Common03
+class DropCommon03Behavior : public BaseDropPartsBehavior
+{
+public:
+    DropCommon03Behavior();
+};
+EXTERN DropCommon03Behavior dropCommon03Behavior;
+
+// Common03_2(90度回転)
+class DropCommon03_2Behavior : public BaseDropPartsBehavior
+{
+public:
+    DropCommon03_2Behavior();
+};
+EXTERN DropCommon03_2Behavior dropCommon03_2Behavior;
+
 //******************************************************************************
 // 
 //      erase(消去)

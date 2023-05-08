@@ -22,7 +22,10 @@ GameLib::LoadTexture loadTexture[] = {
     { TEXNO::BUFF01,    L"./Data/Images/Parts/Buff/Buff01.png",     1U },
     // ごみパーツ
     { TEXNO::TRASH01,   L"./Data/Images/Parts/Trash/Trash01.png",   1U },
-
+    // コモンパーツ(効果なしパーツ)
+    { TEXNO::COMMON01,   L"./Data/Images/Parts/Common/Steel_frame1.png",   1U },
+    { TEXNO::COMMON02,   L"./Data/Images/Parts/Common/Steel_frame2.png",   1U },
+    { TEXNO::COMMON03,   L"./Data/Images/Parts/Common/Steel_frame3.png",   1U },
 
     // 弾
     { TEXNO::BULLET01,  L"./Data/Images/Bullet/Bullet01.png",   1U },
@@ -33,7 +36,7 @@ GameLib::LoadTexture loadTexture[] = {
 
     // タイトル画像
     { TEXNO::TITLE_FRAME, L"./Data/Images/Core/Core_Frame.png",    1U},
-    { TEXNO::TITLE_USER01, L"./Data/Images/UI/title_user.png",    1U},
+    { TEXNO::TITLE_USER01, L"./Data/Images/UI/title_user01.png",    1U},
     { TEXNO::TITLE_USER02, L"./Data/Images/UI/title_user02.png",    1U},
     { TEXNO::TITLE_TRASH,L"./Data/Images/UI/title_trash.png",    1U},
     { TEXNO::TITLE_LOGO,L"./Data/Images/UI/title_logo.png",    1U},
@@ -56,6 +59,9 @@ GameLib::SpriteData sprPartsTurret02 = SPRITE_CENTER(TEXNO::TURRET02,   0, 0, 12
 GameLib::SpriteData sprPartsTurret03 = SPRITE_CENTER(TEXNO::TURRET03,   0, 0, 128, 128);
 GameLib::SpriteData sprPartsBuff01   = SPRITE_CENTER(TEXNO::BUFF01,     0, 0, 250, 250);
 GameLib::SpriteData sprPartsTrash01  = SPRITE_CENTER(TEXNO::TRASH01,    0, 0, 128, 128);
+GameLib::SpriteData sprPartsCommon01 = SPRITE_CENTER(TEXNO::COMMON01,   0, 0, 128, 128);
+GameLib::SpriteData sprPartsCommon02 = SPRITE_CENTER(TEXNO::COMMON02,   0, 0, 128, 128);
+GameLib::SpriteData sprPartsCommon03 = SPRITE_CENTER(TEXNO::COMMON03,   0, 0, 128, 128);
 
 //------< 弾 >----------------------------------------------------------------
 GameLib::SpriteData sprShot_NormalShot  = SPRITE_CENTER(TEXNO::BULLET01, 0, 0, 64, 64);
