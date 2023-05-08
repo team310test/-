@@ -78,7 +78,7 @@ void Title::update()
         bg()->update();                     // BGの更新
         
         // 演出が終わっていなかったらreturn
-        if (!statePerform()) return;
+        if (!startPerform()) return;
 
         userHintMove();
 
@@ -192,7 +192,7 @@ void Title::endGame()
     }
 }
 
-bool Title::statePerform()
+bool Title::startPerform()
 {
     // 演出が終わっていたらtrueを返す
     if (!isStartPerform_) return true;

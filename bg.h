@@ -20,7 +20,7 @@ private:
     static constexpr float DEFAULT_ALPHA_COLOR = 0.2f;  // 初期透明度
 
     static constexpr float DISP_BG_SCALE_MIN = 0.03125f;    // この値より背景のscaleが小さい場合は更新・描画しない(縮小5回分)
-    static constexpr float DISP_BG_SCALE_MAX = 2.0f;    // この値より背景のscaleが大きい場合は更新・描画しない
+    static constexpr float DISP_BG_SCALE_MAX = 2.0f;        // この値より背景のscaleが大きい場合は更新・描画しない
 
 public:
     static float subScale;    // scaleの縮小速度

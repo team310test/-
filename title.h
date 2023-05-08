@@ -35,7 +35,7 @@ public:
 
 	void changeSceneGame();		// ゲーム画面への遷移処理
 	void endGame();				// ゲーム終了処理
-	bool statePerform();		// スタート演出
+	bool startPerform();		// スタート演出
 
 	bool objFadeOut(OBJ2D*, float);			// フェードアウト
 	bool objFadeIn(OBJ2D*,float);			// フェードイン

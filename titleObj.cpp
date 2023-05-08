@@ -192,16 +192,16 @@ TitlePlayerCoreHeartBehavior::TitlePlayerCoreHeartBehavior()
 void TitlePlayerCoreHeartBehavior::areaCheck(OBJ2D* obj) const
 {
     Transform* t = obj->transform_;
-    Collider* c = obj->collider_;
+    //Collider*  c = obj->collider_;
 
-    const float leftSize = 42.0f;
-    const float rightSize = 42.0f;
-    const float topSize = 30.0f;
-    const float bottomSize = 44.0f;
+    const float leftSize    = 42.0f;
+    const float rightSize   = 42.0f;
+    const float topSize     = 30.0f;
+    const float bottomSize  = 44.0f;
 
-    const float leftLimit = leftSize;
-    const float rightLimit = BG::WINDOW_W - rightSize;
-    const float topLimit = topSize;
+    const float leftLimit   = leftSize;
+    const float rightLimit  = BG::WINDOW_W - rightSize;
+    const float topLimit    = topSize;
     const float bottomLimit = BG::WINDOW_H - bottomSize;
 
     if (t->position_.x >= rightLimit)

@@ -7,7 +7,7 @@
 // タイトル
 enum TITLE_TEXNO
 {
-    TITLE_PLAYER,        // プレイヤーコアのハート
+    TITLE_PLAYER,       // プレイヤーコア
     TITLE_HEART,        // プレイヤーコアのハート
     TITLE_FRAME,        // プレイヤーコアの枠
 
@@ -15,8 +15,6 @@ enum TITLE_TEXNO
     TITLE_TRASH_BOX,    // ゴミ箱
     TITLE_USER01,       // 操作方法
     TITLE_USER02,       // 操作方法
-
-    TITLE_PL_CORE01,          // プレイヤーコア
 };
 
 // ゲーム
