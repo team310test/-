@@ -53,3 +53,5 @@ enum PARENT_NO
 extern EnemyData enemy01[];
 // エネミー02
 extern EnemyData enemy02[];
+// エネミー03
+extern EnemyData enemy03[];

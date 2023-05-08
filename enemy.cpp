@@ -324,7 +324,7 @@ void BaseEnemyPartsBehavior::contactToEnmCore(OBJ2D* obj, OBJ2D* coreEnm) const
 //
 //******************************************************************************
 
-// Turret01
+// Turret01(AimShot)
 EnemyTurret01Behavior::EnemyTurret01Behavior()
 {
     param_.ANIME_WAIT = animeTurret01;
@@ -404,7 +404,7 @@ EnemyCommon01Behavior::EnemyCommon01Behavior()
 }
 
 // Common01_2(90度回転)
-EnemyCommon01_2Behavior::EnemyCommon01_2Behavior()
+EnemyCommon04Behavior::EnemyCommon04Behavior()
 {
     param_.ANIME_WAIT = animeCommon01;
 
@@ -439,7 +439,7 @@ EnemyCommon02Behavior::EnemyCommon02Behavior()
 }
 
 // Common01_2(90度回転)
-EnemyCommon02_2Behavior::EnemyCommon02_2Behavior()
+EnemyCommon05Behavior::EnemyCommon05Behavior()
 {
     param_.ANIME_WAIT = animeCommon02;
 
@@ -474,7 +474,7 @@ EnemyCommon03Behavior::EnemyCommon03Behavior()
 }
 
 // Common03_2(90度回転)
-EnemyCommon03_2Behavior::EnemyCommon03_2Behavior()
+EnemyCommon06Behavior::EnemyCommon06Behavior()
 {
     param_.ANIME_WAIT = animeCommon03;
 
@@ -544,6 +544,30 @@ void EraseEnemy::erase(OBJ2D* obj) const
         return;
     }
 
+    // 親を持っていて、自分が親ではなく、親のHPが0以下になるとアイテム化する
+    if (a->parent_ && obj != a->parent_ && !a->parent_->actorComponent_->isAlive())
+    {
+        a->parent_ = nullptr; // 親をリセット
+        a->orgParent_ = nullptr; // 元の親をリセット
+
+        // 次のbehavior・eraser（ドロップアイテム）を代入
+        obj->behavior_ = obj->nextBehavior_;
+        obj->eraser_ = obj->nextEraser_;
+
+        // 爆発エフェクト
+        AddObj::addEffect(obj, &efcBombBehavior);
+
+        if (obj->behavior_ == nullptr) return;
+
+        obj->update_ = DROP_PARTS_UPDATE;  // updateを変更
+
+        a->hp_ = 0;             // HPを0にする
+        obj->renderer_->flip(); // 反転させる
+
+        obj->isBlink_ = true;     // 明滅させる
+
+        return;
+    }
 
     // HPが0以下になると
     if (!a->isAlive())
