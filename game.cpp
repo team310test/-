@@ -97,9 +97,11 @@ void Game::update()
         }
 
 
+        //if (BasePlayerBehavior::plShrinkCount_ >= BasePlayerBehavior::PL_SHRINK_COUNT_MAX ||
+        //    GameLib::input::TRG(0) & GameLib::input::PAD_TRG3)
         if (BasePlayerBehavior::plShrinkCount_ >= BasePlayerBehavior::PL_SHRINK_COUNT_MAX)  // プレイヤーの数がShrinkの規定数に達したら
         {
-            if (Collider::isAllShrink_  == false && // Shrinkが開始されておらず、
+            if (Collider::isAllShrink_ == false && // Shrinkが開始されておらず、
                 Behavior::isObjShrink() == false)   // すべてのobjが縮小していなければ
             {
                 Collider::isAllShrink_ = true;      // Shrinkを開始
@@ -132,9 +134,10 @@ void Game::update()
         //// 縮小とパーツプレイヤーへ向かう速度いじり
         if (Behavior::isObjShrink()) // ひとつでもobjが縮小していれば
         {
-            Behavior::shrinkVelocity_               += (-SHRINK_SPEED)  * 0.015f;
-            PlayerPartsBehavior::toCoreVelocity_    += (-TO_CORE_SPEED) * 0.015f;
-            BaseEnemyPartsBehavior::toCoreVelocity_ += (-TO_CORE_SPEED) * 0.015f;
+            BG::bgSubScale_                         += (-BG_SHRINK_SPEED) * 0.0225f;
+            Behavior::shrinkVelocity_               += (-SHRINK_SPEED)    * 0.015f;
+            PlayerPartsBehavior::toCoreVelocity_    += (-TO_CORE_SPEED)   * 0.015f;
+            BaseEnemyPartsBehavior::toCoreVelocity_ += (-TO_CORE_SPEED)   * 0.015f;
             UI::letterBox_multiplySizeY_ = std::max(0.75f, UI::letterBox_multiplySizeY_ + LETTER_BOX_SUB_SPEED); // 0.0fより小さければ0.0fに修正
         }
         else // すべてのobjが縮小していなければ

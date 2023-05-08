@@ -104,6 +104,8 @@
 // OBJが描画できるスケール最低値（これ以下は描画しない）
 #define DRAW_OBJ_SCALE_MIN_LIMIT    (0.03125f) // 5回分の縮小相当
 
+// 背景の縮小の初期速度
+#define BG_SHRINK_SPEED (0.0025f * 4)
 // 縮小の初期速度
 #define SHRINK_SPEED  (0.0025f * 4) 
 // パーツがプレイヤー本体へ向かう初期速度

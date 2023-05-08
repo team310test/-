@@ -1,5 +1,20 @@
 #include "all.h"
 
+float BG::bgSubScale_           = 0.0f; // スケールの縮小速度
+int   BG::bgSprTableIndex_      = 0;    // 背景テーブル配列の現在の要素数
+int   BG::isAddbgSprTableIndex_ = 1;    // bgSprTableIndex_を加算するか決める
+
+
+// 背景テーブル配列
+const int bgSprTable[] = {
+    GAME_TEXNO::BG01,
+    GAME_TEXNO::BG02,
+    GAME_TEXNO::BG03,
+    GAME_TEXNO::BG04,
+    GAME_TEXNO::BG05,
+    GAME_TEXNO::BG06,
+    GAME_TEXNO::BG_END,
+};
 
 BG::BG()
     :bg_()
@@ -30,6 +45,10 @@ void BG::init()
     }
     //new char[2]; // メモリリーク確認
 
+    bgSubScale_           = BG_SHRINK_SPEED;
+    bgSprTableIndex_      = 0;
+    isAddbgSprTableIndex_ = 1;
+
     // BG用データのクリア
     clear();
 
@@ -39,22 +58,22 @@ void BG::init()
 void BG::clear()
 {
     // スケールとスプライト画像の設定
-    bg_[0]->transform_->scale_  = bg_[1]->transform_->scale_  = { 1, 1 };
-    bg_[2]->transform_->scale_  = bg_[3]->transform_->scale_  = { 2, 2 };
-    bg_[4]->transform_->scale_  = bg_[5]->transform_->scale_  = { 4, 4 };
-    bg_[6]->transform_->scale_  = bg_[7]->transform_->scale_  = { 8, 8 };
-    bg_[8]->transform_->scale_  = bg_[9]->transform_->scale_  = { 16, 16 };
-    bg_[10]->transform_->scale_ = bg_[11]->transform_->scale_ = { 32, 32 };
+    bg_[0]->transform_->scale_   = bg_[1]->transform_->scale_   = { 1, 1 };
+    bg_[2]->transform_->scale_   = bg_[3]->transform_->scale_   = { 5, 5 };
+    bg_[4]->transform_->scale_   = bg_[5]->transform_->scale_   = { 10, 10 };
+    bg_[6]->transform_->scale_   = bg_[7]->transform_->scale_   = { 50, 50 };
+    bg_[8]->transform_->scale_   = bg_[9]->transform_->scale_   = { 100, 100 };
+    bg_[10]->transform_->scale_  = bg_[11]->transform_->scale_  = { 500, 500 };
 
-    bg_[0]->bgSprNo_  = bg_[1]->bgSprNo_  = BACK01;
-    bg_[2]->bgSprNo_  = bg_[3]->bgSprNo_  = BACK02;
-    bg_[4]->bgSprNo_  = bg_[5]->bgSprNo_  = BACK01;
-    bg_[6]->bgSprNo_  = bg_[7]->bgSprNo_  = BACK02;
-    bg_[8]->bgSprNo_  = bg_[9]->bgSprNo_  = BACK01;
-    bg_[10]->bgSprNo_ = bg_[11]->bgSprNo_ = BACK02;
+    bg_[0]->bgSprNo_   = bg_[1]->bgSprNo_   = bgSprTable[bgSprTableIndex_]; ++bgSprTableIndex_;
+    bg_[2]->bgSprNo_   = bg_[3]->bgSprNo_   = bgSprTable[bgSprTableIndex_]; ++bgSprTableIndex_;
+    bg_[4]->bgSprNo_   = bg_[5]->bgSprNo_   = bgSprTable[bgSprTableIndex_]; ++bgSprTableIndex_;
+    bg_[6]->bgSprNo_   = bg_[7]->bgSprNo_   = bgSprTable[bgSprTableIndex_]; ++bgSprTableIndex_;
+    bg_[8]->bgSprNo_   = bg_[9]->bgSprNo_   = bgSprTable[bgSprTableIndex_]; ++bgSprTableIndex_;
+    bg_[10]->bgSprNo_  = bg_[11]->bgSprNo_  = bgSprTable[bgSprTableIndex_]; ++bgSprTableIndex_;
 
 
-    int bgNum = 1; // スクロールの右左配置設定用
+    int bgSetPosXNum = 1; // スクロールの右左配置設定用
 
     // 初期設定
     for (OBJ2D*& bg : bg_)
@@ -66,7 +85,7 @@ void BG::clear()
         c->targetScale_ = t->scale_;         // スケール
         c->size_        = { 3840, 1080 };    // 画像サイズ
 
-        t->position_.x  = (bgNum % 2 == 0) ? c->size_.x : 0.0f; // 2で割れたらスクロールの右側担当にする
+        t->position_.x  = (bgSetPosXNum % 2 == 0) ? c->size_.x : 0.0f; // 2で割れたらスクロールの右側担当にする
         t->position_.y  = bg->bg_->WINDOW_H * 0.5f;             // yだけ真ん中に設定（見栄え）
 
         t->velocity_.x  = BG_SCROLL_SPEED;                      // スクロール速度
@@ -76,7 +95,7 @@ void BG::clear()
                         ? DEFAULT_ALPHA_COLOR : 0.0f; 
         r->targetColor_ = r->color_;                            // 目標カラー
 
-        ++bgNum;
+        ++bgSetPosXNum;
     }
 
 }
@@ -89,12 +108,11 @@ void BG::update()
 
 
 // 背景更新処理(private)
-float BG::subScale = -0.0035f;    // scaleの縮小速度
 static constexpr float ADD_ALPHA_COLOR     =  0.001f;  // 不透明度の増加速度
 static constexpr float SUBJECT_ALPHA_COLOR = -0.0025f; // 不透明度の減少速度
 void BG::moveBack()
 {
-
+    // 最初と最後の背景のスケール確認
     //GameLib::debug::setString("bg[0]Scale:%f", bg_[0]->transform_->scale_.x);
     //GameLib::debug::setString("bg[11]Scale:%f", bg_[11]->transform_->scale_.x);
 
@@ -111,18 +129,19 @@ void BG::moveBack()
             //GameLib::debug::setString("color.z:%f", r->color_.w); // 不透明度
         }
 
-/////////////// スケール更新 //////////////////////////
+/////////////// スケール更新 //////////////////////////////////////////////
+
         if (t->scale_.x > c->targetScale_.x)
         {
             // scale減少
-            t->scale_ += (subScale * t->scale_); // scaleの大きさで縮小速度を調整更新
+            t->scale_ += (bgSubScale_ * t->scale_); // scaleの大きさで縮小速度を調整更新
 
             // 目標より小さくなったら修正
             if (t->scale_.x < c->targetScale_.x) t->scale_ = c->targetScale_;
         }
 
+/////////////// カラー不透明度更新 /////////////////////////////////////////
 
-/////////////// カラー不透明度更新 /////////////////////
         if (r->color_.w > r->targetColor_.w) // 目標値より大きい場合
         {
             // 不透明度減少
@@ -141,7 +160,8 @@ void BG::moveBack()
         }
 
 
-/////////////// 位置更新 /////////////////////////////
+/////////////// 位置更新 ///////////////////////////////////////////////////
+
         if (t->scale_.x > DISP_BG_SCALE_MAX) continue;  // scaleが最大表示より大きければ位置を更新しない
         
         // 位置に速度を足す
@@ -149,7 +169,7 @@ void BG::moveBack()
 
         // 画像の右端が画面左端を超えたら画像サイズ2つ分右に移動
         if ( (t->position_.x + c->size_.x) < 0) t->position_.x += (c->size_.x * 2.0f);  
-
+        
     }
 
 }
@@ -163,10 +183,6 @@ void BG::drawBack()
         Transform* t = bg->transform_;
         Collider*  c = bg->collider_;
         Renderer*  r = bg->renderer_;
-
-        if (t->scale_.x < DISP_BG_SCALE_MIN) continue; // scaleが最小表示より小さければcontinue
-        if (t->scale_.x > DISP_BG_SCALE_MAX) continue; // scaleが最大表示より大きければcontinue
-
 
         GameLib::texture::begin(bg->bgSprNo_);
         GameLib::texture::draw(
@@ -191,23 +207,34 @@ void BG::setBGShrink()
         Collider*  c = bg->collider_;
         Renderer*  r = bg->renderer_;
 
-        if (t->scale_.x < DISP_BG_SCALE_MIN) continue; // scaleが最小表示より小さければcontinue
+        // 画像更新(targetScaleを決める必要があるのでここで処理を行う)
+        if( (t->scale_.x >= 0.01f && t->scale_.x <= 0.011f) || t->scale_.x == 0.05f)
+        {
+            // 背景が最後の背景ならそのまま、そうでなければ次の背景にする
+            bg->bgSprNo_ = (bgSprTable[bgSprTableIndex_] < BG_END)
+                         ? bgSprTable[bgSprTableIndex_]
+                         : bg->bgSprNo_;
+            if (isAddbgSprTableIndex_ % 2 == 0) ++bgSprTableIndex_;
+            ++isAddbgSprTableIndex_;
+
+            if (t->scale_.x >= 0.01f && t->scale_.x <= 0.011f) t->scale_ = { 10,10 };
+            if (t->scale_.x == 0.05f) t->scale_ = { 50, 50 };
+
+            r->color_ = { 1,1,1,0 };
+            r->targetColor_ = r->color_;
+        }
 
         t->velocity_ *= 1.15f;
 
+        // scaleの?を目標値に設定
+        c->targetScale_ = t->scale_ * 0.1f;
 
-        if (t->scale_.x <= DISP_BG_SCALE_MIN) // scaleが最小表示より小さければ
-        {
-            t->scale_ = { 2,2 }; // この時点でbgの最前面のscaleが1なので倍の2を代入
-            r->color_ = { 1,1,1,0 };
-        }
-
-        // scaleの半分を目標値に設定
-        c->targetScale_ = t->scale_ * 0.5f;
+        bgSubScale_ = BG_SHRINK_SPEED; // 縮小速度をリセット
 
         // 不透明度はデフォルトのscaleの値の1.0f以下なら減らし、最大表示より小さければ増やす
-        if (t->scale_.x <= 1.0f) r->targetColor_.w = r->color_.w * 0.6f;
+        if (t->scale_.x <= 1.0f) r->targetColor_.w = r->color_.w * 0.25f;
         else if (t->scale_.x <= DISP_BG_SCALE_MAX) r->targetColor_.w = DEFAULT_ALPHA_COLOR;
+
     }
 
 }

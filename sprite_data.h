@@ -21,8 +21,13 @@ enum TITLE_TEXNO
 enum GAME_TEXNO
 {    
     // îwåi
-    BACK01,
-    BACK02,
+    BG01,
+    BG02,
+    BG03,
+    BG04,
+    BG05,
+    BG06,
+    BG_END, // îwåiÇÃç≈å„
 
     // UI
     UI_METER_FRAME,     // åväÌÇÃòg

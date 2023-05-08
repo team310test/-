@@ -20,13 +20,17 @@ GameLib::LoadTexture titleLoadTexture[] = {
 // ゲーム画像データ
 GameLib::LoadTexture gameLoadTexture[] = {
     // 背景
-    { GAME_TEXNO::BACK01,    L"./Data/Images/BackGround/BackGround01.png", 1U },
-    { GAME_TEXNO::BACK02,    L"./Data/Images/BackGround/BackGround02.png", 1U },
+    { GAME_TEXNO::BG01, L"./Data/Images/BackGround/BackGround01.png",   1U },
+    { GAME_TEXNO::BG02, L"./Data/Images/BackGround/BackGround02.png",   1U },
+    { GAME_TEXNO::BG03, L"./Data/Images/BackGround/BackGround01.png",   1U },
+    { GAME_TEXNO::BG04, L"./Data/Images/BackGround/BackGround02.png",   1U },
+    { GAME_TEXNO::BG05, L"./Data/Images/BackGround/BackGround01.png",   1U },
+    { GAME_TEXNO::BG06, L"./Data/Images/BackGround/BackGround02.png",   1U },
 
     // UI
-    { GAME_TEXNO::UI_METER_FRAME,    L"./Data/Images/UI/Meter_Frame.png",    1U },   // 計器の枠
-    { GAME_TEXNO::UI_METER_READ,     L"./Data/Images/UI/Meter_Read.png",     1U },   // 計器の目盛り
-    { GAME_TEXNO::UI_METER_NEEDLE,   L"./Data/Images/UI/Meter_Needle.png",   1U },   // 計器の針
+    { GAME_TEXNO::UI_METER_FRAME,    L"./Data/Images/UI/Meter_Frame.png",   1U },   // 計器の枠
+    { GAME_TEXNO::UI_METER_READ,     L"./Data/Images/UI/Meter_Read.png",    1U },   // 計器の目盛り
+    { GAME_TEXNO::UI_METER_NEEDLE,   L"./Data/Images/UI/Meter_Needle.png",  1U },   // 計器の針
 
     // コア
     { GAME_TEXNO::PL_CORE01,  L"./Data/Images/Core/PlayerCore01.png", 1U },
