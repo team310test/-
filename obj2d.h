@@ -330,7 +330,8 @@ public:
 
 public:
     // ƒƒ“ƒoŠÖ”
-    OBJ2D(Renderer* renderer,
+    OBJ2D(
+        Renderer* renderer,
         Collider* collider,
         BG* bg,
         ActorComponent* actorComponent,

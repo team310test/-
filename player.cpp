@@ -7,7 +7,7 @@ int BasePlayerBehavior::plShrinkCount_ = 0;
 namespace
 {
     // 待機
-    GameLib::AnimeData animePlayerCore01[] = {
+    GameLib::AnimeData animePLayerCore[] = {
         { &sprPlayerCore01, 10 },
         { nullptr, -1 },// 終了フラグ
     };
@@ -46,13 +46,6 @@ namespace
     GameLib::AnimeData animeCommon03[] = {
     { &sprPartsCommon03, 10 },
     { nullptr, -1 },// 終了フラグ
-    };
-
-    // タイトル用コア
-    GameLib::AnimeData animeTitleCore[] =
-    {
-        {&sprTitleHeart,10},
-        {nullptr,-1},// 終了フラグ
     };
 }
 
@@ -215,9 +208,9 @@ void PLAYER_PATRS_UPDATE(OBJ2D* obj)
 void TITLE_PLAYER_UPDATE(OBJ2D* obj)
 {
     using namespace GameLib::input;
-    ActorComponent* a = obj->actorComponent_;
-    Transform* t = obj->transform_;
-    float floor = 800.0f;
+    //ActorComponent* a = obj->actorComponent_;
+    Transform* t        = obj->transform_;
+    const float floor   = 800.0f;
     static bool isBound = false;
 
     t->velocity_ += {0.1f, 2.5f};
@@ -389,7 +382,7 @@ void BasePlayerBehavior::areaCheck(OBJ2D* /*obj*/) const
 PlayerCoreBehavior::PlayerCoreBehavior()
 {
     // アニメーション
-    param_.ANIME_WAIT    = animePlayerCore01;
+    param_.ANIME_WAIT    = animePLayerCore;
 
     param_.SIZE    = VECTOR2(PARTS_OBJ_SIZE, PARTS_OBJ_SIZE);
 
@@ -698,73 +691,6 @@ PlayerCommon03_2Behavior::PlayerCommon03_2Behavior()
          -18.0f,-64.0f,
           18.0f, 64.0f,
     };
-    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
-}
-
-//******************************************************************************
-// 
-//      TitlePlayer（タイトル用の自機)
-// 
-//******************************************************************************
-
-// ハートのみ
-TitlePlayerHeartBehavior::TitlePlayerHeartBehavior()
-{
-    // アニメーション
-    param_.ANIME_WAIT = animeTitleCore;
-
-    param_.SIZE = VECTOR2(42.0f, 37.0f);
-    param_.SCALE = { 2.0f,2.0f };
-    param_.HIT_BOX[0] = { -10, -10, 10, 10 };
-    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
-}
-
-void TitlePlayerHeartBehavior::areaCheck(OBJ2D* obj) const
-{
-    Transform* t = obj->transform_;
-    Collider* c = obj->collider_;
-
-    const float leftSize = 42.0f;
-    const float rightSize = 42.0f;
-    const float topSize = 30.0f;
-    const float bottomSize = 44.0f;
-
-    const float leftLimit = leftSize;
-    const float rightLimit = BG::WINDOW_W - rightSize;
-    const float topLimit = topSize;
-    const float bottomLimit = BG::WINDOW_H - bottomSize;
-
-    if (t->position_.x >= rightLimit)
-    {
-        t->position_.x = rightLimit;
-        if (t->velocity_.x > 0) t->velocity_.x = 0;
-    }
-    if (t->position_.x <= leftLimit)
-    {
-        t->position_.x = leftLimit;
-        if (t->velocity_.x < 0) t->velocity_.x = 0;
-    }
-    if (t->position_.y >= bottomLimit)
-    {
-        t->position_.y = bottomLimit;
-        if (t->velocity_.y > 0) t->velocity_.y = 0;
-    }
-    if (t->position_.y <= topLimit)
-    {
-        t->position_.y = topLimit;
-        if (t->velocity_.y < 0) t->velocity_.y = 0;
-    }
-}
-
-// コア
-TitlePlayerCoreBehavior::TitlePlayerCoreBehavior()
-{
-    // アニメーション
-    param_.ANIME_WAIT = animePlayerCore01;
-
-    param_.SIZE = VECTOR2(PARTS_OBJ_SIZE, PARTS_OBJ_SIZE);
-    param_.SCALE = { 2.0f,2.0f };
-    param_.HIT_BOX[0] = { -10, -10, 10, 10 };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 }
 

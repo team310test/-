@@ -190,29 +190,6 @@ public:
 EXTERN PlayerCommon03_2Behavior playerCommon03_2Behavior;
 
 
-//******************************************************************************
-// 
-//      TitlePlayer（タイトル用の自機)
-// 
-//******************************************************************************
-
-// ハートのみ
-class TitlePlayerHeartBehavior : public BasePlayerBehavior
-{
-public:
-    TitlePlayerHeartBehavior();
-    void areaCheck(OBJ2D*) const override;
-};
-EXTERN TitlePlayerHeartBehavior titlePlayerHeartBehavior;
-
-// コア
-class TitlePlayerCoreBehavior : public BasePlayerBehavior
-{
-public:
-    TitlePlayerCoreBehavior();
-};
-EXTERN TitlePlayerCoreBehavior titlePlayerCoreBehavior;
-
 //==============================================================================
 //
 //      消去アルゴリズム

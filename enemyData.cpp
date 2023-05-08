@@ -44,7 +44,7 @@ OBJ2D* setEnemy
 EnemyData enemy01[] =
 {
     CORE(&enemyCore01Behavior,3,PARENT_NO::PARENT0)
-    ,{&enemyCommon02Behavior,{-64,96},3,PARENT_NO::NOT,PARENT_NO::PARENT0}
+    ,{&enemyTurret01Behavior,{-64,96},3,PARENT_NO::NOT,PARENT_NO::PARENT0}
     ,END
 };
 // エネミー02

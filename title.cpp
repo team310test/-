@@ -25,11 +25,11 @@ void Title::init()
     bg_ = new BG;
 
     // 変数の初期化
-    isStatePerform_ = true;
+    isStartPerform_ = true;
     oldTImer_ = 0;
     pushCount_ = 0;
 
-    // //フェード(イン)アウトの初期化
+    //フェード(イン)アウトの初期化
     FADE::clear();
 }
 
@@ -38,9 +38,9 @@ void Title::deinit()
     safe_delete(bg_);
     safe_delete(obj2dManager_);
 
-    player_ = nullptr;
-    stateCommand_ = nullptr;
-    endCommand_ = nullptr;
+    player_         = nullptr;
+    startCommand_   = nullptr;
+    endCommand_     = nullptr;
 
     // テクスチャの解放
     GameLib::texture::releaseAll();
@@ -55,29 +55,25 @@ void Title::update()
     {
     case 0:
         //////// 初期設定 ////////
-
         timer_ = 0;
         GameLib::setBlendMode(GameLib::Blender::BS_ALPHA);   // 通常のアルファ処理
 
         // テクスチャの読み込み
-        GameLib::texture::load(loadTexture);
+        GameLib::texture::load(titleLoadTexture);
         obj2dManager()->init();
 
         
-        player_ = setTitlePlayer(obj2dManager(),bg());
-        stateCommand_ = setTitleObj(obj2dManager(), &titleStateObjBehavior, { 500,500 });
-        endCommand_ = setTitleObj(obj2dManager(), &titleEndObjBehavior, { 1420,500 });
-        titleLoge_ = setTitleObj(obj2dManager(), &titleLogoObjBehavior, { 960.0f,200.0f });
+        player_         = setTitlePlayer(obj2dManager(),bg());
+        startCommand_   = setTitleObj(obj2dManager(), &titleStartObjBehavior, { 500,500 } );
+        endCommand_     = setTitleObj(obj2dManager(), &titleEndObjBehavior,   { 1420,500 } );
+        titleLoge_      = setTitleObj(obj2dManager(), &titleLogoObjBehavior,  { 960.0f,200.0f } );
 
         bg()->init();
 
-        state_++;                                    // 初期化処理の終了
+        ++state_;                                    // 初期化処理の終了
         /*fallthrough*/                             // 意図的にbreak;を記述していない
-
     case 1:
         //////// 通常時の処理 ////////
-        GameLib::debug::setString("time:%d", timer_);
-
         obj2dManager()->update();           // オブジェクト更新
         bg()->update();                     // BGの更新
         
@@ -139,7 +135,7 @@ void Title::judge()
 void Title::changeSceneGame()
 {
     // 自機が接触したら
-    if (stateCommand_ && stateCommand_->titleComponent_->isTrigger)
+    if (startCommand_ && startCommand_->titleComponent_->isTrigger)
     {
         // 時間経過でヒント描画
         userHintShot();
@@ -199,13 +195,13 @@ void Title::endGame()
 bool Title::statePerform()
 {
     // 演出が終わっていたらtrueを返す
-    if (!isStatePerform_) return true;
+    if (!isStartPerform_) return true;
 
     if (player_->titleComponent_->isTrigger)
     {
         const float fadeSpeed = 0.01f;
 
-        const bool state = objFadeIn(stateCommand_, fadeSpeed);
+        const bool state = objFadeIn(startCommand_, fadeSpeed);
         const bool end = objFadeIn(endCommand_, fadeSpeed);
         const bool logo = objFadeIn(titleLoge_, fadeSpeed);
 
@@ -214,7 +210,7 @@ bool Title::statePerform()
         {
             // playerのupdate変更
             if (player_->update_ != PLAYER_CORE_UPDATE) player_->update_ = PLAYER_CORE_UPDATE;
-            isStatePerform_ = false;
+            isStartPerform_ = false;
             return true;
         }
     }
@@ -224,8 +220,6 @@ bool Title::statePerform()
 
 bool Title::objFadeOut(OBJ2D* obj, float fadeSpeed)
 {
-    //const float fadeSpeed = 0.01f;
-
     // 透明度0未満の場合
     if (obj->renderer_->color_.w < 0.0f)
     {
@@ -253,7 +247,7 @@ bool Title::objFadeOut(OBJ2D* obj, float fadeSpeed)
 
 bool Title::objFadeIn(OBJ2D* obj, float fadeSpeed)
 {
-    // 透明度1.0を超えていた場合
+    // 透明度が1.0を超える場合
     if (obj->renderer_->color_.w > 1.0f)
     {
         obj->renderer_->color_.w = 1.0f;

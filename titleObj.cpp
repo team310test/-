@@ -3,10 +3,17 @@
 // アニメデータ
 namespace
 {
-    // 待機(player)
-    GameLib::AnimeData animePlayerCore01[] = {
-        { &sprPlayerCore01, 10 },
+    // タイトル用のplayer
+    GameLib::AnimeData animeTitlePlayerCore[] = {
+        { &sprTitlePlayerCore, 10 },
         { nullptr, -1 },// 終了フラグ
+    };
+
+    // コア(ハートのみ)
+    GameLib::AnimeData animeTitleCoreHeart[] =
+    {
+        {&sprTitleCoreHeart,10},
+        {nullptr,-1},// 終了フラグ
     };
 }
 
@@ -30,7 +37,7 @@ void BaseTitleObjBehavior::move(OBJ2D* obj) const
             getParam()->SIZE.y
         };
         obj->renderer_->color_ = getParam()->COLOR;
-        obj->renderer_->data_ = getParam()->SPR_DETA;
+        obj->renderer_->data_ = getParam()->SPR_DATA;
 
         init(obj);
 
@@ -63,16 +70,16 @@ void BaseTitleObjBehavior::init(OBJ2D* obj) const
 //
 //******************************************************************************
 // スタート
-TitleStateObjBehavior::TitleStateObjBehavior()
+TitleStartObjBehavior::TitleStartObjBehavior()
 {
-    param_.SPR_DETA = &sprTitleCore;
+    param_.SPR_DATA = &sprTitleCoreFrame;
     param_.SIZE = {100,100};
     param_.SCALE = {2.0f,2.0f};
     //param_.ATTACK_BOX[0] = { -33, 0,19,53 };
     param_.ATTACK_BOX[0] = { -13, 20,-1,33 };
 }
 
-void TitleStateObjBehavior::hit(OBJ2D* src, OBJ2D* dst) const
+void TitleStartObjBehavior::hit(OBJ2D* src, OBJ2D* dst) const
 {
     static bool wait = false;
 
@@ -104,7 +111,7 @@ void TitleStateObjBehavior::hit(OBJ2D* src, OBJ2D* dst) const
 // エンド
 TitleEndObjBehavior::TitleEndObjBehavior()
 {
-    param_.SPR_DETA = &sprTitleTrash;
+    param_.SPR_DATA = &sprTitleTrashBox;
     param_.SIZE = { 128,128 };
     param_.ATTACK_BOX[0] = { -30, -30,30,30 };
     //param_.ATTACK_BOX[0] = { -47, 20,18,85 };
@@ -126,7 +133,7 @@ void TitleEndObjBehavior::hit(OBJ2D* src, OBJ2D* dst) const
 // タイトルロゴ
 TitleLogoObjBehavior::TitleLogoObjBehavior()
 {
-    param_.SPR_DETA = &sprTitleLogo;
+    param_.SPR_DATA = &sprTitleLogo;
 }
 
 void TitleLogoObjBehavior::init(OBJ2D* obj) const
@@ -139,7 +146,7 @@ void TitleLogoObjBehavior::init(OBJ2D* obj) const
 // 操作説明[移動]
 TitleHintMoveObjBehavior::TitleHintMoveObjBehavior()
 {
-    param_.SPR_DETA = &sprTitleUser01;
+    param_.SPR_DATA = &sprTitleUser01;
 }
 
 void TitleHintMoveObjBehavior::init(OBJ2D* obj) const
@@ -152,7 +159,7 @@ void TitleHintMoveObjBehavior::init(OBJ2D* obj) const
 // 操作説明[攻撃]
 TitleHintShotObjBehavior::TitleHintShotObjBehavior()
 {
-    param_.SPR_DETA = &sprTitleUser02;
+    param_.SPR_DATA = &sprTitleUser02;
 }
 
 void TitleHintShotObjBehavior::init(OBJ2D* obj) const
@@ -161,4 +168,72 @@ void TitleHintShotObjBehavior::init(OBJ2D* obj) const
     obj->collider_->judgeFlag_ = false;
     obj->collider_->isDrawHitRect_ = false;
     obj->collider_->isDrawAttackRect_ = false;
+}
+
+
+//******************************************************************************
+// 
+//      TitlePlayer（タイトル用の自機)
+// 
+//******************************************************************************
+
+// ハートのみ
+TitlePlayerCoreHeartBehavior::TitlePlayerCoreHeartBehavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT = animeTitleCoreHeart;
+
+    param_.SIZE = VECTOR2(42.0f, 37.0f);
+    param_.SCALE = { 2.0f,2.0f };
+    param_.HIT_BOX[0] = { -10, -10, 10, 10 };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+}
+
+void TitlePlayerCoreHeartBehavior::areaCheck(OBJ2D* obj) const
+{
+    Transform* t = obj->transform_;
+    Collider* c = obj->collider_;
+
+    const float leftSize = 42.0f;
+    const float rightSize = 42.0f;
+    const float topSize = 30.0f;
+    const float bottomSize = 44.0f;
+
+    const float leftLimit = leftSize;
+    const float rightLimit = BG::WINDOW_W - rightSize;
+    const float topLimit = topSize;
+    const float bottomLimit = BG::WINDOW_H - bottomSize;
+
+    if (t->position_.x >= rightLimit)
+    {
+        t->position_.x = rightLimit;
+        if (t->velocity_.x > 0) t->velocity_.x = 0;
+    }
+    if (t->position_.x <= leftLimit)
+    {
+        t->position_.x = leftLimit;
+        if (t->velocity_.x < 0) t->velocity_.x = 0;
+    }
+    if (t->position_.y >= bottomLimit)
+    {
+        t->position_.y = bottomLimit;
+        if (t->velocity_.y > 0) t->velocity_.y = 0;
+    }
+    if (t->position_.y <= topLimit)
+    {
+        t->position_.y = topLimit;
+        if (t->velocity_.y < 0) t->velocity_.y = 0;
+    }
+}
+
+// コア
+TitlePlayerCoreBehavior::TitlePlayerCoreBehavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT = animeTitlePlayerCore;
+
+    param_.SIZE = VECTOR2(PARTS_OBJ_SIZE, PARTS_OBJ_SIZE);
+    param_.SCALE = { 2.0f,2.0f };
+    param_.HIT_BOX[0] = { -10, -10, 10, 10 };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 }

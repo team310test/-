@@ -61,7 +61,7 @@ void Game::update()
         GameLib::setBlendMode(GameLib::Blender::BS_ALPHA);   // 通常のアルファ処理
 
         // テクスチャの読み込み
-        GameLib::texture::load(loadTexture);
+        GameLib::texture::load(gameLoadTexture);
 
         // プレイヤーマネージャの初期化
         obj2dManager()->init();

@@ -9,16 +9,18 @@ private:
 
 	//<追加>
 	OBJ2D* player_;
-	OBJ2D* stateCommand_;
+	OBJ2D* startCommand_;
 	OBJ2D* endCommand_;
 	OBJ2D* titleLoge_;	// すぐに演出始まるので初期値はtrue
 	OBJ2D* userHintMove_; // 移動方法
 	OBJ2D* userHintShot_;	// 攻撃方法
 
-	bool isStatePerform_;
+
+	bool isStartPerform_;
 	bool isPlayerMove_;
 	bool isPlayerShot_;
 	int oldTImer_;
+
 	int pushCount_;
 	//bool is
 public:
@@ -50,12 +52,12 @@ private:
 		, player_(nullptr)
 
 		//<追加>
-		, stateCommand_(nullptr)
+		, startCommand_(nullptr)
 		, endCommand_(nullptr)
 		, titleLoge_(nullptr)
 		, userHintMove_(nullptr)
 		, userHintShot_(nullptr)
-		, isStatePerform_(true)	
+		, isStartPerform_(true)
 		, isPlayerMove_(false)
 		, isPlayerShot_(false)	
 		, oldTImer_(0)

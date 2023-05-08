@@ -7,7 +7,7 @@ protected:
 	{
 		// 画像
 		//GameLib::AnimeData* ANIME_WAIT = nullptr;
-		GameLib::SpriteData* SPR_DETA = nullptr;
+		GameLib::SpriteData* SPR_DATA = nullptr;
 		// サイズ
 		VECTOR2 SIZE = { 0, 0 };
 		VECTOR2 SCALE = { 1, 1 };
@@ -26,13 +26,13 @@ private:
 };
 
 // スタート
-class TitleStateObjBehavior :public BaseTitleObjBehavior
+class TitleStartObjBehavior :public BaseTitleObjBehavior
 {
 public:
-	TitleStateObjBehavior();
+	TitleStartObjBehavior();
 	void hit(OBJ2D*, OBJ2D*) const override;
 };
-EXTERN TitleStateObjBehavior titleStateObjBehavior;
+EXTERN TitleStartObjBehavior titleStartObjBehavior;
 // エンド
 class TitleEndObjBehavior :public BaseTitleObjBehavior
 {
@@ -68,3 +68,27 @@ private:
 	void init(OBJ2D*) const override;
 };
 EXTERN TitleHintShotObjBehavior titleHintShotObjBehavior;
+
+
+//******************************************************************************
+// 
+//      TitlePlayer（タイトル用の自機)
+// 
+//******************************************************************************
+
+// ハートのみ
+class TitlePlayerCoreHeartBehavior : public BasePlayerBehavior
+{
+public:
+	TitlePlayerCoreHeartBehavior();
+	void areaCheck(OBJ2D*) const override;
+};
+EXTERN TitlePlayerCoreHeartBehavior titlePlayerHeartBehavior;
+
+// コア
+class TitlePlayerCoreBehavior : public BasePlayerBehavior
+{
+public:
+	TitlePlayerCoreBehavior();
+};
+EXTERN TitlePlayerCoreBehavior titlePlayerCoreBehavior;
