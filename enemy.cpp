@@ -340,6 +340,23 @@ EnemyTurret01Behavior::EnemyTurret01Behavior()
     param_.NEXT_ERASER   = &eraseDropParts;
 }
 
+// Turret02([01]のx軸回転)
+EnemyTurret02Behavior::EnemyTurret02Behavior()
+{
+    param_.ANIME_WAIT = animeTurret01;
+
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+
+    param_.SCALE = { 1.0f,-1.0f };
+
+    // 画像サイズ(128*64の半分)
+    param_.HIT_BOX[0] = { -64, -32, 64, 32 };   // 下長方形    
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];   // 下長方形
+
+    // 次のBehavior・Eraser（ドロップアイテム）
+    param_.NEXT_BEHAVIOR = &dropTurret01Behavior;
+    param_.NEXT_ERASER = &eraseDropParts;
+}
 
 void EnemyTurret01Behavior::attack(OBJ2D* obj) const
 {

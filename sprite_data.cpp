@@ -45,9 +45,9 @@ GameLib::LoadTexture gameLoadTexture[] = {
     { GAME_TEXNO::TRASH01,   L"./Data/Images/Parts/Trash/Trash01.png",   1U },
 
     // コモンパーツ(効果なしパーツ)
-    { GAME_TEXNO::COMMON01,   L"./Data/Images/Parts/Common/Steel_frame1.png",   1U },
-    { GAME_TEXNO::COMMON02,   L"./Data/Images/Parts/Common/Steel_frame2.png",   1U },
-    { GAME_TEXNO::COMMON03,   L"./Data/Images/Parts/Common/Steel_frame3.png",   1U },
+    { GAME_TEXNO::COMMON01,   L"./Data/Images/Parts/Common/Steel_Frame01.png",   1U },
+    { GAME_TEXNO::COMMON02,   L"./Data/Images/Parts/Common/Steel_Frame02.png",   1U },
+    { GAME_TEXNO::COMMON03,   L"./Data/Images/Parts/Common/Steel_Frame03.png",   1U },
 
     // 弾
     { GAME_TEXNO::BULLET01,  L"./Data/Images/Bullet/Bullet01.png",   1U },

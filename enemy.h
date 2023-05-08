@@ -72,6 +72,14 @@ private:
 };
 EXTERN EnemyTurret01Behavior enemyTurret01Behavior;
 
+// Turret02([01]‚ÌxŽ²‰ñ“])
+class EnemyTurret02Behavior : public EnemyTurret01Behavior
+{
+public:
+    EnemyTurret02Behavior();
+private:
+};
+EXTERN EnemyTurret02Behavior enemyTurret02Behavior;
 
 //******************************************************************************
 // 

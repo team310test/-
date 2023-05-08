@@ -64,3 +64,23 @@ EnemyData enemy03[] =
     ,{&enemyTurret01Behavior,{-328.0f,0.0f},3,PARENT_NO::NOT,PARENT_NO::PARENT2}
     ,END
 };
+
+// エネミー04
+EnemyData enemy04[] =
+{
+    CORE(&enemyCore01Behavior,3,PARENT_NO::PARENT0)
+    ,{&enemyCommon04Behavior,{0.0f,128.0f},3,PARENT_NO::PARENT1,PARENT_NO::PARENT0}
+    ,{&enemyCommon05Behavior,{0.0f,256.0f},3,PARENT_NO::PARENT2,PARENT_NO::PARENT1}
+    ,{&enemyTurret01Behavior,{-53.0f,360.0f},3,PARENT_NO::NOT,PARENT_NO::PARENT2}
+    ,END
+};
+
+// エネミー05
+EnemyData enemy05[] =
+{
+    CORE(&enemyCore01Behavior,3,PARENT_NO::PARENT0)
+    ,{&enemyCommon04Behavior,{0.0f,-128.0f},3,PARENT_NO::PARENT1,PARENT_NO::PARENT0}
+    ,{&enemyCommon05Behavior,{0.0f,-256.0f},3,PARENT_NO::PARENT2,PARENT_NO::PARENT1}
+    ,{&enemyTurret02Behavior,{-53.0f,-360.0f},3,PARENT_NO::NOT,PARENT_NO::PARENT2}
+    ,END
+};
