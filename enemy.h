@@ -72,7 +72,7 @@ private:
 };
 EXTERN EnemyTurret01Behavior enemyTurret01Behavior;
 
-// Turret02([01]‚ÌxŽ²‰ñ“])
+// Turret02
 class EnemyTurret02Behavior : public EnemyTurret01Behavior
 {
 public:
@@ -80,6 +80,16 @@ public:
 private:
 };
 EXTERN EnemyTurret02Behavior enemyTurret02Behavior;
+
+// Turret03(CurveShot)
+class EnemyTurret03Behavior : public BaseEnemyPartsBehavior
+{
+public:
+    EnemyTurret03Behavior();
+private:
+    void attack(OBJ2D* obj) const override;
+};
+EXTERN EnemyTurret03Behavior enemyTurret03Behavior;
 
 //******************************************************************************
 // 

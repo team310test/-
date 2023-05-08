@@ -131,7 +131,7 @@ public:
         , pad_()
     {
     }
-    void flip() { drawXFlip_ = !drawXFlip_; }
+    void Xflip() { drawXFlip_ = !drawXFlip_; }
     void draw() override;
     bool animeUpdate();
 };

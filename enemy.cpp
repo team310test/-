@@ -16,6 +16,13 @@ namespace
         { nullptr, -1 },// 終了フラグ
     };
 
+    // タレット02
+    GameLib::AnimeData animeTurret02[] = {
+        { &sprPartsTurret02, 10 },
+        //{ &sprPlayer_test, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
+
     //  バフ01
     GameLib::AnimeData animeBuff01[] = {
         { &sprPartsBuff01, 10 },
@@ -119,7 +126,7 @@ void BaseEnemyBehavior::init(OBJ2D* obj) const
 
     obj->eraser_ = &eraseEnemy;
 
-    obj->renderer_->flip(); // 反転させる
+    obj->renderer_->Xflip(); // 反転させる
 }
 
 void BaseEnemyBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
@@ -340,24 +347,6 @@ EnemyTurret01Behavior::EnemyTurret01Behavior()
     param_.NEXT_ERASER   = &eraseDropParts;
 }
 
-// Turret02([01]のx軸回転)
-EnemyTurret02Behavior::EnemyTurret02Behavior()
-{
-    param_.ANIME_WAIT = animeTurret01;
-
-    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
-
-    param_.SCALE = { 1.0f,-1.0f };
-
-    // 画像サイズ(128*64の半分)
-    param_.HIT_BOX[0] = { -64, -32, 64, 32 };   // 下長方形    
-    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];   // 下長方形
-
-    // 次のBehavior・Eraser（ドロップアイテム）
-    param_.NEXT_BEHAVIOR = &dropTurret01Behavior;
-    param_.NEXT_ERASER = &eraseDropParts;
-}
-
 void EnemyTurret01Behavior::attack(OBJ2D* obj) const
 {
     // 攻撃クールタイム減少
@@ -372,6 +361,51 @@ void EnemyTurret01Behavior::attack(OBJ2D* obj) const
     obj->actorComponent_->attackTimer_ = 120;
 }
 
+// Turret02([01]のy軸反転)
+EnemyTurret02Behavior::EnemyTurret02Behavior()
+{
+    param_.ANIME_WAIT = animeTurret02;
+
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+
+    // 画像サイズ(128*64の半分)
+    param_.HIT_BOX[0] = { -64, -32, 64, 32 };   // 下長方形    
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];   // 下長方形
+
+    // 次のBehavior・Eraser（ドロップアイテム）
+    param_.NEXT_BEHAVIOR = &dropTurret01Behavior;
+    param_.NEXT_ERASER = &eraseDropParts;
+}
+
+// Turret01(CurveShot)
+EnemyTurret03Behavior::EnemyTurret03Behavior()
+{
+    param_.ANIME_WAIT = animeTurret01;
+
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+
+    // 画像サイズ(128*64の半分)
+    param_.HIT_BOX[0] = { -64, -32, 64, 32 };   // 下長方形    
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];   // 下長方形
+
+    // 次のBehavior・Eraser（ドロップアイテム）
+    param_.NEXT_BEHAVIOR = &dropTurret01Behavior;
+    param_.NEXT_ERASER = &eraseDropParts;
+}
+
+void EnemyTurret03Behavior::attack(OBJ2D* obj) const
+{
+    // 攻撃クールタイム減少
+    if (obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
+
+    // 攻撃クールタイムが終わっていなければreturn
+    if (obj->actorComponent_->attackTimer_ > 0) return;
+
+    // 弾を追加
+    AddObj::addShot(obj, &enmCurveShotBehavior, obj->transform_->position_);
+
+    obj->actorComponent_->attackTimer_ = 120;
+}
 
 //******************************************************************************
 //
@@ -554,7 +588,7 @@ void EraseEnemy::erase(OBJ2D* obj) const
         obj->update_ = DROP_PARTS_UPDATE;  // updateを変更
 
         a->hp_ = 0;             // HPを0にする
-        obj->renderer_->flip(); // 反転させる
+        obj->renderer_->Xflip(); // 反転させる
 
         obj->isBlink_ = true;     // 明滅させる
 
@@ -579,7 +613,7 @@ void EraseEnemy::erase(OBJ2D* obj) const
         obj->update_ = DROP_PARTS_UPDATE;  // updateを変更
 
         a->hp_ = 0;             // HPを0にする
-        obj->renderer_->flip(); // 反転させる
+        obj->renderer_->Xflip(); // 反転させる
 
         obj->isBlink_ = true;     // 明滅させる
 
@@ -605,7 +639,7 @@ void EraseEnemy::erase(OBJ2D* obj) const
             obj->update_   = DROP_PARTS_UPDATE;  // updateを変更
 
             a->hp_ = 0;             // HPを0にする
-            obj->renderer_->flip(); // 反転させる（マスク処理に重要）
+            obj->renderer_->Xflip(); // 反転させる（マスク処理に重要）
 
             obj->isBlink_ = true; // 明滅させる
 

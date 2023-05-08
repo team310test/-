@@ -59,3 +59,5 @@ extern EnemyData enemy03[];
 extern EnemyData enemy04[];
 // エネミー05
 extern EnemyData enemy05[];
+// エネミー06
+extern EnemyData enemy06[];
