@@ -336,6 +336,8 @@ void BasePlayerBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
     // 敵のHPを減らす
     dst->actorComponent_->hp_ -= getParam()->ATTACK_POWER;
 
+    // 被弾SEを再生
+    Audio::play(SE_DMG, false);
 }
 
 void BasePlayerBehavior::damageProc(OBJ2D* obj) const
@@ -356,11 +358,16 @@ void BasePlayerBehavior::damageProc(OBJ2D* obj) const
     if (a->damageTimer_ > 0)
     {
         VECTOR4 color = obj->renderer_->color_;
-        color.w = a->damageTimer_ & 0x02 ? 1.0f : 0.2f;
+        color.w = a->damageTimer_ & OBJ_DAMAGED_BLINK ? 1.0f : 0.2f;
         obj->renderer_->color_ = color;
 
         --a->damageTimer_;
-        if (a->damageTimer_ <= 0) obj->renderer_->color_ = { 1,1,1,1 };
+
+        // ダメージタイマーが0以下になるか、縮小中ならcolorを戻す
+        if (a->damageTimer_ <= 0 || obj->collider_->isShrink_)
+        {
+            obj->renderer_->color_ = { 1,1,1,1 };
+        }
     }
 
     if (!obj->actorComponent_->isQuake_) return;
@@ -587,10 +594,11 @@ PlayerBuff01Behavior::PlayerBuff01Behavior()
 
 }                            
 
-// 攻撃タイプがPLAYERなのでdstは味方(プレイヤー)になる
+// 攻撃タイプがPLAYERなのでdstは味方(プレイヤー)になる(代わりに体当たりダメージが与えられない)
 void PlayerBuff01Behavior::hit(OBJ2D*, OBJ2D* dst) const
 {
-    dst->actorComponent_->attackTimer_ += -1; // 攻撃クールタイムを減少（弾速上昇）
+    // 攻撃クールタイムを減少（弾速上昇）
+    dst->actorComponent_->attackTimer_ += BUFF_SUB_ATK_TIMER; 
 }
 
 
@@ -700,18 +708,24 @@ PlayerCommon03_2Behavior::PlayerCommon03_2Behavior()
 //      erase（消去）
 // 
 //******************************************************************************
+
 // 親探し(ナシだと壊れた時の爽快感がある)
 #define USE_FIND_PARENT
 
 void ErasePlayer::erase(OBJ2D* obj) const
 {
+    ActorComponent* a = obj->actorComponent_;
+
     // HPが0以下になったら
-    if (!obj->actorComponent_->isAlive())
+    if (!a->isAlive())
     {
         // 爆発エフェクト
         AddObj::addEffect(obj, &efcBombBehavior);
 
-        obj->actorComponent_->parent_ = nullptr; // 親情報をリセット
+        // 死亡SE
+        Audio::play(SE_DEATH, false);
+
+        a->parent_ = nullptr; // 親情報をリセット
         obj->behavior_ = nullptr;
 
         // 縮小カウント減少
@@ -720,38 +734,58 @@ void ErasePlayer::erase(OBJ2D* obj) const
         return;
     }
 
-    if (obj->actorComponent_->parent_->behavior_) return;   // 自分の親が存在するならreturn
 
-
-    // 新しい親を探す
-#ifdef USE_FIND_PARENT
-    for (auto& dst : *Game::instance()->obj2dManager()->getList())
-    {
-        if (!dst->behavior_) continue;                      // 相手が存在しなければcontinue;
-        if (obj == dst) continue;                           // 相手が自分ならcontinue;
-
-        if (dst->behavior_->getType() != OBJ_TYPE::PLAYER) continue; // 相手が自分と同じプレイヤーでなければcontinue
-
-        if (!dst->actorComponent_->parent_) continue;       // 相手が親を持っていなければcontinue;
-        if (obj == dst->actorComponent_->parent_) continue; // 相手が自分の子ならcontinue;
-
-        if (!obj->collider_->hitCheck(dst->collider_)) continue; // 相手が接触していなければcontinue;
-
-        obj->actorComponent_->parent_ = dst;                // 相手を親にする
-
-        return; // 親が見つかっているのでreturn
+    // 親が存在しなければ
+    if (!a->parent_)
+    {      
+        ++a->deathDelayTimer_; // 死亡ディレイタイマーを加算する
     }
+    else // 親が存在していて
+    {
+        if (a->parent_->behavior_) return;   // 親がまだ生きていればreturn
+
+        // 死んでいれば
+
+        // 新しい親を探す
+#ifdef  USE_FIND_PARENT
+        for (auto& dst : *Game::instance()->obj2dManager()->getList())
+        {
+            if (!dst->behavior_) continue;                               // 相手が存在しなければcontinue;
+            if (obj == dst) continue;                                    // 相手が自分ならcontinue;
+
+            if (dst->behavior_->getType() != OBJ_TYPE::PLAYER) continue; // 相手が自分と同じプレイヤーでなければcontinue
+
+            if (!dst->actorComponent_->parent_) continue;                // 相手が親を持っていなければcontinue;
+            if (obj == dst->actorComponent_->parent_) continue;          // 相手が自分の子ならcontinue;
+
+            if (!obj->collider_->hitCheck(dst->collider_)) continue;     // 相手が接触していなければcontinue;
+
+            obj->actorComponent_->parent_ = dst;                         // 相手を親にする
+
+            return; // 親が見つかったのでreturn
+        }
 #endif
+
+        // 親が見つからなかった場合
+
+        obj->actorComponent_->parent_ = nullptr; // 親情報をリセット
+
+        // 縮小カウント減少
+        BasePlayerBehavior::plShrinkCount_ = std::max(0, --BasePlayerBehavior::plShrinkCount_);
+    }
+    
+
+    if (a->deathDelayTimer_ < DEATH_DELAY_TIME) return;
+
+    // 死亡ディレイタイマーが一定時間たったら死亡処理を行う（親が死んだときのパーツの連鎖死亡に遅延をつくりだす）
 
     // 爆発エフェクト
     AddObj::addEffect(obj, &efcBombBehavior);
 
-    // 親が見つからなかった場合
-    obj->actorComponent_->parent_ = nullptr; // 親情報をリセット
-    obj->behavior_ = nullptr;                // 自分を消去
+    // 死亡SE
+    Audio::play(SE_DEATH, false);
 
-    // 縮小カウント減少
-    BasePlayerBehavior::plShrinkCount_ = std::max(0, BasePlayerBehavior::plShrinkCount_ - 1);
+    obj->behavior_ = nullptr; // 自分を消去
 
     return;
 }

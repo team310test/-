@@ -9,7 +9,7 @@ void ActorBehavior::move(OBJ2D* obj) const
         //////// ‰ŠúÝ’è ////////
         // ƒAƒjƒ‚Ì‰ŠúÝ’è
         obj->renderer_->animeData_  = getParam()->ANIME_WAIT;
-        obj->transform_->scale_ = getParam()->SCALE;
+        obj->transform_->scale_     = getParam()->SCALE;
 
         if (obj->renderer_->drawScale_.x == 1.0f && obj->renderer_->drawScale_.y == 1.0f)
             obj->renderer_->drawScale_ = getParam()->SCALE;

@@ -10,9 +10,11 @@ void Game::init()
     bg_             = new BG;
     stage_          = new Stage;
 
-    isPaused_ = false;   // ポーズフラグの初期化
+    isPaused_   = false;   // ポーズフラグの初期化
 
     isGameOver_ = false;
+
+    Audio::gameInit();
 }
 
 
@@ -29,7 +31,7 @@ void Game::deinit()
     GameLib::texture::releaseAll();
 
     // 音楽のクリア
-    GameLib::music::clear();
+    Audio::clear();
 }
 
 int num = 2;
@@ -76,6 +78,9 @@ void Game::update()
 
         UI::init();
 
+        // ゲームBGMループ再生
+        Audio::play(BGM_GAME, true);
+
         ++state_;    // 初期化処理の終了
         /*fallthrough*/
     case 1:
@@ -110,6 +115,7 @@ void Game::update()
 
                 stage_->addSrinkNum();
 
+                Audio::play(SE_SHRINK, false);
             }
         }
 
@@ -122,7 +128,6 @@ void Game::update()
             // ステージ更新(エネミー出現)
             stage_->update(obj2dManager_, bg_);
         }
-
 
         // オブジェクトの更新後にShrinkの開始を止める
         if (Collider::isAllShrink_)
@@ -146,6 +151,8 @@ void Game::update()
             PlayerPartsBehavior::toCoreVelocity_    = TO_CORE_SPEED;
             BaseEnemyPartsBehavior::toCoreVelocity_ = TO_CORE_SPEED;
             UI::letterBox_multiplySizeY_ = std::min(1.0f, UI::letterBox_multiplySizeY_ + LETTER_BOX_ADD_SPEED); // 1.0fより大きければ1.0fに修正
+
+            Audio::fade(SE_SHRINK, 2.0f, 0.0f);
         }
 
         // ゲームオーバーの処理

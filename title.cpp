@@ -31,6 +31,8 @@ void Title::init()
 
     //フェード(イン)アウトの初期化
     FADE::clear();
+
+    Audio::titleInit();
 }
 
 void Title::deinit()
@@ -46,7 +48,7 @@ void Title::deinit()
     GameLib::texture::releaseAll();
 
     // 音楽のクリア
-    GameLib::music::clear();
+    Audio::clear();
 }
 
 void Title::update()
@@ -69,6 +71,9 @@ void Title::update()
         titleLoge_      = setTitleObj(obj2dManager(), &titleLogoObjBehavior,  { 960.0f,200.0f } );
 
         bg()->init();
+
+        // タイトルBGMループ再生
+        Audio::play(BGM_TITLE, true);
 
         ++state_;                                    // 初期化処理の終了
         /*fallthrough*/                             // 意図的にbreak;を記述していない
@@ -167,7 +172,12 @@ void Title::changeSceneGame()
         {
             // キーを押すとアニメーション再生
             if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG3 && !isAnime)
+            {
                 isAnime = true;
+
+                // 鼓動SE再生
+                Audio::play(SE_HEART_BEAT, false);
+            }
 
             // キーが押されアニメーションが再生終わるとカウントを増やす
             if (isAnime && xAxisSclaeAnime(player_))

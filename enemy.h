@@ -84,6 +84,9 @@ class EnemyBuff01Behavior : public BaseEnemyPartsBehavior
 {
 public:
     EnemyBuff01Behavior();
+private:
+    OBJ_TYPE getAttackType() const override { return OBJ_TYPE::ENEMY; } // 味方（エネミー）に影響を与えるのでENEMY
+    void hit(OBJ2D*, OBJ2D*) const override;
 };
 EXTERN EnemyBuff01Behavior enemyBuff01Behavior;
 

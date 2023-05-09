@@ -132,6 +132,8 @@ void BaseEnemyBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
     // プレイヤーのHPを減らす
     dstA->hp_ = std::max(dstA->hp_ - getParam()->ATTACK_POWER, 0);
 
+    // 被弾SEを再生
+    Audio::play(SE_DMG, false);
 
     // 相手がまだ生きている場合
     if (dstA->hp_ > 0)
@@ -140,6 +142,12 @@ void BaseEnemyBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
         dstA->isQuake_ = true;
         // 相手を点滅させる無敵時間
         dstA->damageTimer_ = 40;
+
+        // プレイヤーコアなら専用被弾SEを再生
+        if (dst == Game::instance()->player_)
+        {
+            Audio::play(SE_PL_CORE_ALERT, false);
+        }
     }
 }
 
@@ -158,16 +166,22 @@ void BaseEnemyBehavior::damageProc(OBJ2D* obj) const
     // 無敵処理
     //obj->actorComponent_->muteki();
 
-        // 点滅させる
+    // 点滅させる
     if (a->damageTimer_ > 0)
     {
         VECTOR4 color = obj->renderer_->color_;
-        color.w = a->damageTimer_ & 0x02 ? 1.0f : 0.2f;
+        color.w = a->damageTimer_ & OBJ_DAMAGED_BLINK ? 1.0f : 0.2f;
         obj->renderer_->color_ = color;
 
         --a->damageTimer_;
-        if (a->damageTimer_ <= 0) obj->renderer_->color_ = { 1,1,1,1 };
-}
+
+        // ダメージタイマーが0以下になるか、縮小中ならcolorを戻す
+        if (a->damageTimer_ <= 0 || obj->collider_->isShrink_)
+        {
+            obj->renderer_->color_ = { 1,1,1,1 };
+        }
+    }
+
 
     if (!obj->actorComponent_->isQuake_) return;
 
@@ -178,22 +192,13 @@ void BaseEnemyBehavior::damageProc(OBJ2D* obj) const
 
 void BaseEnemyBehavior::areaCheck(OBJ2D* obj) const
 {
-#if 0
-    // 左端に進むと右端から出てくる(仮)
-    if (obj->transform_->position_.x < -obj->collider_->size_.x)
-    {
-        //obj->behavior_ = nullptr; // 画面外に行ったら消去
-    }
+    const VECTOR2* size     = &obj->collider_->size_;
+    const VECTOR2* pos      = &obj->transform_->position_;
+    const float    margin   = 600.0f;
 
-#else
-
-    const VECTOR2* size = &obj->collider_->size_;
-    const VECTOR2* pos = &obj->transform_->position_;
-    const float margin = 600.0f;
-
-    const float leftLimit = size->x - margin;
-    const float rightLimit = BG::WINDOW_W + size->x + margin;
-    const float topLimit = size->y - margin;
+    const float leftLimit   = size->x - margin;
+    const float rightLimit  = BG::WINDOW_W + size->x + margin;
+    const float topLimit    = size->y - margin;
     const float bottomLimit = BG::WINDOW_H + size->y + margin;
 
     if (pos->x < leftLimit  ||
@@ -201,11 +206,14 @@ void BaseEnemyBehavior::areaCheck(OBJ2D* obj) const
         pos->y < topLimit   ||
         pos->y > bottomLimit)
     {
-        obj->actorComponent_->hp_ = 0;              // 画面外に行ったら消去(体力を0にする)
+        //obj->actorComponent_->hp_ = 0;              // 画面外に行ったら消去(体力を0にする)
         obj->actorComponent_->parent_ = nullptr;    
+
+        // hpが0になったときに死亡SEが鳴ってしまうのでbehaviorの方を消す
+        obj->behavior_ = nullptr;
         return;
     }
-#endif
+
 }
 
 
@@ -218,20 +226,26 @@ void BaseEnemyBehavior::areaCheck(OBJ2D* obj) const
 EnemyCore01Behavior::EnemyCore01Behavior()
 {
     // アニメーション
-    param_.ANIME_WAIT = animeCore01;
+    param_.ANIME_WAIT    = animeCore01;
 
-    param_.SIZE = VECTOR2(PARTS_OBJ_SIZE, PARTS_OBJ_SIZE);
+    param_.SIZE          = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
 
-    param_.HIT_BOX[0]    = { -64, -64, 64, 64 };
+    param_.HIT_BOX[0]    = { 
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.5f, 
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.5f 
+    };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    param_.HP            = ENM_CORE01_HP;
+    param_.ATTACK_POWER  = ENM_CORE01_ATK;
 
     // 次のBehaviorなし
     param_.NEXT_BEHAVIOR = nullptr;
     param_.NEXT_ERASER   = nullptr;
 
     // アニメーションのパラメータ
-    param_.OBJ_ANIME = &rotateAnime;
-    param_.ROT_SPEED = -0.05f;
+    param_.OBJ_ANIME     = &rotateAnime;
+    param_.ROT_SPEED     = ENM_CORE01_ROT_SPEED;
 }
 
 
@@ -262,14 +276,14 @@ void BaseEnemyPartsBehavior::contactToEnmCore(OBJ2D* obj, OBJ2D* coreEnm) const
     if (!obj->collider_->isShrink_) return; // 縮小していなければreturn
 
     const VECTOR2 coreEnmPos = coreEnm->transform_->position_;  // 自機本体の位置
-    const VECTOR2 objPos = obj->transform_->position_;  // objの位置
+    const VECTOR2 objPos     = obj->transform_->position_;      // objの位置
 
-    const VECTOR2 d = { coreEnmPos - objPos };               // objから自機本体へ向かうベクトル
-    const float dist = sqrtf((d.x * d.x) + (d.y * d.y));  // objから自機本体までの距離
+    const VECTOR2 d    = { coreEnmPos - objPos };               // objから自機本体へ向かうベクトル
+    const float   dist = sqrtf((d.x * d.x) + (d.y * d.y));      // objから自機本体までの距離
 
-    float addVelocity = 0.0f;                               // objのvelocityに足す速度
-    float num = 0.0f;                                       // for分のiみたいな役割
-    const float copyDist = dist >= 0 ? dist : dist * (-1);
+    float addVelocity = 0.0f;                                   // objのvelocityに足す速度
+    float num         = 0.0f;                                   // for分のiみたいな役割
+    const float copyDist = (dist >= 0) ? dist : dist * (-1);
 
     while (true)
     {
@@ -327,13 +341,18 @@ void BaseEnemyPartsBehavior::contactToEnmCore(OBJ2D* obj, OBJ2D* coreEnm) const
 // Turret01
 EnemyTurret01Behavior::EnemyTurret01Behavior()
 {
-    param_.ANIME_WAIT = animeTurret01;
+    param_.ANIME_WAIT    = animeTurret01;
 
-    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+    param_.SIZE          = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
 
-    // 画像サイズ(128*64の半分)
-    param_.HIT_BOX[0] = { -64, -32, 64, 32 };   // 下長方形    
-    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];   // 下長方形
+    param_.HIT_BOX[0]    = { 
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.25f, 
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.25f
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    param_.HP            = ENM_TURRET01_HP;
+    param_.ATTACK_POWER  = ENM_TURRET01_ATK;
 
     // 次のBehavior・Eraser（ドロップアイテム）
     param_.NEXT_BEHAVIOR = &dropTurret01Behavior;
@@ -352,7 +371,8 @@ void EnemyTurret01Behavior::attack(OBJ2D* obj) const
     // 弾を追加
     AddObj::addShot(obj, &enmAimShotBehavior, obj->transform_->position_);
 
-    obj->actorComponent_->attackTimer_ = 120;
+    // 攻撃クールタイム設定
+    obj->actorComponent_->attackTimer_ = ENM_TURRET01_ATK_TIME;
 }
 
 
@@ -365,18 +385,29 @@ void EnemyTurret01Behavior::attack(OBJ2D* obj) const
 // Buff01
 EnemyBuff01Behavior::EnemyBuff01Behavior()
 {
-    param_.ANIME_WAIT = animeBuff01;
+    param_.ANIME_WAIT    = animeBuff01;
 
-    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
-    param_.HIT_BOX[0] = {
-        -PL_CORE_HITBOX, -PL_CORE_HITBOX,
-         PL_CORE_HITBOX,  PL_CORE_HITBOX,
+    param_.SIZE          = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+
+    param_.HIT_BOX[0]    = {
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.5f,
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.5f,
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    param_.HP           = ENM_BUFF01_HP;
+    param_.ATTACK_POWER = ENM_BUFF01_ATK;
 
     // 次のBehavior・Eraser（ドロップアイテム）
     param_.NEXT_BEHAVIOR = &dropBuff01Behavior;
     param_.NEXT_ERASER   = &eraseDropParts;
+}
+
+// 攻撃タイプがENEMYなのでdstは味方(エネミー)になる(代わりに体当たりダメージが与えられない)
+void EnemyBuff01Behavior::hit(OBJ2D*, OBJ2D* dst) const
+{
+    // 攻撃クールタイムを減少（弾速上昇）
+    dst->actorComponent_->attackTimer_ += BUFF_SUB_ATK_TIMER;
 }
 
 
@@ -389,36 +420,47 @@ EnemyBuff01Behavior::EnemyBuff01Behavior()
 // Common01
 EnemyCommon01Behavior::EnemyCommon01Behavior()
 {
-    param_.ANIME_WAIT = animeCommon01;
+    param_.ANIME_WAIT       = animeCommon01;
 
-    param_.SIZE = { 128.0f, 36.0f };
-    param_.HIT_BOX[0] = {
-        -64.0f, -18.0f,
-         64.0f,  18.0f,
+    param_.SIZE             = { PARTS_OBJ_SIZE, ENM_COMMON_SIZE_36 };
+    param_.HIT_BOX[0]       = {
+        -ENM_COMMON_SIZE_64, -ENM_COMMON_SIZE_18,
+         ENM_COMMON_SIZE_64,  ENM_COMMON_SIZE_18,
     };
-    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+    param_.ATTACK_BOX[0]    = param_.HIT_BOX[0];
+
+    param_.HP               = ENM_COMMON01_HP;
+    param_.ATTACK_POWER     = ENM_COMMON01_ATK;
 
     // 次のBehavior・Eraser（ドロップアイテム）
-    param_.NEXT_BEHAVIOR = &dropCommon01Behavior;
-    param_.NEXT_ERASER = &eraseDropParts;
+    param_.NEXT_BEHAVIOR    = &dropCommon01Behavior;
+    param_.NEXT_ERASER      = &eraseDropParts;
 }
 
 // Common01_2(90度回転)
 EnemyCommon01_2Behavior::EnemyCommon01_2Behavior()
 {
-    param_.ANIME_WAIT = animeCommon01;
+    param_.ANIME_WAIT       = animeCommon01;
 
-    param_.SIZE = { 128.0f, 36.0f };
-    param_.HIT_BOX[0] = {
-         -18.0f,-64.0f,
-          18.0f, 64.0f,
+    //param_.SIZE = { 128.0f, 36.0f };
+    //param_.HIT_BOX[0] = {
+    //     -18.0f,-64.0f,
+    //      18.0f, 64.0f,
+    //};    
+    param_.SIZE             = { PARTS_OBJ_SIZE, ENM_COMMON_SIZE_36 };
+    param_.HIT_BOX[0]       = {
+         -ENM_COMMON_SIZE_18, -ENM_COMMON_SIZE_64,
+          ENM_COMMON_SIZE_18,  ENM_COMMON_SIZE_64,
     };
-    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
-    param_.ROTATION = ToRadian(90);
+    param_.ATTACK_BOX[0]    = param_.HIT_BOX[0];
+    param_.ROTATION         = ROT_90;
+
+    param_.HP               = ENM_COMMON01_2_HP;
+    param_.ATTACK_POWER     = ENM_COMMON01_2_ATK;
 
     // 次のBehavior・Eraser（ドロップアイテム）
-    param_.NEXT_BEHAVIOR = &dropCommon01_2Behavior;
-    param_.NEXT_ERASER = &eraseDropParts;
+    param_.NEXT_BEHAVIOR    = &dropCommon01_2Behavior;
+    param_.NEXT_ERASER      = &eraseDropParts;
 }
 
 // Common02
@@ -426,16 +468,24 @@ EnemyCommon02Behavior::EnemyCommon02Behavior()
 {
     param_.ANIME_WAIT = animeCommon02;
 
-    param_.SIZE = { 128.0f, 36.0f };
+/*    param_.SIZE = { 128.0f, 36.0f };
     param_.HIT_BOX[0] = {
         -64.0f, -18.0f,
          64.0f,  18.0f,
+    };  */  
+    param_.SIZE = { , };
+    param_.HIT_BOX[0] = {
+        -, -,
+         ,  ,
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
+    param_.HP = ;
+    param_.ATTACK_POWER = ;
+
     // 次のBehavior・Eraser（ドロップアイテム）
     param_.NEXT_BEHAVIOR = &dropCommon02Behavior;
-    param_.NEXT_ERASER = &eraseDropParts;
+    param_.NEXT_ERASER   = &eraseDropParts;
 }
 
 // Common01_2(90度回転)
@@ -443,17 +493,26 @@ EnemyCommon02_2Behavior::EnemyCommon02_2Behavior()
 {
     param_.ANIME_WAIT = animeCommon02;
 
-    param_.SIZE = { 128.0f, 36.0f };
+    //param_.SIZE = { 128.0f, 36.0f };
+    //param_.HIT_BOX[0] = {
+    //     -18.0f,-64.0f,
+    //      18.0f, 64.0f,
+    //};    
+    param_.SIZE = { , };
     param_.HIT_BOX[0] = {
-         -18.0f,-64.0f,
-          18.0f, 64.0f,
+         -,-,
+          , ,
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
-    param_.ROTATION = ToRadian(90);
+
+    param_.ROTATION = ROT_90;
+
+    param_.HP           = ;
+    param_.ATTACK_POWER = ;
 
     // 次のBehavior・Eraser（ドロップアイテム）
     param_.NEXT_BEHAVIOR = &dropCommon02_2Behavior;
-    param_.NEXT_ERASER = &eraseDropParts;
+    param_.NEXT_ERASER   = &eraseDropParts;
 }
 
 // Common03
@@ -461,16 +520,24 @@ EnemyCommon03Behavior::EnemyCommon03Behavior()
 {
     param_.ANIME_WAIT = animeCommon03;
 
-    param_.SIZE = { 128.0f, 36.0f };
+/*    param_.SIZE = { 128.0f, 36.0f };
     param_.HIT_BOX[0] = {
         -64.0f, -18.0f,
          64.0f,  18.0f,
+    };  */  
+    param_.SIZE = { , };
+    param_.HIT_BOX[0] = {
+        -, -,
+         ,  ,
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
+    param_.HP           = ;
+    param_.ATTACK_POWER = ;
+
     // 次のBehavior・Eraser（ドロップアイテム）
     param_.NEXT_BEHAVIOR = &dropCommon03Behavior;
-    param_.NEXT_ERASER = &eraseDropParts;
+    param_.NEXT_ERASER   = &eraseDropParts;
 }
 
 // Common03_2(90度回転)
@@ -478,13 +545,21 @@ EnemyCommon03_2Behavior::EnemyCommon03_2Behavior()
 {
     param_.ANIME_WAIT = animeCommon03;
 
-    param_.SIZE = { 128.0f, 36.0f };
+    //param_.SIZE = { 128.0f, 36.0f };
+    //param_.HIT_BOX[0] = {
+    //     -18.0f,-64.0f,
+    //      18.0f, 64.0f,
+    //};    
+    param_.SIZE = { , };
     param_.HIT_BOX[0] = {
-         -18.0f,-64.0f,
-          18.0f, 64.0f,
+         -, -,
+          ,  ,
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
-    param_.ROTATION = ToRadian(90);
+    param_.ROTATION = ROT_90;
+
+    param_.HP           = ;
+    param_.ATTACK_POWER = ;
 
     // 次のBehavior・Eraser（ドロップアイテム）
     param_.NEXT_BEHAVIOR = &dropCommon03_2Behavior;
@@ -508,38 +583,15 @@ void EraseEnemy::erase(OBJ2D* obj) const
     // スケールが一定以下になったら消去
     if (obj->transform_->scale_.x <= UPDATE_OBJ_SCALE_MIN_LIMIT)
     {
+        // 爆発エフェクト
+        AddObj::addEffect(obj, &efcBombBehavior);
+
+        // 死亡SE
+        Audio::play(SE_DEATH, false);
+
         a->parent_      = nullptr; // 親をリセット
         a->orgParent_   = nullptr; // 元の親をリセット
         obj->behavior_  = nullptr; // 自分を消去
-
-        // 爆発エフェクト
-        AddObj::addEffect(obj, &efcBombBehavior);
-
-        return;
-    }
-
-
-    // 親を持っていて、自分が親ではなく、親が消滅するとアイテム化する
-    if (a->parent_ && obj != a->parent_ && a->parent_->behavior_ == nullptr)
-    {
-        a->parent_      = nullptr; // 親をリセット
-        a->orgParent_   = nullptr; // 元の親をリセット
-
-        // 次のbehavior・eraser（ドロップアイテム）を代入
-        obj->behavior_ = obj->nextBehavior_;
-        obj->eraser_ = obj->nextEraser_;
-
-        // 爆発エフェクト
-        AddObj::addEffect(obj, &efcBombBehavior);
-
-        if (obj->behavior_ == nullptr) return;
-
-        obj->update_ = DROP_PARTS_UPDATE;  // updateを変更
-
-        a->hp_ = 0;             // HPを0にする
-        obj->renderer_->flip(); // 反転させる
-
-        obj->isBlink_ = true;     // 明滅させる
 
         return;
     }
@@ -548,14 +600,17 @@ void EraseEnemy::erase(OBJ2D* obj) const
     // HPが0以下になると
     if (!a->isAlive())
     {
-        a->parent_ = nullptr; // 親をリセット
-
         // 爆発エフェクト
         AddObj::addEffect(obj, &efcBombBehavior);
+
+        a->parent_ = nullptr; // 親をリセット
 
         // 自分がコアでないならゴミアイテム化する
         if (obj != a->orgParent_)
         {
+            // 死亡SE
+            Audio::play(SE_DEATH, false);
+
             a->orgParent_ = nullptr; // 元の親をリセット
 
             // 次のbehavior・eraser（ドロップごみアイテム）を代入
@@ -571,12 +626,59 @@ void EraseEnemy::erase(OBJ2D* obj) const
             return;
         }
 
-        a->orgParent_ = nullptr; // 元の親をリセット
+        // エネミーコア死亡SE
+        Audio::play(SE_ENM_CORE_DEATH, false);
+
+        a->orgParent_  = nullptr; // 元の親をリセット
 
         obj->behavior_ = nullptr;
         return;
     }
 
+        
+    // 死亡ディレイタイマーが一定時間たったらドロップパーツ化処理を行う（親が死んだときのパーツの連鎖死亡に遅延をつくりだす）
+    if (a->deathDelayTimer_ >= DEATH_DELAY_TIME)
+    {
+        // 爆発エフェクト
+        AddObj::addEffect(obj, &efcBombBehavior);
+
+        // 死亡SE
+        Audio::play(SE_DEATH, false);
+
+        // 次のbehavior・eraser（ドロップアイテム）を代入
+        obj->behavior_ = obj->nextBehavior_;
+        obj->eraser_   = obj->nextEraser_;
+
+
+        if (obj->behavior_ == nullptr) return; // 次のBehaviorがなければreturn
+
+
+        obj->update_ = DROP_PARTS_UPDATE;  // updateを変更
+
+        a->hp_ = 0;             // HPを0にする
+        obj->renderer_->flip(); // 反転させる
+
+        obj->isBlink_ = true;     // 明滅させる
+
+        return;
+    }
+
+
+    // 親または大元の親が存在しなければ
+    if (!a->parent_ || !a->orgParent_)
+    {
+        ++a->deathDelayTimer_;   // 死亡ディレイタイマーを加算する
+    }
+    else // 親と大元の親が存在していれば
+    {
+        // どちらもまだ生きていたらreturn
+        if (a->parent_->behavior_ && a->orgParent_->behavior_) return;
+
+        // どちらかが死んでいたら
+        a->parent_    = nullptr; // 親をリセット
+        a->orgParent_ = nullptr; // 元の親をリセット
+    }
+    
 }
 
 
@@ -618,8 +720,12 @@ void ENEMY_TARGET_X(OBJ2D* obj)
 // パーツのアップデート
 void ENEMY_PARTS(OBJ2D* obj)
 {
+    ActorComponent* a = obj->actorComponent_;
+
+    if (!a->orgParent_) return; // 親が消えていたらreturn
+
     Transform* t = obj->transform_;
-    Transform* parent = obj->actorComponent_->orgParent_->transform_;
+    Transform* parent = a->orgParent_->transform_;
 
     t->velocity_ = parent->velocity_;
 }

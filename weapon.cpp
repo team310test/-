@@ -56,6 +56,12 @@ void BaseShotBehavior::hit(OBJ2D* src, OBJ2D* dst) const
     // HPを減らし、0を下回る場合は0を代入
     dstA->hp_ = std::max(dstA->hp_ -= getParam()->ATTACK_POWER, 0);
 
+    src->behavior_ = nullptr; // 弾を消去
+
+    // 被弾SEを再生
+    Audio::play(SE_DMG, false);
+
+
     // 相手がまだ生きている場合
     if (dstA->hp_ > 0)
     {
@@ -65,7 +71,6 @@ void BaseShotBehavior::hit(OBJ2D* src, OBJ2D* dst) const
         dstA->damageTimer_ = 40;
     }
 
-    src->behavior_ = nullptr; // 弾を消去
 }
 
 // 縮小に伴って弾の大きさの更新が必要

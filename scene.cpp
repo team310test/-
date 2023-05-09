@@ -23,6 +23,9 @@ Scene* Scene::execute()
         // 更新処理
         update();
 
+        // 音楽更新
+        Audio::update();
+
         // ステンシルモード：通常
         DepthStencil::instance().set(DepthStencil::MODE::NONE);
 
