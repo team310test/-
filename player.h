@@ -1,7 +1,6 @@
 #pragma once
 
 void setPlayer(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos, VECTOR2 scale,bool isDrawShrink, const bool makeOrgPlayer);
-OBJ2D* setTitlePlayer(OBJ2DManager* obj2dManager, BG* bg);
 //void setCursor(OBJ2DManager* obj2dManager, BG* bg);
 
 
@@ -197,7 +196,7 @@ EXTERN PlayerCommon03_2Behavior playerCommon03_2Behavior;
 //==============================================================================
 class ErasePlayer : public Eraser
 {
-    void erase(OBJ2D* obj) const;
+    void erase(OBJ2D* obj) const override;
 };
 EXTERN ErasePlayer erasePlayer;
 
@@ -211,3 +210,5 @@ void PLAYER_CORE_UPDATE(OBJ2D* obj);
 void PLAYER_PATRS_UPDATE(OBJ2D* obj);
 // タイトル用のupdate
 void TITLE_PLAYER_UPDATE(OBJ2D*);
+// ゲーム(オーバー)用のupdate
+void GAME_OVER_PLAYER_UPDATE(OBJ2D* obj);

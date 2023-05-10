@@ -20,7 +20,7 @@
 #include "obj2d.h"
 #include "sprite_data.h"
 
-
+#include "objToul.h"
 #include "Parameter.h"
 #include "fade.h"
 
@@ -39,10 +39,11 @@
 #include "stage.h"
 #include "UI.h"
 
+#include "TitleObj.h"
+#include "GameObj.h"
 #include "command.h"
 #include "scene.h"
 #include "game.h"
-#include "TitleObj.h"
 #include "title.h"
 
 //******************************************************************************

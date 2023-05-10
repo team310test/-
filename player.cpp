@@ -61,7 +61,7 @@ void setPlayer(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos, VECTOR2 scale, b
         new ActorComponent,
         nullptr,
         nullptr,
-        nullptr
+        new PerformComponent
     );
 
     player->zOrder_ = 3;
@@ -82,29 +82,6 @@ void setPlayer(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos, VECTOR2 scale, b
     {
         obj2dManager->add(player, &playerCoreBehavior, pos);
     }
-}
-
-OBJ2D* setTitlePlayer(OBJ2DManager* obj2dManager, BG* bg)
-{
-    const VECTOR2 pos = { BG::WINDOW_W * 0.5f,-250.0f };
-
-    OBJ2D* player = new OBJ2D(
-        new Renderer,
-        new Collider,
-        bg,
-        new ActorComponent,
-        nullptr,
-        nullptr,
-        new TitleComponent
-    );
-
-    player->zOrder_ = 3;
-    player->actorComponent_->parent_ = player;
-
-    player->actorComponent_->No = ActorComponent::playerNum;
-    player->update_ = TITLE_PLAYER_UPDATE;
-
-    return obj2dManager->add(player, &titlePlayerHeartBehavior, pos);
 }
 
 //// 仮
@@ -228,9 +205,16 @@ void TITLE_PLAYER_UPDATE(OBJ2D* obj)
         if (t->velocity_.y >= -10)
         {
             t->velocity_ = { 0.0f,0.0f };
-            obj->titleComponent_->isTrigger = true;
+            obj->performComponent_->isTrigger = true;
         }
     }
+}
+// ゲーム(オーバー)用のupdate
+void GAME_OVER_PLAYER_UPDATE(OBJ2D* obj)
+{
+    Transform* t = obj->transform_;
+
+    t->velocity_ += {GAME_OVER_SPEED_X, GAME_OVER_SPEED_Y};
 }
 
 
@@ -370,7 +354,7 @@ void BasePlayerBehavior::damageProc(OBJ2D* obj) const
     quake.quakeDamage(obj);
 }
 
-void BasePlayerBehavior::areaCheck(OBJ2D* /*obj*/) const
+void BasePlayerBehavior::areaCheck(OBJ2D* obj) const
 {
 }
 
@@ -389,7 +373,8 @@ PlayerCoreBehavior::PlayerCoreBehavior()
     param_.HIT_BOX[0]    = { -PL_CORE_HITBOX, -PL_CORE_HITBOX, PL_CORE_HITBOX,  PL_CORE_HITBOX };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
-    param_.HP = PL_CORE_HP;
+    param_.HP = 1;
+    //param_.HP = PL_CORE_HP;
 
     // アニメ用データ
     param_.OBJ_ANIME = scaleAnime;
@@ -397,6 +382,9 @@ PlayerCoreBehavior::PlayerCoreBehavior()
 
 void PlayerCoreBehavior::attack(OBJ2D* obj) const
 {
+    // 体力が0ならreturn
+    if (!obj->actorComponent_->isAlive()) return;
+
     // 攻撃クールタイム減少
     if (obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
 
@@ -705,9 +693,25 @@ PlayerCommon03_2Behavior::PlayerCommon03_2Behavior()
 
 void ErasePlayer::erase(OBJ2D* obj) const
 {
-    // HPが0以下になったら
-    if (!obj->actorComponent_->isAlive())
+    obj->eraser_;
+
+    // behaviorがなければreturn
+    if (!obj->behavior_) return;
+
+    // HPが0以下になるか、GameOverなら
+    if (!obj->actorComponent_->isAlive() || Game::instance()->isGameOver())
     {
+        // 本体の場合
+        if (obj == Game::instance()->player_)
+        {
+            if (!obj->performComponent_->isTrigger)
+            {
+                // Triggerをtrueに(GameOverのフラグが立つ)
+                obj->performComponent_->isTrigger = true;
+            }
+            return;
+        }
+
         // 爆発エフェクト
         AddObj::addEffect(obj, &efcBombBehavior);
 
@@ -720,7 +724,7 @@ void ErasePlayer::erase(OBJ2D* obj) const
         return;
     }
 
-    if (obj->actorComponent_->parent_->behavior_) return;   // 自分の親が存在するならreturn
+    if (obj->actorComponent_->parent_->behavior_) return;   // 自分の親がするならreturn
 
 
     // 新しい親を探す

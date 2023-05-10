@@ -57,6 +57,10 @@ GameLib::LoadTexture gameLoadTexture[] = {
     { GAME_TEXNO::EFC_BOMB,      L"./Data/Images/Effect/Effect_Bomb.png",    1U },
     { GAME_TEXNO::EFC_COMBINE,   L"./Data/Images/Effect/Effect_Combine.png", 1U },
 
+    // GameOver
+    { GAME_TEXNO::GAME_HEART,     L"./Data/Images/Core/Core_Heart.png",   1U }, // プレイヤーコアのハート
+    { GAME_TEXNO::GAME_FRAME,     L"./Data/Images/Core/Core_Frame.png",   1U }, // プレイヤーコアのフレーム
+
     { -1, nullptr }	// 終了フラグ
 };
 
@@ -112,6 +116,9 @@ GameLib::SpriteData sprEfcCombine_anime1    = SPRITE_CENTER(GAME_TEXNO::EFC_COMB
 GameLib::SpriteData sprEfcCombine_anime2    = SPRITE_CENTER(GAME_TEXNO::EFC_COMBINE, (256 * 2), 0, 256, 256);
 GameLib::SpriteData sprEfcCombine_anime3    = SPRITE_CENTER(GAME_TEXNO::EFC_COMBINE, (256 * 3), 0, 256, 256);
 
+//------< GameOver >----------------------------------------------------------------
+GameLib::SpriteData sprGamePlayerFrame = SPRITE_CENTER(GAME_TEXNO::GAME_FRAME, 0, 0, 128, 128);
+GameLib::SpriteData sprGamePlayerHeart = SPRITE_CENTER(GAME_TEXNO::GAME_HEART, 0, 0, 128, 128);
 
 //------------------------------------------------------------------------------
 #undef SPRITE_CENTER

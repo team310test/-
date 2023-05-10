@@ -549,6 +549,9 @@ EnemyCommon06Behavior::EnemyCommon06Behavior()
 //******************************************************************************
 void EraseEnemy::erase(OBJ2D* obj) const
 {
+    // behavior‚ª‚È‚¯‚ê‚Îreturn
+    if (!obj->behavior_) return;
+
     // parent‚ðÈ—ª‚·‚é‚Æ³í‚É“®ì‚µ‚È‚¢‚Ì‚Å“P”p
     //OBJ2D* parent    = obj->actorComponent_->parent_;
     //OBJ2D* orgParent = obj->actorComponent_->orgParent_;

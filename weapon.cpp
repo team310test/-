@@ -267,8 +267,8 @@ PlCurveShotBehavior::PlCurveShotBehavior()
     param_.SPR_WEAPON = &sprShot_NormalShot;
     param_.ERASER = &eraseShot;
 
-    param_.SPEED_X      = CURVE_SHOT_SPEED_Y;
-    param_.SPEED_Y      = CURVE_SHOT_SPEED_X;
+    param_.SPEED_X      = CURVE_SHOT_SPEED_X;
+    param_.SPEED_Y      = CURVE_SHOT_SPEED_Y;
     param_.ATTACK_POWER = CURVE_SHOT_ATK;
 
     // ïœçXó\íË

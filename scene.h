@@ -10,7 +10,8 @@ protected:
     // ƒV[ƒ“Ø‚è‘Ö‚¦Œãˆø‚«Œp‚®•Ï”
     static VECTOR2 takeOverPos_;            
     static VECTOR2 takeOverScale_;          
-    static bool takeOverIsDrawShrink_;      
+    static bool takeOverIsDrawShrink_;
+
 
 public:
     Scene* execute();   // Àsˆ—

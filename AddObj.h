@@ -33,9 +33,10 @@ public:
 
     // エフェクト追加
     template <typename T>
-    inline static void addEffect(OBJ2D*& obj, T* behavior) // objは直接参照
+    inline static void addEffect(OBJ2D*& obj, T* behavior, VECTOR2 add = {0.0f,0.0f}) // objは直接参照
     {
-        const VECTOR2 pos = obj->transform_->position_;
+        const VECTOR2 pos =
+        { obj->transform_->position_.x + add.x,obj->transform_->position_.y + add.y };
 
         OBJ2D* effect = Game::instance()->obj2dManager()->add(
             new OBJ2D(
@@ -54,7 +55,7 @@ public:
         effect->zOrder_ = 10;
 
         effect->transform_->scale_    = obj->transform_->scale_;
-        effect->renderer_->drawScale_ = obj->transform_->scale_;
+        effect->renderer_->drawScale_ = obj->renderer_->drawScale_;
 
         //effect->effectComponent_->parent_ = obj;
     }

@@ -87,7 +87,7 @@ void TitleStartObjBehavior::hit(OBJ2D* src, OBJ2D* dst) const
     VECTOR2 pos = src->transform_->position_;
     dst->transform_->position_ = { pos.x - 7.0f,pos.y + 28 };
 
-    src->titleComponent_->isTrigger = true;
+    src->performComponent_->isTrigger = true;
 
     // 1フレーム処理を遅らせる
     if (wait)
@@ -122,7 +122,7 @@ void TitleEndObjBehavior::hit(OBJ2D* src, OBJ2D* dst) const
     // コアのある位置に自機の座標を変更
     //dst->transform_->position_ = src->transform_->position_;
 
-    src->titleComponent_->isTrigger = true;
+    src->performComponent_->isTrigger = true;
     src->collider_->judgeFlag_ = false;
 
     // 自機を操作できなくする
@@ -176,6 +176,28 @@ void TitleHintShotObjBehavior::init(OBJ2D* obj) const
 //      TitlePlayer（タイトル用の自機)
 // 
 //******************************************************************************
+OBJ2D* setTitlePlayer(OBJ2DManager* obj2dManager, BG* bg)
+{
+    const VECTOR2 pos = { BG::WINDOW_W * 0.5f,-250.0f };
+
+    OBJ2D* player = new OBJ2D(
+        new Renderer,
+        new Collider,
+        bg,
+        new ActorComponent,
+        nullptr,
+        nullptr,
+        new PerformComponent
+    );
+
+    player->zOrder_ = 3;
+    player->actorComponent_->parent_ = player;
+
+    player->actorComponent_->No = ActorComponent::playerNum;
+    player->update_ = TITLE_PLAYER_UPDATE;
+
+    return obj2dManager->add(player, &titlePlayerHeartBehavior, pos);
+}
 
 // ハートのみ
 TitlePlayerCoreHeartBehavior::TitlePlayerCoreHeartBehavior()

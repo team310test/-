@@ -37,9 +37,6 @@ public:
 	void endGame();				// ゲーム終了処理
 	bool statePerform();		// スタート演出
 
-	bool objFadeOut(OBJ2D*, float);			// フェードアウト
-	bool objFadeIn(OBJ2D*,float);			// フェードイン
-	bool objShrink();			// obj(player)の縮小
 	void userHintMove();		// プレイヤーへのヒント
 	void userHintShot();		// プレイヤーへのヒント
 

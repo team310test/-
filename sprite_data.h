@@ -55,6 +55,10 @@ enum GAME_TEXNO
     // エフェクト
     EFC_BOMB,
     EFC_COMBINE,
+
+    // GameOver
+    GAME_HEART,        // プレイヤーコアのハート
+    GAME_FRAME,        // プレイヤーコアの枠
 };
 
 extern GameLib::LoadTexture titleLoadTexture[];
@@ -108,6 +112,10 @@ extern GameLib::SpriteData sprEfcCombine_anime0;
 extern GameLib::SpriteData sprEfcCombine_anime1;
 extern GameLib::SpriteData sprEfcCombine_anime2;
 extern GameLib::SpriteData sprEfcCombine_anime3;
+
+//------< GameOver >----------------------------------------------------------------
+extern GameLib::SpriteData sprGamePlayerFrame;
+extern GameLib::SpriteData sprGamePlayerHeart;
 
 
 //******************************************************************************
