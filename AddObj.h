@@ -12,7 +12,7 @@ public:
     // &plPenetrateShotBehavior,  // 高速・貫通(予定)
     // &enmAimShotBehavior        // プレイヤー狙撃（エネミー専用）
     template <typename T>
-    inline static void addShot(OBJ2D* obj, T* behavior, const VECTOR2& pos)
+    inline static void addShot(OBJ2D*& obj, T* behavior, const VECTOR2& pos)
     {
         OBJ2D* shot = Game::instance()->obj2dManager()->add(
             new OBJ2D(
@@ -33,7 +33,7 @@ public:
 
     // エフェクト追加
     template <typename T>
-    inline static void addEffect(OBJ2D*& obj, T* behavior) // objは直接参照
+    inline static void addEffect(OBJ2D*& obj, T* behavior)
     {
         const VECTOR2 pos = obj->transform_->position_;
 

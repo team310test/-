@@ -197,7 +197,7 @@ public:
     int No;
 
     bool isQuake_;
-    int deathDelayTimer_; // 親が死んだときのパーツの連鎖死亡に遅延をつくりだす
+    int  deathDelayTimer_; // 親が死んだときのパーツの連鎖死亡に遅延をつくりだす
 
     // 速度関連パラメータ
     VECTOR2 accel_;

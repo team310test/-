@@ -107,25 +107,7 @@ OBJ2D* setTitlePlayer(OBJ2DManager* obj2dManager, BG* bg)
     return obj2dManager->add(player, &titlePlayerHeartBehavior, pos);
 }
 
-//// 仮
-//void setCursor(OBJ2DManager* obj2dManager, BG* bg)
-//{
-//    const VECTOR2 pos = { 100,100 };
-//
-//    OBJ2D* cursor = new OBJ2D(
-//        new Renderer,
-//        new Collider,
-//        bg,
-//        new ActorComponent,
-//        nullptr,
-//        nullptr
-//    );
-//
-//    cursor->zOrder_ = 4;
-//    cursor->actorComponent_->parent_ = cursor;
-//
-//    Game::instance()->cursor_ = obj2dManager->add(cursor, &cursorBehavior, pos);
-//}
+
 
 //******************************************************************************
 //      プレイヤーのupdate
@@ -391,12 +373,13 @@ PlayerCoreBehavior::PlayerCoreBehavior()
     // アニメーション
     param_.ANIME_WAIT    = animePLayerCore;
 
-    param_.SIZE    = VECTOR2(PARTS_OBJ_SIZE, PARTS_OBJ_SIZE);
+    param_.SIZE          = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
 
     param_.HIT_BOX[0]    = { -PL_CORE_HITBOX, -PL_CORE_HITBOX, PL_CORE_HITBOX,  PL_CORE_HITBOX };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
-    param_.HP = PL_CORE_HP;
+    param_.HP            = PL_CORE_HP;
+    param_.ATTACK_POWER  = PL_CORE_ATK;
 
     // アニメ用データ
     param_.OBJ_ANIME = scaleAnime;
@@ -417,7 +400,7 @@ void PlayerCoreBehavior::attack(OBJ2D* obj) const
     AddObj::addShot(obj, &plNormalShotBehavior, obj->transform_->position_);
 
     setXAxisScaleAnime(obj);
-    obj->actorComponent_->attackTimer_ = 30;
+    obj->actorComponent_->attackTimer_ = PL_CORE_ATK_TIME;
 
 }
 
@@ -538,14 +521,17 @@ void PlayerPartsBehavior::contactToPlCore(OBJ2D* obj, OBJ2D* orgPl) const
 // Turret01
 PlayerTurret01Behavior::PlayerTurret01Behavior()
 {
-    param_.ANIME_WAIT = animeTurret01;
+    param_.ANIME_WAIT    = animeTurret01;
 
-    param_.SIZE = VECTOR2(PARTS_OBJ_SIZE, PARTS_OBJ_SIZE);
+    param_.SIZE          = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
 
-    // 画像サイズ(128*64の半分)
-    param_.HIT_BOX[0] = { -64, -32, 64, 32 };   // 長方形
-    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];   // 長方形
+    param_.HIT_BOX[0]    = { 
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.25f, 
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.25f
+    };   
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
+    param_.ATTACK_POWER  = PL_TURRET01_ATK;
 }
 
 void PlayerTurret01Behavior::attack(OBJ2D* obj) const
@@ -563,7 +549,7 @@ void PlayerTurret01Behavior::attack(OBJ2D* obj) const
     AddObj::addShot(obj, &plNormalShotBehavior, obj->transform_->position_);
 
     setXAxisScaleAnime(obj);
-    obj->actorComponent_->attackTimer_ = 30;
+    obj->actorComponent_->attackTimer_ = PL_PARTS_ATK_TIME;
 
 }
 
@@ -578,20 +564,22 @@ void PlayerTurret01Behavior::attack(OBJ2D* obj) const
 static constexpr int BUFF_MALTIPLY_VALUE = 2; // ATTACK_BOXにかける値（バフの影響範囲が変わる）
 PlayerBuff01Behavior::PlayerBuff01Behavior()
 {
-    param_.ANIME_WAIT = animeBuff01;
+    param_.ANIME_WAIT    = animeBuff01;
 
-    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
-    param_.HIT_BOX[0] = { 
-        -64, -64, 
-         64,  64,
+    param_.SIZE          = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+
+    param_.HIT_BOX[0]    = { 
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.5f,
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.5f
     };
     param_.ATTACK_BOX[0] = { 
-        -64 * BUFF_MALTIPLY_VALUE, 
-        -64 * BUFF_MALTIPLY_VALUE,
-         64 * BUFF_MALTIPLY_VALUE,  
-         64 * BUFF_MALTIPLY_VALUE,
+        -PARTS_OBJ_SIZE * 0.5f * BUFF_MALTIPLY_VALUE, 
+        -PARTS_OBJ_SIZE * 0.5f * BUFF_MALTIPLY_VALUE,
+         PARTS_OBJ_SIZE * 0.5f * BUFF_MALTIPLY_VALUE,  
+         PARTS_OBJ_SIZE * 0.5f * BUFF_MALTIPLY_VALUE,
     };
 
+    param_.ATTACK_POWER  = PL_BUFF01_ATK;
 }                            
 
 // 攻撃タイプがPLAYERなのでdstは味方(プレイヤー)になる(代わりに体当たりダメージが与えられない)
@@ -609,12 +597,17 @@ void PlayerBuff01Behavior::hit(OBJ2D*, OBJ2D* dst) const
 //******************************************************************************
 PlayerTrash01Behavior::PlayerTrash01Behavior()
 {
-    param_.ANIME_WAIT = animeTrash01;
+    param_.ANIME_WAIT    = animeTrash01;
 
-    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
-    param_.HIT_BOX[0] = { -64, -64, 64, 64 };
+    param_.SIZE          = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+
+    param_.HIT_BOX[0]    = { 
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.5f, 
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.5f 
+    };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
+    param_.ATTACK_POWER  = PL_TRASH01_ATK;
 }
 
 
@@ -627,79 +620,97 @@ PlayerTrash01Behavior::PlayerTrash01Behavior()
 // Common01
 PlayerCommon01Behavior::PlayerCommon01Behavior()
 {
-    param_.ANIME_WAIT = animeCommon01;
+    param_.ANIME_WAIT    = animeCommon01;
 
-    param_.SIZE = { 128.0f, 36.0f };
-    param_.HIT_BOX[0] = {
-        -64.0f, -18.0f,
-         64.0f,  18.0f,
+    param_.SIZE          = { PARTS_OBJ_SIZE, COMMON_SIZE_36 };
+
+    param_.HIT_BOX[0]    = {
+         -COMMON_HITBOX_64,-COMMON_HITBOX_18,
+          COMMON_HITBOX_64, COMMON_HITBOX_18,
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    param_.ATTACK_POWER  = PL_COMMON01_ATK;
 }
 
 // Common01_2(90度回転)
 PlayerCommon01_2Behavior::PlayerCommon01_2Behavior()
 {
-    param_.ANIME_WAIT = animeCommon01;
+    param_.ANIME_WAIT    = animeCommon01;
 
-    param_.SIZE = { 128.0f, 36.0f };
-    param_.HIT_BOX[0] = {
-         -18.0f,-64.0f,
-          18.0f, 64.0f,
+    param_.SIZE          = { PARTS_OBJ_SIZE, COMMON_SIZE_36 };
+
+    param_.HIT_BOX[0]    = {
+         -COMMON_HITBOX_18,-COMMON_HITBOX_64,
+          COMMON_HITBOX_18, COMMON_HITBOX_64,
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    param_.ATTACK_POWER  = PL_COMMON01_2_ATK;
 }
 
 // Common02
 PlayerCommon02Behavior::PlayerCommon02Behavior()
 {
-    param_.ANIME_WAIT = animeCommon02;
+    param_.ANIME_WAIT    = animeCommon02;
 
-    param_.SIZE = { 128.0f, 36.0f };
-    param_.HIT_BOX[0] = {
-        -64.0f, -18.0f,
-         64.0f,  18.0f,
+    param_.SIZE          = { PARTS_OBJ_SIZE, COMMON_SIZE_36 };
+
+    param_.HIT_BOX[0]    = {
+         -COMMON_HITBOX_64,-COMMON_HITBOX_18,
+          COMMON_HITBOX_64, COMMON_HITBOX_18,
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    param_.ATTACK_POWER  = PL_COMMON02_ATK;
 }
 
 // Common02_2(90度回転)
 PlayerCommon02_2Behavior::PlayerCommon02_2Behavior()
 {
-    param_.ANIME_WAIT = animeCommon02;
+    param_.ANIME_WAIT    = animeCommon02;
 
-    param_.SIZE = { 128.0f, 36.0f };
-    param_.HIT_BOX[0] = {
-         -18.0f,-64.0f,
-          18.0f, 64.0f,
+    param_.SIZE          = { PARTS_OBJ_SIZE, COMMON_SIZE_36 };
+
+    param_.HIT_BOX[0]    = {
+         -COMMON_HITBOX_18,-COMMON_HITBOX_64,
+          COMMON_HITBOX_18, COMMON_HITBOX_64,
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    param_.ATTACK_POWER  = PL_COMMON02_2_ATK;
 }
 
 // Common03
 PlayerCommon03Behavior::PlayerCommon03Behavior()
 {
-    param_.ANIME_WAIT = animeCommon03;
+    param_.ANIME_WAIT    = animeCommon03;
 
-    param_.SIZE = { 128.0f, 36.0f };
-    param_.HIT_BOX[0] = {
-        -64.0f, -18.0f,
-         64.0f,  18.0f,
+    param_.SIZE          = { PARTS_OBJ_SIZE, COMMON_SIZE_36 };
+
+    param_.HIT_BOX[0]    = {
+         -COMMON_HITBOX_64,-COMMON_HITBOX_18,
+          COMMON_HITBOX_64, COMMON_HITBOX_18,
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    param_.ATTACK_POWER  = PL_COMMON03_ATK;
 }
 
 // Common03_2(90度回転)
 PlayerCommon03_2Behavior::PlayerCommon03_2Behavior()
 {
-    param_.ANIME_WAIT = animeCommon03;
+    param_.ANIME_WAIT    = animeCommon03;
 
-    param_.SIZE = { 128.0f, 36.0f };
-    param_.HIT_BOX[0] = {
-         -18.0f,-64.0f,
-          18.0f, 64.0f,
+    param_.SIZE          = { PARTS_OBJ_SIZE, COMMON_SIZE_36 };
+
+    param_.HIT_BOX[0]    = {
+         -COMMON_HITBOX_18,-COMMON_HITBOX_64,
+          COMMON_HITBOX_18, COMMON_HITBOX_64,
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    param_.ATTACK_POWER  = PL_COMMON03_2_ATK;
 }
 
 
@@ -725,11 +736,13 @@ void ErasePlayer::erase(OBJ2D* obj) const
         // 死亡SE
         Audio::play(SE_DEATH, false);
 
-        a->parent_ = nullptr; // 親情報をリセット
-        obj->behavior_ = nullptr;
+        a->parent_     = nullptr; // 親情報をリセット
+        obj->behavior_ = nullptr; // 自分を消去
 
         // 縮小カウント減少
-        BasePlayerBehavior::plShrinkCount_ = std::max(0, BasePlayerBehavior::plShrinkCount_ - 1);
+        BasePlayerBehavior::plShrinkCount_ = std::max(
+            0, BasePlayerBehavior::plShrinkCount_ - 1
+        );
 
         return;
     }
@@ -751,14 +764,14 @@ void ErasePlayer::erase(OBJ2D* obj) const
         for (auto& dst : *Game::instance()->obj2dManager()->getList())
         {
             if (!dst->behavior_) continue;                               // 相手が存在しなければcontinue;
-            if (obj == dst) continue;                                    // 相手が自分ならcontinue;
+            if (obj == dst)      continue;                               // 相手が自分ならcontinue;
+
+            if (!obj->collider_->hitCheck(dst->collider_)) continue;     // 相手が接触していなければcontinue;
 
             if (dst->behavior_->getType() != OBJ_TYPE::PLAYER) continue; // 相手が自分と同じプレイヤーでなければcontinue
 
             if (!dst->actorComponent_->parent_) continue;                // 相手が親を持っていなければcontinue;
             if (obj == dst->actorComponent_->parent_) continue;          // 相手が自分の子ならcontinue;
-
-            if (!obj->collider_->hitCheck(dst->collider_)) continue;     // 相手が接触していなければcontinue;
 
             obj->actorComponent_->parent_ = dst;                         // 相手を親にする
 
@@ -772,10 +785,12 @@ void ErasePlayer::erase(OBJ2D* obj) const
 
         // 縮小カウント減少
         BasePlayerBehavior::plShrinkCount_ = std::max(0, --BasePlayerBehavior::plShrinkCount_);
+
+        return;
     }
     
 
-    if (a->deathDelayTimer_ < DEATH_DELAY_TIME) return;
+    if (a->deathDelayTimer_ < PARTS_DEATH_DELAY_TIME) return;
 
     // 死亡ディレイタイマーが一定時間たったら死亡処理を行う（親が死んだときのパーツの連鎖死亡に遅延をつくりだす）
 
@@ -789,10 +804,32 @@ void ErasePlayer::erase(OBJ2D* obj) const
 
     return;
 }
+
 #undef USE_FIND_PARENT
 
 
-// カーソルの座標取得
+
+//// 仮
+//void setCursor(OBJ2DManager* obj2dManager, BG* bg)
+//{
+//    const VECTOR2 pos = { 100,100 };
+//
+//    OBJ2D* cursor = new OBJ2D(
+//        new Renderer,
+//        new Collider,
+//        bg,
+//        new ActorComponent,
+//        nullptr,
+//        nullptr
+//    );
+//
+//    cursor->zOrder_ = 4;
+//    cursor->actorComponent_->parent_ = cursor;
+//
+//    Game::instance()->cursor_ = obj2dManager->add(cursor, &cursorBehavior, pos);
+//}
+//
+//// カーソルの座標取得
 //VECTOR2 getCursorPoint()
 //{
 //    static POINT point_;
@@ -808,12 +845,12 @@ void ErasePlayer::erase(OBJ2D* obj) const
 //
 //void CursorBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
 //{
-    //if ( (GameLib::input::TRG(0) & GameLib::input::PAD_TRG4) ||
-    //     (GetAsyncKeyState(VK_LBUTTON) & 1) )
-    //{
-    //    dst->behavior_ = nullptr;
-
-    //    // 縮小カウント減少
-    //    BasePlayerBehavior::plShrinkCount_ = std::max(0, BasePlayerBehavior::plShrinkCount_ - 1);
-    //}
+//    if ( (GameLib::input::TRG(0) & GameLib::input::PAD_TRG4) ||
+//         (GetAsyncKeyState(VK_LBUTTON) & 1) )
+//    {
+//        dst->behavior_ = nullptr;
+//    
+//        // 縮小カウント減少
+//        BasePlayerBehavior::plShrinkCount_ = std::max(0, BasePlayerBehavior::plShrinkCount_ - 1);
+//    }
 //}

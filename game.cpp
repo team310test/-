@@ -46,6 +46,11 @@ void Game::update()
         return;
     }
 
+    // 疑似スローモーション
+    static bool isSleep = false;
+    if (GetAsyncKeyState('2') < 0) isSleep = (!isSleep) ? true : false;
+    if (isSleep) Sleep(60);
+
     // ポーズ処理
     //if (GameLib::input::TRG(0) & GameLib::input::PAD_START)
     //    isPaused_ = !isPaused_;       // 0コンのスタートボタンが押されたらポーズ状態が反転
@@ -106,12 +111,12 @@ void Game::update()
         //    GameLib::input::TRG(0) & GameLib::input::PAD_TRG3)
         if (BasePlayerBehavior::plShrinkCount_ >= BasePlayerBehavior::PL_SHRINK_COUNT_MAX)  // プレイヤーの数がShrinkの規定数に達したら
         {
-            if (Collider::isAllShrink_ == false && // Shrinkが開始されておらず、
+            if (Collider::isAllShrink_ == false &&  // Shrinkが開始されておらず、
                 Behavior::isObjShrink() == false)   // すべてのobjが縮小していなければ
             {
                 Collider::isAllShrink_ = true;      // Shrinkを開始
 
-                bg()->BG::setBGShrink();       // 背景の縮小設定
+                bg()->BG::setBGShrink();            // 背景の縮小設定
 
                 stage_->addSrinkNum();
 

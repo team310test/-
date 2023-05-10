@@ -60,30 +60,6 @@ public:
     static float toCoreVelocity_;  // オリジナル自機へ向かう速度
 };
 
-//
-////******************************************************************************
-//// 
-////      CursorBehavior（カーソル）
-//// 
-////******************************************************************************
-//class CursorBehavior : public BasePlayerBehavior
-//{
-//public:
-//    CursorBehavior();
-//private:
-//    OBJ_TYPE getType() const override { return OBJ_TYPE::CURSOR; }
-//    OBJ_TYPE getAttackType() const override { return OBJ_TYPE::PLAYER; }
-//    void hit(OBJ2D*, OBJ2D*) const override;
-//
-//    void damageProc(OBJ2D*) const override;
-//
-//    // カーソルは縮小しないので｛｝で除外
-//    void startAllShrink(OBJ2D*) const override {} 
-//    void shrink(OBJ2D*) const override {}         
-//};
-//EXTERN CursorBehavior cursorBehavior;
-
-
 
 //******************************************************************************
 // 
@@ -211,3 +187,27 @@ void PLAYER_CORE_UPDATE(OBJ2D* obj);
 void PLAYER_PATRS_UPDATE(OBJ2D* obj);
 // タイトル用のupdate
 void TITLE_PLAYER_UPDATE(OBJ2D*);
+
+
+
+////******************************************************************************
+//// 
+////      CursorBehavior（カーソル）
+//// 
+////******************************************************************************
+//class CursorBehavior : public BasePlayerBehavior
+//{
+//public:
+//    CursorBehavior() {}
+//private:
+//    OBJ_TYPE getType() const override { return OBJ_TYPE::CURSOR; }
+//    OBJ_TYPE getAttackType() const override { return OBJ_TYPE::PLAYER; }
+//    void hit(OBJ2D*, OBJ2D*) const override;
+//
+//    void damageProc(OBJ2D*) const override {};
+//
+//    // カーソルは縮小しないので｛｝で除外
+//    void startAllShrink(OBJ2D*) const override {} 
+//    void shrink(OBJ2D*) const override {}         
+//};
+//EXTERN CursorBehavior cursorBehavior;
