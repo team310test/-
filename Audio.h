@@ -6,7 +6,7 @@ enum TITLE_AUDIO
     BGM_TITLE,          // タイトルBGM
 
     // SE
-    SE_HEART_BEAT       // 心臓鼓動
+    SE_HEART_BEAT       // 心臓鼓動SE
 };
 
 enum GAME_AUDIO
@@ -16,14 +16,14 @@ enum GAME_AUDIO
     BGM_BOSS,           // ボス戦BGM
 
     // SE
-    SE_PL_CORE_ALERT,   // プレイヤーコア専用の被弾
-    SE_ENM_CORE_DEATH,  // エネミーコア専用の死亡
+    SE_PL_CORE_ALERT,   // プレイヤーコア専用の被弾SE
+    SE_ENM_CORE_DEATH,  // エネミーコア専用の死亡SE
 
-    SE_SHOT,            // 弾発射
-    SE_DMG,             // 被弾
-    SE_DEATH,           // 死亡
-    SE_COMBINE,         // パーツ合体
-    SE_SHRINK           // 画面縮小
+    SE_SHOT,            // 弾発射SE
+    SE_DMG,             // 被弾SE
+    SE_DEATH,           // 死亡SE
+    SE_COMBINE,         // パーツ合体SE
+    SE_SHRINK           // 画面縮小SE
 };
 
 
@@ -38,7 +38,7 @@ public:
    
 public:
     // 音楽再生（trackNo：再生するトラック番号、 isLoop：ループするか）
-    static void play(const int& trackNo, const bool& isLoop)
+    static void play(const int& trackNo, const bool& isLoop = false)
     {
         GameLib::music::play(trackNo, isLoop);
     }

@@ -394,10 +394,11 @@ void PlayerCoreBehavior::attack(OBJ2D* obj) const
     if ( !(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG3) ||
            obj->actorComponent_->attackTimer_ > 0) return; 
 
-
-
     // ’e‚ð’Ç‰Á
     AddObj::addShot(obj, &plNormalShotBehavior, obj->transform_->position_);
+
+    // ’e”­ŽËSEÄ¶
+    Audio::play(SE_SHOT, false);
 
     setXAxisScaleAnime(obj);
     obj->actorComponent_->attackTimer_ = PL_CORE_ATK_TIME;
@@ -547,6 +548,9 @@ void PlayerTurret01Behavior::attack(OBJ2D* obj) const
 
     // ’e‚ð’Ç‰Á
     AddObj::addShot(obj, &plNormalShotBehavior, obj->transform_->position_);
+
+    // ’e”­ŽËSEÄ¶
+    Audio::play(SE_SHOT, false);
 
     setXAxisScaleAnime(obj);
     obj->actorComponent_->attackTimer_ = PL_PARTS_ATK_TIME;

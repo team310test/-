@@ -25,7 +25,6 @@ void BaseShotBehavior::move(OBJ2D* obj) const
         obj->transform_->velocity_.x = getParam()->SPEED_X;
         obj->transform_->velocity_.y = getParam()->SPEED_Y;
 
-
         // ‰æ‘œ‚ÌŒü‚«‚ðÝ’è
         obj->renderer_->drawXFlip_ = obj->weaponComponent_->parent_->renderer_->drawXFlip_;
 

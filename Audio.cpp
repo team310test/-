@@ -22,9 +22,9 @@ void Audio::gameInit()
     music::load(GAME_AUDIO::BGM_BOSS, L"./Data/Musics/BGM/BGM_Boss.wav", 1.0f);
 
     // SE
-    music::load(GAME_AUDIO::SE_PL_CORE_ALERT, L"./Data/Musics/SE/SE_PlayerCoreAlert.wav", 1.0f);
+    music::load(GAME_AUDIO::SE_PL_CORE_ALERT,  L"./Data/Musics/SE/SE_PlayerCoreAlert.wav", 1.0f);
 
-    music::load(GAME_AUDIO::SE_ENM_CORE_DEATH, L"./Data/Musics/SE/SE_EnemyCoreDeath.wav", 1.0f);
+    music::load(GAME_AUDIO::SE_ENM_CORE_DEATH, L"./Data/Musics/SE/SE_EnemyCoreDeath.wav",  1.0f);
 
     music::load(GAME_AUDIO::SE_SHOT,    L"./Data/Musics/SE/SE_Shot.wav",     1.0f);
     music::load(GAME_AUDIO::SE_DMG,     L"./Data/Musics/SE/SE_Damage.wav",   1.0f);

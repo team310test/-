@@ -371,6 +371,9 @@ void EnemyTurret01Behavior::attack(OBJ2D* obj) const
     // ’e‚ð’Ç‰Á
     AddObj::addShot(obj, &enmAimShotBehavior, obj->transform_->position_);
 
+    // ’e”­ŽËSEÄ¶
+    Audio::play(SE_SHOT, false);
+
     // UŒ‚ƒN[ƒ‹ƒ^ƒCƒ€Ý’è
     obj->actorComponent_->attackTimer_ = ENM_TURRET01_ATK_TIME;
 }
