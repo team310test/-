@@ -216,6 +216,8 @@ void OBJ2DManager::draw()
 
 
         DepthStencil::instance().set(DepthStencil::MODE::NONE);
+
+#ifdef DEBUG_MODE
         static bool isDrawHitBox = false; // ヒットボックスを表示するか
         // 1キーでヒットボックス表示・非表示
         if (GetAsyncKeyState('1') & 1)
@@ -223,6 +225,7 @@ void OBJ2DManager::draw()
             isDrawHitBox = (!isDrawHitBox) ? true : false;
         }
         if (isDrawHitBox) obj->collider_->draw();
+#endif
 
 
     }

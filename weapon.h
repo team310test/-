@@ -137,6 +137,16 @@ private:
 };
 EXTERN PlCurveShotBehavior plCurveShotBehavior;
 
+// エネミー
+class EnmCurveShotBehavior : public BaseEnemyShotBehavior
+{
+public:
+    EnmCurveShotBehavior();
+private:
+    void update(OBJ2D* obj) const override;
+};
+EXTERN EnmCurveShotBehavior enmCurveShotBehavior;
+
 
 //******************************************************************************
 //

@@ -34,7 +34,6 @@ void Game::deinit()
     Audio::clear();
 }
 
-int num = 2;
 
 void Game::update()
 {
@@ -46,10 +45,12 @@ void Game::update()
         return;
     }
 
+#ifdef DEBUG_MODE
     // 疑似スローモーション
     static bool isSleep = false;
     if (GetAsyncKeyState('2') < 0) isSleep = (!isSleep) ? true : false;
     if (isSleep) Sleep(60);
+#endif
 
     // ポーズ処理
     //if (GameLib::input::TRG(0) & GameLib::input::PAD_START)
@@ -61,8 +62,8 @@ void Game::update()
     case 0:
         //////// 初期設定 ////////
         timer_ = 0;
-        num = 2;
-        BasePlayerBehavior::plShrinkCount_ = 0;
+        BasePlayerBehavior::plShrinkCount_      = 0;
+        BasePlayerBehavior::plShrinkCountMax_   = 10;
         Stage::resetShrinkNum();
 
         GameLib::setBlendMode(GameLib::Blender::BS_ALPHA);   // 通常のアルファ処理
@@ -98,28 +99,29 @@ void Game::update()
         //    ++num;
         //}
 
-        // debug::setString
-        {
-            //GameLib::debug::setString("num:%d", num);
-            //if (player_->transform_) GameLib::debug::setString("playerScale:%f", player_->transform_->scale_.x);
-            GameLib::debug::setString("shrinkNum_:%d",stage_->getSrinkNum());
-            //GameLib::debug::setString("plShrinkCount_:%d", BasePlayerBehavior::plShrinkCount_);
-        }
-
+#ifdef DEBUG_MODE
+            GameLib::debug::setString("shrinkNum_:%d",stage_->getSrinkNum());               
+            GameLib::debug::setString("[1]Key:ShowHitBox");             // 1キーで当たり判定を表示（DEBUG_MODEのみ）
+            GameLib::debug::setString("[2]Key:SlowMode");               // 2キーで疑似的なスローモーションにする(少し戻しづらい)（DEBUG_MODEのみ）
+            GameLib::debug::setString("[3]Key:AllPlPartsKill");  // 3キーでPLパーツ全破壊（DEBUG_MODEのみ）
+#endif
 
         //if (BasePlayerBehavior::plShrinkCount_ >= BasePlayerBehavior::PL_SHRINK_COUNT_MAX ||
         //    GameLib::input::TRG(0) & GameLib::input::PAD_TRG3)
-        if (BasePlayerBehavior::plShrinkCount_ >= BasePlayerBehavior::PL_SHRINK_COUNT_MAX)  // プレイヤーの数がShrinkの規定数に達したら
+        if (BasePlayerBehavior::plShrinkCount_ >= BasePlayerBehavior::plShrinkCountMax_)  // プレイヤーの数がShrinkの必要数に達したら
         {
             if (Collider::isAllShrink_ == false &&  // Shrinkが開始されておらず、
                 Behavior::isObjShrink() == false)   // すべてのobjが縮小していなければ
             {
-                Collider::isAllShrink_ = true;      // Shrinkを開始
-
                 bg()->BG::setBGShrink();            // 背景の縮小設定
 
-                stage_->addSrinkNum();
+                stage_->addSrinkNum();              // shrinkNum加算
+                   
+                //BasePlayerBehavior::plShrinkCountMax_ += 1; // 縮小するまでのパーツの必要数を増加
 
+                Collider::isAllShrink_ = true;      // Shrinkを開始
+
+                // 縮小SE再生
                 Audio::play(SE_SHRINK, false);
             }
         }
@@ -157,6 +159,7 @@ void Game::update()
             BaseEnemyPartsBehavior::toCoreVelocity_ = TO_CORE_SPEED;
             UI::letterBox_multiplySizeY_ = std::min(1.0f, UI::letterBox_multiplySizeY_ + LETTER_BOX_ADD_SPEED); // 1.0fより大きければ1.0fに修正
 
+            // 縮小SEフェードアウト
             Audio::fade(SE_SHRINK, 2.0f, 0.0f);
         }
 

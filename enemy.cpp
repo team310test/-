@@ -16,6 +16,13 @@ namespace
         { nullptr, -1 },// 終了フラグ
     };
 
+    // タレット02
+    GameLib::AnimeData animeTurret02[] = {
+        { &sprPartsTurret02, 10 },
+        //{ &sprPlayer_test, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
+
     //  バフ01
     GameLib::AnimeData animeBuff01[] = {
         { &sprPartsBuff01, 10 },
@@ -119,7 +126,7 @@ void BaseEnemyBehavior::init(OBJ2D* obj) const
 
     obj->eraser_ = &eraseEnemy;
 
-    obj->renderer_->flip(); // 反転させる
+    obj->renderer_->Xflip(); // 反転させる
 }
 
 void BaseEnemyBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
@@ -338,7 +345,7 @@ void BaseEnemyPartsBehavior::contactToEnmCore(OBJ2D* obj, OBJ2D* coreEnm) const
 //
 //******************************************************************************
 
-// Turret01
+// Turret01(AimShot)
 EnemyTurret01Behavior::EnemyTurret01Behavior()
 {
     param_.ANIME_WAIT    = animeTurret01;
@@ -359,7 +366,6 @@ EnemyTurret01Behavior::EnemyTurret01Behavior()
     param_.NEXT_ERASER   = &eraseDropParts;
 }
 
-
 void EnemyTurret01Behavior::attack(OBJ2D* obj) const
 {
     // 攻撃クールタイム減少
@@ -378,6 +384,51 @@ void EnemyTurret01Behavior::attack(OBJ2D* obj) const
     obj->actorComponent_->attackTimer_ = ENM_TURRET01_ATK_TIME;
 }
 
+// Turret02([01]のy軸反転)
+EnemyTurret02Behavior::EnemyTurret02Behavior()
+{
+    param_.ANIME_WAIT = animeTurret02;
+
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+
+    // 画像サイズ(128*64の半分)
+    param_.HIT_BOX[0] = { -64, -32, 64, 32 };   // 下長方形    
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];   // 下長方形
+
+    // 次のBehavior・Eraser（ドロップアイテム）
+    param_.NEXT_BEHAVIOR = &dropTurret01Behavior;
+    param_.NEXT_ERASER = &eraseDropParts;
+}
+
+// Turret01(CurveShot)
+EnemyTurret03Behavior::EnemyTurret03Behavior()
+{
+    param_.ANIME_WAIT = animeTurret01;
+
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+
+    // 画像サイズ(128*64の半分)
+    param_.HIT_BOX[0] = { -64, -32, 64, 32 };   // 下長方形    
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];   // 下長方形
+
+    // 次のBehavior・Eraser（ドロップアイテム）
+    param_.NEXT_BEHAVIOR = &dropTurret01Behavior;
+    param_.NEXT_ERASER = &eraseDropParts;
+}
+
+void EnemyTurret03Behavior::attack(OBJ2D* obj) const
+{
+    // 攻撃クールタイム減少
+    if (obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
+
+    // 攻撃クールタイムが終わっていなければreturn
+    if (obj->actorComponent_->attackTimer_ > 0) return;
+
+    // 弾を追加
+    AddObj::addShot(obj, &enmCurveShotBehavior, obj->transform_->position_);
+
+    obj->actorComponent_->attackTimer_ = 120;
+}
 
 //******************************************************************************
 //
@@ -441,7 +492,8 @@ EnemyCommon01Behavior::EnemyCommon01Behavior()
 }
 
 // Common01_2(90度回転)
-EnemyCommon01_2Behavior::EnemyCommon01_2Behavior()
+// Common04([01]の90度回転)
+EnemyCommon04Behavior::EnemyCommon04Behavior()
 {
     param_.ANIME_WAIT       = animeCommon01;
 
@@ -454,8 +506,8 @@ EnemyCommon01_2Behavior::EnemyCommon01_2Behavior()
     param_.ATTACK_BOX[0]    = param_.HIT_BOX[0];
     param_.ROTATION         = ROT_90;
 
-    param_.HP               = ENM_COMMON01_2_HP;
-    param_.ATTACK_POWER     = ENM_COMMON01_2_ATK;
+    param_.HP               = ENM_COMMON04_HP;
+    param_.ATTACK_POWER     = ENM_COMMON04_ATK;
 
     // 次のBehavior・Eraser（ドロップアイテム）
     param_.NEXT_BEHAVIOR    = &dropCommon01_2Behavior;
@@ -484,7 +536,8 @@ EnemyCommon02Behavior::EnemyCommon02Behavior()
 }
 
 // Common02_2(90度回転)
-EnemyCommon02_2Behavior::EnemyCommon02_2Behavior()
+// Common05([02]の90度回転)
+EnemyCommon05Behavior::EnemyCommon05Behavior()
 {
     param_.ANIME_WAIT    = animeCommon02;
                          
@@ -497,8 +550,8 @@ EnemyCommon02_2Behavior::EnemyCommon02_2Behavior()
 
     param_.ROTATION      = ROT_90;
 
-    param_.HP            = ENM_COMMON02_2_HP;
-    param_.ATTACK_POWER  = ENM_COMMON02_2_ATK;
+    param_.HP            = ENM_COMMON05_HP;
+    param_.ATTACK_POWER  = ENM_COMMON05_ATK;
 
     // 次のBehavior・Eraser（ドロップアイテム）
     param_.NEXT_BEHAVIOR = &dropCommon02_2Behavior;
@@ -526,7 +579,8 @@ EnemyCommon03Behavior::EnemyCommon03Behavior()
 }
 
 // Common03_2(90度回転)
-EnemyCommon03_2Behavior::EnemyCommon03_2Behavior()
+// Common06([03]の90度回転)
+EnemyCommon06Behavior::EnemyCommon06Behavior()
 {
     param_.ANIME_WAIT     = animeCommon03;
 
@@ -539,8 +593,8 @@ EnemyCommon03_2Behavior::EnemyCommon03_2Behavior()
     param_.ATTACK_BOX[0]  = param_.HIT_BOX[0];
     param_.ROTATION       = ROT_90;
 
-    param_.HP             = ENM_COMMON03_2_HP;
-    param_.ATTACK_POWER   = ENM_COMMON03_2_ATK;
+    param_.HP             = ENM_COMMON06_HP;
+    param_.ATTACK_POWER   = ENM_COMMON06_ATK;
 
     // 次のBehavior・Eraser（ドロップアイテム）
     param_.NEXT_BEHAVIOR  = &dropCommon03_2Behavior;
@@ -562,7 +616,8 @@ void EraseEnemy::erase(OBJ2D* obj) const
 
 
     // スケールが一定以下になったら消去
-    if (obj->transform_->scale_.x <= UPDATE_OBJ_SCALE_MIN_LIMIT)
+    //if (obj->transform_->scale_.x <= UPDATE_OBJ_SCALE_MIN_LIMIT)
+    if (obj->transform_->scale_.x < 1.0f && !obj->collider_->isShrink_) // 1回でも縮小したら消す
     {
         // 爆発エフェクト
         AddObj::addEffect(obj, &efcBombBehavior);
@@ -590,7 +645,7 @@ void EraseEnemy::erase(OBJ2D* obj) const
         if (obj != a->orgParent_)
         {
             // 死亡SE
-            Audio::play(SE_DEATH, false);
+            //Audio::play(SE_DEATH, false);
 
             a->orgParent_  = nullptr;           // 元の親をリセット
 
@@ -600,7 +655,7 @@ void EraseEnemy::erase(OBJ2D* obj) const
             obj->update_   = DROP_PARTS_UPDATE; // updateを変更
 
             a->hp_ = 0;                         // HPを0にする
-            obj->renderer_->flip();             // 反転させる（マスク処理に重要）
+            obj->renderer_->Xflip();            // 反転させる（マスク処理に重要）
 
             obj->isBlink_  = true;              // 明滅させる
 
@@ -608,57 +663,63 @@ void EraseEnemy::erase(OBJ2D* obj) const
         }
 
         // エネミーコア死亡SE
-        Audio::play(SE_ENM_CORE_DEATH, false);
+        //Audio::play(SE_ENM_CORE_DEATH, false);
 
         a->orgParent_  = nullptr;               // 元の親をリセット
 
-        obj->behavior_ = nullptr;
+        obj->behavior_ = nullptr;               // 自分(コア)を消去
         return;
     }
 
         
-    // 死亡ディレイタイマーが一定時間たったらドロップパーツ化処理を行う（親が死んだときのパーツの連鎖死亡に遅延をつくりだす）
-    if (a->deathDelayTimer_ >= PARTS_DEATH_DELAY_TIME)
+    // 親が存在しなければ
+    if (!a->parent_)
     {
-        // 爆発エフェクト
-        AddObj::addEffect(obj, &efcBombBehavior);
+        ++a->deathDelayTimer_;   // 死亡ディレイタイマーを加算する
+    }
+    else // 親が存在していて
+    {
+        // まだ生きていてエネミーパーツであればreturn
+        if (a->parent_->behavior_)
+        {
+            if (a->parent_->behavior_->getType() == OBJ_TYPE::ENEMY) return;
+        }
 
-        // 死亡SE
-        Audio::play(SE_DEATH, false);
-
-        // 次のbehavior・eraser（ドロップアイテム）を代入
-        obj->behavior_ = obj->nextBehavior_;
-        obj->eraser_   = obj->nextEraser_;
-
-
-        if (obj->behavior_ == nullptr) return;  // 次のBehaviorがなければreturn
-
-
-        obj->update_ = DROP_PARTS_UPDATE;       // updateを変更
-
-        a->hp_ = 0;                             // HPを0にする
-        obj->renderer_->flip();                 // 反転させる
-
-        obj->isBlink_ = true;                   // 明滅させる
-
+        // 死んでいたら
+        a->parent_    = nullptr; // 親をリセット
+        a->orgParent_ = nullptr; // 元の親をリセット
         return;
     }
 
 
-    // 親または大元の親が存在しなければ
-    if (!a->parent_ || !a->orgParent_)
-    {
-        ++a->deathDelayTimer_;   // 死亡ディレイタイマーを加算する
-    }
-    else // 親と大元の親が存在していれば
-    {
-        // どちらもまだ生きていたらreturn
-        if (a->parent_->behavior_ && a->orgParent_->behavior_) return;
+    if (a->deathDelayTimer_ < PARTS_DEATH_DELAY_TIME) return;
 
-        // どちらかが死んでいたら
-        a->parent_    = nullptr; // 親をリセット
-        a->orgParent_ = nullptr; // 元の親をリセット
-    }
+    // 死亡ディレイタイマーが一定時間たったらドロップパーツ化処理を行う
+    //（親が死んだときのパーツの連鎖死亡に遅延をつくりだす）
+    
+    // 爆発エフェクト
+    AddObj::addEffect(obj, &efcBombBehavior);
+
+    //// 死亡SE
+    //Audio::play(SE_DEATH, false);
+
+    // 次のbehavior・eraser（ドロップアイテム）を代入
+    obj->behavior_ = obj->nextBehavior_;
+    obj->eraser_   = obj->nextEraser_;
+
+
+    if (obj->behavior_ == nullptr) return;  // 次のBehaviorがなければreturn
+
+
+    obj->update_ = DROP_PARTS_UPDATE;       // updateを変更
+
+    a->hp_ = 0;                             // HPを0にする
+    obj->renderer_->Xflip();                // 反転させる
+
+    obj->isBlink_ = true;                   // 明滅させる
+
+    return;
+    
     
 }
 
@@ -695,18 +756,19 @@ void ENEMY_TARGET_X(OBJ2D* obj)
         t->velocity_ = { -a->addition_.y,a->addition_.z };
 
         break;
-    default:break;
+    default:
+        break;
     }
 }
 // パーツのアップデート
 void ENEMY_PARTS(OBJ2D* obj)
 {
+    Transform*      t = obj->transform_;
     ActorComponent* a = obj->actorComponent_;
 
-    if (!a->orgParent_) return; // 親が消えていたらreturn
+    if (!a->parent_)            return; // 親が存在しなければreturn
+    if (!a->parent_->behavior_) return;
 
-    Transform* t = obj->transform_;
-    Transform* parent = a->orgParent_->transform_;
 
-    t->velocity_ = parent->velocity_;
+    t->velocity_ = a->parent_->transform_->velocity_;
 }

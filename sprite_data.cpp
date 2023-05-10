@@ -40,6 +40,7 @@ GameLib::LoadTexture gameLoadTexture[] = {
     { GAME_TEXNO::TURRET01,  L"./Data/Images/Parts/Turret/Turret01.png", 1U },
     { GAME_TEXNO::TURRET02,  L"./Data/Images/Parts/Turret/Turret02.png", 1U },
     { GAME_TEXNO::TURRET03,  L"./Data/Images/Parts/Turret/Turret03.png", 1U },
+    { GAME_TEXNO::TURRET04,  L"./Data/Images/Parts/Turret/Turret03.png", 1U },
     // バフパーツ
     { GAME_TEXNO::BUFF01,    L"./Data/Images/Parts/Buff/Buff01.png",     1U },
     // ごみパーツ
@@ -81,18 +82,19 @@ GameLib::SpriteData sprTitleUser02      = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER0
 /////////////////////////// ゲーム //////////////////////////////////////////////////////////////////
 
 //------< コア>------------------------------------------------------------------
-GameLib::SpriteData sprPlayerCore01 = SPRITE_CENTER(GAME_TEXNO::PL_CORE01,   0, 0, 128, 128);
-GameLib::SpriteData sprEnemyCore01  = SPRITE_CENTER(GAME_TEXNO::ENM_CORE01,  0, 0, 128, 128);
+GameLib::SpriteData sprPlayerCore01     = SPRITE_CENTER(GAME_TEXNO::PL_CORE01,   0, 0, 128, 128);
+GameLib::SpriteData sprEnemyCore01      = SPRITE_CENTER(GAME_TEXNO::ENM_CORE01,  0, 0, 128, 128);
 
 //------< パーツ >------------------------------------------------------------------
-GameLib::SpriteData sprPartsTurret01 = SPRITE_CENTER(GAME_TEXNO::TURRET01,   0, 0, 128, 128);
-GameLib::SpriteData sprPartsTurret02 = SPRITE_CENTER(GAME_TEXNO::TURRET02,   0, 0, 128, 128);
-GameLib::SpriteData sprPartsTurret03 = SPRITE_CENTER(GAME_TEXNO::TURRET03,   0, 0, 128, 128);
-GameLib::SpriteData sprPartsBuff01   = SPRITE_CENTER(GAME_TEXNO::BUFF01,     0, 0, 128, 128);
-GameLib::SpriteData sprPartsTrash01  = SPRITE_CENTER(GAME_TEXNO::TRASH01,    0, 0, 128, 128);
-GameLib::SpriteData sprPartsCommon01 = SPRITE_CENTER(GAME_TEXNO::COMMON01,   0, 0, 128, 128);
-GameLib::SpriteData sprPartsCommon02 = SPRITE_CENTER(GAME_TEXNO::COMMON02,   0, 0, 128, 128);
-GameLib::SpriteData sprPartsCommon03 = SPRITE_CENTER(GAME_TEXNO::COMMON03,   0, 0, 128, 128);
+GameLib::SpriteData sprPartsTurret01    = SPRITE_CENTER(GAME_TEXNO::TURRET01, 0, 0, 128, 128);
+GameLib::SpriteData sprPartsTurret02    = SPRITE_CENTER(GAME_TEXNO::TURRET02, 0, 0, 128, 128);
+GameLib::SpriteData sprPartsTurret03    = SPRITE_CENTER(GAME_TEXNO::TURRET03, 0, 0, 128, 128);
+GameLib::SpriteData sprPartsTurret04    = SPRITE_CENTER(GAME_TEXNO::TURRET04, 0, 0, 128, 128);
+GameLib::SpriteData sprPartsBuff01      = SPRITE_CENTER(GAME_TEXNO::BUFF01,   0, 0, 250, 250);
+GameLib::SpriteData sprPartsTrash01     = SPRITE_CENTER(GAME_TEXNO::TRASH01,  0, 0, 128, 128);
+GameLib::SpriteData sprPartsCommon01    = SPRITE_CENTER(GAME_TEXNO::COMMON01, 0, 0, 128, 128);
+GameLib::SpriteData sprPartsCommon02    = SPRITE_CENTER(GAME_TEXNO::COMMON02, 0, 0, 128, 128);
+GameLib::SpriteData sprPartsCommon03    = SPRITE_CENTER(GAME_TEXNO::COMMON03, 0, 0, 128, 128);
 
 //------< 弾 >----------------------------------------------------------------
 GameLib::SpriteData sprShot_NormalShot  = SPRITE_CENTER(GAME_TEXNO::BULLET01, 0, 0, 64, 64);
@@ -100,16 +102,16 @@ GameLib::SpriteData sprShot_NormalShot  = SPRITE_CENTER(GAME_TEXNO::BULLET01, 0,
 //------< エフェクト >----------------------------------------------------------------
 
 // 爆発エフェクト
-GameLib::SpriteData sprEfcBomb_anime0       = SPRITE_CENTER(GAME_TEXNO::EFC_BOMB, (256 * 0), 0, 256, 256);
-GameLib::SpriteData sprEfcBomb_anime1       = SPRITE_CENTER(GAME_TEXNO::EFC_BOMB, (256 * 1), 0, 256, 256);
-GameLib::SpriteData sprEfcBomb_anime2       = SPRITE_CENTER(GAME_TEXNO::EFC_BOMB, (256 * 2), 0, 256, 256);
-GameLib::SpriteData sprEfcBomb_anime3       = SPRITE_CENTER(GAME_TEXNO::EFC_BOMB, (256 * 3), 0, 256, 256);
+GameLib::SpriteData sprEfcBomb_anime0    = SPRITE_CENTER(GAME_TEXNO::EFC_BOMB, (256 * 0), 0, 256, 256);
+GameLib::SpriteData sprEfcBomb_anime1    = SPRITE_CENTER(GAME_TEXNO::EFC_BOMB, (256 * 1), 0, 256, 256);
+GameLib::SpriteData sprEfcBomb_anime2    = SPRITE_CENTER(GAME_TEXNO::EFC_BOMB, (256 * 2), 0, 256, 256);
+GameLib::SpriteData sprEfcBomb_anime3    = SPRITE_CENTER(GAME_TEXNO::EFC_BOMB, (256 * 3), 0, 256, 256);
 
 // 合体エフェクト
-GameLib::SpriteData sprEfcCombine_anime0    = SPRITE_CENTER(GAME_TEXNO::EFC_COMBINE, (256 * 0), 0, 256, 256);
-GameLib::SpriteData sprEfcCombine_anime1    = SPRITE_CENTER(GAME_TEXNO::EFC_COMBINE, (256 * 1), 0, 256, 256);
-GameLib::SpriteData sprEfcCombine_anime2    = SPRITE_CENTER(GAME_TEXNO::EFC_COMBINE, (256 * 2), 0, 256, 256);
-GameLib::SpriteData sprEfcCombine_anime3    = SPRITE_CENTER(GAME_TEXNO::EFC_COMBINE, (256 * 3), 0, 256, 256);
+GameLib::SpriteData sprEfcCombine_anime0 = SPRITE_CENTER(GAME_TEXNO::EFC_COMBINE, (256 * 0), 0, 256, 256);
+GameLib::SpriteData sprEfcCombine_anime1 = SPRITE_CENTER(GAME_TEXNO::EFC_COMBINE, (256 * 1), 0, 256, 256);
+GameLib::SpriteData sprEfcCombine_anime2 = SPRITE_CENTER(GAME_TEXNO::EFC_COMBINE, (256 * 2), 0, 256, 256);
+GameLib::SpriteData sprEfcCombine_anime3 = SPRITE_CENTER(GAME_TEXNO::EFC_COMBINE, (256 * 3), 0, 256, 256);
 
 
 //------------------------------------------------------------------------------

@@ -1,7 +1,8 @@
 #include "all.h"
 
 
-int BasePlayerBehavior::plShrinkCount_ = 0;
+int BasePlayerBehavior::plShrinkCount_      = 0;
+int BasePlayerBehavior::plShrinkCountMax_   = 0;
 
 // アニメデータ
 namespace
@@ -650,7 +651,7 @@ PlayerCommon01_2Behavior::PlayerCommon01_2Behavior()
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
-    param_.ATTACK_POWER  = PL_COMMON01_2_ATK;
+    param_.ATTACK_POWER  = PL_COMMON04_ATK;
 }
 
 // Common02
@@ -682,7 +683,7 @@ PlayerCommon02_2Behavior::PlayerCommon02_2Behavior()
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
-    param_.ATTACK_POWER  = PL_COMMON02_2_ATK;
+    param_.ATTACK_POWER  = PL_COMMON05_ATK;
 }
 
 // Common03
@@ -714,7 +715,7 @@ PlayerCommon03_2Behavior::PlayerCommon03_2Behavior()
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
-    param_.ATTACK_POWER  = PL_COMMON03_2_ATK;
+    param_.ATTACK_POWER  = PL_COMMON06_ATK;
 }
 
 
@@ -727,9 +728,11 @@ PlayerCommon03_2Behavior::PlayerCommon03_2Behavior()
 // 親探し(ナシだと壊れた時の爽快感がある)
 #define USE_FIND_PARENT
 
+
 void ErasePlayer::erase(OBJ2D* obj) const
 {
     ActorComponent* a = obj->actorComponent_;
+
 
     // HPが0以下になったら
     if (!a->isAlive())
@@ -751,6 +754,18 @@ void ErasePlayer::erase(OBJ2D* obj) const
         return;
     }
 
+#ifdef DEBUG_MODE
+    if (GetAsyncKeyState('3'))
+    {
+        // プレイヤーパーツの親を消去
+        if (obj != Game::instance()->player_) obj->actorComponent_->parent_ = nullptr;
+
+        // 縮小カウント減少
+        BasePlayerBehavior::plShrinkCount_ = std::max(
+            0, BasePlayerBehavior::plShrinkCount_ - 1
+        );
+    }
+#endif
 
     // 親が存在しなければ
     if (!a->parent_)

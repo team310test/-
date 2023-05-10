@@ -193,7 +193,7 @@ DropCommon01_2Behavior::DropCommon01_2Behavior()
     param_.NEXT_BEHAVIOR = &playerCommon01_2Behavior;
     param_.NEXT_ERASER   = &erasePlayer;
 
-    param_.NEXT_HP       = DROP_COMMON01_2_NEXT_HP;
+    param_.NEXT_HP       = DROP_COMMON04_NEXT_HP;
 }
 
 // Common02
@@ -233,7 +233,7 @@ DropCommon02_2Behavior::DropCommon02_2Behavior()
     param_.NEXT_BEHAVIOR = &playerCommon02_2Behavior;
     param_.NEXT_ERASER   = &erasePlayer;
 
-    param_.NEXT_HP       = DROP_COMMON02_2_NEXT_HP;
+    param_.NEXT_HP       = DROP_COMMON05_NEXT_HP;
 }
 
 // Common03
@@ -273,7 +273,7 @@ DropCommon03_2Behavior::DropCommon03_2Behavior()
     param_.NEXT_BEHAVIOR = &playerCommon03_2Behavior;
     param_.NEXT_ERASER   = &erasePlayer;
 
-    param_.NEXT_HP       = DROP_COMMON03_2_NEXT_HP;
+    param_.NEXT_HP       = DROP_COMMON06_NEXT_HP;
 }
 
 //******************************************************************************
@@ -286,7 +286,8 @@ void EraseDropParts::erase(OBJ2D* obj) const
     ActorComponent* a = obj->actorComponent_;
 
 
-    if (obj->transform_->scale_.x <= UPDATE_OBJ_SCALE_MIN_LIMIT) // スケールが0以下になったら
+    //if (obj->transform_->scale_.x <= UPDATE_OBJ_SCALE_MIN_LIMIT) // スケールが0以下になったら
+    if (obj->transform_->scale_.x < 1.0f && !obj->collider_->isShrink_) // 1回でも縮小したら消す
     {
         // 爆発エフェクト追加
         AddObj::addEffect(obj, &efcBombBehavior);

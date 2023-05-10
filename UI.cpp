@@ -78,7 +78,7 @@ void UI::drawShrinkValueMeter()
              // タイマーセットループ回避のためにカウントを1減らす
             if (dispMeterShrinkCountMaxTimer_ <= 0) --meterShrinkCount_;
         }
-        else if (meterShrinkCount_ == BasePlayerBehavior::PL_SHRINK_COUNT_MAX) // カウントが最大縮小カウントと同じ場合
+        else if (meterShrinkCount_ == BasePlayerBehavior::plShrinkCountMax_) // カウントが縮小必要数と同じ場合
         {
             // タイマーセット
             dispMeterShrinkCountMaxTimer_ = DISP_METER_SHRINK_COUNT_MAX_TIME; 
@@ -160,10 +160,10 @@ void UI::drawShrinkValueMeter()
 
     // 計器の針
     {
-        // 縮小カウントと最大縮小カウントをfloatにキャスト
+        // 縮小カウントと縮小必要数をfloatにキャスト
         // （floatにキャストする前にint同士で割ると値が0になって針が動かなくなるので注意）
         const float count    = static_cast<float>(BasePlayerBehavior::plShrinkCount_);
-        const float countMax = static_cast<float>(BasePlayerBehavior::PL_SHRINK_COUNT_MAX);
+        const float countMax = static_cast<float>(BasePlayerBehavior::plShrinkCountMax_);
 
         // 現在の縮小カウントを最大縮小カウント（10）で割り、その値を最高角度に掛け算したものを現在の角度にする
         // （縮小カウントが0なら （ 0 / 10 = ）  0倍で（90 *   0 = ） 0度、）

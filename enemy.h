@@ -62,7 +62,7 @@ public:
 // 
 //******************************************************************************
 
-// Turret01
+// Turret01(AimShot)
 class EnemyTurret01Behavior : public BaseEnemyPartsBehavior
 {
 public:
@@ -72,6 +72,24 @@ private:
 };
 EXTERN EnemyTurret01Behavior enemyTurret01Behavior;
 
+// Turret02
+class EnemyTurret02Behavior : public EnemyTurret01Behavior
+{
+public:
+    EnemyTurret02Behavior();
+private:
+};
+EXTERN EnemyTurret02Behavior enemyTurret02Behavior;
+
+// Turret03(CurveShot)
+class EnemyTurret03Behavior : public BaseEnemyPartsBehavior
+{
+public:
+    EnemyTurret03Behavior();
+private:
+    void attack(OBJ2D* obj) const override;
+};
+EXTERN EnemyTurret03Behavior enemyTurret03Behavior;
 
 //******************************************************************************
 // 
@@ -105,13 +123,13 @@ public:
 };
 EXTERN EnemyCommon01Behavior enemyCommon01Behavior;
 
-// Common01_2(90“x‰ñ“])
-class EnemyCommon01_2Behavior : public BaseEnemyPartsBehavior
+// Common04([01]‚Ì90“x‰ñ“])
+class EnemyCommon04Behavior : public BaseEnemyPartsBehavior
 {
 public:
-    EnemyCommon01_2Behavior();
+    EnemyCommon04Behavior();
 };
-EXTERN EnemyCommon01_2Behavior enemyCommon01_2Behavior;
+EXTERN EnemyCommon04Behavior enemyCommon04Behavior;
 
 // Common02
 class EnemyCommon02Behavior : public BaseEnemyPartsBehavior
@@ -121,13 +139,13 @@ public:
 };
 EXTERN EnemyCommon02Behavior enemyCommon02Behavior;
 
-// Common01_2(90“x‰ñ“])
-class EnemyCommon02_2Behavior : public BaseEnemyPartsBehavior
+// Common05([02]‚Ì90“x‰ñ“])
+class EnemyCommon05Behavior : public BaseEnemyPartsBehavior
 {
 public:
-    EnemyCommon02_2Behavior();
+    EnemyCommon05Behavior();
 };
-EXTERN EnemyCommon02_2Behavior enemyCommon02_2Behavior;
+EXTERN EnemyCommon05Behavior enemyCommon05Behavior;
 
 // Common03
 class EnemyCommon03Behavior : public BaseEnemyPartsBehavior
@@ -137,13 +155,13 @@ public:
 };
 EXTERN EnemyCommon03Behavior enemyCommon03Behavior;
 
-// Common03_2(90“x‰ñ“])
-class EnemyCommon03_2Behavior : public BaseEnemyPartsBehavior
+// Common06([03]‚Ì90“x‰ñ“])
+class EnemyCommon06Behavior : public BaseEnemyPartsBehavior
 {
 public:
-    EnemyCommon03_2Behavior();
+    EnemyCommon06Behavior();
 };
-EXTERN EnemyCommon03_2Behavior enemyCommon03_2Behavior;
+EXTERN EnemyCommon06Behavior enemyCommon06Behavior;
 
 
 //******************************************************************************

@@ -17,7 +17,7 @@ STAGE_SCRIPT stageData02[] =
 };
 STAGE_SCRIPT stageData03[] =
 {
-    SET_ENEMY_LENE(100,enemy01, X,300.0f, 20.0f),
+    SET_ENEMY_LENE(100,enemy05, X,800.0f, 5.0f),
     SET_ENEMY_END
 };
 STAGE_SCRIPT stageData04[] =

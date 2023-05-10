@@ -1,5 +1,8 @@
 #pragma once
 
+// debug::setStringを表示させる
+#define DEBUG_MODE
+
 //******************************************************************************
 // 
 //      パラメータ管理 
@@ -10,7 +13,9 @@
 namespace
 {  
     #define PARTS_OBJ_SIZE              (128.0f)            // サイズ
+
     #define OBJ_DAMAGED_BLINK           (0x02)              // ダメージを受けた時の点滅具合
+
     #define PARTS_DEATH_DELAY_TIME      (5)                 // パーツが連鎖的に死亡するときの遅延時間
 
     // OBJが更新・描画できる各スケール最低値（これ以下は更新・描画しない）
@@ -58,7 +63,7 @@ namespace
     {
         #define COMBINE_DMG_TIMER   (30)        // くっついた直後の無敵時間 
     
-        #define TO_CORE_SPEED       (-0.14f * 4)  // プレイヤー本体へ向かう初期速度
+        #define TO_CORE_SPEED       (-0.14f * 4) // プレイヤー本体へ向かう初期速度
 
         #define PL_PARTS_ATK_TIME   (30)        // 攻撃クールタイム
 
@@ -72,11 +77,11 @@ namespace
             #define PL_TRASH01_ATK      (1)     // 攻撃力(体当たりダメージ)
                                                 
             #define PL_COMMON01_ATK     (1)     // 攻撃力(体当たりダメージ)
-            #define PL_COMMON01_2_ATK   (1)     // 攻撃力(体当たりダメージ)
             #define PL_COMMON02_ATK     (1)     // 攻撃力(体当たりダメージ)
-            #define PL_COMMON02_2_ATK   (1)     // 攻撃力(体当たりダメージ)
             #define PL_COMMON03_ATK     (1)     // 攻撃力(体当たりダメージ)
-            #define PL_COMMON03_2_ATK   (1)     // 攻撃力(体当たりダメージ)
+            #define PL_COMMON04_ATK     (1)     // 攻撃力(体当たりダメージ)
+            #define PL_COMMON05_ATK     (1)     // 攻撃力(体当たりダメージ)
+            #define PL_COMMON06_ATK     (1)     // 攻撃力(体当たりダメージ)
         }
         
     }
@@ -116,20 +121,20 @@ namespace
         #define ENM_COMMON01_HP         (1)       // 体力
         #define ENM_COMMON01_ATK        (1)       // 攻撃力(体当たりダメージ)
          
-        #define ENM_COMMON01_2_HP       (1)       // 体力
-        #define ENM_COMMON01_2_ATK      (1)       // 攻撃力(体当たりダメージ)
-    
         #define ENM_COMMON02_HP         (1)       // 体力
         #define ENM_COMMON02_ATK        (1)       // 攻撃力(体当たりダメージ)
 
-        #define ENM_COMMON02_2_HP       (1)       // 体力
-        #define ENM_COMMON02_2_ATK      (1)       // 攻撃力(体当たりダメージ)
-    
         #define ENM_COMMON03_HP         (1)       // 体力
         #define ENM_COMMON03_ATK        (1)       // 攻撃力(体当たりダメージ)
+
+        #define ENM_COMMON04_HP         (1)       // 体力
+        #define ENM_COMMON04_ATK        (1)       // 攻撃力(体当たりダメージ)
     
-        #define ENM_COMMON03_2_HP       (1)       // 体力
-        #define ENM_COMMON03_2_ATK      (1)       // 攻撃力(体当たりダメージ)
+        #define ENM_COMMON05_HP         (1)       // 体力
+        #define ENM_COMMON05_ATK        (1)       // 攻撃力(体当たりダメージ)
+    
+        #define ENM_COMMON06_HP         (1)       // 体力
+        #define ENM_COMMON06_ATK        (1)       // 攻撃力(体当たりダメージ)
    }
 
 }
@@ -154,14 +159,12 @@ namespace
         #define DROP_BUFF01_NEXT_HP     (1) // プレイヤーになるときの体力
         #define DROP_TRASH01_NEXT_HP    (3) // プレイヤーになるときの体力
                                             
-        #define DROP_COMMON01_NEXT_HP   (3) // プレイヤーになるときの体力
-        #define DROP_COMMON01_2_NEXT_HP (3) // プレイヤーになるときの体力
-                                            
+        #define DROP_COMMON01_NEXT_HP   (3) // プレイヤーになるときの体力                                          
         #define DROP_COMMON02_NEXT_HP   (3) // プレイヤーになるときの体力
-        #define DROP_COMMON02_2_NEXT_HP (3) // プレイヤーになるときの体力
-                                            
         #define DROP_COMMON03_NEXT_HP   (3) // プレイヤーになるときの体力
-        #define DROP_COMMON03_2_NEXT_HP (3) // プレイヤーになるときの体力
+        #define DROP_COMMON04_NEXT_HP   (3) // プレイヤーになるときの体力
+        #define DROP_COMMON05_NEXT_HP   (3) // プレイヤーになるときの体力                                          
+        #define DROP_COMMON06_NEXT_HP   (3) // プレイヤーになるときの体力
     }
 
     // ドロップパーツの明滅関係
