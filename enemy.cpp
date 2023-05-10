@@ -663,7 +663,7 @@ void EraseEnemy::erase(OBJ2D* obj) const
         }
 
         // エネミーコア死亡SE
-        //Audio::play(SE_ENM_CORE_DEATH, false);
+        Audio::play(SE_ENM_CORE_DEATH, false);
 
         a->orgParent_  = nullptr;               // 元の親をリセット
 
@@ -695,12 +695,12 @@ void EraseEnemy::erase(OBJ2D* obj) const
     if (a->deathDelayTimer_ < PARTS_DEATH_DELAY_TIME) return;
 
     // 死亡ディレイタイマーが一定時間たったらドロップパーツ化処理を行う
-    //（親が死んだときのパーツの連鎖死亡に遅延をつくりだす）
+    //（親が死んだときのパーツの連鎖爆散に遅延をつくりだす）
     
     // 爆発エフェクト
     AddObj::addEffect(obj, &efcBombBehavior);
 
-    //// 死亡SE
+    // 死亡SE
     Audio::play(SE_DEATH, false);
 
     // 次のbehavior・eraser（ドロップアイテム）を代入

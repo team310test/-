@@ -811,7 +811,8 @@ void ErasePlayer::erase(OBJ2D* obj) const
 
     if (a->deathDelayTimer_ < PARTS_DEATH_DELAY_TIME) return;
 
-    // 死亡ディレイタイマーが一定時間たったら死亡処理を行う（親が死んだときのパーツの連鎖死亡に遅延をつくりだす）
+    // 死亡ディレイタイマーが一定時間たったら死亡処理を行う
+    //（親が死んだときのパーツの連鎖爆散に遅延をつくりだす）
 
     // 爆発エフェクト
     AddObj::addEffect(obj, &efcBombBehavior);
