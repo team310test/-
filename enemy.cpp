@@ -645,7 +645,7 @@ void EraseEnemy::erase(OBJ2D* obj) const
         if (obj != a->orgParent_)
         {
             // 死亡SE
-            //Audio::play(SE_DEATH, false);
+            Audio::play(SE_DEATH, false);
 
             a->orgParent_  = nullptr;           // 元の親をリセット
 
@@ -701,7 +701,7 @@ void EraseEnemy::erase(OBJ2D* obj) const
     AddObj::addEffect(obj, &efcBombBehavior);
 
     //// 死亡SE
-    //Audio::play(SE_DEATH, false);
+    Audio::play(SE_DEATH, false);
 
     // 次のbehavior・eraser（ドロップアイテム）を代入
     obj->behavior_ = obj->nextBehavior_;
