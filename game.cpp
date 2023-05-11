@@ -295,7 +295,7 @@ bool MoveToCenter(OBJ2D* obj)
 }
 
 // ‰æ–ÊŠO‚Ü‚Å—Ž‰º‚·‚é
-bool objFall(OBJ2D* obj)
+bool objFall(OBJ2D* /*obj*/)
 {
 
     return false;

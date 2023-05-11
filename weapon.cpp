@@ -98,8 +98,10 @@ PlayerNormalShotBehavior::PlayerNormalShotBehavior()
     param_.SPEED_X      = NORMAL_SHOT_SPEED;
     param_.ATTACK_POWER = NORMAL_SHOT_ATK;
 
-    // 変更予定
-    param_.ATTACK_BOX[0] = { -24, -24, 24, 24 };
+    param_.ATTACK_BOX[0] = {
+        -SHOT_HITBOX, -SHOT_HITBOX,
+         SHOT_HITBOX,  SHOT_HITBOX
+    };
 
 }
 
@@ -119,8 +121,10 @@ EnmNormalShotBehavior::EnmNormalShotBehavior()
     param_.SPEED_X      = NORMAL_SHOT_SPEED;
     param_.ATTACK_POWER = NORMAL_SHOT_ATK;
 
-    // 変更予定
-    param_.ATTACK_BOX[0] = { -24, -24, 24, 24 };
+    param_.ATTACK_BOX[0] = { 
+        -SHOT_HITBOX, -SHOT_HITBOX, 
+         SHOT_HITBOX,  SHOT_HITBOX 
+    };
 }
 
 void EnmNormalShotBehavior::update(OBJ2D* obj) const
@@ -145,8 +149,10 @@ PlSineWaveShotBehavior::PlSineWaveShotBehavior()
     param_.SPEED_X      = SINE_WAVE_SHOT_SPEED;
     param_.ATTACK_POWER = SINE_WAVE_SHOT_ATK;
 
-    // 変更予定
-    param_.ATTACK_BOX[0] = { -24, -24, 24, 24 };
+    param_.ATTACK_BOX[0] = { 
+        -SHOT_HITBOX, -SHOT_HITBOX, 
+         SHOT_HITBOX,  SHOT_HITBOX 
+    };
 }
 
 void PlSineWaveShotBehavior::update(OBJ2D* obj) const
@@ -213,8 +219,10 @@ PlSquareWaveShotBehavior::PlSquareWaveShotBehavior()
     param_.SPEED_Y      = SQUARE_WAVE_SHOT_SPEED_Y;
     param_.ATTACK_POWER = SQUARE_WAVE_SHOT_ATK;
 
-    // 変更予定
-    param_.ATTACK_BOX[0] = { -24, -24, 24, 24 };
+    param_.ATTACK_BOX[0] = { 
+        -SHOT_HITBOX, -SHOT_HITBOX, 
+         SHOT_HITBOX,  SHOT_HITBOX 
+    };
 }
 
 void PlSquareWaveShotBehavior::update(OBJ2D* obj) const
@@ -275,9 +283,10 @@ PlCurveShotBehavior::PlCurveShotBehavior()
     param_.SPEED_Y      = CURVE_SHOT_SPEED_Y;
     param_.ATTACK_POWER = CURVE_SHOT_ATK;
 
-    // 変更予定
-    param_.ATTACK_BOX[0] = { -24, -24, 24, 24 };
-
+    param_.ATTACK_BOX[0] = {
+        -SHOT_HITBOX, -SHOT_HITBOX,
+         SHOT_HITBOX,  SHOT_HITBOX
+    };
 }
 
 void PlCurveShotBehavior::update(OBJ2D* obj) const
@@ -301,11 +310,13 @@ EnmCurveShotBehavior::EnmCurveShotBehavior()
     param_.ERASER = &eraseShot;
 
     param_.SPEED_X = -CURVE_SHOT_SPEED_Y;
-    param_.SPEED_Y = CURVE_SHOT_SPEED_X;
+    param_.SPEED_Y =  CURVE_SHOT_SPEED_X;
     param_.ATTACK_POWER = CURVE_SHOT_ATK;
 
-    // 変更予定
-    param_.ATTACK_BOX[0] = { -24, -24, 24, 24 };
+    param_.ATTACK_BOX[0] = { 
+        -SHOT_HITBOX, -SHOT_HITBOX, 
+         SHOT_HITBOX,  SHOT_HITBOX 
+    };
 
 }
 
@@ -318,7 +329,7 @@ void EnmCurveShotBehavior::update(OBJ2D* obj) const
     // 速度に加速度を足す
     transform->velocity_ += {
         -CURVE_SHOT_ACCEL_X / transform->scale_.x,  // scaleに挙動を合わせる
-            CURVE_SHOT_ACCEL_Y / transform->scale_.y,  // scaleに挙動を合わせる
+         CURVE_SHOT_ACCEL_Y / transform->scale_.y,  // scaleに挙動を合わせる
     };
 
 }
@@ -339,8 +350,10 @@ PlPenetrateShotBehavior::PlPenetrateShotBehavior()
     param_.SPEED_X      = PENETRATE_SHOT_SPEED;
     param_.ATTACK_POWER = PENETRATE_SHOT_ATK;
 
-    // 変更予定
-    param_.ATTACK_BOX[0] = { -24, -24, 24, 24 };
+    param_.ATTACK_BOX[0] = { 
+        -SHOT_HITBOX, -SHOT_HITBOX, 
+         SHOT_HITBOX,  SHOT_HITBOX 
+    };
 
 }
 
@@ -393,27 +406,36 @@ EnmAimShotBehavior::EnmAimShotBehavior()
     param_.SPEED_Y      = AIM_SHOT_SPEED_Y;
     param_.ATTACK_POWER = AIM_SHOT_ATK;
 
-    // 変更予定
-    param_.ATTACK_BOX[0] = { -24, -24, 24, 24 };
+    param_.ATTACK_BOX[0] = { 
+        -SHOT_HITBOX, -SHOT_HITBOX, 
+         SHOT_HITBOX,  SHOT_HITBOX
+    };
 }
 
 void EnmAimShotBehavior::update(OBJ2D* obj) const
 {
     // 省略
     Transform* t = obj->transform_;
-    Transform* corePl = Game::instance()->player_->transform_;
+    Transform* corePlT = Game::instance()->player_->transform_;
 
     switch (obj->act_) 
     {
-    case 0:
+    case 0:    
         {
-            const VECTOR2 d  = corePl->position_ - t->position_;
-            const float dist = sqrtf(d.x * d.x + d.y * d.y);
+        const VECTOR2 d = corePlT->position_ - t->position_;
+        const float dist = sqrtf(d.x * d.x + d.y * d.y);
 
-            t->velocity_ = {
-                param_.SPEED_X * d.x / dist,
-                param_.SPEED_Y * d.y / dist,
-            };
+        t->velocity_ = {
+            param_.SPEED_X * d.x / dist,
+            param_.SPEED_Y * d.y / dist,
+        };
+
+        obj->renderer_->Xflip(); // 角度設定のためにフリップする
+
+        float r = atan2f(d.y, d.x);
+        if (r < 0) r = r + DirectX::XM_2PI;
+        obj->transform_->rotation_ = ToRadian(r * 360.0f / (DirectX::XM_2PI));
+
         }
 
         ++obj->act_;
@@ -436,8 +458,14 @@ void ShotEraser::erase(OBJ2D* obj) const
 {
     Transform* t = obj->transform_;
 
-    if (t->scale_.x <= DRAW_OBJ_SCALE_MIN_LIMIT) obj->behavior_ = nullptr;
+    if (obj->transform_->scale_.x < 1.0f && !obj->collider_->isShrink_) // 1回でも縮小したら消す
+    {
+        // 爆発エフェクト
+        AddObj::addEffect(obj, &efcBombBehavior);
 
+        obj->behavior_ = nullptr;
+        return;
+    }
 
     const VECTOR2* size = &obj->collider_->size_;
     const VECTOR2* pos = &obj->transform_->position_;

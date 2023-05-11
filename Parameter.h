@@ -51,7 +51,7 @@ namespace
     // プレイヤーコア
     namespace
     {
-        #define PL_CORE_HP          (1)      // 体力
+        #define PL_CORE_HP          (100)      // 体力
         #define PL_CORE_HITBOX      (45.0f)     // 当たり判定（被）
         #define PL_CORE_ATK         (1)         // 攻撃力(体当たりダメージ)
         #define PL_CORE_ATK_TIME    (30)        // 攻撃クールタイム
@@ -190,6 +190,8 @@ namespace
 // 弾関係のパラメータ
 namespace
 {
+    #define SHOT_HITBOX                     (12.0f) // 弾の当たり判定
+
     // 通常弾
     namespace
     {
