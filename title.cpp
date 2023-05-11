@@ -72,7 +72,7 @@ void Title::update()
         player_         = setTitlePlayer(obj2dManager(),bg());
         startCommand_   = setTitleObj(obj2dManager(), &titleStartObjBehavior, { 500,500 } );
         endCommand_     = setTitleObj(obj2dManager(), &titleEndObjBehavior,   { 1420,500 } );
-        titleLoge_      = setTitleObj(obj2dManager(), &titleLogoObjBehavior,  { 960.0f,200.0f } );
+        titleLogo_      = setTitleObj(obj2dManager(), &titleLogoObjBehavior,  { 960.0f,200.0f } );
 
         bg()->init();
 
@@ -157,7 +157,7 @@ void Title::changeSceneGame()
         {
             // フェードアウト
             const bool endFadeOut = objToul::instance().FadeOut(endCommand_);
-            const bool logoFadeOut = objToul::instance().FadeOut(titleLoge_);
+            const bool logoFadeOut = objToul::instance().FadeOut(titleLogo_);
             const bool shrink = objToul::instance().Shrink(player_);      // 縮小
 
             // タイトルBGMフェードアウト
@@ -224,7 +224,7 @@ bool Title::startPerform()
     {
         const bool state = objToul::instance().FadeIn(startCommand_);
         const bool end = objToul::instance().FadeIn(endCommand_);
-        const bool logo = objToul::instance().FadeIn(titleLoge_);
+        const bool logo = objToul::instance().FadeIn(titleLogo_);
 
         // フェードインが完了したら
         if (state && end && logo)

@@ -112,12 +112,29 @@ void UI::drawShrinkValueMeter()
     // 計器の枠
     {
         // 回転
-        meterFrameAngle_ += DirectX::XMConvertToRadians(1.0f);
+        {
+            // 最大カウントと同じなら
+            if (meterShrinkCount_ == BasePlayerBehavior::plShrinkCountMax_)
+            {            
+                // 高速回転
+                meterFrameAngle_ += ToRadian(8.5f); 
+            }
+            else if (meterShrinkCount_ > 0) // 0より大きければ
+            {
+                // カウントに比例して回転数が上がる
+                meterFrameAngle_ += ToRadian(0.5f * meterShrinkCount_);
+            }
+            else // 0以下なら
+            {
+                // 少しだけ回転する
+                meterFrameAngle_ += ToRadian(0.25f);
+            }
+        }
 
-        if (meterFrameAngle_ > DirectX::XMConvertToRadians(360.0f))
+        if (meterFrameAngle_ > ToRadian(360.0f))
         {
             //360度回ったら角度リセット
-            meterFrameAngle_ = 0.0f; 
+            meterFrameAngle_ += ToRadian(-360.0f);
         }
 
 

@@ -106,7 +106,7 @@ void Game::update()
 
         UI::init();
 
-        // ゲームBGMループ再生
+        //// ゲームBGMループ再生
         Audio::play(BGM_GAME, true);
         Audio::fade(BGM_GAME, 5.0f, 1.0f);
 
@@ -180,7 +180,7 @@ void Game::update()
             UI::letterBox_multiplySizeY_ = std::min(1.0f, UI::letterBox_multiplySizeY_ + LETTER_BOX_ADD_SPEED); // 1.0fより大きければ1.0fに修正
 
             // 縮小SEフェードアウト
-            Audio::fade(SE_SHRINK, 2.0f, 0.0f);
+            Audio::fade(SE_SHRINK, 0.5f, 0.0f);
         }
 
 #ifdef DEBUG_MODE

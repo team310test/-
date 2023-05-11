@@ -46,6 +46,7 @@ void BaseTitleObjBehavior::move(OBJ2D* obj) const
 
     case 1:
         //////// 通常時 ////////
+        update(obj);
 
         break;
     }
@@ -108,11 +109,37 @@ void TitleStartObjBehavior::hit(OBJ2D* src, OBJ2D* dst) const
     dst->transform_->velocity_ = { 0.0f,0.0f };
 }
 
+// 更新
+void TitleStartObjBehavior::update(OBJ2D* obj) const
+{
+    if (!Title::instance()->player()) return;
+
+    const VECTOR2 plPos = Title::instance()->player()->transform_->position_;
+    const VECTOR2 pos   = obj->transform_->position_;
+    Renderer* r = obj->renderer_;
+
+    // プレイヤーがプレイヤーフレームに近づいたら太らせる
+    if (plPos.x >= pos.x - 250 && plPos.x <= pos.x + 250 &&
+        plPos.y >= pos.y - 250 && plPos.y <= pos.y + 250)
+    {
+        r->drawScale_ = { 2.25f,2.25f };
+    }
+    else
+    {
+        r->drawScale_ = { 2.0f,2.0f };
+    }
+}
+
+
 // エンド
 TitleEndObjBehavior::TitleEndObjBehavior()
 {
-    param_.SPR_DATA = &sprTitleTrashBox;
-    param_.SIZE = { 128,128 };
+    param_.SPR_DATA = &sprTitleTrashBox01;
+
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+
+    param_.SCALE = { 2.0f, 2.0f };
+
     param_.ATTACK_BOX[0] = { -30, -30,30,30 };
     //param_.ATTACK_BOX[0] = { -47, 20,18,85 };
 }
@@ -129,6 +156,30 @@ void TitleEndObjBehavior::hit(OBJ2D* src, OBJ2D* dst) const
     dst->transform_->velocity_ = { 0.0f,0.0f };
     dst->update_ = nullptr;
 }
+
+// 更新
+void TitleEndObjBehavior::update(OBJ2D* obj) const
+{
+    if (!Title::instance()->player()) return;
+
+    const VECTOR2 plPos = Title::instance()->player()->transform_->position_;
+    const VECTOR2 pos   = obj->transform_->position_;
+    Renderer* r = obj->renderer_;
+
+    // プレイヤーがゴミ箱に近づいたらぱかぱかさせる
+    if (plPos.x >= pos.x - 250 && plPos.x <= pos.x + 250 &&
+        plPos.y >= pos.y - 250 && plPos.y <= pos.y + 250 )
+    {
+        r->data_      = &sprTitleTrashBox02;
+        r->drawScale_ = { 2.25f,2.25f };
+    }
+    else 
+    {
+        r->data_      = &sprTitleTrashBox01;
+        r->drawScale_ = { 2.0f,2.0f };
+    }
+}
+
 
 // タイトルロゴ
 TitleLogoObjBehavior::TitleLogoObjBehavior()

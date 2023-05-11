@@ -76,7 +76,8 @@ extern GameLib::SpriteData sprTitlePlayerCore;
 extern GameLib::SpriteData sprTitleCoreFrame;
 extern GameLib::SpriteData sprTitleCoreHeart;
 extern GameLib::SpriteData sprTitleLogo;
-extern GameLib::SpriteData sprTitleTrashBox;
+extern GameLib::SpriteData sprTitleTrashBox01;
+extern GameLib::SpriteData sprTitleTrashBox02;
 extern GameLib::SpriteData sprTitleUser01;
 extern GameLib::SpriteData sprTitleUser02;
 

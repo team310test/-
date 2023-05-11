@@ -11,7 +11,7 @@ private:
 	OBJ2D* player_;
 	OBJ2D* startCommand_;
 	OBJ2D* endCommand_;
-	OBJ2D* titleLoge_;	// すぐに演出始まるので初期値はtrue
+	OBJ2D* titleLogo_;	// すぐに演出始まるので初期値はtrue
 	OBJ2D* userHintMove_; // 移動方法
 	OBJ2D* userHintShot_;	// 攻撃方法
 
@@ -42,6 +42,9 @@ public:
 
 	OBJ2DManager* obj2dManager() { return obj2dManager_; }
 	BG* bg() { return bg_; }
+
+	OBJ2D* player() { return player_; };
+
 private:
 	Title()
 		:obj2dManager_(nullptr)
@@ -51,7 +54,7 @@ private:
 		//<追加>
 		, startCommand_(nullptr)
 		, endCommand_(nullptr)
-		, titleLoge_(nullptr)
+		, titleLogo_(nullptr)
 		, userHintMove_(nullptr)
 		, userHintShot_(nullptr)
 		, isStartPerform_(true)

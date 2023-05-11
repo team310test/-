@@ -11,7 +11,7 @@ public:
 private:
     static constexpr float METER_ALPHA_COLOR_MIN = 0.2f;            // 計器の最低不透明度
     static constexpr float METER_ALPHA_COLOR_MAX = 1.0f;            // 計器の最大不透明度
-    static const     int   DISP_METER_SHRINK_COUNT_MAX_TIME = 120;  // 最大縮小カウントを表示する時間
+    static const     int   DISP_METER_SHRINK_COUNT_MAX_TIME = 180;  // 最大縮小カウントを表示する時間
     static constexpr float METER_NEEDLE_ANGLE_MAX = 160.0f;         // 針が傾く最大角度
     static constexpr float ADD_NEEDLE_ANGLE = DirectX::XMConvertToRadians(1.5f);   // 針を加算
     static constexpr float SUB_NEEDLE_ANGLE = DirectX::XMConvertToRadians(-0.02f); // 針を減算

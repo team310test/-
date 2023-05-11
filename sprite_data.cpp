@@ -10,7 +10,7 @@ GameLib::LoadTexture titleLoadTexture[] = {
     { TITLE_TEXNO::TITLE_FRAME,     L"./Data/Images/Core/Core_Frame.png",   1U }, // プレイヤーコアの枠
                                                                                    
     { TITLE_TEXNO::TITLE_LOGO,      L"./Data/Images/UI/title_logo.png",     1U }, // ロゴ
-    { TITLE_TEXNO::TITLE_TRASH_BOX, L"./Data/Images/UI/title_trash.png",    1U }, // ゴミ箱 
+    { TITLE_TEXNO::TITLE_TRASH_BOX, L"./Data/Images/UI/Title_TrashBox.png",    1U }, // ゴミ箱 
     { TITLE_TEXNO::TITLE_USER01,    L"./Data/Images/UI/title_user01.png",   1U }, // 操作方法
     { TITLE_TEXNO::TITLE_USER02,    L"./Data/Images/UI/title_user02.png",   1U }, // 操作方法
     
@@ -78,7 +78,8 @@ GameLib::SpriteData sprTitlePlayerCore  = SPRITE_CENTER(TITLE_TEXNO::TITLE_PLAYE
 GameLib::SpriteData sprTitleCoreHeart   = SPRITE_CENTER(TITLE_TEXNO::TITLE_HEART,     0, 0, 128, 128);
 GameLib::SpriteData sprTitleCoreFrame   = SPRITE_CENTER(TITLE_TEXNO::TITLE_FRAME,     0, 0, 128, 128);
 GameLib::SpriteData sprTitleLogo        = SPRITE_CENTER(TITLE_TEXNO::TITLE_LOGO,      0, 0, 640, 128);
-GameLib::SpriteData sprTitleTrashBox    = SPRITE_CENTER(TITLE_TEXNO::TITLE_TRASH_BOX, 0, 0, 128, 128);
+GameLib::SpriteData sprTitleTrashBox01  = SPRITE_CENTER(TITLE_TEXNO::TITLE_TRASH_BOX, (128 * 0), 0, 128, 128);
+GameLib::SpriteData sprTitleTrashBox02  = SPRITE_CENTER(TITLE_TEXNO::TITLE_TRASH_BOX, (128 * 1), 0, 128, 128);
 GameLib::SpriteData sprTitleUser01      = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER01,    0, 0, 640, 128);
 GameLib::SpriteData sprTitleUser02      = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER02,    0, 0, 128, 128);
 
