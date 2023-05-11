@@ -91,6 +91,22 @@ private:
 };
 EXTERN EnemyTurret03Behavior enemyTurret03Behavior;
 
+
+//******************************************************************************
+// 
+//      Shield（防御パーツ）
+// 
+//******************************************************************************
+
+// Shield01
+class EnemyShield01Behavior : public BaseEnemyPartsBehavior
+{
+public:
+    EnemyShield01Behavior();
+};
+EXTERN EnemyShield01Behavior enemyShield01Behavior;
+
+
 //******************************************************************************
 // 
 //      Buff(バフパーツ)

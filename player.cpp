@@ -19,6 +19,12 @@ namespace
         { nullptr, -1 },// 終了フラグ
     };    
     
+    // シールド01
+    GameLib::AnimeData animeShield01[] = {
+    { &sprPartsShield01, 10 },
+    { nullptr, -1 },// 終了フラグ
+    };
+
     //  バフ01
     GameLib::AnimeData animeBuff01[] = {
         { &sprPartsBuff01, 10 },
@@ -558,6 +564,28 @@ void PlayerTurret01Behavior::attack(OBJ2D* obj) const
 
 }
 
+//******************************************************************************
+// 
+//      Shield（防御パーツ）
+// 
+//******************************************************************************
+
+// Shield01
+PlayerShield01Behavior::PlayerShield01Behavior()
+{
+    param_.ANIME_WAIT    = animeShield01;
+                         
+    param_.SIZE          = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+                         
+    param_.HIT_BOX[0]    = {
+        -PARTS_OBJ_SIZE * 0.25f, -PARTS_OBJ_SIZE * 0.5f,
+         PARTS_OBJ_SIZE * 0.25f,  PARTS_OBJ_SIZE * 0.5f
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    param_.ATTACK_POWER  = PL_SHIELD01_ATK;
+}
+
 
 //******************************************************************************
 // 
@@ -874,3 +902,5 @@ void ErasePlayer::erase(OBJ2D* obj) const
 //        BasePlayerBehavior::plShrinkCount_ = std::max(0, BasePlayerBehavior::plShrinkCount_ - 1);
 //    }
 //}
+
+

@@ -36,6 +36,21 @@ EXTERN DropTurret01Behavior dropTurret01Behavior;
 
 //******************************************************************************
 // 
+//      Shield(防御パーツ)
+// 
+//******************************************************************************
+
+// Shield01
+class DropShield01Behavior : public BaseDropPartsBehavior
+{
+public:
+    DropShield01Behavior();
+};
+EXTERN DropShield01Behavior dropShield01Behavior;
+
+
+//******************************************************************************
+// 
 //      Buff(バフパーツ)
 // 
 //******************************************************************************

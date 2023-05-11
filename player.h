@@ -79,6 +79,21 @@ EXTERN PlayerTurret01Behavior playerTurret01Behavior;
 
 //******************************************************************************
 // 
+//      Shield(防御パーツ)
+// 
+//******************************************************************************
+
+// Shield01
+class PlayerShield01Behavior : public PlayerPartsBehavior
+{
+public:
+    PlayerShield01Behavior();
+};
+EXTERN PlayerShield01Behavior playerShield01Behavior;
+
+
+//******************************************************************************
+// 
 //      Buff(バフパーツ)
 // 
 //******************************************************************************
@@ -101,8 +116,8 @@ EXTERN PlayerBuff01Behavior playerBuff01Behavior;
 // 
 //******************************************************************************
 
-// Trach01
-class  PlayerTrash01Behavior : public PlayerPartsBehavior
+// Trash01
+class PlayerTrash01Behavior : public PlayerPartsBehavior
 {
 public:
     PlayerTrash01Behavior();
@@ -117,7 +132,7 @@ EXTERN PlayerTrash01Behavior playerTrash01Behavior;
 //******************************************************************************
 
 // Common01
-class  PlayerCommon01Behavior : public PlayerPartsBehavior
+class PlayerCommon01Behavior : public PlayerPartsBehavior
 {
 public:
     PlayerCommon01Behavior();
@@ -125,7 +140,7 @@ public:
 EXTERN PlayerCommon01Behavior playerCommon01Behavior;
 
 // Common01_2(90度回転)
-class  PlayerCommon01_2Behavior : public PlayerPartsBehavior
+class PlayerCommon01_2Behavior : public PlayerPartsBehavior
 {
 public:
     PlayerCommon01_2Behavior();
@@ -133,7 +148,7 @@ public:
 EXTERN PlayerCommon01_2Behavior playerCommon01_2Behavior;
 
 // Common02
-class  PlayerCommon02Behavior : public PlayerPartsBehavior
+class PlayerCommon02Behavior : public PlayerPartsBehavior
 {
 public:
     PlayerCommon02Behavior();
@@ -141,7 +156,7 @@ public:
 EXTERN PlayerCommon02Behavior playerCommon02Behavior;
 
 // Common02_2(90度回転)
-class  PlayerCommon02_2Behavior : public PlayerPartsBehavior
+class PlayerCommon02_2Behavior : public PlayerPartsBehavior
 {
 public:
     PlayerCommon02_2Behavior();
@@ -149,7 +164,7 @@ public:
 EXTERN PlayerCommon02_2Behavior playerCommon02_2Behavior;
 
 // Common03
-class  PlayerCommon03Behavior : public PlayerPartsBehavior
+class PlayerCommon03Behavior : public PlayerPartsBehavior
 {
 public:
     PlayerCommon03Behavior();
@@ -157,7 +172,7 @@ public:
 EXTERN PlayerCommon03Behavior playerCommon03Behavior;
 
 // Common03_2(90度回転)
-class  PlayerCommon03_2Behavior : public PlayerPartsBehavior
+class PlayerCommon03_2Behavior : public PlayerPartsBehavior
 {
 public:
     PlayerCommon03_2Behavior();

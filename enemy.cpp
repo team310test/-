@@ -23,6 +23,12 @@ namespace
         { nullptr, -1 },// 終了フラグ
     };
 
+    // シールド01
+    GameLib::AnimeData animeShield01[] = {
+    { &sprPartsShield01, 10 },
+    { nullptr, -1 },// 終了フラグ
+    };
+
     //  バフ01
     GameLib::AnimeData animeBuff01[] = {
         { &sprPartsBuff01, 10 },
@@ -430,11 +436,41 @@ void EnemyTurret03Behavior::attack(OBJ2D* obj) const
     obj->actorComponent_->attackTimer_ = 120;
 }
 
+
 //******************************************************************************
 //
-//      Buff
+//      Shield（防御パーツ）
 //
 //******************************************************************************
+
+// Shield01
+EnemyShield01Behavior::EnemyShield01Behavior()
+{
+    param_.ANIME_WAIT    = animeShield01;
+
+    param_.SIZE          = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+
+    param_.HIT_BOX[0]    = {
+        -PARTS_OBJ_SIZE * 0.25f, -PARTS_OBJ_SIZE * 0.5f,
+         PARTS_OBJ_SIZE * 0.25f,  PARTS_OBJ_SIZE * 0.5f
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    param_.HP            = ENM_SHIELD01_HP;
+    param_.ATTACK_POWER  = ENM_SHIELD01_ATK;
+
+    // 次のBehavior・Eraser（ドロップアイテム）
+    param_.NEXT_BEHAVIOR = &dropShield01Behavior;
+    param_.NEXT_ERASER   = &eraseDropParts;
+}
+
+
+//******************************************************************************
+//
+//      Buff（バフパーツ）
+//
+//******************************************************************************
+
 
 // Buff01
 EnemyBuff01Behavior::EnemyBuff01Behavior()

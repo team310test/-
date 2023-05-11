@@ -41,6 +41,8 @@ GameLib::LoadTexture gameLoadTexture[] = {
     { GAME_TEXNO::TURRET02,  L"./Data/Images/Parts/Turret/Turret02.png", 1U },
     { GAME_TEXNO::TURRET03,  L"./Data/Images/Parts/Turret/Turret03.png", 1U },
     { GAME_TEXNO::TURRET04,  L"./Data/Images/Parts/Turret/Turret03.png", 1U },
+    //防御パーツ
+    { GAME_TEXNO::SHIELD01,  L"./Data/Images/Parts/Shield/Shield01.png", 1U },
     // バフパーツ
     { GAME_TEXNO::BUFF01,    L"./Data/Images/Parts/Buff/Buff01.png",     1U },
     // ごみパーツ
@@ -90,6 +92,7 @@ GameLib::SpriteData sprPartsTurret01    = SPRITE_CENTER(GAME_TEXNO::TURRET01, 0,
 GameLib::SpriteData sprPartsTurret02    = SPRITE_CENTER(GAME_TEXNO::TURRET02, 0, 0, 128, 128);
 GameLib::SpriteData sprPartsTurret03    = SPRITE_CENTER(GAME_TEXNO::TURRET03, 0, 0, 128, 128);
 GameLib::SpriteData sprPartsTurret04    = SPRITE_CENTER(GAME_TEXNO::TURRET04, 0, 0, 128, 128);
+GameLib::SpriteData sprPartsShield01    = SPRITE_CENTER(GAME_TEXNO::SHIELD01, 0, 0, 128, 128);
 GameLib::SpriteData sprPartsBuff01      = SPRITE_CENTER(GAME_TEXNO::BUFF01,   0, 0, 250, 250);
 GameLib::SpriteData sprPartsTrash01     = SPRITE_CENTER(GAME_TEXNO::TRASH01,  0, 0, 128, 128);
 GameLib::SpriteData sprPartsCommon01    = SPRITE_CENTER(GAME_TEXNO::COMMON01, 0, 0, 128, 128);

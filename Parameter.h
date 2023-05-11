@@ -58,7 +58,7 @@ namespace
     }
 
     // プレイヤーパーツ
-    // 体力はドロップパーツの方で設定(NEXT_HP)
+    // ※体力はドロップパーツの方で設定(NEXT_HP)
     namespace
     {
         #define COMBINE_DMG_TIMER   (30)        // くっついた直後の無敵時間 
@@ -72,8 +72,10 @@ namespace
         {
             #define PL_TURRET01_ATK     (1)     // 攻撃力(体当たりダメージ)
                                                  
+            #define PL_SHIELD01_ATK     (1)     // 攻撃力(体当たりダメージ)
+
             #define PL_BUFF01_ATK       (0)     // 攻撃力(体当たりダメージ)
-                                                // 攻撃力(体当たりダメージ)
+                                                
             #define PL_TRASH01_ATK      (1)     // 攻撃力(体当たりダメージ)
                                                 
             #define PL_COMMON01_ATK     (1)     // 攻撃力(体当たりダメージ)
@@ -106,6 +108,13 @@ namespace
         #define ENM_TURRET01_HP         (1)         // 体力
         #define ENM_TURRET01_ATK        (1)         // 攻撃力(体当たりダメージ)
         #define ENM_TURRET01_ATK_TIME   (120)       // 攻撃間隔時間
+    }    
+    
+    // EnemyShield
+    namespace
+    {
+        #define ENM_SHIELD01_HP         (15)        // 体力
+        #define ENM_SHIELD01_ATK        (1)         // 攻撃力(体当たりダメージ)
     }    
     
     // EnemyBuff
@@ -150,29 +159,30 @@ namespace
 // ドロップパーツ関係のパラメータ
 namespace
 {
-    #define DROP_PARTS_SPEEDX (-2.0f)       // X速度
+    #define DROP_PARTS_SPEEDX (-2.0f)           // X速度
 
     // プレイヤーになるときの各体力
     namespace
     {
-        #define DROP_TURRET01_NEXT_HP   (1) // プレイヤーになるときの体力
-        #define DROP_BUFF01_NEXT_HP     (1) // プレイヤーになるときの体力
-        #define DROP_TRASH01_NEXT_HP    (3) // プレイヤーになるときの体力
-                                            
-        #define DROP_COMMON01_NEXT_HP   (3) // プレイヤーになるときの体力                                          
-        #define DROP_COMMON02_NEXT_HP   (3) // プレイヤーになるときの体力
-        #define DROP_COMMON03_NEXT_HP   (3) // プレイヤーになるときの体力
-        #define DROP_COMMON04_NEXT_HP   (3) // プレイヤーになるときの体力
-        #define DROP_COMMON05_NEXT_HP   (3) // プレイヤーになるときの体力                                          
-        #define DROP_COMMON06_NEXT_HP   (3) // プレイヤーになるときの体力
+        #define DROP_TURRET01_NEXT_HP   (1)     // プレイヤーになるときの体力
+        #define DROP_SHIELD01_NEXT_HP   (15)    // プレイヤーになるときの体力
+        #define DROP_BUFF01_NEXT_HP     (1)     // プレイヤーになるときの体力
+        #define DROP_TRASH01_NEXT_HP    (3)     // プレイヤーになるときの体力
+                                                
+        #define DROP_COMMON01_NEXT_HP   (3)     // プレイヤーになるときの体力                                          
+        #define DROP_COMMON02_NEXT_HP   (3)     // プレイヤーになるときの体力
+        #define DROP_COMMON03_NEXT_HP   (3)     // プレイヤーになるときの体力
+        #define DROP_COMMON04_NEXT_HP   (3)     // プレイヤーになるときの体力
+        #define DROP_COMMON05_NEXT_HP   (3)     // プレイヤーになるときの体力                                          
+        #define DROP_COMMON06_NEXT_HP   (3)     // プレイヤーになるときの体力
     }
 
     // ドロップパーツの明滅関係
     namespace
     {
-        #define ADD_BLINK_COLOR (0.025f)    // 明滅する速度に影響
-        #define BLINK_COLOR_MAX (0.6f)      // 明滅カラーの最大値
-        #define BLINK_COLOR_MIN (-0.5f)     // 明滅カラーの最低値
+        #define ADD_BLINK_COLOR (0.025f)        // 明滅する速度に影響
+        #define BLINK_COLOR_MAX (0.6f)          // 明滅カラーの最大値
+        #define BLINK_COLOR_MIN (-0.5f)         // 明滅カラーの最低値
     }
 }
 

@@ -9,6 +9,12 @@ namespace
         { nullptr, -1 },// 終了フラグ
     };
 
+    // シールド01
+    GameLib::AnimeData animeShield01[] = {
+    { &sprPartsShield01, 10 },
+    { nullptr, -1 },// 終了フラグ
+    };
+
     //  バフ01
     GameLib::AnimeData animeBuff01[] = {
         { &sprPartsBuff01, 10 },
@@ -96,6 +102,31 @@ DropTurret01Behavior::DropTurret01Behavior()
     param_.NEXT_ERASER   = &erasePlayer;
 
     param_.NEXT_HP       = DROP_TURRET01_NEXT_HP;
+}
+
+
+//******************************************************************************
+// 
+//      Shield(防御パーツ)
+// 
+//******************************************************************************
+DropShield01Behavior::DropShield01Behavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT    = animeShield01;
+
+    param_.SIZE          = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+    param_.HIT_BOX[0]    = {
+        -PARTS_OBJ_SIZE * 0.25f, -PARTS_OBJ_SIZE * 0.5f,
+         PARTS_OBJ_SIZE * 0.25f,  PARTS_OBJ_SIZE * 0.5f,
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    // 次のbehavior・eraser（プレイヤー）
+    param_.NEXT_BEHAVIOR = &playerShield01Behavior;
+    param_.NEXT_ERASER   = &erasePlayer;
+
+    param_.NEXT_HP       = DROP_SHIELD01_NEXT_HP;
 }
 
 

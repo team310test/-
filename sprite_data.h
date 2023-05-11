@@ -43,6 +43,8 @@ enum GAME_TEXNO
     TURRET02,
     TURRET03,
     TURRET04,
+    //防御パーツ
+    SHIELD01,
     // バフパーツ
     BUFF01,
     // ごみパーツ
@@ -89,6 +91,7 @@ extern GameLib::SpriteData sprPartsTurret01;
 extern GameLib::SpriteData sprPartsTurret02;
 extern GameLib::SpriteData sprPartsTurret03;
 extern GameLib::SpriteData sprPartsTurret04;
+extern GameLib::SpriteData sprPartsShield01;
 extern GameLib::SpriteData sprPartsBuff01;
 extern GameLib::SpriteData sprPartsTrash01;
 extern GameLib::SpriteData sprPartsCommon01;
