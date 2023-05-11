@@ -139,8 +139,6 @@ void BaseEnemyBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
 {
     ActorComponent* dstA = dst->actorComponent_;
 
-    if (dstA->damageTimer_ > 0) return;
-
 
     // プレイヤーのHPを減らす
     dstA->hp_ = std::max(dstA->hp_ - getParam()->ATTACK_POWER, 0);
@@ -154,7 +152,7 @@ void BaseEnemyBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
         // 相手を揺らす
         dstA->isQuake_ = true;
         // 相手を点滅させる無敵時間
-        dstA->damageTimer_ = 40;
+        dstA->damageTimer_ = DMG_TIME;
 
         // プレイヤーコアなら専用被弾SEを再生
         if (dst == Game::instance()->player_)
@@ -359,8 +357,8 @@ EnemyTurret01Behavior::EnemyTurret01Behavior()
     param_.SIZE          = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
 
     param_.HIT_BOX[0]    = { 
-        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.25f, 
-         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.25f
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.5f, 
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.5f
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 

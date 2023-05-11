@@ -174,8 +174,12 @@ void Title::changeSceneGame()
         }
         else
         {
-            // キーを押すとアニメーション再生
-            if (GameLib::input::STATE(0) & GameLib::input::PAD_TRG3 && !isAnime)
+            // 指定キー(Space,A,B,X,Y)を押すとアニメーション再生
+            if ( (GameLib::input::STATE(0) & GameLib::input::PAD_TRG1 ||
+                  GameLib::input::STATE(0) & GameLib::input::PAD_TRG2 ||
+                  GameLib::input::STATE(0) & GameLib::input::PAD_TRG3 ||
+                  GameLib::input::STATE(0) & GameLib::input::PAD_TRG4) &&
+                  !isAnime)
             {
                 isAnime = true;
 

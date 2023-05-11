@@ -116,9 +116,10 @@ void Game::update()
 
 #ifdef DEBUG_MODE
             GameLib::debug::setString("shrinkNum_:%d",stage_->getSrinkNum());               
-            GameLib::debug::setString("[1]Key:ShowHitBox");             // 1キーで当たり判定を表示（DEBUG_MODEのみ）
-            GameLib::debug::setString("[2]Key:SlowMode");               // 2キーで疑似的なスローモーションにする(少し戻しづらい)（DEBUG_MODEのみ）
-            GameLib::debug::setString("[3]Key:AllPlPartsKill");  // 3キーでPLパーツ全破壊（DEBUG_MODEのみ）
+            GameLib::debug::setString("[1]Key:ShowHitBox");     // 1キーで当たり判定を表示（DEBUG_MODEのみ）
+            GameLib::debug::setString("[2]Key:SlowMode");       // 2キーで疑似的なスローモーションにす（(少し戻しづらい)（DEBUG_MODEのみ）
+            GameLib::debug::setString("[3]Key:KillAllPlParts"); // 3キーでPLパーツ全破壊（DEBUG_MODEのみ）
+            GameLib::debug::setString("[4]Key:KillPlCore");     // 4キーでプレイヤーコア自爆（DEBUG_MODEのみ）
 #endif
 
         //if (BasePlayerBehavior::plShrinkCount_ >= BasePlayerBehavior::PL_SHRINK_COUNT_MAX ||
@@ -160,7 +161,7 @@ void Game::update()
             Collider::isAllShrink_ = false;
             BasePlayerBehavior::plShrinkCount_ = 0; // プレイヤーのカウントをリセット
         }
-
+        
         //// 縮小とパーツプレイヤーへ向かう速度いじり
         if (Behavior::isObjShrink()) // ひとつでもobjが縮小していれば
         {
@@ -181,9 +182,10 @@ void Game::update()
             Audio::fade(SE_SHRINK, 2.0f, 0.0f);
         }
 
-        // 自爆
-        if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG4)
-            player_->actorComponent_->hp_ = 0;
+#ifdef DEBUG_MODE
+        // 4キーでプレイヤーコア自爆
+        if (GetAsyncKeyState('4') & 1) player_->actorComponent_->hp_ = 0;
+#endif
 
 
         // ゲームオーバーの処理

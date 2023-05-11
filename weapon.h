@@ -51,6 +51,7 @@ private:
     virtual void update(OBJ2D* obj) const = 0;
     OBJ_TYPE getAttackType() const override { return OBJ_TYPE::ENEMY; };
 };
+
 // エネミーの攻撃タイプだけ所有
 class BaseEnemyShotBehavior : public BaseShotBehavior 
 {

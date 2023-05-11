@@ -156,6 +156,12 @@ void PLAYER_CORE_UPDATE(OBJ2D* obj)
         }
     }
 
+    // コントローラー操作
+    {
+        t->velocity_.x += PL_SPEED * GameLib::input::getPadState(0)->leftX;
+        t->velocity_.y -= PL_SPEED * GameLib::input::getPadState(0)->leftY;
+    }
+
     // 最大速度チェック
     t->velocity_.x = clamp(t->velocity_.x, -PL_SPEED_MAX, PL_SPEED_MAX);
     t->velocity_.y = clamp(t->velocity_.y, -PL_SPEED_MAX, PL_SPEED_MAX);
@@ -305,11 +311,23 @@ void BasePlayerBehavior::init(OBJ2D* obj) const
 
 void BasePlayerBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
 {
-    // 敵のHPを減らす
-    dst->actorComponent_->hp_ -= getParam()->ATTACK_POWER;
+    ActorComponent* dstA = dst->actorComponent_;
+
+    // プレイヤーのHPを減らす
+    dstA->hp_ = std::max(dstA->hp_ - getParam()->ATTACK_POWER, 0);
 
     // 被弾SEを再生
     Audio::play(SE_DMG, false);
+
+    // 相手がまだ生きている場合
+    if (dstA->hp_ > 0)
+    {
+        // 相手を揺らす
+        dstA->isQuake_ = true;
+        // 相手を点滅させる無敵時間
+        dstA->damageTimer_ = DMG_TIME;
+    }
+
 }
 
 void BasePlayerBehavior::damageProc(OBJ2D* obj) const
@@ -383,8 +401,11 @@ void PlayerCoreBehavior::attack(OBJ2D* obj) const
     // 攻撃クールタイム減少
     if (obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
 
-    // 指定ボタンが押されていない、または攻撃クールタイムが終わっていなければreturn
-    if ( !(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG3) ||
+    // 指定ボタン(Space,A,B,X,Y)が押されていない、または攻撃クールタイムが終わっていなければreturn
+    if ( (!(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG1) &&
+          !(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG2) &&
+          !(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG3) &&
+          !(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG4)) ||
            obj->actorComponent_->attackTimer_ > 0) return; 
 
     // 弾を追加
@@ -531,13 +552,19 @@ PlayerTurret01Behavior::PlayerTurret01Behavior()
 void PlayerTurret01Behavior::attack(OBJ2D* obj) const
 {
     // 攻撃クールタイム減少
-    // （バラバラに打たせるために指定ボタンを押しているときだけ減らす）
-    if (obj->actorComponent_->padState_ & GameLib::input::PAD_TRG3 && 
-        obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
-
-    // 指定ボタンが押されていない、または攻撃クールタイムが終わっていなければreturn
-    if (!(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG3) ||
-        obj->actorComponent_->attackTimer_ > 0) return;
+    // （バラバラに打たせるために指定ボタン(Space,A,B,X,Y)を押しているときだけ減らす）
+    if ( (obj->actorComponent_->padState_ & GameLib::input::PAD_TRG1 ||
+          obj->actorComponent_->padState_ & GameLib::input::PAD_TRG2 ||
+          obj->actorComponent_->padState_ & GameLib::input::PAD_TRG3 ||
+          obj->actorComponent_->padState_ & GameLib::input::PAD_TRG4) &&
+          obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
+    
+        // 指定ボタン(Space,A,B,X,Y)が押されていない、または攻撃クールタイムが終わっていなければreturn
+    if ( (!(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG1) &&
+          !(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG2) &&
+          !(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG3) &&
+          !(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG4)) ||
+            obj->actorComponent_->attackTimer_ > 0) return;
 
     // 弾を追加
     AddObj::addShot(obj, &plNormalShotBehavior, obj->transform_->position_);
@@ -782,7 +809,7 @@ void ErasePlayer::erase(OBJ2D* obj) const
     }
 
 #ifdef DEBUG_MODE
-    if (GetAsyncKeyState('3'))
+    if (GetAsyncKeyState('3') & 1)
     {
         // プレイヤーパーツの親を消去
         if (obj != Game::instance()->player_) obj->actorComponent_->parent_ = nullptr;

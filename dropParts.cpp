@@ -350,7 +350,7 @@ void EraseDropParts::erase(OBJ2D* obj) const
         
         a->hp_ = a->nextHp_;                    // 次のHPを代入
         a->attackTimer_ = 0;                    // 攻撃クールタイムをリセット
-        a->damageTimer_ = COMBINE_DMG_TIMER;    // くっついた直後はしばらく無敵状態にする
+        a->damageTimer_ = COMBINE_DMG_TIME;    // くっついた直後はしばらく無敵状態にする
 
         obj->isBlink_ = false;                  // 明滅終了
        

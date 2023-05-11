@@ -50,8 +50,6 @@ void BaseShotBehavior::hit(OBJ2D* src, OBJ2D* dst) const
 {
     ActorComponent* dstA = dst->actorComponent_;
 
-    if (dstA->damageTimer_ > 0) return;
-
     // HPを減らし、0を下回る場合は0を代入
     dstA->hp_ = std::max(dstA->hp_ -= getParam()->ATTACK_POWER, 0);
 
@@ -67,7 +65,7 @@ void BaseShotBehavior::hit(OBJ2D* src, OBJ2D* dst) const
         // 相手を揺らす
         dstA->isQuake_ = true;
         // 相手を点滅させる無敵時間
-        dstA->damageTimer_ = 40;
+        dstA->damageTimer_ = DMG_TIME;
     }
 
 }
@@ -422,20 +420,21 @@ void EnmAimShotBehavior::update(OBJ2D* obj) const
     {
     case 0:    
         {
-        const VECTOR2 d = corePlT->position_ - t->position_;
-        const float dist = sqrtf(d.x * d.x + d.y * d.y);
+            // プレイヤーに向かう
+            const VECTOR2 d = corePlT->position_ - t->position_;
+            const float dist = sqrtf(d.x * d.x + d.y * d.y);
 
-        t->velocity_ = {
-            param_.SPEED_X * d.x / dist,
-            param_.SPEED_Y * d.y / dist,
-        };
+            t->velocity_ = {
+                param_.SPEED_X * d.x / dist,
+                param_.SPEED_Y * d.y / dist,
+            };
 
-        obj->renderer_->Xflip(); // 角度設定のためにフリップする
 
-        float r = atan2f(d.y, d.x);
-        if (r < 0) r = r + DirectX::XM_2PI;
-        obj->transform_->rotation_ = ToRadian(r * 360.0f / (DirectX::XM_2PI));
-
+            // プレイヤーの方向を向く
+            obj->renderer_->Xflip(); // 角度設定のためにフリップする
+            float r = atan2f(d.y, d.x);
+            if (r < 0) r = r + DirectX::XM_2PI;
+            obj->transform_->rotation_ = ToRadian(r * 360.0f / (DirectX::XM_2PI));
         }
 
         ++obj->act_;
@@ -456,9 +455,15 @@ void EnmAimShotBehavior::update(OBJ2D* obj) const
 //******************************************************************************
 void ShotEraser::erase(OBJ2D* obj) const
 {
-    Transform* t = obj->transform_;
+    if (!obj->behavior_) return;
 
-    if (obj->transform_->scale_.x < 1.0f && !obj->collider_->isShrink_) // 1回でも縮小したら消す
+    Transform* t = obj->transform_;
+    Collider*  c = obj->collider_;
+    OBJ_TYPE   objAtkType = obj->behavior_->getAttackType();
+
+    // 自分が敵の弾で1回でも縮小していたら消す
+    if (objAtkType == OBJ_TYPE::PLAYER &&
+        t->scale_.x < 1.0f && !c->isShrink_) 
     {
         // 爆発エフェクト
         AddObj::addEffect(obj, &efcBombBehavior);
@@ -467,18 +472,16 @@ void ShotEraser::erase(OBJ2D* obj) const
         return;
     }
 
-    const VECTOR2* size = &obj->collider_->size_;
-    const VECTOR2* pos = &obj->transform_->position_;
+    const VECTOR2* pos  = &t->position_;
+    const VECTOR2* size = &c->size_;
 
     const float leftLimit   = size->x;
     const float rightLimit  = BG::WINDOW_W + size->x;
     const float topLimit    = size->y;
     const float bottomLimit = BG::WINDOW_H + size->y;
 
-    if (pos->x < leftLimit  ||
-        pos->x > rightLimit ||
-        pos->y < topLimit   ||
-        pos->y > bottomLimit)
+    if (pos->x < leftLimit  || pos->x > rightLimit ||
+        pos->y < topLimit   || pos->y > bottomLimit)
     {
         obj->behavior_ = nullptr; // 画面外に行ったら消去
         return;
