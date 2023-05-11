@@ -33,6 +33,7 @@ void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
     {
         timer_ = 0;
         stageNum_ = shrinkNum_;
+
         if (shrinkNum_ >= 0 && shrinkNum_ < STAGE_MAX)
         {
             pScript_ = STAGE_DATA[stageNum_];

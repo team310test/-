@@ -47,6 +47,7 @@ EnemyData enemy01[] =
     ,{&enemyTurret01Behavior,{-128.0f,0.0f},3,PARENT_NO::NOT,PARENT_NO::PARENT0}
     ,END
 };
+
 // エネミー02
 EnemyData enemy02[] =
 {

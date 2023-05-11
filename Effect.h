@@ -52,3 +52,23 @@ public:
     void update(OBJ2D* obj) const override;
 };
 EXTERN EffectCombineBehavior efcCombineBehavior;
+
+
+// 連鎖的にエフェクトを流すためのデータ
+class ChainEffectData
+{
+public:
+    int time_;
+    Behavior* behavior_;
+    VECTOR2 add_;
+
+    ChainEffectData(int time,Behavior* behavior, VECTOR2 add)
+        :time_(time)
+        , behavior_(behavior)
+        , add_(add)
+    {}
+};
+
+
+// objの周囲にエフェクトを連鎖的に発生させる関数
+bool ChainEffect(OBJ2D*);

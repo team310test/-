@@ -274,17 +274,13 @@ public:
 //----------------------------------------------------------------------
 //  TitleComponent
 //----------------------------------------------------------------------
-class TitleComponent : public Component
+class PerformComponent : public Component
 {
 public:
-    OBJ2D* parent_;  // ‚±‚Ì•Ší‚Ì‚¿å
     bool isTrigger;
-    bool isDraw;
 public:
-    TitleComponent()
-        :parent_(nullptr)
-        , isDraw(false)
-        , isTrigger(false)
+    PerformComponent()
+        :isTrigger(false)
     {}
 };
 
@@ -327,7 +323,7 @@ public:
     ActorComponent* actorComponent_;
     ItemComponent* itemComponent_;
     WeaponComponent* weaponComponent_;
-    TitleComponent* titleComponent_;
+    PerformComponent* performComponent_;
     EffectComponent* effectComponent_;
 
 public:
@@ -339,7 +335,7 @@ public:
         ActorComponent* actorComponent,
         ItemComponent* itemComponent, 
         WeaponComponent* weaponComponent,
-        TitleComponent* titleComponent = nullptr,
+        PerformComponent* performComponent = nullptr,
         EffectComponent* effectComponent = nullptr // ‚í‚´‚í‚´‘‚©‚È‚­‚ÄÏ‚Ş‚æ‚¤‚É‚ ‚ç‚©‚¶‚ßnullptr‚ğ‘ã“ü
     );
     ~OBJ2D();

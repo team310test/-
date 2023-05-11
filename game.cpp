@@ -2,6 +2,21 @@
 
 Game Game::instance_;
 
+OBJ2D* setGameObj(OBJ2DManager* obj2dManager, Behavior* behavior, VECTOR2 pos)
+{
+    OBJ2D* obj = new OBJ2D(
+        new Renderer,
+        new Collider,
+        nullptr,
+        new ActorComponent,
+        nullptr,
+        nullptr,
+        new PerformComponent
+    );
+
+    return obj2dManager->add(obj, behavior, pos);
+}
+
 void Game::init()
 {
     Scene::init();	    // 基底クラスのinitを呼ぶ
@@ -12,7 +27,12 @@ void Game::init()
 
     isPaused_   = false;   // ポーズフラグの初期化
 
+    gameOverState_ = 0;
     isGameOver_ = false;
+
+    //フェード(イン)アウトの初期化
+    FADE::clear();
+    FADE::getInstance2()->SetColorNum(1);
 
     Audio::gameInit();
 }
@@ -26,6 +46,8 @@ void Game::deinit()
     safe_delete(obj2dManager_);
 
     player_ = nullptr;
+    playerFrame_ = nullptr;
+    playerHeart_ = nullptr;
 
     // テクスチャの解放
     GameLib::texture::releaseAll();
@@ -92,13 +114,6 @@ void Game::update()
     case 1:
         //////// 通常時の処理 ////////
 
-        // 敵追加4
-        //if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG2)
-        //{
-        //    addEnemy(obj2dManager(), bg());
-        //    ++num;
-        //}
-
 #ifdef DEBUG_MODE
             GameLib::debug::setString("shrinkNum_:%d",stage_->getSrinkNum());               
             GameLib::debug::setString("[1]Key:ShowHitBox");             // 1キーで当たり判定を表示（DEBUG_MODEのみ）
@@ -130,7 +145,10 @@ void Game::update()
         obj2dManager()->update();
 
         
-        if (Behavior::isObjShrink() == false) // すべてのobjが縮小終了していれば
+        if (
+            (Behavior::isObjShrink() == false)   // すべてのobjが縮小終了していれば
+            && (!isGameOver())                   // ゲームオーバーでなければ  
+            )
         {
             // ステージ更新(エネミー出現)
             stage_->update(obj2dManager_, bg_);
@@ -163,11 +181,15 @@ void Game::update()
             Audio::fade(SE_SHRINK, 2.0f, 0.0f);
         }
 
+        // 自爆
+        if (GameLib::input::TRG(0) & GameLib::input::PAD_TRG4)
+            player_->actorComponent_->hp_ = 0;
+
+
         // ゲームオーバーの処理
         if (isGameOver())
         {
             gameOverProc();
-            break;
         }
 
         bg()->update();   // BGの更新
@@ -214,8 +236,10 @@ void Game::draw()
     //GameLib::clear(VECTOR4(1,1,1,1));
 
     // 背景の描画
-    bg()->drawBack();     
+    bg()->drawBack();
 
+    // gameovernの時背景を真っ白に
+    FADE::getInstance2()->draw();
 
     // オブジェクトの描画
     obj2dManager()->draw();
@@ -223,15 +247,12 @@ void Game::draw()
     // ドロップパーツを明滅させる
     drawblink();
 
+    // 縮小カウントメーターの描画(gameoverなら表示しない)
+    if(!isGameOver())UI::drawShrinkValueMeter();
 
-    // 縮小カウントメーターの描画
-    UI::drawShrinkValueMeter();
-
-    // 映画の黒帯の描画
-    UI::drawLetterBox();
+    // 映画の黒帯の描画(gameoverなら表示しない)
+    if (!isGameOver())UI::drawLetterBox();
 }
-
-
 
 void Game::judge()
 {
@@ -262,12 +283,105 @@ void Game::judge()
     }
 }
 
+// 画面中央に移動する
+bool MoveToCenter(OBJ2D* obj)
+{
+    bool contact = objToul::instance().ContactPos(obj, { BG::WINDOW_W_F * 0.5f,BG::WINDOW_H_F * 0.5f },2.0f);
+    bool enlarge = objToul::instance().Enlarge(obj, { GAME_OVER_SCALE,GAME_OVER_SCALE },0.04f);
+
+    if (contact && enlarge)return true;
+
+    return false;
+}
+
+// 画面外まで落下する
+bool objFall(OBJ2D* obj)
+{
+
+    return false;
+}
+
 void Game::gameOverProc()
 {
-    gameOverTimer_--;
-    if (gameOverTimer_ <= 0)
+    //if (wait(60)) ++gameOverState_;
+    switch (gameOverState_)
     {
-        changeScene(Title::instance());
+    case 0:
+        //--< 初期設定 >--
+        
+        // judgeを行わないようにする
+        player_->collider_->judgeFlag_ = false;
+        // Triggerをtrueに(GameOverのフラグが立つ)
+        player_->performComponent_->isTrigger = true;
+        // 操作できなくする
+        player_->update_ = nullptr;
+        player_->transform_->velocity_ = { 0.0f,0.0f };
+        // アニメーション終了
+        player_->actorComponent_->objAnimeAlways_ = nullptr;
+
+        ++gameOverState_;
+        break;
+    case 1:
+        //--< 爆発エフェクト >--
+
+        if (!player_->actorComponent_->isQuake_) player_->actorComponent_->isQuake_ = true; // 爆破中は振動させる
+        if(ChainEffect(player_)) ++gameOverState_;
+        break;
+    case 2:
+        // --< エフェクトの再生終了待ち >--
+
+        if (!objToul::instance().isObjType(obj2dManager(), OBJ_TYPE::EFFECT)) ++gameOverState_;
+        break;
+    case 3:
+        //--< ウェイト >--
+
+        if (wait(10)) ++gameOverState_;
+        break;
+    case 4:
+        //--<player本体以外を削除>--
+
+        for (auto& obj : *obj2dManager_->getList())
+        {
+            // 自機本体なら飛ばす
+            if (obj == player_)continue;
+
+            obj->behavior_ = nullptr;
+        }
+
+        // 背景を白にする
+        FADE::getInstance2()->SetAlpha(1.0f);
+        ++gameOverState_;
+        break;
+    case 5:
+        //--< ウェイト >--
+
+        if (wait(30)) ++gameOverState_;
+        break;
+    case 6:
+        //--<画面中心に移動>--
+
+        if (MoveToCenter(player_)) ++gameOverState_;
+
+        break;
+    case 7:
+        //--< ウェイト >--
+
+        if (wait(30))++gameOverState_;
+        break;
+    case 8:
+        //--< 自機フレーム・ハートの生成 >--
+
+        playerFrame_ = setGameObj(obj2dManager(), &gamePlayerFrameObjBehavior, player_->transform_->position_);
+        playerHeart_ = setGameObj(obj2dManager(), &gamePlayerHheartObjBehavior,
+            { player_->transform_->position_.x - 7.0f * GAME_OVER_SCALE,player_->transform_->position_.y + 28.0f * GAME_OVER_SCALE }); 
+
+        ++gameOverState_;
+        break;
+    case 9:
+        //--< ハートの落下後タイトルへ遷移 >--
+        if (player_->renderer_->color_.w) player_->renderer_->color_.w = 0.0f;
+
+        if (playerHeart_->performComponent_->isTrigger) changeScene(Title::instance());
+        break;
     }
 }
-//******************************************************************************

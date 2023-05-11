@@ -75,6 +75,7 @@ EXTERN TitleHintShotObjBehavior titleHintShotObjBehavior;
 //      TitlePlayer（タイトル用の自機)
 // 
 //******************************************************************************
+OBJ2D* setTitlePlayer(OBJ2DManager* obj2dManager, BG* bg);
 
 // ハートのみ
 class TitlePlayerCoreHeartBehavior : public BasePlayerBehavior

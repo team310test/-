@@ -314,6 +314,9 @@ DropCommon03_2Behavior::DropCommon03_2Behavior()
 //******************************************************************************
 void EraseDropParts::erase(OBJ2D* obj) const
 {
+    // behavior‚ª‚È‚¯‚ê‚Îreturn
+    if (!obj->behavior_) return; 
+
     ActorComponent* a = obj->actorComponent_;
 
 

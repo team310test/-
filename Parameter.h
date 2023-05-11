@@ -51,7 +51,7 @@ namespace
     // プレイヤーコア
     namespace
     {
-        #define PL_CORE_HP          (1000)      // 体力
+        #define PL_CORE_HP          (1)      // 体力
         #define PL_CORE_HITBOX      (45.0f)     // 当たり判定（被）
         #define PL_CORE_ATK         (1)         // 攻撃力(体当たりダメージ)
         #define PL_CORE_ATK_TIME    (30)        // 攻撃クールタイム
@@ -267,7 +267,6 @@ namespace
     }
 
 }
-
 
 // 地震（シェイク）関係のパラメータ
 namespace

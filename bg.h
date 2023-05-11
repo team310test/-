@@ -8,6 +8,9 @@ public:
     static const int CLIENT_W = 1280;                // クライアント領域の幅
     static const int CLIENT_H = 720;                 // クライアント領域の高さ
 
+    static constexpr float WINDOW_W_F = static_cast<float>(WINDOW_W);                // ウインドウの幅(float)
+    static constexpr float WINDOW_H_F = static_cast<float>(WINDOW_H);                // ウインドウの高さ(float)
+
     static constexpr float ADJUST_Y = 0.25f;         // あたり判定での位置調整用（縦）
     static constexpr float ADJUST_X = 0.025f;        // あたり判定での位置調整用（横）
 

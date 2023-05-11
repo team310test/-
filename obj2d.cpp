@@ -10,7 +10,7 @@ OBJ2D::OBJ2D(
     ActorComponent* actorComponent,
     ItemComponent* itemComponent, 
     WeaponComponent* weaponComponent,
-    TitleComponent* titleComponent,
+    PerformComponent* performComponent,
     EffectComponent* effectComponent
 )
     :transform_(new Transform)
@@ -20,7 +20,7 @@ OBJ2D::OBJ2D(
     , actorComponent_(actorComponent)
     , itemComponent_(itemComponent)
     , weaponComponent_(weaponComponent)
-    , titleComponent_(titleComponent)
+    , performComponent_(performComponent)
     , effectComponent_(effectComponent)
 {
     if (transform_)         transform_->setOBJ2D(this);
@@ -30,7 +30,7 @@ OBJ2D::OBJ2D(
     if (itemComponent_)     itemComponent_->setOBJ2D(this);
     if (weaponComponent_)   weaponComponent_->setOBJ2D(this);
     if (effectComponent_)   effectComponent_->setOBJ2D(this);
-    if (titleComponent_) titleComponent_->setOBJ2D(this);
+    if (performComponent_) performComponent_->setOBJ2D(this);
 }
 
 
@@ -43,7 +43,7 @@ OBJ2D::~OBJ2D()
     safe_delete(actorComponent_);
     safe_delete(itemComponent_);
     safe_delete(weaponComponent_);
-    safe_delete(titleComponent_);
+    safe_delete(performComponent_);
     safe_delete(effectComponent_);
 }
 
