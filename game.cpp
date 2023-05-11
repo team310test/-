@@ -108,6 +108,7 @@ void Game::update()
 
         // ゲームBGMループ再生
         Audio::play(BGM_GAME, true);
+        Audio::fade(BGM_GAME, 5.0f, 1.0f);
 
         ++state_;    // 初期化処理の終了
         /*fallthrough*/
@@ -321,7 +322,7 @@ void Game::gameOverProc()
         // アニメーション終了
         player_->actorComponent_->objAnimeAlways_ = nullptr;
 
-        // BGMフェードアウト
+        // ゲーム・ボス戦BGMフェードアウト
         Audio::fade(BGM_GAME, 2.0f, 0.0f);
         Audio::fade(BGM_BOSS, 2.0f, 0.0f);
 

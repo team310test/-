@@ -52,5 +52,13 @@ public:
         GameLib::music::fade(trackNo, fadeTime, volume);
     }
 
+    //  音楽のボリューム設定
+    //  int   trackNo：ボリュームを設定するトラックのインデックス(0 ~ 31)
+    //  float volume ：音楽のボリューム(0.0f ~ 1.0f)
+    static void setVolume(const int& trackNo, const float& volume)
+    {
+        GameLib::music::setVolume(trackNo, volume);
+    }
+
 };
 
