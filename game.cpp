@@ -321,6 +321,10 @@ void Game::gameOverProc()
         // アニメーション終了
         player_->actorComponent_->objAnimeAlways_ = nullptr;
 
+        // BGMフェードアウト
+        Audio::fade(BGM_GAME, 2.0f, 0.0f);
+        Audio::fade(BGM_BOSS, 2.0f, 0.0f);
+
         ++gameOverState_;
         break;
     case 1:

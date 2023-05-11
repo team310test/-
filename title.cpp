@@ -76,9 +76,6 @@ void Title::update()
 
         bg()->init();
 
-        // タイトルBGMループ再生
-        Audio::play(BGM_TITLE, true);
-
         ++state_;                                    // 初期化処理の終了
         /*fallthrough*/                             // 意図的にbreak;を記述していない
     case 1:
@@ -163,6 +160,9 @@ void Title::changeSceneGame()
             const bool logoFadeOut = objToul::instance().FadeOut(titleLoge_);
             const bool shrink = objToul::instance().Shrink(player_);      // 縮小
 
+            // タイトルBGMフェードアウト
+            Audio::fade(BGM_TITLE, 2.0f, 0.0f);
+
             // 両方の処理が完了したら画面を遷移する
             if (endFadeOut && logoFadeOut && shrink)
             {
@@ -204,6 +204,9 @@ void Title::endGame()
     // 自機が接触したら
     if (endCommand_ && endCommand_->performComponent_->isTrigger)
     {
+        // タイトルBGMフェードアウト
+        Audio::fade(BGM_TITLE, 2.0f, 0.0f);
+
         // 画面が暗転したらゲーム終了
         if (FADE::getInstance()->fadeOut(0.01f))
         {
@@ -229,6 +232,10 @@ bool Title::startPerform()
             // playerのupdate変更
             if (player_->update_ != PLAYER_CORE_UPDATE) player_->update_ = PLAYER_CORE_UPDATE;
             isStartPerform_ = false;
+
+            // タイトルBGMループ再生
+            Audio::play(BGM_TITLE, true);
+            
             return true;
         }
     }
