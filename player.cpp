@@ -91,28 +91,6 @@ void setPlayer(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos, VECTOR2 scale, b
     }
 }
 
-OBJ2D* setTitlePlayer(OBJ2DManager* obj2dManager, BG* bg)
-{
-    const VECTOR2 pos = { BG::WINDOW_W * 0.5f,-250.0f };
-
-    OBJ2D* player = new OBJ2D(
-        new Renderer,
-        new Collider,
-        bg,
-        new ActorComponent,
-        nullptr,
-        nullptr,
-        new PerformComponent
-    );
-
-    player->zOrder_ = 3;
-    player->actorComponent_->parent_ = player;
-
-    player->actorComponent_->No = ActorComponent::playerNum;
-    player->update_ = TITLE_PLAYER_UPDATE;
-
-    return obj2dManager->add(player, &titlePlayerHeartBehavior, pos);
-}
 
 //******************************************************************************
 //      ÉvÉåÉCÉÑÅ[ÇÃupdate
@@ -371,7 +349,7 @@ void BasePlayerBehavior::damageProc(OBJ2D* obj) const
     quake.quakeDamage(obj);
 }
 
-void BasePlayerBehavior::areaCheck(OBJ2D* obj) const
+void BasePlayerBehavior::areaCheck(OBJ2D* /*obj*/) const
 {
 }
 

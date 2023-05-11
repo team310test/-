@@ -274,3 +274,15 @@ namespace
     #define ADD_QUAKE_POS   (10)   // 揺れ幅
     #define LOOP_MAX        (3)    // 繰り返す回数
 }
+
+// ゲームオーバー関係のパラメータ
+namespace
+{
+    #define GAME_OVER_SCALE (3.0f)              // 自機スケール
+    
+    // 落下速度
+    #define GAME_OVER_SPEED_X (0.1f)            // 速度(X)
+    #define GAME_OVER_SPEED_Y (1.5f)            // 速度(Y)
+    #define GAME_OVER_Initial_SPEED_X (0.0f)    // 初速度(X)
+    #define GAME_OVER_Initial_SPEED_Y (-30.0f)  // 初速度(Y)
+}
