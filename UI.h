@@ -26,6 +26,7 @@ private:
     static float subMeterNeedleAngle_;          // ŒvŠí‚Ìj‚ÌŠp“x‚ğŒ¸Z
 
 public:
+    static VECTOR2 meterPos_;                   // ŒvŠí‚ÌˆÊ’u
     static float letterBox_multiplySizeY_;      // ‰f‰æ‚Ì•‘Ñ‚Ìc•(“Áê)
 
 };

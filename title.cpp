@@ -26,8 +26,9 @@ void Title::init()
 
     // 変数の初期化
     isStartPerform_ = true;
-    oldTImer_ = 0;
-    pushCount_ = 0;
+    oldTimer_ = 0;
+    //pushCount_ = 0;
+    Game::instance()->isStartFirstShrink_ = false;
 
     //フェード(イン)アウトの初期化
     FADE::clear();
@@ -143,61 +144,91 @@ void Title::judge()
 
 void Title::changeSceneGame()
 {
+    if (!startCommand_ || !startCommand_->performComponent_->isTrigger) return;
+
     // 自機が接触したら
-    if (startCommand_ && startCommand_->performComponent_->isTrigger)
+
+    // 時間経過で射撃ヒント描画
+    userHintShot();
+
+    static bool isAnime = false;
+    const  int  pushMax = 4;
+    static int  shotCoolTimer   = 0;  // 射撃クールタイマー
+    const  int  setShotCoolTime = 30; // 射撃クールタイム設定
+    static bool  isAutoAddAlpha  = false;
+    static float addAlpha        = 1.0f;
+
+    if (pushCount_ >= pushMax - 1)
     {
-        // 時間経過でヒント描画
-        userHintShot();
+        // タイトルBGMフェードアウト
+        Audio::fade(BGM_TITLE, 2.0f, 0.0f);
+    }
 
-        static bool isAnime = false;
-        const int pushMax = 5;
+    // 一定回数アニメーションするとゲーム画面に遷移
+    if (pushCount_ >= pushMax && !isAnime)
+    {
+        // フェードアウト
+        const bool endFadeOut  = objToul::instance().FadeOut(endCommand_, 0.03f);
+        const bool logoFadeOut = objToul::instance().FadeOut(titleLogo_,  0.03f);
+        //const bool shrink      = objToul::instance().Shrink(player_);      // 縮小
+        Game::instance()->isStartFirstShrink_ = true; // 縮小
 
-        // 一定回数アニメーションするとゲーム画面に遷移
-        if (pushCount_ >= pushMax)
+        //　2回目以降は自動で透明度を設定
+        if (isAutoAddAlpha)
         {
-            // フェードアウト
-            const bool endFadeOut = objToul::instance().FadeOut(endCommand_);
-            const bool logoFadeOut = objToul::instance().FadeOut(titleLogo_);
-            const bool shrink = objToul::instance().Shrink(player_);      // 縮小
-
-            // タイトルBGMフェードアウト
-            Audio::fade(BGM_TITLE, 2.0f, 0.0f);
-
-            // 両方の処理が完了したら画面を遷移する
-            if (endFadeOut && logoFadeOut && shrink)
-            {
-                takeOverPos_ = player_->transform_->position_;
-                takeOverScale_ = player_->renderer_->drawScale_;
-                takeOverIsDrawShrink_ = player_->renderer_->isDrawShrink_;
-                changeScene(Game::instance());
-            }
+            addAlpha -= 0.03f;
+            FADE::getInstance2()->SetAlpha(addAlpha);
         }
-        else
+
+        // 両方の処理が完了したら画面を遷移する
+        if (endFadeOut && logoFadeOut/* && shrink*/)
         {
-            // 指定キー(Space,A,B,X,Y)を押すとアニメーション再生
-            if ( (GameLib::input::STATE(0) & GameLib::input::PAD_TRG1 ||
-                  GameLib::input::STATE(0) & GameLib::input::PAD_TRG2 ||
-                  GameLib::input::STATE(0) & GameLib::input::PAD_TRG3 ||
-                  GameLib::input::STATE(0) & GameLib::input::PAD_TRG4) &&
-                  !isAnime)
-            {
-                isAnime = true;
+            isAutoAddAlpha = true;
+            addAlpha       = 1.0f;
 
-                // 鼓動SE再生
-                Audio::play(SE_HEART_BEAT, false);
-            }
-
-            // キーが押されアニメーションが再生終わるとカウントを増やす
-            if (isAnime && xAxisSclaeAnime(player_))
-            {
-                ++pushCount_;
-                isAnime = false;
-
-                FADE::getInstance2()->SetAlpha(1.0f - 1.0f / pushMax * pushCount_);
-            }
+            // パラメータを引き継ぐ
+            takeOverPos_          = player_->transform_->position_;
+            takeOverIsDrawShrink_ = player_->renderer_->isDrawShrink_;
+            changeScene(Game::instance());
+            return;
         }
     }
+    else
+    {
+        // 指定キー(Space,A,B,X,Y)を押すとアニメーション再生
+        if ( (GameLib::input::STATE(0) & GameLib::input::PAD_TRG1 ||
+              GameLib::input::STATE(0) & GameLib::input::PAD_TRG2 ||
+              GameLib::input::STATE(0) & GameLib::input::PAD_TRG3 ||
+              GameLib::input::STATE(0) & GameLib::input::PAD_TRG4) &&
+              !isAnime && shotCoolTimer <= 0)
+        {
+            isAnime = true;
+            shotCoolTimer = setShotCoolTime; // 射撃クールタイム設定
+
+            // 鼓動エフェクト生成
+            AddObj::addEffect(player_, Title::instance()->obj2dManager(), &efcBeatBehavior);
+
+            // 鼓動SE再生
+            Audio::play(SE_HEART_BEAT, false);
+        }
+
+        // キーが押されアニメーションが再生終わるとカウントを増やす
+        if (isAnime && xAxisSclaeAnime(player_))
+        {
+            ++pushCount_;
+            isAnime = false;
+
+            FADE::getInstance2()->SetAlpha(1.0f - 1.0f / pushMax * pushCount_);
+        }
+
+        // 射撃クールタイム減少
+        shotCoolTimer = (shotCoolTimer > 0) ? --shotCoolTimer : 0;
+    }
+    
 }
+
+// falseを返すbool型(引数bool)関数
+bool returnFalse(bool) { return false; }
 
 void Title::endGame()
 {
@@ -208,9 +239,10 @@ void Title::endGame()
         Audio::fade(BGM_TITLE, 2.0f, 0.0f);
 
         // 画面が暗転したらゲーム終了
-        if (FADE::getInstance()->fadeOut(0.01f))
+        if (FADE::getInstance()->fadeOut(0.025f))
         {
-            exit(0);
+            isGameLoop = returnFalse; // ゲームループ終了
+            return;
         }
     }
 }
@@ -261,18 +293,19 @@ void Title::userHintMove()
     }
 
     // oldTImer_が0ならtimerの値を代入
-    if (!oldTImer_) oldTImer_ = timer_;
+    if (!oldTimer_) oldTimer_ = timer_;
 
     // PLの移動入力チェック
-    if (GameLib::input::TRG(0) & (GameLib::input::PAD_UP | GameLib::input::PAD_DOWN | GameLib::input::PAD_LEFT | GameLib::input::PAD_RIGHT))
+    if ((GameLib::input::TRG(0) & (GameLib::input::PAD_UP | GameLib::input::PAD_DOWN | GameLib::input::PAD_LEFT | GameLib::input::PAD_RIGHT)) ||
+         GameLib::input::getPadState(0)->leftX != 0.0f || GameLib::input::getPadState(0)->leftY != 0.0f)
     {
         isPlayerMove_ = true;
-        oldTImer_ = 0;
+        oldTimer_ = 0;
         return;
     }
 
     // 一定時間立つとヒントを描画
-    if (timer_ - oldTImer_ > 200)
+    if (timer_ - oldTimer_ >= 60)
     {
         if (!userHintMove_)
         {
@@ -280,7 +313,7 @@ void Title::userHintMove()
             pos += {0.0f, -100.0f};
             userHintMove_ = setTitleObj(obj2dManager(), &titleHintMoveObjBehavior, pos);
         }
-        objToul::instance().FadeIn(userHintMove_);
+        objToul::instance().FadeIn(userHintMove_, 0.025f);
     }
 }
 
@@ -302,18 +335,21 @@ void Title::userHintShot()
     }
 
     // oldTImer_が0ならtimerの値を代入
-    if (!oldTImer_) oldTImer_ = timer_;
+    if (!oldTimer_) oldTimer_ = timer_;
 
     // PLの攻撃入力チェック
-    if (GameLib::input::TRG(0) & (GameLib::input::PAD_TRG3))
+    if ((GameLib::input::TRG(0) & GameLib::input::PAD_TRG1 ||
+         GameLib::input::TRG(0) & GameLib::input::PAD_TRG2 ||
+         GameLib::input::TRG(0) & GameLib::input::PAD_TRG3 ||
+         GameLib::input::TRG(0) & GameLib::input::PAD_TRG4) )
     {
         isPlayerShot_ = true;
-        oldTImer_ = 0;
+        oldTimer_ = 0;
         return;
     }
 
     // 一定時間立つとヒントを描画
-    if (timer_ - oldTImer_ > 200)
+    if (timer_ - oldTimer_ > 60)
     {
         if (!userHintShot_)
         {
@@ -321,6 +357,6 @@ void Title::userHintShot()
             pos += {0.0f, -200.0f};
             userHintShot_ = setTitleObj(obj2dManager(), &titleHintShotObjBehavior, pos);
         }
-        objToul::instance().FadeIn(userHintShot_);
+        objToul::instance().FadeIn(userHintShot_, 0.025f);
     }
 }

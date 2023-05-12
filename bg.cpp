@@ -61,12 +61,12 @@ void BG::init()
 void BG::clear()
 {
     // スケールとスプライト画像の設定
-    bg_[0]->transform_->scale_   = bg_[1]->transform_->scale_   = { 1, 1 };
-    bg_[2]->transform_->scale_   = bg_[3]->transform_->scale_   = { 5, 5 };
-    bg_[4]->transform_->scale_   = bg_[5]->transform_->scale_   = { 10, 10 };
-    bg_[6]->transform_->scale_   = bg_[7]->transform_->scale_   = { 50, 50 };
-    bg_[8]->transform_->scale_   = bg_[9]->transform_->scale_   = { 100, 100 };
-    bg_[10]->transform_->scale_  = bg_[11]->transform_->scale_  = { 500, 500 };
+    bg_[0]->transform_->scale_   = bg_[1]->transform_->scale_   = { 10, 10 };
+    bg_[2]->transform_->scale_   = bg_[3]->transform_->scale_   = { 50, 50 };
+    bg_[4]->transform_->scale_   = bg_[5]->transform_->scale_   = { 100, 100 };
+    bg_[6]->transform_->scale_   = bg_[7]->transform_->scale_   = { 500, 500 };
+    bg_[8]->transform_->scale_   = bg_[9]->transform_->scale_   = { 1000, 1000 };
+    bg_[10]->transform_->scale_  = bg_[11]->transform_->scale_  = { 5000, 5000 };
 
     bg_[0]->bgSprNo_   = bg_[1]->bgSprNo_   = bgSprites[bgSprTableIndex_]; ++bgSprTableIndex_;
     bg_[2]->bgSprNo_   = bg_[3]->bgSprNo_   = bgSprites[bgSprTableIndex_]; ++bgSprTableIndex_;

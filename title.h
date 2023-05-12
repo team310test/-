@@ -19,9 +19,9 @@ private:
 	bool isStartPerform_;
 	bool isPlayerMove_;
 	bool isPlayerShot_;
-	int oldTImer_;
+	int oldTimer_;
 
-	int pushCount_;
+	int pushCount_ = 0;
 	//bool is
 public:
 	static Title* instance() { return &instance_; }
@@ -60,7 +60,7 @@ private:
 		, isStartPerform_(true)
 		, isPlayerMove_(false)
 		, isPlayerShot_(false)	
-		, oldTImer_(0)
+		, oldTimer_(0)
 		, pushCount_(0)
 	{
 	}

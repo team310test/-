@@ -19,6 +19,10 @@ public:
     OBJ2D*          playerHeart_;
 
     OBJ2D*          cursor_;
+
+    bool            isStartFirstShrink_; //　タイトルからゲームに入る最初の縮小演出
+
+
     static Game* instance()         { return &instance_; }
 
     OBJ2DManager* obj2dManager()    { return obj2dManager_; }
@@ -43,6 +47,7 @@ private:
         , playerFrame_(nullptr)
         , playerHeart_(nullptr)
         , cursor_(nullptr)
+        , isStartFirstShrink_(false)
     {}
     Game(const Game&) = delete; // = delete コピーコンストラクタが存在しないことを明示
 

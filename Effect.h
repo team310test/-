@@ -31,6 +31,17 @@ protected:
 
 
 //******************************************************************************
+//      EffectBeatBehavior（鼓動エフェクト）
+//******************************************************************************
+class EffectBeatBehavior : public BaseEffectBehavior
+{
+public:
+    EffectBeatBehavior();
+    void update(OBJ2D* obj) const override;
+};
+EXTERN EffectBeatBehavior efcBeatBehavior;
+
+//******************************************************************************
 //      EffectBombBehavior（爆発エフェクト）
 //******************************************************************************
 class EffectBombBehavior : public BaseEffectBehavior

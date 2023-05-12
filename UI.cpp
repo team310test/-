@@ -9,6 +9,8 @@ int   UI::dispMeterShrinkCountMaxTimer_; // Å‘åk¬ƒJƒEƒ“ƒg”‚ğ­‚µ‚ÌŠÔŒ©‚¹‚éƒ^
 float UI::meterFrameAngle_;              // ŒvŠí‚Ì˜g‚ÌŠp“x
 float UI::meterNeedleAngle_;             // ŒvŠí‚Ìj‚ÌŠp“x
 float UI::subMeterNeedleAngle_;          // ŒvŠí‚Ìj‚ÌŠp“x‚ğŒ¸Z
+VECTOR2 UI::meterPos_;
+
 float UI::letterBox_multiplySizeY_;      // ‰f‰æ‚Ì•‘Ñ‚Ìc•(“Áê)
 
 
@@ -22,6 +24,9 @@ void UI::init()
     meterFrameAngle_                = 0.0f;
     meterNeedleAngle_               = 0.0f;
     subMeterNeedleAngle_            = 0.0f;
+
+    meterPos_ = { -850,850 };
+
     letterBox_multiplySizeY_        = 1.0f;
 }
 
@@ -105,7 +110,7 @@ void UI::drawShrinkValueMeter()
         }
 
         // ”š•`‰æ
-        font::textOut(6, ss.str(), pos, scale, color, TEXT_ALIGN::MIDDLE);
+        font::textOut(6, ss.str(), pos + meterPos_, scale, color, TEXT_ALIGN::MIDDLE);
     }
 
 
@@ -152,7 +157,7 @@ void UI::drawShrinkValueMeter()
 
         // ˜g•`‰æ
         texture::begin(sprNo);
-        texture::draw(sprNo, pos, scale, texPos, size, center, angle, color);
+        texture::draw(sprNo, pos + meterPos_, scale, texPos, size, center, angle, color);
         texture::end(sprNo);
     }
 
@@ -218,7 +223,7 @@ void UI::drawShrinkValueMeter()
 
         // j•`‰æ
         texture::begin(sprNo);
-        texture::draw(sprNo, pos, scale, texPos, size, center, angle, color);
+        texture::draw(sprNo, pos + meterPos_, scale, texPos, size, center, angle, color);
         texture::end(sprNo);
     }
 

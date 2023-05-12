@@ -33,12 +33,21 @@ public:
 
     // エフェクト追加
     template <typename T>
-    inline static void addEffect(OBJ2D*& obj, T* behavior, VECTOR2 add = { 0.0f,0.0f }) // objは直接参照
+    inline static void addEffect(
+        OBJ2D*& obj, T* behavior, const VECTOR2& add = { 0.0f,0.0f }) // objは直接参照
+    {
+        addEffect(obj, Game::instance()->obj2dManager(), behavior, add);
+    }
+
+    // エフェクト追加
+    template <typename T>
+    inline static void addEffect(
+        OBJ2D*& obj, OBJ2DManager* obj2dManager, T* behavior, const VECTOR2& add = { 0.0f,0.0f }) // objは直接参照
     {
         const VECTOR2 pos =
         { obj->transform_->position_.x + add.x,obj->transform_->position_.y + add.y };
 
-        OBJ2D* effect = Game::instance()->obj2dManager()->add(
+        OBJ2D* effect = obj2dManager->add(
             new OBJ2D(
                 new Renderer,
                 new Collider,

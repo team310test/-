@@ -66,7 +66,7 @@ namespace
     };
 }
 
-void setPlayer(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos, VECTOR2 scale, bool isDrawShrink, const bool makeOrgPlayer = false)
+void setPlayer(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos, bool isDrawShrink, const bool makeOrgPlayer = false)
 // trueならこのobjをplayer_に代入する
 {
     //const VECTOR2 pos = { 500,500 };
@@ -85,7 +85,6 @@ void setPlayer(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos, VECTOR2 scale, b
     player->actorComponent_->parent_ = player;
 
     player->transform_->position_ = pos;
-    player->renderer_->drawScale_ = scale;
     player->renderer_->isDrawShrink_ = isDrawShrink;
 
     player->actorComponent_->No = ActorComponent::playerNum;
@@ -392,6 +391,7 @@ PlayerCoreBehavior::PlayerCoreBehavior()
     param_.ANIME_WAIT    = animePLayerCore;
 
     param_.SIZE          = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+    param_.SCALE         = { 2.0f,2.0f };
 
     param_.HIT_BOX[0]    = { -PL_CORE_HITBOX, -PL_CORE_HITBOX, PL_CORE_HITBOX,  PL_CORE_HITBOX };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
@@ -525,13 +525,6 @@ void PlayerPartsBehavior::contactToPlCore(OBJ2D* obj, OBJ2D* orgPl) const
     };
 
 
-    //// 最大速度チェックを行う
-    //obj->transform_->velocity_.y = clamp(
-    //    obj->transform_->velocity_.y, -PL_SPEED_MAX, PL_SPEED_MAX
-    //);
-    //obj->transform_->velocity_.x = clamp(
-    //    obj->transform_->velocity_.x, -PL_SPEED_MAX, PL_SPEED_MAX
-    //);
     // 位置更新
     obj->transform_->position_ += obj->transform_->velocity_;
 }

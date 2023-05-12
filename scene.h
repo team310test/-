@@ -12,9 +12,12 @@ protected:
     static VECTOR2 takeOverScale_;          
     static bool takeOverIsDrawShrink_;
 
+    // ゲームループ関数ポインタ
+    bool (*isGameLoop)(bool) = GameLib::gameLoop;
 
 public:
     Scene* execute();   // 実行処理
+    
 
     virtual void init()
     { // 初期化処理

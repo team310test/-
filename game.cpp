@@ -79,6 +79,14 @@ void Game::update()
     //    isPaused_ = !isPaused_;       // 0コンのスタートボタンが押されたらポーズ状態が反転
     //if (isPaused_) return;           // この時点でポーズ中ならリターン
 
+
+#ifdef DEBUG_MODE
+    GameLib::debug::setString("shrinkNum_:%d", stage_->getSrinkNum());
+    GameLib::debug::setString("[1]Key:ShowHitBox");     // 1キーで当たり判定を表示（DEBUG_MODEのみ）
+    GameLib::debug::setString("[2]Key:SlowMode");       // 2キーで疑似的なスローモーションにす（(少し戻しづらい)（DEBUG_MODEのみ）
+    GameLib::debug::setString("[3]Key:KillPlCore");     // 3キーでプレイヤーコア自爆（DEBUG_MODEのみ）
+#endif
+
     switch (state_)
     {
     case 0:
@@ -97,7 +105,7 @@ void Game::update()
         obj2dManager()->init();
 
         // プレイヤーを追加する
-        setPlayer(obj2dManager(), bg(),takeOverPos_,takeOverScale_, takeOverIsDrawShrink_, true); // trueならこのobjをplayer_に代入する
+        setPlayer(obj2dManager(), bg(),takeOverPos_, takeOverIsDrawShrink_, true); // trueならこのobjをplayer_に代入する
 
         //// カーソル追加(仮)
         //setCursor(obj2dManager(), bg());
@@ -106,24 +114,30 @@ void Game::update()
 
         UI::init();
 
-        //// ゲームBGMループ再生
-        Audio::play(BGM_GAME, true);
-        Audio::fade(BGM_GAME, 5.0f, 1.0f);
-
         ++state_;    // 初期化処理の終了
         /*fallthrough*/
     case 1:
         //////// 通常時の処理 ////////
 
-#ifdef DEBUG_MODE
-            GameLib::debug::setString("shrinkNum_:%d",stage_->getSrinkNum());               
-            GameLib::debug::setString("[1]Key:ShowHitBox");     // 1キーで当たり判定を表示（DEBUG_MODEのみ）
-            GameLib::debug::setString("[2]Key:SlowMode");       // 2キーで疑似的なスローモーションにす（(少し戻しづらい)（DEBUG_MODEのみ）
-            GameLib::debug::setString("[3]Key:KillPlCore");     // 3キーでプレイヤーコア自爆（DEBUG_MODEのみ）
-#endif
+        // 始めの縮小開始
+        if (isStartFirstShrink_)
+        {
+            // オブジェクトの更新
+            obj2dManager()->update();
 
-        //if (BasePlayerBehavior::plShrinkCount_ >= BasePlayerBehavior::PL_SHRINK_COUNT_MAX ||
-        //    GameLib::input::TRG(0) & GameLib::input::PAD_TRG3)
+            isStartFirstShrink_ = false; // 一度だけ行うのでこれ以降はfalse
+
+            bg()->BG::setBGShrink();            // 背景の縮小設定
+            Collider::isAllShrink_ = true;      // Shrinkを開始
+
+            // 縮小SE再生
+            Audio::play(SE_SHRINK, false);
+
+            // ゲームBGMループ再生
+            Audio::play(BGM_GAME, true);
+            Audio::fade(BGM_GAME, 5.0f, 1.0f);
+        }
+
         if (BasePlayerBehavior::plShrinkCount_ >= BasePlayerBehavior::plShrinkCountMax_)  // プレイヤーの数がShrinkの必要数に達したら
         {
             if (Collider::isAllShrink_ == false &&  // Shrinkが開始されておらず、
@@ -169,6 +183,8 @@ void Game::update()
             Behavior::shrinkVelocity_               += (-SHRINK_SPEED)    * 0.015f;
             PlayerPartsBehavior::toCoreVelocity_    += (-TO_CORE_SPEED)   * 0.015f;
             BaseEnemyPartsBehavior::toCoreVelocity_ += (-TO_CORE_SPEED)   * 0.015f;
+            UI::meterPos_.x = std::min(0.0f, UI::meterPos_.x + 5.0f);
+            UI::meterPos_.y = std::max(0.0f, UI::meterPos_.y - 5.0f);
             UI::letterBox_multiplySizeY_ = std::max(0.75f, UI::letterBox_multiplySizeY_ + LETTER_BOX_SUB_SPEED); // 0.0fより小さければ0.0fに修正
         }
         else // すべてのobjが縮小していなければ

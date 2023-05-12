@@ -1,6 +1,6 @@
 #pragma once
 
-void setPlayer(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos, VECTOR2 scale,bool isDrawShrink, const bool makeOrgPlayer);
+void setPlayer(OBJ2DManager* obj2dManager, BG* bg, VECTOR2 pos, bool isDrawShrink, const bool makeOrgPlayer);
 //void setCursor(OBJ2DManager* obj2dManager, BG* bg);
 
 

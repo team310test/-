@@ -22,8 +22,7 @@ GameLib::LoadTexture gameLoadTexture[] = {
     // îwåi
     { GAME_TEXNO::BG01, L"./Data/Images/BackGround/BackGround01.png",   1U },
     { GAME_TEXNO::BG02, L"./Data/Images/BackGround/BackGround02.png",   1U },
-    //{ GAME_TEXNO::BG03, L"./Data/Images/BackGround/BackGround03.png",   1U },
-    { GAME_TEXNO::BG03, L"./Data/Images/BackGround/BackGround06.png",   1U },
+    { GAME_TEXNO::BG03, L"./Data/Images/BackGround/BackGround03.png",   1U },
     { GAME_TEXNO::BG04, L"./Data/Images/BackGround/BackGround01.png",   1U },
     { GAME_TEXNO::BG05, L"./Data/Images/BackGround/BackGround04.png",   1U },
     { GAME_TEXNO::BG06, L"./Data/Images/BackGround/BackGround02.png",   1U },

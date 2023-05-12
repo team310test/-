@@ -15,7 +15,7 @@ Scene* Scene::execute()
     init();
 
     // ゲームループ
-    while (GameLib::gameLoop(false))    // falseをtrueにするとタイトルバーにフレームレート表示
+    while (isGameLoop(false))    // falseをtrueにするとタイトルバーにフレームレート表示
     {
         // 入力処理
         input::update();
