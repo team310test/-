@@ -78,6 +78,22 @@ public:
 };
 EXTERN DropTrash01Behavior dropTrash01Behavior;
 
+// Trash02
+class DropTrash02Behavior : public BaseDropPartsBehavior
+{
+public:
+    DropTrash02Behavior();
+};
+EXTERN DropTrash02Behavior dropTrash02Behavior;
+
+// Trash03
+class DropTrash03Behavior : public BaseDropPartsBehavior
+{
+public:
+    DropTrash03Behavior();
+};
+EXTERN DropTrash03Behavior dropTrash03Behavior;
+
 
 //******************************************************************************
 // 

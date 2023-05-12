@@ -35,6 +35,16 @@ namespace
     GameLib::AnimeData animeTrash01[] = {
         { &sprPartsTrash01, 10 },
         { nullptr, -1 },// 終了フラグ
+    };    
+    //  ゴミ02
+    GameLib::AnimeData animeTrash02[] = {
+        { &sprPartsTrash02, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };     
+    //  ゴミ02
+    GameLib::AnimeData animeTrash03[] = {
+        { &sprPartsTrash03, 10 },
+        { nullptr, -1 },// 終了フラグ
     };
 
     // コモン01
@@ -641,6 +651,8 @@ void PlayerBuff01Behavior::hit(OBJ2D*, OBJ2D* dst) const
 //      Trash(ゴミパーツ)
 // 
 //******************************************************************************
+
+// Trash01
 PlayerTrash01Behavior::PlayerTrash01Behavior()
 {
     param_.ANIME_WAIT    = animeTrash01;
@@ -654,6 +666,38 @@ PlayerTrash01Behavior::PlayerTrash01Behavior()
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
     param_.ATTACK_POWER  = PL_TRASH01_ATK;
+}
+
+// Trash02
+PlayerTrash02Behavior::PlayerTrash02Behavior()
+{
+    param_.ANIME_WAIT    = animeTrash02;
+
+    param_.SIZE          = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+
+    param_.HIT_BOX[0]    = {
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.5f,
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.5f
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    param_.ATTACK_POWER  = PL_TRASH02_ATK;
+}
+
+// Trash03
+PlayerTrash03Behavior::PlayerTrash03Behavior()
+{
+    param_.ANIME_WAIT    = animeTrash03;
+
+    param_.SIZE          = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+
+    param_.HIT_BOX[0]    = {
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.5f,
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.5f
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    param_.ATTACK_POWER  = PL_TRASH03_ATK;
 }
 
 
@@ -682,7 +726,7 @@ PlayerCommon01Behavior::PlayerCommon01Behavior()
 // Common01_2(90度回転)
 PlayerCommon01_2Behavior::PlayerCommon01_2Behavior()
 {
-    param_.ANIME_WAIT    = animeCommon01;
+    //param_.ANIME_WAIT    = animeCommon01;
 
     param_.SIZE          = { PARTS_OBJ_SIZE, COMMON_SIZE_36 };
 
@@ -772,10 +816,11 @@ PlayerCommon03_2Behavior::PlayerCommon03_2Behavior()
 
 void ErasePlayer::erase(OBJ2D* obj) const
 {
-    ActorComponent* a = obj->actorComponent_;
-
     // behaviorがなければreturn
     if (!obj->behavior_) return;
+
+    ActorComponent* a = obj->actorComponent_;
+
 
     // HPが0以下になるか、GameOverなら
     if (!a->isAlive() || Game::instance()->isGameOver())
@@ -808,18 +853,6 @@ void ErasePlayer::erase(OBJ2D* obj) const
         return;
     }
 
-#ifdef DEBUG_MODE
-    if (GetAsyncKeyState('3') & 1)
-    {
-        // プレイヤーパーツの親を消去
-        if (obj != Game::instance()->player_) obj->actorComponent_->parent_ = nullptr;
-
-        // 縮小カウント減少
-        BasePlayerBehavior::plShrinkCount_ = std::max(
-            0, BasePlayerBehavior::plShrinkCount_ - 1
-        );
-    }
-#endif
 
     // 親が存在しなければ
     if (!a->parent_)

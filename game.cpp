@@ -119,8 +119,7 @@ void Game::update()
             GameLib::debug::setString("shrinkNum_:%d",stage_->getSrinkNum());               
             GameLib::debug::setString("[1]Key:ShowHitBox");     // 1キーで当たり判定を表示（DEBUG_MODEのみ）
             GameLib::debug::setString("[2]Key:SlowMode");       // 2キーで疑似的なスローモーションにす（(少し戻しづらい)（DEBUG_MODEのみ）
-            GameLib::debug::setString("[3]Key:KillAllPlParts"); // 3キーでPLパーツ全破壊（DEBUG_MODEのみ）
-            GameLib::debug::setString("[4]Key:KillPlCore");     // 4キーでプレイヤーコア自爆（DEBUG_MODEのみ）
+            GameLib::debug::setString("[3]Key:KillPlCore");     // 3キーでプレイヤーコア自爆（DEBUG_MODEのみ）
 #endif
 
         //if (BasePlayerBehavior::plShrinkCount_ >= BasePlayerBehavior::PL_SHRINK_COUNT_MAX ||
@@ -184,8 +183,8 @@ void Game::update()
         }
 
 #ifdef DEBUG_MODE
-        // 4キーでプレイヤーコア自爆
-        if (GetAsyncKeyState('4') & 1) player_->actorComponent_->hp_ = 0;
+        // 3キーでプレイヤーコア自爆
+        if (GetAsyncKeyState('3') & 1) player_->actorComponent_->hp_ = 0;
 #endif
 
 

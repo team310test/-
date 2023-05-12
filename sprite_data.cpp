@@ -10,7 +10,7 @@ GameLib::LoadTexture titleLoadTexture[] = {
     { TITLE_TEXNO::TITLE_FRAME,     L"./Data/Images/Core/Core_Frame.png",   1U }, // プレイヤーコアの枠
                                                                                    
     { TITLE_TEXNO::TITLE_LOGO,      L"./Data/Images/UI/title_logo.png",     1U }, // ロゴ
-    { TITLE_TEXNO::TITLE_TRASH_BOX, L"./Data/Images/UI/Title_TrashBox.png",    1U }, // ゴミ箱 
+    { TITLE_TEXNO::TITLE_TRASH_BOX, L"./Data/Images/UI/Title_TrashBox.png", 1U }, // ゴミ箱 
     { TITLE_TEXNO::TITLE_USER01,    L"./Data/Images/UI/title_user01.png",   1U }, // 操作方法
     { TITLE_TEXNO::TITLE_USER02,    L"./Data/Images/UI/title_user02.png",   1U }, // 操作方法
     
@@ -22,10 +22,14 @@ GameLib::LoadTexture gameLoadTexture[] = {
     // 背景
     { GAME_TEXNO::BG01, L"./Data/Images/BackGround/BackGround01.png",   1U },
     { GAME_TEXNO::BG02, L"./Data/Images/BackGround/BackGround02.png",   1U },
-    { GAME_TEXNO::BG03, L"./Data/Images/BackGround/BackGround01.png",   1U },
-    { GAME_TEXNO::BG04, L"./Data/Images/BackGround/BackGround02.png",   1U },
-    { GAME_TEXNO::BG05, L"./Data/Images/BackGround/BackGround01.png",   1U },
+    //{ GAME_TEXNO::BG03, L"./Data/Images/BackGround/BackGround03.png",   1U },
+    { GAME_TEXNO::BG03, L"./Data/Images/BackGround/BackGround06.png",   1U },
+    { GAME_TEXNO::BG04, L"./Data/Images/BackGround/BackGround01.png",   1U },
+    { GAME_TEXNO::BG05, L"./Data/Images/BackGround/BackGround04.png",   1U },
     { GAME_TEXNO::BG06, L"./Data/Images/BackGround/BackGround02.png",   1U },
+    { GAME_TEXNO::BG07, L"./Data/Images/BackGround/BackGround05(未完成).png",   1U },
+    { GAME_TEXNO::BG08, L"./Data/Images/BackGround/BackGround01.png",   1U },
+    { GAME_TEXNO::BG09, L"./Data/Images/BackGround/BackGround06.png",   1U },
 
     // UI
     { GAME_TEXNO::UI_METER_FRAME,    L"./Data/Images/UI/Meter_Frame.png",   1U },   // 計器の枠
@@ -47,6 +51,8 @@ GameLib::LoadTexture gameLoadTexture[] = {
     { GAME_TEXNO::BUFF01,    L"./Data/Images/Parts/Buff/Buff01.png",     1U },
     // ごみパーツ
     { GAME_TEXNO::TRASH01,   L"./Data/Images/Parts/Trash/Trash01.png",   1U },
+    { GAME_TEXNO::TRASH02,   L"./Data/Images/Parts/Trash/Trash02.png",   1U },
+    { GAME_TEXNO::TRASH03,   L"./Data/Images/Parts/Trash/Trash03.png",   1U },
 
     // コモンパーツ(効果なしパーツ)
     { GAME_TEXNO::COMMON01,   L"./Data/Images/Parts/Common/Steel_Frame01.png",   1U },
@@ -78,8 +84,10 @@ GameLib::SpriteData sprTitlePlayerCore  = SPRITE_CENTER(TITLE_TEXNO::TITLE_PLAYE
 GameLib::SpriteData sprTitleCoreHeart   = SPRITE_CENTER(TITLE_TEXNO::TITLE_HEART,     0, 0, 128, 128);
 GameLib::SpriteData sprTitleCoreFrame   = SPRITE_CENTER(TITLE_TEXNO::TITLE_FRAME,     0, 0, 128, 128);
 GameLib::SpriteData sprTitleLogo        = SPRITE_CENTER(TITLE_TEXNO::TITLE_LOGO,      0, 0, 640, 128);
+
 GameLib::SpriteData sprTitleTrashBox01  = SPRITE_CENTER(TITLE_TEXNO::TITLE_TRASH_BOX, (128 * 0), 0, 128, 128);
 GameLib::SpriteData sprTitleTrashBox02  = SPRITE_CENTER(TITLE_TEXNO::TITLE_TRASH_BOX, (128 * 1), 0, 128, 128);
+
 GameLib::SpriteData sprTitleUser01      = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER01,    0, 0, 640, 128);
 GameLib::SpriteData sprTitleUser02      = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER02,    0, 0, 128, 128);
 
@@ -97,9 +105,14 @@ GameLib::SpriteData sprPartsTurret01    = SPRITE_CENTER(GAME_TEXNO::TURRET01, 0,
 GameLib::SpriteData sprPartsTurret02    = SPRITE_CENTER(GAME_TEXNO::TURRET02, 0, 0, 128, 128);
 GameLib::SpriteData sprPartsTurret03    = SPRITE_CENTER(GAME_TEXNO::TURRET03, 0, 0, 128, 128);
 GameLib::SpriteData sprPartsTurret04    = SPRITE_CENTER(GAME_TEXNO::TURRET04, 0, 0, 128, 128);
+
 GameLib::SpriteData sprPartsShield01    = SPRITE_CENTER(GAME_TEXNO::SHIELD01, 0, 0, 128, 128);
 GameLib::SpriteData sprPartsBuff01      = SPRITE_CENTER(GAME_TEXNO::BUFF01,   0, 0, 250, 250);
+
 GameLib::SpriteData sprPartsTrash01     = SPRITE_CENTER(GAME_TEXNO::TRASH01,  0, 0, 128, 128);
+GameLib::SpriteData sprPartsTrash02     = SPRITE_CENTER(GAME_TEXNO::TRASH02,  0, 0, 128, 128);
+GameLib::SpriteData sprPartsTrash03     = SPRITE_CENTER(GAME_TEXNO::TRASH03,  0, 0, 128, 128);
+
 GameLib::SpriteData sprPartsCommon01    = SPRITE_CENTER(GAME_TEXNO::COMMON01, 0, 0, 128, 128);
 GameLib::SpriteData sprPartsCommon02    = SPRITE_CENTER(GAME_TEXNO::COMMON02, 0, 0, 128, 128);
 GameLib::SpriteData sprPartsCommon03    = SPRITE_CENTER(GAME_TEXNO::COMMON03, 0, 0, 128, 128);

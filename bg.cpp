@@ -5,14 +5,17 @@ int   BG::bgSprTableIndex_      = 0;    // ”wŒiƒe[ƒuƒ‹”z—ñ‚ÌŒ»Ý‚Ì—v‘f”
 int   BG::isAddbgSprTableIndex_ = 1;    // bgSprTableIndex_‚ð‰ÁŽZ‚·‚é‚©Œˆ‚ß‚é
 
 
-// ”wŒiƒe[ƒuƒ‹”z—ñ
-const int bgSprTable[] = {
+// ”wŒi”z—ñ
+const int bgSprites[] = {
     GAME_TEXNO::BG01,
     GAME_TEXNO::BG02,
     GAME_TEXNO::BG03,
     GAME_TEXNO::BG04,
     GAME_TEXNO::BG05,
     GAME_TEXNO::BG06,
+    GAME_TEXNO::BG07,
+    GAME_TEXNO::BG08,
+    GAME_TEXNO::BG09,
     GAME_TEXNO::BG_END,
 };
 
@@ -65,12 +68,12 @@ void BG::clear()
     bg_[8]->transform_->scale_   = bg_[9]->transform_->scale_   = { 100, 100 };
     bg_[10]->transform_->scale_  = bg_[11]->transform_->scale_  = { 500, 500 };
 
-    bg_[0]->bgSprNo_   = bg_[1]->bgSprNo_   = bgSprTable[bgSprTableIndex_]; ++bgSprTableIndex_;
-    bg_[2]->bgSprNo_   = bg_[3]->bgSprNo_   = bgSprTable[bgSprTableIndex_]; ++bgSprTableIndex_;
-    bg_[4]->bgSprNo_   = bg_[5]->bgSprNo_   = bgSprTable[bgSprTableIndex_]; ++bgSprTableIndex_;
-    bg_[6]->bgSprNo_   = bg_[7]->bgSprNo_   = bgSprTable[bgSprTableIndex_]; ++bgSprTableIndex_;
-    bg_[8]->bgSprNo_   = bg_[9]->bgSprNo_   = bgSprTable[bgSprTableIndex_]; ++bgSprTableIndex_;
-    bg_[10]->bgSprNo_  = bg_[11]->bgSprNo_  = bgSprTable[bgSprTableIndex_]; ++bgSprTableIndex_;
+    bg_[0]->bgSprNo_   = bg_[1]->bgSprNo_   = bgSprites[bgSprTableIndex_]; ++bgSprTableIndex_;
+    bg_[2]->bgSprNo_   = bg_[3]->bgSprNo_   = bgSprites[bgSprTableIndex_]; ++bgSprTableIndex_;
+    bg_[4]->bgSprNo_   = bg_[5]->bgSprNo_   = bgSprites[bgSprTableIndex_]; ++bgSprTableIndex_;
+    bg_[6]->bgSprNo_   = bg_[7]->bgSprNo_   = bgSprites[bgSprTableIndex_]; ++bgSprTableIndex_;
+    bg_[8]->bgSprNo_   = bg_[9]->bgSprNo_   = bgSprites[bgSprTableIndex_]; ++bgSprTableIndex_;
+    bg_[10]->bgSprNo_  = bg_[11]->bgSprNo_  = bgSprites[bgSprTableIndex_]; ++bgSprTableIndex_;
 
 
     int bgSetPosXNum = 1; // ƒXƒNƒ[ƒ‹‚Ì‰E¶”z’uÝ’è—p
@@ -83,7 +86,7 @@ void BG::clear()
         Renderer*  r = bg->renderer_;
 
         c->targetScale_ = t->scale_;         // ƒXƒP[ƒ‹
-        c->size_        = { 3840, 1080 };    // ‰æ‘œƒTƒCƒY
+        c->size_        = { 3840, 1080 + 256 };    // ‰æ‘œƒTƒCƒY
 
         t->position_.x  = (bgSetPosXNum % 2 == 0) ? c->size_.x : 0.0f; // 2‚ÅŠ„‚ê‚½‚çƒXƒNƒ[ƒ‹‚Ì‰E‘¤’S“–‚É‚·‚é
         t->position_.y  = bg->bg_->WINDOW_H * 0.5f;             // y‚¾‚¯^‚ñ’†‚ÉÝ’èiŒ©‰h‚¦j
@@ -211,8 +214,8 @@ void BG::setBGShrink()
         if( (t->scale_.x >= 0.01f && t->scale_.x <= 0.011f) || t->scale_.x == 0.05f)
         {
             // ”wŒi‚ªÅŒã‚Ì”wŒi‚È‚ç‚»‚Ì‚Ü‚ÜA‚»‚¤‚Å‚È‚¯‚ê‚ÎŽŸ‚Ì”wŒi‚É‚·‚é
-            bg->bgSprNo_ = (bgSprTable[bgSprTableIndex_] < BG_END)
-                         ? bgSprTable[bgSprTableIndex_]
+            bg->bgSprNo_ = (bgSprites[bgSprTableIndex_] < BG_END)
+                         ? bgSprites[bgSprTableIndex_]
                          : bg->bgSprNo_;
             if (isAddbgSprTableIndex_ % 2 == 0) ++bgSprTableIndex_;
             ++isAddbgSprTableIndex_;

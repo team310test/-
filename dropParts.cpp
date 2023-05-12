@@ -25,6 +25,16 @@ namespace
     GameLib::AnimeData animeTrash01[] = {
         { &sprPartsTrash01, 10 },
         { nullptr, -1 },// 終了フラグ
+    };    
+    //  ゴミ02
+    GameLib::AnimeData animeTrash02[] = {
+        { &sprPartsTrash02, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };    
+    //  ゴミ03
+    GameLib::AnimeData animeTrash03[] = {
+        { &sprPartsTrash03, 10 },
+        { nullptr, -1 },// 終了フラグ
     };
 
     // コモン01
@@ -161,6 +171,8 @@ DropBuff01Behavior::DropBuff01Behavior()
 //      Trash(ゴミパーツ)
 // 
 //******************************************************************************
+
+// Trash01
 DropTrash01Behavior::DropTrash01Behavior()
 {
     // アニメーション
@@ -180,6 +192,45 @@ DropTrash01Behavior::DropTrash01Behavior()
     param_.NEXT_HP       = DROP_TRASH01_NEXT_HP;
 }
 
+// Trash02
+DropTrash02Behavior::DropTrash02Behavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT    = animeTrash02;
+
+    param_.SIZE          = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+    param_.HIT_BOX[0]    = {
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.5f,
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.5f,
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    // 次のbehavior・eraser（プレイヤー）
+    param_.NEXT_BEHAVIOR = &playerTrash02Behavior;
+    param_.NEXT_ERASER   = &erasePlayer;
+
+    param_.NEXT_HP       = DROP_TRASH02_NEXT_HP;
+}
+
+// Trash03
+DropTrash03Behavior::DropTrash03Behavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT    = animeTrash03;
+
+    param_.SIZE          = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+    param_.HIT_BOX[0]    = {
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.5f,
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.5f,
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    // 次のbehavior・eraser（プレイヤー）
+    param_.NEXT_BEHAVIOR = &playerTrash03Behavior;
+    param_.NEXT_ERASER   = &erasePlayer;
+
+    param_.NEXT_HP       = DROP_TRASH03_NEXT_HP;
+}
 
 //******************************************************************************
 // 
@@ -368,7 +419,7 @@ void DROP_PARTS_UPDATE(OBJ2D* obj)
 {
     Transform* t = obj->transform_;
     
-    t->velocity_.x = DROP_PARTS_SPEEDX;
+    t->velocity_.x = DROP_PARTS_SPEED_X;
     t->velocity_.y = 0;
     t->position_ += t->velocity_;
 }

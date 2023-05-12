@@ -640,6 +640,12 @@ EnemyCommon06Behavior::EnemyCommon06Behavior()
 //      erase（消去）
 //
 //******************************************************************************
+Behavior* trashbahavior[] = {
+    &dropTrash01Behavior,
+    &dropTrash02Behavior,
+    //&dropTrash03Behavior,
+};
+
 void EraseEnemy::erase(OBJ2D* obj) const
 {
     // behaviorがなければreturn
@@ -687,7 +693,7 @@ void EraseEnemy::erase(OBJ2D* obj) const
             a->orgParent_  = nullptr;           // 元の親をリセット
 
             // 次のbehavior・eraser（ドロップごみアイテム）を代入
-            obj->behavior_ = &dropTrash01Behavior;
+            obj->behavior_ = trashbahavior[rand() % 2];
             obj->eraser_   = &eraseDropParts;         
             obj->update_   = DROP_PARTS_UPDATE; // updateを変更
 

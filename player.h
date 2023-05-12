@@ -123,6 +123,22 @@ public:
 };
 EXTERN PlayerTrash01Behavior playerTrash01Behavior;
 
+// Trash02
+class PlayerTrash02Behavior : public PlayerPartsBehavior
+{
+public:
+    PlayerTrash02Behavior();
+};
+EXTERN PlayerTrash02Behavior playerTrash02Behavior;
+
+// Trash03
+class PlayerTrash03Behavior : public PlayerPartsBehavior
+{
+public:
+    PlayerTrash03Behavior();
+};
+EXTERN PlayerTrash03Behavior playerTrash03Behavior;
+
 
 //******************************************************************************
 // 

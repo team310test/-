@@ -78,6 +78,8 @@ namespace
             #define PL_BUFF01_ATK       (0)     // 攻撃力(体当たりダメージ)
                                                 
             #define PL_TRASH01_ATK      (1)     // 攻撃力(体当たりダメージ)
+            #define PL_TRASH02_ATK      (1)     // 攻撃力(体当たりダメージ)
+            #define PL_TRASH03_ATK      (1)     // 攻撃力(体当たりダメージ)
                                                 
             #define PL_COMMON01_ATK     (1)     // 攻撃力(体当たりダメージ)
             #define PL_COMMON02_ATK     (1)     // 攻撃力(体当たりダメージ)
@@ -160,7 +162,7 @@ namespace
 // ドロップパーツ関係のパラメータ
 namespace
 {
-    #define DROP_PARTS_SPEEDX (-2.0f)           // X速度
+    #define DROP_PARTS_SPEED_X (-2.0f)           // X速度
 
     // プレイヤーになるときの各体力
     namespace
@@ -169,6 +171,8 @@ namespace
         #define DROP_SHIELD01_NEXT_HP   (15)    // プレイヤーになるときの体力
         #define DROP_BUFF01_NEXT_HP     (1)     // プレイヤーになるときの体力
         #define DROP_TRASH01_NEXT_HP    (3)     // プレイヤーになるときの体力
+        #define DROP_TRASH02_NEXT_HP    (3)     // プレイヤーになるときの体力
+        #define DROP_TRASH03_NEXT_HP    (3)     // プレイヤーになるときの体力
                                                 
         #define DROP_COMMON01_NEXT_HP   (3)     // プレイヤーになるときの体力                                          
         #define DROP_COMMON02_NEXT_HP   (3)     // プレイヤーになるときの体力
