@@ -13,8 +13,11 @@ enum TITLE_TEXNO
 
     TITLE_LOGO,         // ロゴ
     TITLE_TRASH_BOX,    // ゴミ箱
-    TITLE_USER01,       // 操作方法
-    TITLE_USER02,       // 操作方法
+    TITLE_USER_MOVE,    // 操作方法WASD→←↓→
+    TITLE_USER_SPACE,   // 操作方法Space
+
+    TITLE_TEXT_START,        // Start
+    TITLE_TEXT_EXIT,         // Exit
 };
 
 // ゲーム
@@ -83,8 +86,8 @@ extern GameLib::SpriteData sprTitleCoreHeart;
 extern GameLib::SpriteData sprTitleLogo;
 extern GameLib::SpriteData sprTitleTrashBox01;
 extern GameLib::SpriteData sprTitleTrashBox02;
-extern GameLib::SpriteData sprTitleUser01;
-extern GameLib::SpriteData sprTitleUser02;
+extern GameLib::SpriteData sprTitleUserMove;
+extern GameLib::SpriteData sprTitleUserSpace;
 
 
 ///////////// ゲーム ////////////////////////////////////////////////

@@ -5,14 +5,17 @@
 
 // タイトル画像データ
 GameLib::LoadTexture titleLoadTexture[] = {
-    { TITLE_TEXNO::TITLE_PLAYER,    L"./Data/Images/Core/PlayerCore01.png", 1U }, // プレイヤーコア
-    { TITLE_TEXNO::TITLE_HEART,     L"./Data/Images/Core/Core_Heart.png",   1U }, // プレイヤーコアのハート
-    { TITLE_TEXNO::TITLE_FRAME,     L"./Data/Images/Core/Core_Frame.png",   1U }, // プレイヤーコアの枠
-                                                                                   
-    { TITLE_TEXNO::TITLE_LOGO,      L"./Data/Images/UI/title_logo.png",     1U }, // ロゴ
-    { TITLE_TEXNO::TITLE_TRASH_BOX, L"./Data/Images/UI/Title_TrashBox.png", 1U }, // ゴミ箱 
-    { TITLE_TEXNO::TITLE_USER01,    L"./Data/Images/UI/title_user01.png",   1U }, // 操作方法
-    { TITLE_TEXNO::TITLE_USER02,    L"./Data/Images/UI/title_user02.png",   1U }, // 操作方法
+    { TITLE_TEXNO::TITLE_PLAYER,     L"./Data/Images/Core/PlayerCore01.png",   1U }, // プレイヤーコア
+    { TITLE_TEXNO::TITLE_HEART,      L"./Data/Images/Core/Core_Heart.png",     1U }, // プレイヤーコアのハート
+    { TITLE_TEXNO::TITLE_FRAME,      L"./Data/Images/Core/Core_Frame.png",     1U }, // プレイヤーコアの枠
+                                                                                     
+    { TITLE_TEXNO::TITLE_LOGO,       L"./Data/Images/UI/title_logo.png",       1U }, // ロゴ
+    { TITLE_TEXNO::TITLE_TRASH_BOX,  L"./Data/Images/UI/Title_TrashBox.png",   1U }, // ゴミ箱 
+    { TITLE_TEXNO::TITLE_USER_MOVE,  L"./Data/Images/UI/Title_User_Move.png",  1U }, // 操作方法WASD→←↓→
+    { TITLE_TEXNO::TITLE_USER_SPACE, L"./Data/Images/UI/Title_User_Space.png", 1U }, // 操作方法Space
+
+    { TITLE_TEXNO::TITLE_TEXT_START, L"./Data/Images/UI/Title_Text_Start.png", 1U }, // Start
+    { TITLE_TEXNO::TITLE_TEXT_EXIT,  L"./Data/Images/UI/Title_Text_Exit.png",  1U }, // Exit
     
     { -1, nullptr }	// 終了フラグ
 };
@@ -87,8 +90,8 @@ GameLib::SpriteData sprTitleLogo        = SPRITE_CENTER(TITLE_TEXNO::TITLE_LOGO,
 GameLib::SpriteData sprTitleTrashBox01  = SPRITE_CENTER(TITLE_TEXNO::TITLE_TRASH_BOX, (128 * 0), 0, 128, 128);
 GameLib::SpriteData sprTitleTrashBox02  = SPRITE_CENTER(TITLE_TEXNO::TITLE_TRASH_BOX, (128 * 1), 0, 128, 128);
 
-GameLib::SpriteData sprTitleUser01      = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER01,    0, 0, 640, 128);
-GameLib::SpriteData sprTitleUser02      = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER02,    0, 0, 128, 128);
+GameLib::SpriteData sprTitleUserMove    = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER_MOVE,  0, 0, 512, 128);
+GameLib::SpriteData sprTitleUserSpace   = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER_SPACE, 0, 0, 384, 128);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 

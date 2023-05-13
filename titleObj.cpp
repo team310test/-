@@ -114,19 +114,27 @@ void TitleStartObjBehavior::update(OBJ2D* obj) const
 {
     if (!Title::instance()->player()) return;
 
-    const VECTOR2 plPos = Title::instance()->player()->transform_->position_;
+    const OBJ2D*  pl    = Title::instance()->player();
+    const VECTOR2 plPos = pl->transform_->position_;
     const VECTOR2 pos   = obj->transform_->position_;
     Renderer* r = obj->renderer_;
 
     // プレイヤーがプレイヤーフレームに近づいたら太らせる
     if (plPos.x >= pos.x - 250 && plPos.x <= pos.x + 250 &&
-        plPos.y >= pos.y - 250 && plPos.y <= pos.y + 250)
+        plPos.y >= pos.y - 250 && plPos.y <= pos.y + 250 )
     {
         r->drawScale_ = { 2.25f,2.25f };
+
+        // Startテキスト表示(プレイヤーのupdateがなくなっていれば非表示)
+        if (pl->update_) Title::instance()->isDispTextStart_ = true;
+        else             Title::instance()->isDispTextStart_ = false;
     }
     else
     {
         r->drawScale_ = { 2.0f,2.0f };
+
+        // Startテキスト非表示
+        Title::instance()->isDispTextStart_ = false;
     }
 }
 
@@ -172,11 +180,17 @@ void TitleEndObjBehavior::update(OBJ2D* obj) const
     {
         r->data_      = &sprTitleTrashBox02;
         r->drawScale_ = { 2.25f,2.25f };
+
+        // Exitテキスト表示
+        Title::instance()->isDispTextExit_ = true;
     }
     else 
     {
         r->data_      = &sprTitleTrashBox01;
         r->drawScale_ = { 2.0f,2.0f };
+
+        // Exitテキスト非表示
+        Title::instance()->isDispTextExit_ = false;
     }
 }
 
@@ -194,10 +208,12 @@ void TitleLogoObjBehavior::init(OBJ2D* obj) const
     obj->collider_->isDrawHitRect_ = false;
     obj->collider_->isDrawAttackRect_ = false;
 }
+
+
 // 操作説明[移動]
 TitleHintMoveObjBehavior::TitleHintMoveObjBehavior()
 {
-    param_.SPR_DATA = &sprTitleUser01;
+    param_.SPR_DATA = &sprTitleUserMove;
 }
 
 void TitleHintMoveObjBehavior::init(OBJ2D* obj) const
@@ -207,10 +223,13 @@ void TitleHintMoveObjBehavior::init(OBJ2D* obj) const
     obj->collider_->isDrawHitRect_ = false;
     obj->collider_->isDrawAttackRect_ = false;
 }
+
+
 // 操作説明[攻撃]
 TitleHintShotObjBehavior::TitleHintShotObjBehavior()
 {
-    param_.SPR_DATA = &sprTitleUser02;
+    param_.SPR_DATA = &sprTitleUserSpace;
+    param_.SCALE    = { 0.75f, 0.75f };
 }
 
 void TitleHintShotObjBehavior::init(OBJ2D* obj) const
@@ -229,7 +248,7 @@ void TitleHintShotObjBehavior::init(OBJ2D* obj) const
 //******************************************************************************
 OBJ2D* setTitlePlayer(OBJ2DManager* obj2dManager, BG* bg)
 {
-    const VECTOR2 pos = { BG::WINDOW_W * 0.5f,-250.0f };
+    const VECTOR2 pos = { BG::WINDOW_W * 0.5f - 215.0f,-250.0f };
 
     OBJ2D* player = new OBJ2D(
         new Renderer,
@@ -264,6 +283,9 @@ TitlePlayerCoreHeartBehavior::TitlePlayerCoreHeartBehavior()
 
 void TitlePlayerCoreHeartBehavior::areaCheck(OBJ2D* obj) const
 {
+    // ハートが落ちる演出中はエリアチェックを飛ばす
+    if (!Title::instance()->startPerform()) return;
+
     Transform* t = obj->transform_;
     //Collider*  c = obj->collider_;
 

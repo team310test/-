@@ -269,8 +269,8 @@ namespace
     // ‰f‰æ‚Ì•‘Ñ(LetterBox)
     namespace
     {
-        #define LETTER_BOX_ADD_SPEED    (0.015f)   // ‰ÁZ(•‘Ñ‚ªã‚ª‚é‘¬“x)					 
-        #define LETTER_BOX_SUB_SPEED    (-0.005f)  // Œ¸Z(•‘Ñ‚ª~‚è‚é‘¬“x)				   	 
+        #define LETTER_BOX_ADD_SPEED    (0.02f)   // ‰ÁZ(•‘Ñ‚ªã‚ª‚é‘¬“x)					 
+        #define LETTER_BOX_SUB_SPEED    (-0.01f)  // Œ¸Z(•‘Ñ‚ª~‚è‚é‘¬“x)				   	 
     }
 
 }

@@ -202,7 +202,7 @@ void TITLE_PLAYER_UPDATE(OBJ2D* obj)
         if (t->position_.y > floor) t->position_.y = floor;
 
         // バウンド
-        t->velocity_.y = -t->velocity_.y * 0.5f;
+        t->velocity_.y = -t->velocity_.y * 0.4f;
 
         // バウンド力が一定以下になったら
         if (t->velocity_.y >= -10)

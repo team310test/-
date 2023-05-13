@@ -263,7 +263,7 @@ void UI::drawLetterBox()
         size    = { BG::WINDOW_W, BG::WINDOW_H };
         center  = {};
         angle   = 0;
-        color   = { 0, 0, 0, 0.7f };
+        color   = { 0, 0, 0, 0.8f };
 
         GameLib::primitive::rect(pos, size, center, angle, color);
     }

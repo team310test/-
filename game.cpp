@@ -185,7 +185,7 @@ void Game::update()
             BaseEnemyPartsBehavior::toCoreVelocity_ += (-TO_CORE_SPEED)   * 0.015f;
             UI::meterPos_.x = std::min(0.0f, UI::meterPos_.x + 5.0f);
             UI::meterPos_.y = std::max(0.0f, UI::meterPos_.y - 5.0f);
-            UI::letterBox_multiplySizeY_ = std::max(0.75f, UI::letterBox_multiplySizeY_ + LETTER_BOX_SUB_SPEED); // 0.0fより小さければ0.0fに修正
+            UI::letterBox_multiplySizeY_ = std::max(0.7f, UI::letterBox_multiplySizeY_ + LETTER_BOX_SUB_SPEED); // 0.0fより小さければ0.0fに修正
         }
         else // すべてのobjが縮小していなければ
         {
@@ -203,16 +203,17 @@ void Game::update()
         if (GetAsyncKeyState('3') & 1) player_->actorComponent_->hp_ = 0;
 #endif
 
+        bg()->update();   // BGの更新
+
+        judge();
+
 
         // ゲームオーバーの処理
         if (isGameOver())
         {
             gameOverProc();
+            break;
         }
-
-        bg()->update();   // BGの更新
-
-        judge();
 
         ++timer_;
         break;

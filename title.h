@@ -23,6 +23,13 @@ private:
 
 	int pushCount_ = 0;
 	//bool is
+
+public:
+	bool isDispTextStart_;		// Startテキストを表示させるか
+	bool isDispTextExit_;		// Exitテキストを表示させるか
+	float textStartColorAlpha_; // Start不透明度
+	float textExitColorAlpha_;  // Exit不透明度
+			  
 public:
 	static Title* instance() { return &instance_; }
 
@@ -62,6 +69,10 @@ private:
 		, isPlayerShot_(false)	
 		, oldTimer_(0)
 		, pushCount_(0)
+		, isDispTextStart_(false)
+		, isDispTextExit_(false)
+		, textStartColorAlpha_(0.0f)
+		, textExitColorAlpha_(0.0f)
 	{
 	}
 	Title(const Title&) = delete;

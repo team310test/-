@@ -28,6 +28,12 @@ void Title::init()
     isStartPerform_ = true;
     oldTimer_ = 0;
     //pushCount_ = 0;
+
+    isDispTextStart_ = false;
+    isDispTextExit_  = false;
+    textStartColorAlpha_ = 0.0f;
+    textExitColorAlpha_  = 0.0f;
+
     Game::instance()->isStartFirstShrink_ = false;
 
     //フェード(イン)アウトの初期化
@@ -71,13 +77,13 @@ void Title::update()
 
         
         player_         = setTitlePlayer(obj2dManager(),bg());
-        startCommand_   = setTitleObj(obj2dManager(), &titleStartObjBehavior, { 500,500 } );
-        endCommand_     = setTitleObj(obj2dManager(), &titleEndObjBehavior,   { 1420,500 } );
+        startCommand_   = setTitleObj(obj2dManager(), &titleStartObjBehavior, { 500,600 } );
+        endCommand_     = setTitleObj(obj2dManager(), &titleEndObjBehavior,   { 1420,600 } );
         titleLogo_      = setTitleObj(obj2dManager(), &titleLogoObjBehavior,  { 960.0f,200.0f } );
 
         bg()->init();
 
-        ++state_;                                    // 初期化処理の終了
+        ++state_;                                   // 初期化処理の終了
         /*fallthrough*/                             // 意図的にbreak;を記述していない
     case 1:
         //////// 通常時の処理 ////////
@@ -105,6 +111,53 @@ void Title::draw()
     GameLib::clear(VECTOR4(0.75f, 0.45f, 0.3f, 1));
 
     FADE::getInstance2()->draw();
+
+
+    static int     texNo  = 0;
+    static VECTOR2 pos    = {};
+    static VECTOR2 scale  = {};
+    static VECTOR2 texPos = {};
+    static VECTOR2 size   = {};
+    static VECTOR2 center = {};
+    static float   angle  = 0.0f;
+    static VECTOR4 color  = {};
+
+    static constexpr float ADD_TEXT_COLOR_ALPHA =  0.04f;
+    static constexpr float SUB_TEXT_COLOR_ALPHA = -0.075f;
+
+    // Startテキスト描画
+    {
+        texNo   = TITLE_TEXT_START;
+        pos     = { 500, 400 };
+        scale   = { 0.75f, 0.75f };
+        size    = { 384, 128 };
+        center  = size * 0.5f;
+        color   = { 1,1,1, textStartColorAlpha_ };
+
+        // 不透明度増減
+        if (isDispTextStart_) textStartColorAlpha_ = std::min(1.0f, textStartColorAlpha_ + ADD_TEXT_COLOR_ALPHA);
+        else                  textStartColorAlpha_ = std::max(0.0f, textStartColorAlpha_ + SUB_TEXT_COLOR_ALPHA);
+
+        GameLib::texture::begin(texNo);
+        GameLib::texture::draw(texNo, pos, scale, texPos, size, center, angle, color);
+        GameLib::texture::end(texNo);
+    }
+
+    // Exitテキスト描画
+    {
+        texNo   = TITLE_TEXT_EXIT;
+        pos     = { 1420, 400 };
+        //scale  = { 1.0f, 1.0f };
+        color.w = textExitColorAlpha_;
+
+        // 不透明度増減
+        if (isDispTextExit_) textExitColorAlpha_ = std::min(1.0f, textExitColorAlpha_ + ADD_TEXT_COLOR_ALPHA);
+        else                 textExitColorAlpha_ = std::max(0.0f, textExitColorAlpha_ + SUB_TEXT_COLOR_ALPHA);
+
+        GameLib::texture::begin(texNo);
+        GameLib::texture::draw(texNo, pos, scale, texPos, size, center, angle, color);
+        GameLib::texture::end(texNo);
+    }
 
     // オブジェクトの描画
     obj2dManager()->draw();
@@ -296,7 +349,7 @@ void Title::userHintMove()
     if (!oldTimer_) oldTimer_ = timer_;
 
     // PLの移動入力チェック
-    if ((GameLib::input::TRG(0) & (GameLib::input::PAD_UP | GameLib::input::PAD_DOWN | GameLib::input::PAD_LEFT | GameLib::input::PAD_RIGHT)) ||
+    if ((GameLib::input::STATE(0) & (GameLib::input::PAD_UP | GameLib::input::PAD_DOWN | GameLib::input::PAD_LEFT | GameLib::input::PAD_RIGHT)) ||
          GameLib::input::getPadState(0)->leftX != 0.0f || GameLib::input::getPadState(0)->leftY != 0.0f)
     {
         isPlayerMove_ = true;
