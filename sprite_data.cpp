@@ -29,9 +29,17 @@ GameLib::LoadTexture gameLoadTexture[] = {
     { GAME_TEXNO::BG04, L"./Data/Images/BackGround/BackGround01.png",   1U },
     { GAME_TEXNO::BG05, L"./Data/Images/BackGround/BackGround04.png",   1U },
     { GAME_TEXNO::BG06, L"./Data/Images/BackGround/BackGround02.png",   1U },
-    { GAME_TEXNO::BG07, L"./Data/Images/BackGround/BackGround05(ñ¢äÆê¨).png",   1U },
+    { GAME_TEXNO::BG07, L"./Data/Images/BackGround/BackGround06.png",   1U },
     { GAME_TEXNO::BG08, L"./Data/Images/BackGround/BackGround01.png",   1U },
-    { GAME_TEXNO::BG09, L"./Data/Images/BackGround/BackGround06.png",   1U },
+    { GAME_TEXNO::BG09, L"./Data/Images/BackGround/BackGround05(ñ¢äÆê¨).png",   1U },
+    { GAME_TEXNO::BG10, L"./Data/Images/BackGround/BackGround02.png",   1U },
+    { GAME_TEXNO::BG11, L"./Data/Images/BackGround/BackGround07.png",   1U },
+    { GAME_TEXNO::BG12, L"./Data/Images/BackGround/BackGround12.png",   1U },
+    { GAME_TEXNO::BG13, L"./Data/Images/BackGround/BackGround08.png",   1U },
+    { GAME_TEXNO::BG14, L"./Data/Images/BackGround/BackGround09.png",   1U },
+    { GAME_TEXNO::BG15, L"./Data/Images/BackGround/BackGround10.png",   1U },
+    { GAME_TEXNO::BG16, L"./Data/Images/BackGround/BackGround02.png",   1U },
+    { GAME_TEXNO::BG17, L"./Data/Images/BackGround/BackGround11.png",   1U },
 
     // UI
     { GAME_TEXNO::UI_METER_FRAME,    L"./Data/Images/UI/Meter_Frame.png",   1U },   // åväÌÇÃòg

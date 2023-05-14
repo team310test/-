@@ -33,6 +33,14 @@ enum GAME_TEXNO
     BG07,
     BG08,
     BG09,
+    BG10,
+    BG11,
+    BG12,
+    BG13,
+    BG14,
+    BG15,
+    BG16,
+    BG17,
     BG_END, // îwåiÇÃç≈å„
 
     // UI
