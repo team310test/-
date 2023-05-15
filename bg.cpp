@@ -235,7 +235,7 @@ void BG::setBGShrink()
             r->targetColor_ = r->color_;
         }
 
-        t->velocity_ *= 1.15f;
+        t->velocity_ *= 1.1f;
 
         // scale‚Ì?‚ð–Ú•W’l‚ÉÝ’è
         c->targetScale_ = t->scale_ * 0.1f;

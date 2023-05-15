@@ -2,14 +2,19 @@
 #include <sstream>
 #include <iomanip>
 
-float UI::meterAlphaColor_;              // 計器の不透明度
-bool  UI::isInAreaMeter_;                // OBJが計器の範囲内に入っているか
-int   UI::meterShrinkCount_;             // プレイヤー縮小カウントに合わせて変動するカウント
-int   UI::dispMeterShrinkCountMaxTimer_; // 最大縮小カウント数を少しの間見せるタイマー
-float UI::meterFrameAngle_;              // 計器の枠の角度
-float UI::meterNeedleAngle_;             // 計器の針の角度
-float UI::subMeterNeedleAngle_;          // 計器の針の角度を減算
+float   UI::meterAlphaColor_;              // 計器の不透明度
+bool    UI::isInAreaMeter_;                // OBJが計器の範囲内に入っているか
+int     UI::meterShrinkCount_;             // プレイヤー縮小カウントに合わせて変動するカウント
+int     UI::dispMeterShrinkCountMaxTimer_; // 最大縮小カウント数を少しの間見せるタイマー
+float   UI::meterFrameAngle_;              // 計器の枠の角度
+float   UI::meterNeedleAngle_;             // 計器の針の角度
+float   UI::subMeterNeedleAngle_;          // 計器の針の角度を減算
 VECTOR2 UI::meterPos_;
+
+float   UI::plPartsCountAlphaColor_;     // カウントの不透明度
+bool    UI::isInAreaPlPartsCount_;       // OBJがカウント描画の範囲内に入っているか
+VECTOR2 UI::plPartsCountPos_;
+
 
 float UI::letterBox_multiplySizeY_;      // 映画の黒帯の縦幅(特殊)
 
@@ -27,7 +32,43 @@ void UI::init()
 
     meterPos_ = { -850,850 };
 
+    plPartsCountAlphaColor_       = 1.0f;
+    isInAreaPlPartsCount_         = false;
+
+    plPartsCountPos_ = { -850,-850 };
+
     letterBox_multiplySizeY_        = 1.0f;
+}
+
+
+void UI::update()
+{
+    // UIの範囲内にOBJが侵入していなければfalseが反映される
+    isInAreaMeter_        = false;
+    isInAreaPlPartsCount_ = false;
+
+    // UIの範囲内にOBJが侵入していたらUIを透かす
+    for (auto& p : *Game::instance()->obj2dManager()->getList())
+    {
+        if (p->behavior_ == nullptr) continue;
+
+        Transform* t = p->transform_;
+
+        // プレイヤーパーツカウントの範囲チェック
+        if (t->position_.x >= 0 && t->position_.x <= 300 &&
+            t->position_.y >= 0 && t->position_.y <= 175)
+        {
+            isInAreaPlPartsCount_ = true;
+        }
+
+        // メーターの範囲チェック
+        if (t->position_.x >= 0  && t->position_.x <= 500 &&
+            t->position_.y >= 575 && t->position_.y <= 1100)
+        {
+            isInAreaMeter_ = true;
+        }
+
+    }
 }
 
 
@@ -47,31 +88,12 @@ void UI::drawShrinkValueMeter()
     VECTOR4 color   = {};
 
 
-    // メーターの範囲内にOBJが侵入していなければこのfalseが反映される
-    isInAreaMeter_ = false; 
-
-    // メーターの範囲内にOBJが侵入していたら計器を透かす
-    for (auto& p : *Game::instance()->obj2dManager()->getList())
-    {
-        if (p->behavior_ == nullptr) continue;
-
-        Transform* t = p->transform_;
-
-        // 範囲チェック
-        if (t->position_.x >= 50  && t->position_.x <= 500 &&
-            t->position_.y >= 575 && t->position_.y <= 1100)
-        {
-            isInAreaMeter_ = true;
-            break;
-        }
-    }
-
     if (isInAreaMeter_) meterAlphaColor_ += (-0.05f); // 侵入していたら透かす
     else                meterAlphaColor_ +=   0.05f;  // でなければ戻す
 
     // 不透明度超過チェック
-    if (meterAlphaColor_ < METER_ALPHA_COLOR_MIN) meterAlphaColor_ = 0.2f;
-    if (meterAlphaColor_ > METER_ALPHA_COLOR_MAX) meterAlphaColor_ = 1.0f;
+    if (meterAlphaColor_ < UI_ALPHA_COLOR_MIN) meterAlphaColor_ = UI_ALPHA_COLOR_MIN;
+    if (meterAlphaColor_ > UI_ALPHA_COLOR_MAX) meterAlphaColor_ = UI_ALPHA_COLOR_MAX;
 
 
     // 縮小カウントの数字
@@ -100,7 +122,7 @@ void UI::drawShrinkValueMeter()
         // 使いまわし変数セット
         {
             sprNo   = 0;
-            pos     = { 135, 990 };
+            pos     = VECTOR2(135, 990) + meterPos_;
             scale   = { 3.75f, 3.75f };
             texPos  = {};
             size    = {};
@@ -110,7 +132,7 @@ void UI::drawShrinkValueMeter()
         }
 
         // 数字描画
-        font::textOut(6, ss.str(), pos + meterPos_, scale, color, TEXT_ALIGN::MIDDLE);
+        font::textOut(6, ss.str(), pos, scale, color, TEXT_ALIGN::MIDDLE);
     }
 
 
@@ -136,17 +158,16 @@ void UI::drawShrinkValueMeter()
             }
         }
 
+        // 360度回ったら角度リセット
         if (meterFrameAngle_ > ToRadian(360.0f))
         {
-            //360度回ったら角度リセット
             meterFrameAngle_ += ToRadian(-360.0f);
         }
-
 
         // 使いまわし変数セット
         {
             sprNo   = UI_METER_FRAME;
-            pos     = { 100, 1000 };
+            pos     = VECTOR2(100, 1000) + meterPos_;
             scale   = { 3, 3 };
             texPos  = {};
             size    = { 250, 250 };
@@ -157,26 +178,8 @@ void UI::drawShrinkValueMeter()
 
         // 枠描画
         texture::begin(sprNo);
-        texture::draw(sprNo, pos + meterPos_, scale, texPos, size, center, angle, color);
+        texture::draw(sprNo, pos, scale, texPos, size, center, angle, color);
         texture::end(sprNo);
-    }
-
-
-    // 計器の目盛り(不使用)    
-    {
-        //sprNo   = UI_METER_READ;
-        //pos     = { 100, 1000 };
-        //scale   = { 3, 3 };
-        //texPos  = {};
-        //size    = { 250, 250 };
-        //center  = { 125, 125 };
-        //angle   = {};
-        //color   = { 1, 1, 1, meterAlphaColor_ - 0.1f };
-    
-        //// 枠描画
-        //texture::begin(sprNo);
-        //texture::draw(sprNo, pos, scale, texPos, size, center, angle, color);
-        //texture::end(sprNo);
     }
 
 
@@ -212,7 +215,7 @@ void UI::drawShrinkValueMeter()
         // 使いまわし変数セット
         {
             sprNo   = UI_METER_NEEDLE;
-            pos     = { 100, 1000 };
+            pos     = VECTOR2(100, 1000) + meterPos_;
             scale   = { 1.225f, 1.225f };
             texPos  = {};
             size    = { 250, 250 };
@@ -223,8 +226,63 @@ void UI::drawShrinkValueMeter()
 
         // 針描画
         texture::begin(sprNo);
-        texture::draw(sprNo, pos + meterPos_, scale, texPos, size, center, angle, color);
+        texture::draw(sprNo, pos, scale, texPos, size, center, angle, color);
         texture::end(sprNo);
+    }
+
+}
+
+
+// プレイヤーパーツの現在数描画
+void UI::drawPlPartsCurrentCount()
+{
+    using namespace GameLib;
+
+    // 使いまわし変数
+    int     sprNo = 0;
+    VECTOR2 pos = {};
+    VECTOR2 scale = {};
+    VECTOR2 texPos = {};
+    VECTOR2 size = {};
+    VECTOR2 center = {};
+    float   angle = 0.0f;
+    VECTOR4 color = {};
+
+    if (isInAreaPlPartsCount_) plPartsCountAlphaColor_ += (-0.05f); // 侵入していたら透かす
+    else                       plPartsCountAlphaColor_ +=   0.05f;  // でなければ戻す
+
+    // 不透明度超過チェック
+    if (plPartsCountAlphaColor_ < UI_ALPHA_COLOR_MIN) plPartsCountAlphaColor_ = UI_ALPHA_COLOR_MIN;
+    if (plPartsCountAlphaColor_ > UI_ALPHA_COLOR_MAX) plPartsCountAlphaColor_ = UI_ALPHA_COLOR_MAX;
+
+    // 歯車描画
+    {
+        sprNo  = UI_METER_FRAME;
+        pos    = VECTOR2(60, 60) + plPartsCountPos_;
+        scale  = { 0.4f, 0.4f };
+        size   = { 250,250 };
+        center = size * 0.5f;
+        color  = { 1,1,1, plPartsCountAlphaColor_ };
+
+        // 歯車描画
+        texture::begin(sprNo);
+        texture::draw(sprNo, pos, scale, texPos, size, center, angle, color);
+        texture::end(sprNo);
+    }
+
+    // 数字描画
+    {
+        std::ostringstream ss;
+        ss << "x" << BasePlayerBehavior::plPartsCurrentCount_;
+
+        pos   = VECTOR2(125, 60) + plPartsCountPos_;
+        scale = { 1.5f, 1.5f };
+        color = { 0,0,0, plPartsCountAlphaColor_ };
+
+        GameLib::font::textOut(
+            6, ss.str(), pos, scale, color,
+            GameLib::TEXT_ALIGN::MIDDLE_LEFT
+        );
     }
 
 }

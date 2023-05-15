@@ -22,8 +22,10 @@ private:
     void areaCheck(OBJ2D* obj) const override;
 
 public:
-    static int plShrinkCount_;      // 現在のプレイヤーパーツのカウント（総数ではない）
-    static int plShrinkCountMax_;   // 縮小するのに必要なプレイヤーパーツの数
+    static int plShrinkCount_;       // 現在のプレイヤーパーツのカウント（総数ではない）
+    static int plShrinkCountMax_;    // 縮小するのに必要なプレイヤーパーツの数
+
+    static int plPartsCurrentCount_; // 現在のプレイヤーパーツの総数
 };
 
 
