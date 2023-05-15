@@ -419,6 +419,24 @@ EnemyTurret01FlipBehavior::EnemyTurret01FlipBehavior()
     param_.NEXT_ERASER = &eraseDropParts;
 }
 
+void EnemyTurret01FlipBehavior::attack(OBJ2D* obj) const
+{
+    // 攻撃クールタイム減少
+    if (obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
+
+    // 攻撃クールタイムが終わっていなければreturn
+    if (obj->actorComponent_->attackTimer_ > 0) return;
+
+    // 弾を追加
+    AddObj::addShot(obj, &enmAimShotBehavior, obj->transform_->position_);
+
+    // 弾発射SE再生
+    Audio::play(SE_SHOT, false);
+
+    // 攻撃クールタイム設定
+    obj->actorComponent_->attackTimer_ = ENM_TURRET01_ATK_TIME;
+}
+
 // Turret02(CurveShot)
 EnemyTurret02Behavior::EnemyTurret02Behavior()
 {
@@ -556,7 +574,7 @@ EnemyBuff01Behavior::EnemyBuff01Behavior()
 void EnemyBuff01Behavior::hit(OBJ2D*, OBJ2D* dst) const
 {
     // 攻撃クールタイムを減少（弾速上昇）
-    dst->actorComponent_->attackTimer_ += BUFF_SUB_ATK_TIMER;
+    dst->actorComponent_->attackTimer_ -= BUFF_SUB_ATK_TIMER;
 }
 
 

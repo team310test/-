@@ -78,6 +78,8 @@ class EnemyTurret01FlipBehavior : public BaseEnemyPartsBehavior
 {
 public:
     EnemyTurret01FlipBehavior();
+private:
+    void attack(OBJ2D* obj) const override;
 };
 EXTERN EnemyTurret01FlipBehavior enemyTurret01FlipBehavior;
 
