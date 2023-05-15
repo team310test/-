@@ -192,7 +192,7 @@ void TITLE_PLAYER_UPDATE(OBJ2D* obj)
     using namespace GameLib::input;
     //ActorComponent* a = obj->actorComponent_;
     Transform* t        = obj->transform_;
-    const float floor   = 800.0f;
+    const float floor   = 890.0f;
     static bool isBound = false;
 
     t->velocity_ += {0.1f, 2.5f};

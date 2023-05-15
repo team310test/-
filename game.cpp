@@ -59,13 +59,7 @@ void Game::deinit()
 
 void Game::update()
 {
-    // ソフトリセット
-    if ((GameLib::input::STATE(0) & GameLib::input::PAD_SELECT) &&  // 0コンのセレクトボタンが押されている状態で
-        (GameLib::input::TRG(0) & GameLib::input::PAD_START))       // 0コンのスタートボタンが押された瞬間
-    {
-        changeScene(Title::instance());   // タイトルシーンに切り替える
-        return;
-    }
+
 
 #ifdef DEBUG_MODE
     // 疑似スローモーション
@@ -119,10 +113,19 @@ void Game::update()
         /*fallthrough*/
     case 1:
         //////// 通常時の処理 ////////
-
-        // objが縮小していなくてゲームオーバーでなければステージ更新(エネミー出現)
+        
+        // objが縮小していなくて
         if (!Behavior::isObjShrink() && !isGameOver())
         {
+            // ソフトリセット
+            if ((GameLib::input::STATE(0) & GameLib::input::PAD_SELECT) &&  // 0コンのセレクトボタンが押されている状態で
+                (GameLib::input::TRG(0) & GameLib::input::PAD_START))       // 0コンのスタートボタンが押された瞬間
+            {
+                changeScene(Title::instance());   // タイトルシーンに切り替える
+                return;
+            }
+
+            // ゲームオーバーでなければステージ更新(エネミー出現)
             stage_->update(obj2dManager_, bg_);
         }
 

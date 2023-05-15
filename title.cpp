@@ -77,9 +77,9 @@ void Title::update()
 
         
         player_         = setTitlePlayer(obj2dManager(),bg());
-        startCommand_   = setTitleObj(obj2dManager(), &titleStartObjBehavior, { 500,600 } );
-        endCommand_     = setTitleObj(obj2dManager(), &titleEndObjBehavior,   { 1420,600 } );
-        titleLogo_      = setTitleObj(obj2dManager(), &titleLogoObjBehavior,  { 960.0f,200.0f } );
+        startCommand_   = setTitleObj(obj2dManager(), &titleStartObjBehavior, { 475, 800 } );
+        endCommand_     = setTitleObj(obj2dManager(), &titleEndObjBehavior,   { 1395,800 } );
+        titleLogo_      = setTitleObj(obj2dManager(), &titleLogoObjBehavior,  { 960, 275 } );
 
         bg()->init();
 
@@ -128,7 +128,7 @@ void Title::draw()
     // StartƒeƒLƒXƒg•`‰æ
     {
         texNo   = TITLE_TEXT_START;
-        pos     = { 500, 400 };
+        pos     = { 475, 600 };
         scale   = { 0.75f, 0.75f };
         size    = { 384, 128 };
         center  = size * 0.5f;
@@ -146,7 +146,7 @@ void Title::draw()
     // ExitƒeƒLƒXƒg•`‰æ
     {
         texNo   = TITLE_TEXT_EXIT;
-        pos     = { 1420, 400 };
+        pos     = { 1395, 600 };
         //scale  = { 1.0f, 1.0f };
         color.w = textExitColorAlpha_;
 
@@ -226,6 +226,16 @@ void Title::changeSceneGame()
         //const bool shrink      = objToul::instance().Shrink(player_);      // k¬
         Game::instance()->isStartFirstShrink_ = true; // k¬
 
+        if (player_->transform_->position_.y > BG::WINDOW_H_F * 0.5f)
+        {
+            player_->transform_->position_.y += -5.0f;
+            
+            if (player_->transform_->position_.y < BG::WINDOW_H_F * 0.5f)
+            {
+                player_->transform_->position_.y = BG::WINDOW_H_F * 0.5f;
+            }
+        }
+
         //@2‰ñ–ÚˆÈ~‚ÍŽ©“®‚Å“§–¾“x‚ðÝ’è
         if (isAutoAddAlpha)
         {
@@ -234,7 +244,8 @@ void Title::changeSceneGame()
         }
 
         // —¼•û‚Ìˆ—‚ªŠ®—¹‚µ‚½‚ç‰æ–Ê‚ð‘JˆÚ‚·‚é
-        if (endFadeOut && logoFadeOut/* && shrink*/)
+        if (endFadeOut && logoFadeOut/* && shrink*/ &&
+            player_->transform_->position_.y == BG::WINDOW_H_F * 0.5f)
         {
             isAutoAddAlpha = true;
             addAlpha       = 1.0f;
