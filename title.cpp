@@ -391,10 +391,10 @@ void Title::userHintShot()
     if (!oldTimer_) oldTimer_ = timer_;
 
     // PLの攻撃入力チェック
-    if ((GameLib::input::TRG(0) & GameLib::input::PAD_TRG1 ||
-         GameLib::input::TRG(0) & GameLib::input::PAD_TRG2 ||
-         GameLib::input::TRG(0) & GameLib::input::PAD_TRG3 ||
-         GameLib::input::TRG(0) & GameLib::input::PAD_TRG4) )
+    if ((GameLib::input::STATE(0) & GameLib::input::PAD_TRG1 ||
+         GameLib::input::STATE(0) & GameLib::input::PAD_TRG2 ||
+         GameLib::input::STATE(0) & GameLib::input::PAD_TRG3 ||
+         GameLib::input::STATE(0) & GameLib::input::PAD_TRG4) )
     {
         isPlayerShot_ = true;
         oldTimer_ = 0;

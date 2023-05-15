@@ -4,6 +4,8 @@
 int BasePlayerBehavior::plShrinkCount_      = 0;
 int BasePlayerBehavior::plShrinkCountMax_   = 0;
 
+int BasePlayerBehavior::plPartsCurrentCount_ = 0;
+
 // アニメデータ
 namespace
 {
@@ -409,7 +411,7 @@ PlayerCoreBehavior::PlayerCoreBehavior()
     // アニメーション
     param_.ANIME_WAIT    = animePLayerCore;
 
-    param_.SIZE          = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+    param_.SIZE          = { PARTS_OBJ_SIZE * 0.5f, PARTS_OBJ_SIZE * 0.5f };
     param_.SCALE         = { 2.0f,2.0f };
 
     param_.HIT_BOX[0]    = { -PL_CORE_HITBOX, -PL_CORE_HITBOX, PL_CORE_HITBOX,  PL_CORE_HITBOX };
@@ -1010,6 +1012,8 @@ void ErasePlayer::erase(OBJ2D* obj) const
             0, BasePlayerBehavior::plShrinkCount_ - 1
         );
 
+        --BasePlayerBehavior::plPartsCurrentCount_;
+
         return;
     }
 
@@ -1051,6 +1055,8 @@ void ErasePlayer::erase(OBJ2D* obj) const
 
         // 縮小カウント減少
         BasePlayerBehavior::plShrinkCount_ = std::max(0, --BasePlayerBehavior::plShrinkCount_);
+
+        --BasePlayerBehavior::plPartsCurrentCount_;
 
         return;
     }

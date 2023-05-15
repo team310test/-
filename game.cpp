@@ -92,8 +92,9 @@ void Game::update()
     case 0:
         //////// 初期設定 ////////
         timer_ = 0;
-        BasePlayerBehavior::plShrinkCount_      = 0;
-        BasePlayerBehavior::plShrinkCountMax_   = 10;
+        BasePlayerBehavior::plShrinkCount_       = 0;
+        BasePlayerBehavior::plShrinkCountMax_    = 10;
+        BasePlayerBehavior::plPartsCurrentCount_ = 0;
         Stage::resetShrinkNum();
 
         GameLib::setBlendMode(GameLib::Blender::BS_ALPHA);   // 通常のアルファ処理
@@ -118,6 +119,12 @@ void Game::update()
         /*fallthrough*/
     case 1:
         //////// 通常時の処理 ////////
+
+        // objが縮小していなくてゲームオーバーでなければステージ更新(エネミー出現)
+        if (!Behavior::isObjShrink() && !isGameOver())
+        {
+            stage_->update(obj2dManager_, bg_);
+        }
 
         // 始めの縮小開始
         if (isStartFirstShrink_)
@@ -159,15 +166,6 @@ void Game::update()
         // オブジェクトの更新
         obj2dManager()->update();
 
-        
-        if (
-            (Behavior::isObjShrink() == false)   // すべてのobjが縮小終了していれば
-            && (!isGameOver())                   // ゲームオーバーでなければ  
-            )
-        {
-            // ステージ更新(エネミー出現)
-            stage_->update(obj2dManager_, bg_);
-        }
 
         // オブジェクトの更新後にShrinkの開始を止める
         if (Collider::isAllShrink_)
@@ -185,10 +183,12 @@ void Game::update()
             BaseEnemyPartsBehavior::toCoreVelocity_ += (-TO_CORE_SPEED)   * 0.015f;
             UI::meterPos_.x = std::min(0.0f, UI::meterPos_.x + 5.0f);
             UI::meterPos_.y = std::max(0.0f, UI::meterPos_.y - 5.0f);
+            UI::plPartsCountPos_.x = std::min(0.0f, UI::plPartsCountPos_.x + 5.0f);
+            UI::plPartsCountPos_.y = std::min(0.0f, UI::plPartsCountPos_.y + 5.0f);
             UI::letterBox_multiplySizeY_ = std::max(0.7f, UI::letterBox_multiplySizeY_ + LETTER_BOX_SUB_SPEED); // 0.0fより小さければ0.0fに修正
         }
         else // すべてのobjが縮小していなければ
-        {
+        {   
             Behavior::shrinkVelocity_               = SHRINK_SPEED;
             PlayerPartsBehavior::toCoreVelocity_    = TO_CORE_SPEED;
             BaseEnemyPartsBehavior::toCoreVelocity_ = TO_CORE_SPEED;
@@ -204,6 +204,8 @@ void Game::update()
 #endif
 
         bg()->update();   // BGの更新
+
+        UI::update();     // UIの更新
 
         judge();
 
@@ -266,11 +268,18 @@ void Game::draw()
     // ドロップパーツを明滅させる
     drawblink();
 
-    // 縮小カウントメーターの描画(gameoverなら表示しない)
-    if(!isGameOver())UI::drawShrinkValueMeter();
+    // (gameoverなら表示しない)
+    if (!isGameOver())
+    {
+        // 縮小カウントメーターの描画
+        UI::drawShrinkValueMeter();
 
-    // 映画の黒帯の描画(gameoverなら表示しない)
-    if (!isGameOver())UI::drawLetterBox();
+        // 現在のプレイヤーパーツ数描画
+        UI::drawPlPartsCurrentCount();
+
+        // 映画の黒帯の描画
+        UI::drawLetterBox();
+    }
 }
 
 void Game::judge()

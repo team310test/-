@@ -483,6 +483,8 @@ void EraseDropParts::erase(OBJ2D* obj) const
        
         ++BasePlayerBehavior::plShrinkCount_;   // k¬‚Ü‚Å‚ÌƒJƒEƒ“ƒg‚ğ‰ÁZ
 
+        ++BasePlayerBehavior::plPartsCurrentCount_;
+
         return;
     }
 
