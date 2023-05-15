@@ -75,6 +75,36 @@ private:
 };
 EXTERN PlayerTurret01Behavior playerTurret01Behavior;
 
+// Turret01(”½“])
+class PlayerTurret01FlipBehavior : public PlayerPartsBehavior
+{
+public:
+    PlayerTurret01FlipBehavior();
+private:
+    void attack(OBJ2D* obj) const override;
+};
+EXTERN PlayerTurret01FlipBehavior playerTurret01FlipBehavior;
+
+// Turret02(CurveShot)
+class PlayerTurret02Behavior : public PlayerPartsBehavior
+{
+public:
+    PlayerTurret02Behavior();
+private:
+    void attack(OBJ2D* obj) const override;
+};
+EXTERN PlayerTurret02Behavior playerTurret02Behavior;
+
+// Turret02Flip
+class PlayerTurret02FlipBehavior : public PlayerPartsBehavior
+{
+public:
+    PlayerTurret02FlipBehavior();
+private:
+    void attack(OBJ2D* obj) const override;
+};
+EXTERN PlayerTurret02FlipBehavior playerTurret02FlipBehavior;
+
 
 //******************************************************************************
 // 

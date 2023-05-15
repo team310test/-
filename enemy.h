@@ -9,8 +9,9 @@ void addEnemy(OBJ2DManager* obj2dManager, BG* bg);
 //******************************************************************************
 class BaseEnemyBehavior : public ActorBehavior
 {
-private:
+protected:
     void init(OBJ2D* obj) const override;
+private:
     OBJ_TYPE getType() const override       { return OBJ_TYPE::ENEMY; }
     OBJ_TYPE getAttackType() const override { return OBJ_TYPE::PLAYER; }
     void hit(OBJ2D*, OBJ2D*) const override;
@@ -72,24 +73,33 @@ private:
 };
 EXTERN EnemyTurret01Behavior enemyTurret01Behavior;
 
-// Turret02
-class EnemyTurret02Behavior : public EnemyTurret01Behavior
+// Turret01Flip
+class EnemyTurret01FlipBehavior : public BaseEnemyPartsBehavior
+{
+public:
+    EnemyTurret01FlipBehavior();
+};
+EXTERN EnemyTurret01FlipBehavior enemyTurret01FlipBehavior;
+
+// Turret02(CurveShot)
+class EnemyTurret02Behavior : public BaseEnemyPartsBehavior
 {
 public:
     EnemyTurret02Behavior();
 private:
+    void attack(OBJ2D* obj) const override;
 };
 EXTERN EnemyTurret02Behavior enemyTurret02Behavior;
 
-// Turret03(CurveShot)
-class EnemyTurret03Behavior : public BaseEnemyPartsBehavior
+// Turret02Flip
+class EnemyTurret02FlipBehavior : public BaseEnemyPartsBehavior
 {
 public:
-    EnemyTurret03Behavior();
+    EnemyTurret02FlipBehavior();
 private:
     void attack(OBJ2D* obj) const override;
 };
-EXTERN EnemyTurret03Behavior enemyTurret03Behavior;
+EXTERN EnemyTurret02FlipBehavior enemyTurret02FlipBehavior;
 
 
 //******************************************************************************

@@ -301,14 +301,45 @@ void PlCurveShotBehavior::update(OBJ2D* obj) const
 
 }
 
+// プレイヤー(Y軸反転)
+PlCurveShotFlipBehavior::PlCurveShotFlipBehavior()
+{
+    param_.SPR_WEAPON = &sprShot_NormalShot;
+    param_.ERASER = &eraseShot;
+
+    param_.SPEED_X = CURVE_SHOT_SPEED_X;
+    param_.SPEED_Y = -CURVE_SHOT_SPEED_Y;
+    param_.ATTACK_POWER = CURVE_SHOT_ATK;
+
+    param_.ATTACK_BOX[0] = {
+        -SHOT_HITBOX, -SHOT_HITBOX,
+         SHOT_HITBOX,  SHOT_HITBOX
+    };
+
+}
+
+void PlCurveShotFlipBehavior::update(OBJ2D* obj) const
+{
+    Transform* transform = obj->transform_;
+
+    transform->position_ += transform->velocity_; // 位置に速度を足す
+
+    // 速度に加速度を足す
+    transform->velocity_ += {
+        CURVE_SHOT_ACCEL_X / transform->scale_.x,  // scaleに挙動を合わせる
+            -CURVE_SHOT_ACCEL_Y / transform->scale_.y,  // scaleに挙動を合わせる
+    };
+
+}
+
 // エネミー
 EnmCurveShotBehavior::EnmCurveShotBehavior()
 {
     param_.SPR_WEAPON = &sprShot_NormalShot;
     param_.ERASER = &eraseShot;
 
-    param_.SPEED_X = -CURVE_SHOT_SPEED_Y;
-    param_.SPEED_Y =  CURVE_SHOT_SPEED_X;
+    param_.SPEED_X = -CURVE_SHOT_SPEED_X;
+    param_.SPEED_Y =  CURVE_SHOT_SPEED_Y;
     param_.ATTACK_POWER = CURVE_SHOT_ATK;
 
     param_.ATTACK_BOX[0] = { 
@@ -328,6 +359,37 @@ void EnmCurveShotBehavior::update(OBJ2D* obj) const
     transform->velocity_ += {
         -CURVE_SHOT_ACCEL_X / transform->scale_.x,  // scaleに挙動を合わせる
          CURVE_SHOT_ACCEL_Y / transform->scale_.y,  // scaleに挙動を合わせる
+    };
+
+}
+
+// エネミー(Y軸反転)
+EnmCurveShotFlirpBehavior::EnmCurveShotFlirpBehavior()
+{
+    param_.SPR_WEAPON = &sprShot_NormalShot;
+    param_.ERASER = &eraseShot;
+
+    param_.SPEED_X = -CURVE_SHOT_SPEED_X;
+    param_.SPEED_Y = -CURVE_SHOT_SPEED_Y;
+    param_.ATTACK_POWER = CURVE_SHOT_ATK;
+
+    param_.ATTACK_BOX[0] = {
+        -SHOT_HITBOX, -SHOT_HITBOX,
+         SHOT_HITBOX,  SHOT_HITBOX
+    };
+
+}
+
+void EnmCurveShotFlirpBehavior::update(OBJ2D* obj) const
+{
+    Transform* transform = obj->transform_;
+
+    transform->position_ += transform->velocity_; // 位置に速度を足す
+
+    // 速度に加速度を足す
+    transform->velocity_ += {
+        -CURVE_SHOT_ACCEL_X / transform->scale_.x,  // scaleに挙動を合わせる
+            -CURVE_SHOT_ACCEL_Y / transform->scale_.y,  // scaleに挙動を合わせる
     };
 
 }

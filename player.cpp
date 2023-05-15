@@ -13,11 +13,30 @@ namespace
         { nullptr, -1 },// 終了フラグ
     };
 
-    //  タレット01
+    // タレット01
     GameLib::AnimeData animeTurret01[] = {
         { &sprPartsTurret01, 10 },
+        //{ &sprPlayer_test, 10 },
         { nullptr, -1 },// 終了フラグ
-    };    
+    };
+
+    // タレット01(反転)
+    GameLib::AnimeData animeTurret01Flip[] = {
+        { &sprPartsTurret01Flip, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
+
+    // タレット02
+    GameLib::AnimeData animeTurret02[] = {
+        { &sprPartsTurret02, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
+
+    // タレット02(反転)
+    GameLib::AnimeData animeTurret02Flip[] = {
+        { &sprPartsTurret02Flip, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
     
     // シールド01
     GameLib::AnimeData animeShield01[] = {
@@ -580,6 +599,154 @@ void PlayerTurret01Behavior::attack(OBJ2D* obj) const
 
 }
 
+// Turret01(反転)
+PlayerTurret01FlipBehavior::PlayerTurret01FlipBehavior()
+{
+    param_.ANIME_WAIT = animeTurret01Flip;
+
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+
+    param_.HIT_BOX[0] = {
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.25f,
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.25f
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    param_.ATTACK_POWER = PL_TURRET01_ATK;
+}
+
+void PlayerTurret01FlipBehavior::attack(OBJ2D* obj) const
+{
+    // 攻撃クールタイム減少
+    // （バラバラに打たせるために指定ボタン(Space,A,B,X,Y)を押しているときだけ減らす）
+    if ((obj->actorComponent_->padState_ & GameLib::input::PAD_TRG1 ||
+        obj->actorComponent_->padState_ & GameLib::input::PAD_TRG2 ||
+        obj->actorComponent_->padState_ & GameLib::input::PAD_TRG3 ||
+        obj->actorComponent_->padState_ & GameLib::input::PAD_TRG4) &&
+        obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
+
+    // 指定ボタン(Space,A,B,X,Y)が押されていない、または攻撃クールタイムが終わっていなければreturn
+    if ((!(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG1) &&
+        !(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG2) &&
+        !(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG3) &&
+        !(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG4)) ||
+        obj->actorComponent_->attackTimer_ > 0) return;
+
+    // 弾を追加
+    AddObj::addShot(obj, &plNormalShotBehavior, obj->transform_->position_);
+
+    // 弾発射SE再生
+    Audio::play(SE_SHOT, false);
+
+    setXAxisScaleAnime(obj);
+    obj->actorComponent_->attackTimer_ = PL_PARTS_ATK_TIME;
+
+}
+
+// Turret02(CurveShot)
+PlayerTurret02Behavior::PlayerTurret02Behavior()
+{
+    param_.ANIME_WAIT = animeTurret02;
+
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+
+    param_.HIT_BOX[0] = {
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.25f,
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.25f
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    param_.ROTATION = ToRadian(-ENM_TURRET02_ANGLE);
+
+    param_.ATTACK_POWER = PL_TURRET03_ATK;
+}
+
+void PlayerTurret02Behavior::attack(OBJ2D* obj) const
+{
+    // 攻撃クールタイム減少
+    // （バラバラに打たせるために指定ボタン(Space,A,B,X,Y)を押しているときだけ減らす）
+    if ((obj->actorComponent_->padState_ & GameLib::input::PAD_TRG1 ||
+        obj->actorComponent_->padState_ & GameLib::input::PAD_TRG2 ||
+        obj->actorComponent_->padState_ & GameLib::input::PAD_TRG3 ||
+        obj->actorComponent_->padState_ & GameLib::input::PAD_TRG4) &&
+        obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
+
+    // 指定ボタン(Space,A,B,X,Y)が押されていない、または攻撃クールタイムが終わっていなければreturn
+    if ((!(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG1) &&
+        !(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG2) &&
+        !(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG3) &&
+        !(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG4)) ||
+        obj->actorComponent_->attackTimer_ > 0) return;
+
+    // 弾を追加
+    const float radius = obj->collider_->size_.x * 0.5f;
+    const float angle = obj->transform_->rotation_;
+    VECTOR2 pos = obj->transform_->position_;
+    pos.x += cosf(angle) * radius;
+    pos.y += sinf(angle) * radius;
+
+    AddObj::addShot(obj, &plCurveShotBehavior, pos);
+
+    // 弾発射SE再生
+    Audio::play(SE_SHOT, false);
+
+    setXAxisScaleAnime(obj);
+    obj->actorComponent_->attackTimer_ = PL_PARTS_ATK_TIME;
+
+}
+
+// Turret02Flip
+PlayerTurret02FlipBehavior::PlayerTurret02FlipBehavior()
+{
+    param_.ANIME_WAIT = animeTurret02Flip;
+
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+
+    param_.HIT_BOX[0] = {
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.25f,
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.25f
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    param_.ROTATION = ToRadian(ENM_TURRET02_ANGLE);
+
+    param_.ATTACK_POWER = PL_TURRET03_ATK;
+}
+
+void PlayerTurret02FlipBehavior::attack(OBJ2D* obj) const
+{
+    // 攻撃クールタイム減少
+    // （バラバラに打たせるために指定ボタン(Space,A,B,X,Y)を押しているときだけ減らす）
+    if ((obj->actorComponent_->padState_ & GameLib::input::PAD_TRG1 ||
+        obj->actorComponent_->padState_ & GameLib::input::PAD_TRG2 ||
+        obj->actorComponent_->padState_ & GameLib::input::PAD_TRG3 ||
+        obj->actorComponent_->padState_ & GameLib::input::PAD_TRG4) &&
+        obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
+
+    // 指定ボタン(Space,A,B,X,Y)が押されていない、または攻撃クールタイムが終わっていなければreturn
+    if ((!(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG1) &&
+        !(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG2) &&
+        !(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG3) &&
+        !(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG4)) ||
+        obj->actorComponent_->attackTimer_ > 0) return;
+
+    // 弾を追加
+    const float radius = obj->collider_->size_.x * 0.5f;
+    const float angle = obj->transform_->rotation_;
+    VECTOR2 pos = obj->transform_->position_;
+    pos.x += cosf(angle) * radius;
+    pos.y += sinf(angle) * radius;
+
+    AddObj::addShot(obj, &plCurveShotFlipBehavior, pos);
+
+    // 弾発射SE再生
+    Audio::play(SE_SHOT, false);
+
+    setXAxisScaleAnime(obj);
+    obj->actorComponent_->attackTimer_ = PL_PARTS_ATK_TIME;
+
+}
+
 //******************************************************************************
 // 
 //      Shield（防御パーツ）
@@ -954,5 +1121,3 @@ void ErasePlayer::erase(OBJ2D* obj) const
 //        BasePlayerBehavior::plShrinkCount_ = std::max(0, BasePlayerBehavior::plShrinkCount_ - 1);
 //    }
 //}
-
-
