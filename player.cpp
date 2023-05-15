@@ -804,7 +804,7 @@ PlayerBuff01Behavior::PlayerBuff01Behavior()
 void PlayerBuff01Behavior::hit(OBJ2D*, OBJ2D* dst) const
 {
     // 攻撃クールタイムを減少（弾速上昇）
-    dst->actorComponent_->attackTimer_ += BUFF_SUB_ATK_TIMER; 
+    dst->actorComponent_->attackTimer_ -= BUFF_SUB_ATK_TIMER; 
 }
 
 

@@ -121,7 +121,7 @@ GameLib::SpriteData sprPartsTurret03    = SPRITE_CENTER(GAME_TEXNO::TURRET03, 0,
 GameLib::SpriteData sprPartsTurret04    = SPRITE_CENTER(GAME_TEXNO::TURRET04, 0, 0, 128, 128);
 
 GameLib::SpriteData sprPartsShield01    = SPRITE_CENTER(GAME_TEXNO::SHIELD01, 0, 0, 128, 128);
-GameLib::SpriteData sprPartsBuff01      = SPRITE_CENTER(GAME_TEXNO::BUFF01,   0, 0, 250, 250);
+GameLib::SpriteData sprPartsBuff01      = SPRITE_CENTER(GAME_TEXNO::BUFF01,   0, 0, 128, 128);
 
 GameLib::SpriteData sprPartsTrash01     = SPRITE_CENTER(GAME_TEXNO::TRASH01,  0, 0, 128, 128);
 GameLib::SpriteData sprPartsTrash02     = SPRITE_CENTER(GAME_TEXNO::TRASH02,  0, 0, 128, 128);
