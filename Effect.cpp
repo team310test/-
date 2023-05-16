@@ -142,31 +142,31 @@ bool ChainEffect(OBJ2D* obj)
     // 連鎖的にエフェクトを流すためのデータ
     ChainEffectData chainEffectData[] =
     {
-        { 0,  &efcBombBehavior, {    0.0f,    0.0f } },
+        {  0, &efcBombBehavior, {    0.0f,    0.0f } },
         { 20, &efcBombBehavior, { -100.0f, -100.0f } },
         { 40, &efcBombBehavior, {  100.0f, -100.0f } },
         { 60, &efcBombBehavior, { -100.0f,  100.0f } },
         { 80, &efcBombBehavior, {  100.0f,  100.0f } },
                                                     
-        { 0,  nullptr,          { 0.0f,0.0f }        },
+        { 0, nullptr, { 0.0f,0.0f } },
     };
 
-    static int Timer = 0;
+    static int timer = 0;
     static ChainEffectData* data = nullptr;
-    if (!data)data = chainEffectData;
+    if (!data) data = chainEffectData;
 
 
-    while (data->behavior_ && data->time_ == Timer)
+    while (data->behavior_ && data->time_ == timer)
     {
         AddObj::addEffect(obj, data->behavior_, data->add_);
         ++data;
     }
-    ++Timer;
+    ++timer;
 
     // behaviorがnullptrなら
     if (!data->behavior_)
     {
-        Timer = 0;
+        timer = 0;
         data = nullptr;
         return true;
     }

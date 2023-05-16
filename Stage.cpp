@@ -4,7 +4,8 @@ STAGE_SCRIPT* STAGE_DATA[] =
 {
     //stageData01,
     //stageData02,
-    stageData03,
+    //stageData03,
+    stageDataBoss,
     stageData04,
     //stageData05,
     nullptr
@@ -81,6 +82,14 @@ void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
             hold->actorComponent_->accel_ = pScript_->accel_;
             hold->actorComponent_->addition_ = pScript_->addition_;
 
+
+            // TODO: behaviorがボスならboss_に代入
+            if (hold->behavior_ == &enemyCore02Behavior)
+            {
+                Game::instance()->boss_ = hold;
+            }
+
+
             if (!orgParent) orgParent = hold;                           // orgParentがnullptrなら元の親を設定する
             
             // noが-1より大きかったら
@@ -92,6 +101,7 @@ void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
                 Parent[pScript_->enemyData_->no_] = hold;                    // no番目のParentを設定
             }
 
+
             pScript_->enemyData_++;
         }
         pScript_->DataReset();   // enemyDataを先頭に戻す
@@ -100,8 +110,9 @@ void Stage::update(OBJ2DManager* obj2dManager, BG* bg)
 
     ++timer_;
 
+    // TODO: ボスが生まれていればループしない
     // 最後の敵が出現するとループする
-    if (pScript_ && !pScript_->enemyData_)
+    if (pScript_ && !pScript_->enemyData_ && !Game::instance()->boss_)
     {
         timer_ = 0;
         if (shrinkNum_ >= 0 && shrinkNum_ < STAGE_MAX)

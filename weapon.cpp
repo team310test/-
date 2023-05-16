@@ -58,10 +58,15 @@ void BaseShotBehavior::hit(OBJ2D* src, OBJ2D* dst) const
     // 被弾SEを再生
     Audio::play(SE_DMG, false);
 
-
     // 相手がまだ生きている場合
     if (dstA->hp_ > 0)
     {
+        // プレイヤーなら専用被弾SEを再生
+        if (dst == Game::instance()->player_)
+        {
+            Audio::play(SE_DMG, false);
+        }
+
         // 相手を揺らす
         dstA->isQuake_ = true;
         // 相手を点滅させる無敵時間
@@ -522,6 +527,16 @@ void ShotEraser::erase(OBJ2D* obj) const
     Transform* t = obj->transform_;
     Collider*  c = obj->collider_;
     OBJ_TYPE   objAtkType = obj->behavior_->getAttackType();
+
+    // TODO: ボスが死んでいたら残っているエネミー弾を消去
+    if (Game::instance()->isBossDied_ && objAtkType == OBJ_TYPE::PLAYER)
+    {
+        // 爆発エフェクト
+        AddObj::addEffect(obj, &efcBombBehavior);
+
+        obj->behavior_ = nullptr;
+        return;
+    }
 
     // 自分が敵の弾で1回でも縮小していたら消す
     if (objAtkType == OBJ_TYPE::PLAYER &&

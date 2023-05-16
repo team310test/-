@@ -221,8 +221,8 @@ void Title::changeSceneGame()
     if (pushCount_ >= pushMax && !isAnime)
     {
         // フェードアウト
-        const bool endFadeOut  = objToul::instance().FadeOut(endCommand_, 0.03f);
-        const bool logoFadeOut = objToul::instance().FadeOut(titleLogo_,  0.03f);
+        const bool endFadeOut  = objToul::instance().FadeOut(endCommand_, -0.03f);
+        const bool logoFadeOut = objToul::instance().FadeOut(titleLogo_,  -0.03f);
         //const bool shrink      = objToul::instance().Shrink(player_);      // 縮小
         Game::instance()->isStartFirstShrink_ = true; // 縮小
 
@@ -348,7 +348,7 @@ void Title::userHintMove()
         if (!userHintMove_) return;
 
         // userHintMove_がnullptrでないならフェードアウトした後nullptrにする
-        if (objToul::instance().FadeOut(userHintMove_, 0.05f))
+        if (objToul::instance().FadeOut(userHintMove_, -0.05f))
         {
             userHintMove_->behavior_ = nullptr;
             userHintMove_ = nullptr;
@@ -390,7 +390,7 @@ void Title::userHintShot()
         if (!userHintShot_) return;
 
         // userHintMove_がnullptrでないならフェードアウトした後nullptrにする
-        if (objToul::instance().FadeOut(userHintShot_, 0.05f))
+        if (objToul::instance().FadeOut(userHintShot_, -0.05f))
         {
             userHintShot_->behavior_ = nullptr;
             userHintShot_ = nullptr;

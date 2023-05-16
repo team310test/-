@@ -2,6 +2,17 @@
 
 Game Game::instance_;
 
+// ゲームクリアのstate番号
+enum GAMECLEAR_STATE
+{
+    INIT = 0,
+    PLAY_EFFECT,
+    RESULT,
+    ADD_ALPHA_RESULT_BACK,
+    OBJ_CLEAR,
+};
+
+
 OBJ2D* setGameObj(OBJ2DManager* obj2dManager, Behavior* behavior, VECTOR2 pos)
 {
     OBJ2D* obj = new OBJ2D(
@@ -30,6 +41,9 @@ void Game::init()
     gameOverState_ = 0;
     isGameOver_ = false;
 
+    gameClearState_ = 0;
+    isBossDied_ = false;
+
     //フェード(イン)アウトの初期化
     FADE::clear();
     FADE::getInstance2()->SetColorNum(1);
@@ -48,6 +62,8 @@ void Game::deinit()
     player_ = nullptr;
     playerFrame_ = nullptr;
     playerHeart_ = nullptr;
+
+    boss_ = nullptr;
 
     // テクスチャの解放
     GameLib::texture::releaseAll();
@@ -184,10 +200,18 @@ void Game::update()
             Behavior::shrinkVelocity_               += (-SHRINK_SPEED)    * 0.015f;
             PlayerPartsBehavior::toCoreVelocity_    += (-TO_CORE_SPEED)   * 0.015f;
             BaseEnemyPartsBehavior::toCoreVelocity_ += (-TO_CORE_SPEED)   * 0.015f;
-            UI::meterPos_.x = std::min(0.0f, UI::meterPos_.x + 5.0f);
-            UI::meterPos_.y = std::max(0.0f, UI::meterPos_.y - 5.0f);
-            UI::plPartsCountPos_.x = std::min(0.0f, UI::plPartsCountPos_.x + 5.0f);
+
             UI::plPartsCountPos_.y = std::min(0.0f, UI::plPartsCountPos_.y + 5.0f);
+
+            //meterAlphaColor_
+
+            UI::meterPos_.x = std::min(825.0f,  UI::meterPos_.x + 20.0f);
+            UI::meterPos_.y = std::max(-450.0f, UI::meterPos_.y - 19.8f);
+            // 透かす
+            UI::meterAlphaColor_ = std::max(
+                0.5f, UI::meterAlphaColor_ += (-0.05f)
+            );
+
             UI::letterBox_multiplySizeY_ = std::max(0.7f, UI::letterBox_multiplySizeY_ + LETTER_BOX_SUB_SPEED); // 0.0fより小さければ0.0fに修正
         }
         else // すべてのobjが縮小していなければ
@@ -195,7 +219,27 @@ void Game::update()
             Behavior::shrinkVelocity_               = SHRINK_SPEED;
             PlayerPartsBehavior::toCoreVelocity_    = TO_CORE_SPEED;
             BaseEnemyPartsBehavior::toCoreVelocity_ = TO_CORE_SPEED;
+
+            UI::plPartsCountPos_.y = std::min(0.0f, UI::plPartsCountPos_.y + 5.0f);
+
+            UI::meterPos_.x = std::max(0.0f, UI::meterPos_.x - 50.0f);
+            UI::meterPos_.y = std::min(0.0f, UI::meterPos_.y + 28.0f);
+
             UI::letterBox_multiplySizeY_ = std::min(1.0f, UI::letterBox_multiplySizeY_ + LETTER_BOX_ADD_SPEED); // 1.0fより大きければ1.0fに修正
+
+            // 侵入していたら透かす
+            if (UI::isInAreaMeter_)
+            {
+                UI::meterAlphaColor_ = std::max(
+                    UI::UI_ALPHA_COLOR_MIN, UI::meterAlphaColor_ += (-0.05f)
+                );
+            }
+            else // でなければ戻す
+            {
+                UI::meterAlphaColor_ = std::min(
+                    UI::UI_ALPHA_COLOR_MAX, UI::meterAlphaColor_ += 0.05f
+                );
+            }
 
             // 縮小SEフェードアウト
             Audio::fade(SE_SHRINK, 0.5f, 0.0f);
@@ -217,6 +261,14 @@ void Game::update()
         if (isGameOver())
         {
             gameOverProc();
+            break;
+        }
+
+        
+        // ゲームクリアの処理
+        if (isGameClear())
+        {
+            gameClearProc();
             break;
         }
 
@@ -271,8 +323,8 @@ void Game::draw()
     // ドロップパーツを明滅させる
     drawblink();
 
-    // (gameoverなら表示しない)
-    if (!isGameOver())
+    // (ゲームオーバー・ゲームクリアならUIを表示しない)
+    if (!isGameOver() && !isGameClear())
     {
         // 縮小カウントメーターの描画
         UI::drawShrinkValueMeter();
@@ -282,6 +334,13 @@ void Game::draw()
 
         // 映画の黒帯の描画
         UI::drawLetterBox();
+    }
+
+    // TODO: ゲームクリアしていてgameClearStateがGAMECLEAR_STATE::RESULTならリザルト画面のバック描画
+    if (isGameClear() && gameClearState_ >= GAMECLEAR_STATE::RESULT)
+    {
+        // リザルト画面のバック描画
+        UI::drawResultBack();
     }
 }
 
@@ -317,10 +376,10 @@ void Game::judge()
 // 画面中央に移動する
 bool MoveToCenter(OBJ2D* obj)
 {
-    bool contact = objToul::instance().ContactPos(obj, { BG::WINDOW_W_F * 0.5f,BG::WINDOW_H_F * 0.5f },2.0f);
-    bool enlarge = objToul::instance().Enlarge(obj, { GAME_OVER_SCALE,GAME_OVER_SCALE },0.04f);
+    bool contact = objToul::instance().ContactPos(obj, { BG::WINDOW_W_F * 0.5f, BG::WINDOW_H_F * 0.5f }, 2.5f);
+    bool enlarge = objToul::instance().Enlarge(obj, { GAME_OVER_SCALE, GAME_OVER_SCALE }, 0.04f);
 
-    if (contact && enlarge)return true;
+    if (contact && enlarge) return true;
 
     return false;
 }
@@ -360,7 +419,7 @@ void Game::gameOverProc()
         //--< 爆発エフェクト >--
 
         if (!player_->actorComponent_->isQuake_) player_->actorComponent_->isQuake_ = true; // 爆破中は振動させる
-        if(ChainEffect(player_)) ++gameOverState_;
+        if (ChainEffect(player_)) ++gameOverState_;
         break;
     case 2:
         // --< エフェクトの再生終了待ち >--
@@ -418,5 +477,109 @@ void Game::gameOverProc()
 
         if (playerHeart_->performComponent_->isTrigger) changeScene(Title::instance());
         break;
+    }
+}
+
+void Game::gameClearProc()
+{
+    if (!boss_) return;
+
+    Transform*&      bossT = boss_->transform_;
+    ActorComponent*& bossA = boss_->actorComponent_;
+
+    static int timer = 0;
+
+    switch (gameClearState_)
+    {
+    case GAMECLEAR_STATE::INIT: // 初期設定
+
+        // judgeを行わないようにする
+        player_->collider_->judgeFlag_ = false;
+
+        // 操作できなくする
+        boss_->update_ = nullptr;
+        bossT->velocity_ = {};
+
+        // ゲーム・ボス戦BGMフェードアウト
+        Audio::fade(BGM_GAME, 2.0f, 0.0f);
+        Audio::fade(BGM_BOSS, 2.0f, 0.0f);
+
+        ++gameClearState_;
+        /*fallthrough*/
+    case GAMECLEAR_STATE::PLAY_EFFECT:
+        // 連鎖爆発エフェクト
+        if (!bossA->isQuake_) bossA->isQuake_ = true; // 爆破中は振動させる
+        ChainEffect(boss_);
+
+        ++timer;
+        if (timer >= 120)
+        {
+            // 操作できなくする
+            player_->update_ = nullptr;
+            player_->transform_->velocity_ = {};
+
+            timer = 0;
+            ++gameClearState_;
+            break;
+        }
+        break;
+    case GAMECLEAR_STATE::RESULT: // リザルト画面
+
+        // リザルト画面のバックのアニメ処理
+        if (UI::resultBackAnimeTimer_ < 99) ++UI::resultBackAnimeTimer_;
+        if (UI::resultBackAnimeTimer_ % 5 == 0)
+        {
+            UI::resultBackTexPosX_ = std::min(
+                1920.0f * 3.0f, UI::resultBackTexPosX_ + 1920.0f
+            );
+        }
+
+        // 連鎖爆発エフェクト
+        if (!bossA->isQuake_) bossA->isQuake_ = true; // 爆破中は振動させる
+        ChainEffect(boss_);
+
+        // 指定のボタンを押したら次に進む
+        if ((GameLib::input::TRG(0) & GameLib::input::PAD_TRG1) ||
+            (GameLib::input::TRG(0) & GameLib::input::PAD_TRG2) ||
+            (GameLib::input::TRG(0) & GameLib::input::PAD_TRG3) ||
+            (GameLib::input::TRG(0) & GameLib::input::PAD_TRG4) &&
+            UI::resultBackTexPosX_ == 1920.0f * 3.0f)
+        {
+            ++gameClearState_;
+            break;
+        }
+        break;
+    case GAMECLEAR_STATE::ADD_ALPHA_RESULT_BACK: // リザルト画面のバックの不透明度を下げる
+
+        UI::resultBackColorW_ = std::max(-0.5f, UI::resultBackColorW_ - 0.025f);
+
+        if (UI::resultBackColorW_ == -0.5f)
+        {
+            // 弾を打てないようにする
+            player_->actorComponent_->attackTimer_ = 9999;
+
+            ++gameClearState_;
+            break;
+        }
+
+        break;
+    case GAMECLEAR_STATE::OBJ_CLEAR: // player本体・ボス以外を消去
+
+        for (auto& obj : *obj2dManager_->getList())
+        {
+            if (obj == player_) continue;
+            if (obj == boss_)   continue;
+
+            obj->behavior_ = nullptr;
+        }
+
+        // プレイヤーを透明にする
+        player_->renderer_->color_.w = 0.0f;
+
+        // 背景を白にする
+        FADE::getInstance2()->SetAlpha(1.0f);
+        ++gameClearState_;
+        break;
+
     }
 }

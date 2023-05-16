@@ -11,13 +11,15 @@ float   UI::meterNeedleAngle_;             // 計器の針の角度
 float   UI::subMeterNeedleAngle_;          // 計器の針の角度を減算
 VECTOR2 UI::meterPos_;
 
-float   UI::plPartsCountAlphaColor_;     // カウントの不透明度
-bool    UI::isInAreaPlPartsCount_;       // OBJがカウント描画の範囲内に入っているか
+float   UI::plPartsCountAlphaColor_;       // カウントの不透明度
+bool    UI::isInAreaPlPartsCount_;         // OBJがカウント描画の範囲内に入っているか
 VECTOR2 UI::plPartsCountPos_;
 
+float   UI::letterBox_multiplySizeY_;      // 映画の黒帯の縦幅(特殊)
 
-float UI::letterBox_multiplySizeY_;      // 映画の黒帯の縦幅(特殊)
-
+float   UI::resultBackTexPosX_;            // リザルト画面のバックのtexPos  
+int     UI::resultBackAnimeTimer_;         // リザルト画面のバックのアニメタイマー
+float   UI::resultBackColorW_;             // リザルト画面のバックの不透明度
 
 // 初期設定
 void UI::init()
@@ -29,15 +31,17 @@ void UI::init()
     meterFrameAngle_                = 0.0f;
     meterNeedleAngle_               = 0.0f;
     subMeterNeedleAngle_            = 0.0f;
+    meterPos_                       = { 0,350 };
 
-    meterPos_ = { -850,850 };
-
-    plPartsCountAlphaColor_       = 1.0f;
-    isInAreaPlPartsCount_         = false;
-
-    plPartsCountPos_ = { -850,-850 };
+    plPartsCountAlphaColor_         = 1.0f;
+    isInAreaPlPartsCount_           = false;
+    plPartsCountPos_                = { 0,-350 };
 
     letterBox_multiplySizeY_        = 1.0f;
+
+    resultBackTexPosX_              = 0.0f;
+    resultBackAnimeTimer_           = 0;
+    resultBackColorW_               = 0.6f;
 }
 
 
@@ -88,14 +92,6 @@ void UI::drawShrinkValueMeter()
     VECTOR4 color   = {};
 
 
-    if (isInAreaMeter_) meterAlphaColor_ += (-0.05f); // 侵入していたら透かす
-    else                meterAlphaColor_ +=   0.05f;  // でなければ戻す
-
-    // 不透明度超過チェック
-    if (meterAlphaColor_ < UI_ALPHA_COLOR_MIN) meterAlphaColor_ = UI_ALPHA_COLOR_MIN;
-    if (meterAlphaColor_ > UI_ALPHA_COLOR_MAX) meterAlphaColor_ = UI_ALPHA_COLOR_MAX;
-
-
     // 縮小カウントの数字
     {
         if (dispMeterShrinkCountMaxTimer_ > 0)  // timerに値が入っている場合
@@ -122,7 +118,7 @@ void UI::drawShrinkValueMeter()
         // 使いまわし変数セット
         {
             sprNo   = 0;
-            pos     = VECTOR2(135, 990) + meterPos_;
+            pos     = VECTOR2(135, 1000) + meterPos_;
             scale   = { 3.75f, 3.75f };
             texPos  = {};
             size    = {};
@@ -167,7 +163,7 @@ void UI::drawShrinkValueMeter()
         // 使いまわし変数セット
         {
             sprNo   = UI_METER_FRAME;
-            pos     = VECTOR2(100, 1000) + meterPos_;
+            pos     = VECTOR2(110, 1000) + meterPos_;
             scale   = { 3, 3 };
             texPos  = {};
             size    = { 250, 250 };
@@ -215,7 +211,7 @@ void UI::drawShrinkValueMeter()
         // 使いまわし変数セット
         {
             sprNo   = UI_METER_NEEDLE;
-            pos     = VECTOR2(100, 1000) + meterPos_;
+            pos     = VECTOR2(110, 1000) + meterPos_;
             scale   = { 1.225f, 1.225f };
             texPos  = {};
             size    = { 250, 250 };
@@ -273,15 +269,14 @@ void UI::drawPlPartsCurrentCount()
     // 数字描画
     {
         std::ostringstream ss;
-        ss << "x" << BasePlayerBehavior::plPartsCurrentCount_;
+        ss << "x" << std::setw(3) << std::setfill('0') << BasePlayerBehavior::plPartsCurrentCount_;
 
-        pos   = VECTOR2(125, 60) + plPartsCountPos_;
+        pos   = VECTOR2(135, 60) + plPartsCountPos_;
         scale = { 1.5f, 1.5f };
         color = { 0,0,0, plPartsCountAlphaColor_ };
 
         GameLib::font::textOut(
-            6, ss.str(), pos, scale, color,
-            GameLib::TEXT_ALIGN::MIDDLE_LEFT
+            6, ss.str(), pos, scale, color, GameLib::TEXT_ALIGN::MIDDLE_LEFT
         );
     }
 
@@ -329,4 +324,36 @@ void UI::drawLetterBox()
     // ステンシルをリセット
     DepthStencil::instance().clear();
     DepthStencil::instance().set(DepthStencil::MODE::NONE);
+}
+
+
+
+// リザルト画面のバック描画
+void UI::drawResultBack()
+{
+    using namespace GameLib;
+
+    // 使いまわし変数
+    int     sprNo  = 0;
+    VECTOR2 pos    = {};
+    VECTOR2 scale  = {};
+    VECTOR2 texPos = {};
+    VECTOR2 size   = {};
+    VECTOR2 center = {};
+    float   angle  = 0.0f;
+    VECTOR4 color  = {};
+
+    // リザルト画面のバック描画
+    {
+        sprNo  = UI_RESULT_BACK;
+        scale  = { 1,1 };
+        size   = { 1920,1080 };
+        texPos = { resultBackTexPosX_, 0 };
+        color  = { 1,1,1, resultBackColorW_ };
+
+        // 描画
+        texture::begin(sprNo);
+        texture::draw(sprNo, pos, scale, texPos, size, center, angle, color);
+        texture::end(sprNo);
+    }
 }

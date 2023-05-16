@@ -45,8 +45,9 @@ enum GAME_TEXNO
 
     // UI
     UI_METER_FRAME,     // 計器の枠
-    UI_METER_READ,      // 計器の目盛り
     UI_METER_NEEDLE,    // 計器の針
+
+    UI_RESULT_BACK,     // リザルトのバック
 
     // コア
     PL_CORE01,

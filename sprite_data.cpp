@@ -23,7 +23,7 @@ GameLib::LoadTexture titleLoadTexture[] = {
 // ゲーム画像データ
 GameLib::LoadTexture gameLoadTexture[] = {
     // 背景
-    { GAME_TEXNO::BG01, L"./Data/Images/BackGround/BackGround05.png", 1U }, // 1前面(縮小後は後面)
+    { GAME_TEXNO::BG01, L"./Data/Images/BackGround/BackGround01.png", 1U }, // 1前面(縮小後は後面)
     { GAME_TEXNO::BG02, L"./Data/Images/BackGround/BackGround02.png", 1U }, // 2中間
     { GAME_TEXNO::BG03, L"./Data/Images/BackGround/BackGround03.png", 1U }, // 2前面(縮小後は後面)
     { GAME_TEXNO::BG04, L"./Data/Images/BackGround/BackGround01.png", 1U }, // 3中間
@@ -42,8 +42,10 @@ GameLib::LoadTexture gameLoadTexture[] = {
     { GAME_TEXNO::BG17, L"./Data/Images/BackGround/BackGround11.png", 1U }, // 9前面(縮小後は後面)
 
     // UI
-    { GAME_TEXNO::UI_METER_FRAME,    L"./Data/Images/UI/Meter_Frame.png",   1U },   // 計器の枠
-    { GAME_TEXNO::UI_METER_NEEDLE,   L"./Data/Images/UI/Meter_Needle.png",  1U },   // 計器の針
+    { GAME_TEXNO::UI_METER_FRAME,  L"./Data/Images/UI/Meter_Frame.png",  1U },   // 計器の枠
+    { GAME_TEXNO::UI_METER_NEEDLE, L"./Data/Images/UI/Meter_Needle.png", 1U },   // 計器の針
+
+    { GAME_TEXNO::UI_RESULT_BACK,  L"./Data/Images/UI/Result_Back.png",  1U },   // リザルト画面のバック
 
     // コア
     { GAME_TEXNO::PL_CORE01,  L"./Data/Images/Core/PlayerCore01.png", 1U },

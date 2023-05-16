@@ -155,7 +155,6 @@ void BaseEnemyBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
 {
     ActorComponent* dstA = dst->actorComponent_;
 
-
     // プレイヤーのHPを減らす
     dstA->hp_ = std::max(dstA->hp_ - getParam()->ATTACK_POWER, 0);
 
@@ -772,6 +771,29 @@ void EraseEnemy::erase(OBJ2D* obj) const
 
     ActorComponent* a = obj->actorComponent_;
 
+    // TODO: ボスが死んでいたら残っているエネミーを消去
+    // ボスが死んでいて自分がボスでなければ
+    if (Game::instance()->isBossDied_ && obj->behavior_ != &enemyCore02Behavior)
+    {
+        // 爆発エフェクト
+        AddObj::addEffect(obj, &efcBombBehavior);
+
+        // 死亡SE
+        Audio::play(SE_DEATH, false);
+
+        // 消去
+        a->parent_      =  nullptr;
+        a->orgParent_   = nullptr;
+        obj->behavior_  = nullptr;
+
+        return;
+    }
+    // TODO: ボスが死んでいてボスならreturnだけ行う
+    else if (Game::instance()->isBossDied_ && obj->behavior_ == &enemyCore02Behavior)
+    { 
+        return; 
+    } 
+
 
     // スケールが一定以下になったら消去
     //if (obj->transform_->scale_.x <= UPDATE_OBJ_SCALE_MIN_LIMIT)
@@ -798,6 +820,19 @@ void EraseEnemy::erase(OBJ2D* obj) const
         AddObj::addEffect(obj, &efcBombBehavior);
 
         a->parent_ = nullptr; // 親をリセット
+
+        // TODO: ボスが死んだらボス死亡フラグを立たせる
+        // 自分がボスなら
+        if (obj->behavior_ == &enemyCore02Behavior)
+        {
+            a->orgParent_ = nullptr;  // 元の親をリセット
+
+            // ボス死亡フラグをtrue
+            Game::instance()->isBossDied_ = true;
+
+            return;
+        }
+
 
         // 自分がコアでないならゴミアイテム化する
         if (obj != a->orgParent_)
