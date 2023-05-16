@@ -104,7 +104,7 @@ void BaseDropPartsBehavior::areaCheck(OBJ2D* obj) const
 
     const float leftLimit = -size->x;
     const float rightLimit = BG::WINDOW_W + size->x;
-    const float topLimit = size->y;
+    const float topLimit = -size->y;
     const float bottomLimit = BG::WINDOW_H + size->y;
 
     if (pos->x < leftLimit || pos->x > rightLimit ||
