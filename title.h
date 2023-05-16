@@ -19,6 +19,7 @@ private:
 	bool isStartPerform_;
 	bool isPlayerMove_;
 	bool isPlayerShot_;
+	int setBehaviorNo_;
 	int oldTimer_;
 
 	int pushCount_ = 0;
@@ -67,6 +68,7 @@ private:
 		, isStartPerform_(true)
 		, isPlayerMove_(false)
 		, isPlayerShot_(false)	
+		, setBehaviorNo_(0)
 		, oldTimer_(0)
 		, pushCount_(0)
 		, isDispTextStart_(false)

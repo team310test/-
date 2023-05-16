@@ -13,6 +13,7 @@ GameLib::LoadTexture titleLoadTexture[] = {
     { TITLE_TEXNO::TITLE_TRASH_BOX,  L"./Data/Images/UI/Title_TrashBox.png",   1U }, // ゴミ箱 
     { TITLE_TEXNO::TITLE_USER_MOVE,  L"./Data/Images/UI/Title_User_Move.png",  1U }, // 操作方法WASD→←↓→
     { TITLE_TEXNO::TITLE_USER_SPACE, L"./Data/Images/UI/Title_User_Space.png", 1U }, // 操作方法Space
+    { TITLE_TEXNO::TITLE_USER_HOLD, L"./Data/Images/UI/Title_Text_Hold.png", 1U },   // 操作方法Hold
 
     { TITLE_TEXNO::TITLE_TEXT_START, L"./Data/Images/UI/Title_Text_Start.png", 1U }, // Start
     { TITLE_TEXNO::TITLE_TEXT_EXIT,  L"./Data/Images/UI/Title_Text_Exit.png",  1U }, // Exit
@@ -102,6 +103,7 @@ GameLib::SpriteData sprTitleTrashBox02  = SPRITE_CENTER(TITLE_TEXNO::TITLE_TRASH
 
 GameLib::SpriteData sprTitleUserMove    = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER_MOVE,  0, 0, 512, 128);
 GameLib::SpriteData sprTitleUserSpace   = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER_SPACE, 0, 0, 384, 128);
+GameLib::SpriteData sprTitleUserHold    = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER_HOLD, 0, 0, 384, 128);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 

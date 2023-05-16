@@ -15,6 +15,7 @@ enum TITLE_TEXNO
     TITLE_TRASH_BOX,    // ゴミ箱
     TITLE_USER_MOVE,    // 操作方法WASD→←↓→
     TITLE_USER_SPACE,   // 操作方法Space
+    TITLE_USER_HOLD,    // 操作方法長押し
 
     TITLE_TEXT_START,        // Start
     TITLE_TEXT_EXIT,         // Exit
@@ -99,6 +100,7 @@ extern GameLib::SpriteData sprTitleTrashBox01;
 extern GameLib::SpriteData sprTitleTrashBox02;
 extern GameLib::SpriteData sprTitleUserMove;
 extern GameLib::SpriteData sprTitleUserSpace;
+extern GameLib::SpriteData sprTitleUserHold;
 
 
 ///////////// ゲーム ////////////////////////////////////////////////

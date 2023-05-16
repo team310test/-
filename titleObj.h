@@ -86,6 +86,16 @@ private:
 };
 EXTERN TitleHintShotObjBehavior titleHintShotObjBehavior;
 
+// ëÄçÏê‡ñæ[í∑âüÇµ]
+class TitleHintHoldObjBehavior :public BaseTitleObjBehavior
+{
+public:
+	TitleHintHoldObjBehavior();
+private:
+	void init(OBJ2D*) const override;
+};
+EXTERN TitleHintHoldObjBehavior titleHintHoldObjBehavior;
+
 
 //******************************************************************************
 // 

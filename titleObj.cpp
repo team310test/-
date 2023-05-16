@@ -126,15 +126,15 @@ void TitleStartObjBehavior::update(OBJ2D* obj) const
         r->drawScale_ = { 2.25f,2.25f };
 
         // Startテキスト表示(プレイヤーのupdateがなくなっていれば非表示)
-        if (pl->update_) Title::instance()->isDispTextStart_ = true;
-        else             Title::instance()->isDispTextStart_ = false;
+        //if (pl->update_) Title::instance()->isDispTextStart_ = true;
+        //else             Title::instance()->isDispTextStart_ = false;
     }
     else
     {
         r->drawScale_ = { 2.0f,2.0f };
 
         // Startテキスト非表示
-        Title::instance()->isDispTextStart_ = false;
+        //Title::instance()->isDispTextStart_ = false;
     }
 }
 
@@ -182,7 +182,7 @@ void TitleEndObjBehavior::update(OBJ2D* obj) const
         r->drawScale_ = { 2.25f,2.25f };
 
         // Exitテキスト表示
-        Title::instance()->isDispTextExit_ = true;
+        //Title::instance()->isDispTextExit_ = true;
     }
     else 
     {
@@ -190,7 +190,7 @@ void TitleEndObjBehavior::update(OBJ2D* obj) const
         r->drawScale_ = { 2.0f,2.0f };
 
         // Exitテキスト非表示
-        Title::instance()->isDispTextExit_ = false;
+        //Title::instance()->isDispTextExit_ = false;
     }
 }
 
@@ -267,6 +267,22 @@ TitleHintShotObjBehavior::TitleHintShotObjBehavior()
 }
 
 void TitleHintShotObjBehavior::init(OBJ2D* obj) const
+{
+    // 描画以外の判定を行わない
+    obj->collider_->judgeFlag_ = false;
+    obj->collider_->isDrawHitRect_ = false;
+    obj->collider_->isDrawAttackRect_ = false;
+}
+
+
+// 操作説明[長押し]
+TitleHintHoldObjBehavior::TitleHintHoldObjBehavior()
+{
+    param_.SPR_DATA = &sprTitleUserHold;
+    param_.SCALE = { 0.75f, 0.75f };
+}
+
+void TitleHintHoldObjBehavior::init(OBJ2D* obj) const
 {
     // 描画以外の判定を行わない
     obj->collider_->judgeFlag_ = false;
