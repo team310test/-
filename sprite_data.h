@@ -51,6 +51,7 @@ enum GAME_TEXNO
     // コア
     PL_CORE01,
     ENM_CORE01,
+    ENM_CORE02,
 
     // 攻撃パーツ
     TURRET01,
@@ -107,6 +108,7 @@ extern GameLib::SpriteData sprPlayerCore01;
 
 // パーツ
 extern GameLib::SpriteData sprEnemyCore01;
+extern GameLib::SpriteData sprEnemyCore02;
 extern GameLib::SpriteData sprPartsCore02;
 
 extern GameLib::SpriteData sprPartsTurret01;

@@ -9,6 +9,12 @@ namespace
         { nullptr, -1 },// 終了フラグ
     };
 
+    //  コア02(ボス)
+    GameLib::AnimeData animeCore02[] = {
+        { &sprEnemyCore02, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
+
     // タレット01
     GameLib::AnimeData animeTurret01[] = {
         { &sprPartsTurret01, 10 },
@@ -269,6 +275,36 @@ EnemyCore01Behavior::EnemyCore01Behavior()
     param_.ROT_SPEED     = ENM_CORE01_ROT_SPEED;
 }
 
+
+//******************************************************************************
+//
+//      EnemyCore02(ボス)
+//
+//******************************************************************************
+EnemyCore02Behavior::EnemyCore02Behavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT = animeCore02;
+
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+    param_.SCALE = { 2.0f,2.0f };
+
+    param_.HIT_BOX[0] = {
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.5f,
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.5f
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    param_.HP = ENM_CORE02_HP;
+    param_.ATTACK_POWER = ENM_CORE02_ATK;
+
+    // 次のBehaviorなし
+    param_.NEXT_BEHAVIOR = nullptr;
+    param_.NEXT_ERASER = nullptr;
+
+    // アニメーションのパラメータ
+    param_.OBJ_ANIME = &scaleAnime;
+}
 
 
 //******************************************************************************

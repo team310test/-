@@ -38,6 +38,16 @@ private:
 };
 EXTERN EnemyCore01Behavior enemyCore01Behavior;
 
+// EnemyCore02(É{ÉX)
+class EnemyCore02Behavior : public BaseEnemyBehavior
+{
+public:
+    EnemyCore02Behavior();
+private:
+    //void attack(OBJ2D* obj) const override;
+};
+EXTERN EnemyCore02Behavior enemyCore02Behavior;
+
 
 //******************************************************************************
 // 

@@ -106,6 +106,8 @@ namespace
         #define ENM_CORE01_HP           (1)         // 体力
         #define ENM_CORE01_ATK          (1)         // 攻撃力(体当たりダメージ)
         #define ENM_CORE01_ROT_SPEED    (-0.05f)    // 回転速度
+        #define ENM_CORE02_HP           (1)         // 体力
+        #define ENM_CORE02_ATK          (1)         // 攻撃力(体当たりダメージ)
     }
 
     // EnemyTurret

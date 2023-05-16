@@ -187,6 +187,8 @@ bool predFunc(OBJ2D* obj1, OBJ2D* obj2)
 
 void OBJ2DManager::draw()
 {
+    GameLib::debug::setString("obj:%d", objList_.size());
+
     constexpr float LIMIT = 256.0f;
 
     this->getList()->sort([](OBJ2D* obj1, OBJ2D* obj2)->bool {

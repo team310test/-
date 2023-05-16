@@ -99,9 +99,19 @@ bool BaseDropPartsBehavior::isAlive(OBJ2D* /*obj*/) const
 
 void BaseDropPartsBehavior::areaCheck(OBJ2D* obj) const
 {
-    if (obj->transform_->position_.x < 0) // 画面右に行ったら
+    const VECTOR2* pos = &obj->transform_->position_;
+    const VECTOR2* size = &obj->collider_->size_;
+
+    const float leftLimit = size->x;
+    const float rightLimit = BG::WINDOW_W + size->x;
+    const float topLimit = size->y;
+    const float bottomLimit = BG::WINDOW_H + size->y;
+
+    if (pos->x < leftLimit || pos->x > rightLimit ||
+        pos->y < topLimit || pos->y > bottomLimit)
     {
-        obj->behavior_ = nullptr; // 消去
+        obj->behavior_ = nullptr; // 画面外に行ったら消去
+        return;
     }
 }
 

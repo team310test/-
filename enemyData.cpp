@@ -114,3 +114,10 @@ EnemyData enemy08[] =
     ,{&enemyTurret01Behavior,{-320.0f,96.0f},3,PARENT_NO::NOT,PARENT_NO::PARENT2}
     , END
 };
+
+// エネミー99(ボス)
+EnemyData enemy99[] =
+{
+    CORE(&enemyCore02Behavior,3,PARENT_NO::PARENT0)
+    ,END
+};

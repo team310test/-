@@ -49,6 +49,7 @@ GameLib::LoadTexture gameLoadTexture[] = {
     // コア
     { GAME_TEXNO::PL_CORE01,  L"./Data/Images/Core/PlayerCore01.png", 1U },
     { GAME_TEXNO::ENM_CORE01, L"./Data/Images/Core/EnemyCore01.png",  1U },
+    { GAME_TEXNO::ENM_CORE02, L"./Data/Images/Core/PlayerCore01.png", 1U },
 
     // 攻撃パーツ
     { GAME_TEXNO::TURRET01,  L"./Data/Images/Parts/Turret/Turret01.png", 1U },
@@ -111,6 +112,7 @@ GameLib::SpriteData sprTitleUserSpace   = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER_
 //------< コア>------------------------------------------------------------------
 GameLib::SpriteData sprPlayerCore01     = SPRITE_CENTER(GAME_TEXNO::PL_CORE01,   0, 0, 128, 128);
 GameLib::SpriteData sprEnemyCore01      = SPRITE_CENTER(GAME_TEXNO::ENM_CORE01,  0, 0, 128, 128);
+GameLib::SpriteData sprEnemyCore02      = SPRITE_CENTER(GAME_TEXNO::ENM_CORE02,  0, 0, 128, 128);
 
 //------< パーツ >------------------------------------------------------------------
 GameLib::SpriteData sprPartsTurret01    = SPRITE_CENTER(GAME_TEXNO::TURRET01, 0, 0, 128, 128);
