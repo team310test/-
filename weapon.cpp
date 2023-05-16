@@ -91,7 +91,7 @@ void BaseShotBehavior::calcAttackBox(OBJ2D* obj) const
 PlayerNormalShotBehavior::PlayerNormalShotBehavior()
 {
     param_.SPR_WEAPON = &sprShot_NormalShot;
-    param_.ERASER     = &eraseShot;
+    param_.ERASER     = &plShotEraser;
 
     param_.SPEED_X      = NORMAL_SHOT_SPEED;
     param_.ATTACK_POWER = NORMAL_SHOT_ATK;
@@ -114,7 +114,7 @@ void PlayerNormalShotBehavior::update(OBJ2D* obj) const
 EnmNormalShotBehavior::EnmNormalShotBehavior()
 {
     param_.SPR_WEAPON = &sprShot_NormalShot;
-    param_.ERASER     = &eraseShot;
+    param_.ERASER     = &enmShotEraser;
 
     param_.SPEED_X      = NORMAL_SHOT_SPEED;
     param_.ATTACK_POWER = NORMAL_SHOT_ATK;
@@ -142,7 +142,7 @@ void EnmNormalShotBehavior::update(OBJ2D* obj) const
 PlSineWaveShotBehavior::PlSineWaveShotBehavior()
 {
     param_.SPR_WEAPON = &sprShot_NormalShot;
-    param_.ERASER = &eraseShot;
+    param_.ERASER = &plShotEraser;
 
     param_.SPEED_X      = SINE_WAVE_SHOT_SPEED;
     param_.ATTACK_POWER = SINE_WAVE_SHOT_ATK;
@@ -211,7 +211,7 @@ void PlSineWaveShotBehavior::update(OBJ2D* obj) const
 PlSquareWaveShotBehavior::PlSquareWaveShotBehavior()
 {
     param_.SPR_WEAPON   = &sprShot_NormalShot;
-    param_.ERASER       = &eraseShot;
+    param_.ERASER       = &plShotEraser;
 
     param_.SPEED_X      = SQUARE_WAVE_SHOT_SPEED_X;
     param_.SPEED_Y      = SQUARE_WAVE_SHOT_SPEED_Y;
@@ -275,7 +275,7 @@ void PlSquareWaveShotBehavior::update(OBJ2D* obj) const
 PlCurveShotBehavior::PlCurveShotBehavior()
 {
     param_.SPR_WEAPON = &sprShot_NormalShot;
-    param_.ERASER = &eraseShot;
+    param_.ERASER = &plShotEraser;
 
     param_.SPEED_X      = CURVE_SHOT_SPEED_X;
     param_.SPEED_Y      = CURVE_SHOT_SPEED_Y;
@@ -305,7 +305,7 @@ void PlCurveShotBehavior::update(OBJ2D* obj) const
 PlCurveShotFlipBehavior::PlCurveShotFlipBehavior()
 {
     param_.SPR_WEAPON = &sprShot_NormalShot;
-    param_.ERASER = &eraseShot;
+    param_.ERASER = &plShotEraser;
 
     param_.SPEED_X = CURVE_SHOT_SPEED_X;
     param_.SPEED_Y = -CURVE_SHOT_SPEED_Y;
@@ -336,7 +336,7 @@ void PlCurveShotFlipBehavior::update(OBJ2D* obj) const
 EnmCurveShotBehavior::EnmCurveShotBehavior()
 {
     param_.SPR_WEAPON = &sprShot_NormalShot;
-    param_.ERASER = &eraseShot;
+    param_.ERASER = &enmShotEraser;
 
     param_.SPEED_X = -CURVE_SHOT_SPEED_X;
     param_.SPEED_Y =  CURVE_SHOT_SPEED_Y;
@@ -367,7 +367,7 @@ void EnmCurveShotBehavior::update(OBJ2D* obj) const
 EnmCurveShotFlirpBehavior::EnmCurveShotFlirpBehavior()
 {
     param_.SPR_WEAPON = &sprShot_NormalShot;
-    param_.ERASER = &eraseShot;
+    param_.ERASER = &enmShotEraser;
 
     param_.SPEED_X = -CURVE_SHOT_SPEED_X;
     param_.SPEED_Y = -CURVE_SHOT_SPEED_Y;
@@ -405,7 +405,7 @@ void EnmCurveShotFlirpBehavior::update(OBJ2D* obj) const
 PlPenetrateShotBehavior::PlPenetrateShotBehavior()
 {
     param_.SPR_WEAPON = &sprShot_NormalShot;
-    param_.ERASER = &eraseShot;
+    param_.ERASER = &plShotEraser;
 
     param_.SPEED_X      = PENETRATE_SHOT_SPEED;
     param_.ATTACK_POWER = PENETRATE_SHOT_ATK;
@@ -460,7 +460,7 @@ void PlPenetrateShotBehavior::update(OBJ2D* obj) const
 EnmAimShotBehavior::EnmAimShotBehavior()
 {
     param_.SPR_WEAPON = &sprShot_NormalShot;
-    param_.ERASER     = &eraseShot;
+    param_.ERASER     = &enmShotEraser;
 
     param_.SPEED_X      = AIM_SHOT_SPEED_X;
     param_.SPEED_Y      = AIM_SHOT_SPEED_Y;
@@ -515,7 +515,8 @@ void EnmAimShotBehavior::update(OBJ2D* obj) const
 //      erase（消去）
 //
 //******************************************************************************
-void ShotEraser::erase(OBJ2D* obj) const
+// プレイヤー
+void PlShotEraser::erase(OBJ2D* obj) const
 {
     if (!obj->behavior_) return;
 
@@ -537,13 +538,50 @@ void ShotEraser::erase(OBJ2D* obj) const
     const VECTOR2* pos  = &t->position_;
     const VECTOR2* size = &c->size_;
 
-    const float leftLimit   = size->x;
-    const float rightLimit  = BG::WINDOW_W + size->x;
-    const float topLimit    = size->y;
-    const float bottomLimit = BG::WINDOW_H + size->y;
+    const float leftLimit   = size->x - PL_SHOT_AREA_MARGIN;
+    const float rightLimit  = BG::WINDOW_W + size->x + PL_SHOT_AREA_MARGIN;
+    const float topLimit    = size->y - PL_SHOT_AREA_MARGIN;
+    const float bottomLimit = BG::WINDOW_H + size->y + PL_SHOT_AREA_MARGIN;
 
     if (pos->x < leftLimit  || pos->x > rightLimit ||
         pos->y < topLimit   || pos->y > bottomLimit)
+    {
+        obj->behavior_ = nullptr; // 画面外に行ったら消去
+        return;
+    }
+
+}
+
+// エネミー
+void EnmShotEraser::erase(OBJ2D* obj) const
+{
+    if (!obj->behavior_) return;
+
+    Transform* t = obj->transform_;
+    Collider* c = obj->collider_;
+    OBJ_TYPE   objAtkType = obj->behavior_->getAttackType();
+
+    // 自分が敵の弾で1回でも縮小していたら消す
+    if (objAtkType == OBJ_TYPE::PLAYER &&
+        t->scale_.x < 1.0f && !c->isShrink_)
+    {
+        // 爆発エフェクト
+        AddObj::addEffect(obj, &efcBombBehavior);
+
+        obj->behavior_ = nullptr;
+        return;
+    }
+
+    const VECTOR2* pos = &t->position_;
+    const VECTOR2* size = &c->size_;
+
+    const float leftLimit = size->x;
+    const float rightLimit = BG::WINDOW_W + size->x;
+    const float topLimit = size->y;
+    const float bottomLimit = BG::WINDOW_H + size->y;
+
+    if (pos->x < leftLimit || pos->x > rightLimit ||
+        pos->y < topLimit || pos->y > bottomLimit)
     {
         obj->behavior_ = nullptr; // 画面外に行ったら消去
         return;

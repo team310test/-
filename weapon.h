@@ -209,9 +209,18 @@ EXTERN EnmAimShotBehavior enmAimShotBehavior;
 //      erase（消去）
 //
 //******************************************************************************
-class ShotEraser : public Eraser
+// プレイヤー
+class PlShotEraser : public Eraser
 {
 private:
     void erase(OBJ2D* obj) const override;
 };
-EXTERN ShotEraser eraseShot;
+EXTERN PlShotEraser plShotEraser;
+
+// エネミー
+class EnmShotEraser : public Eraser
+{
+private:
+    void erase(OBJ2D* obj) const override;
+};
+EXTERN EnmShotEraser enmShotEraser;

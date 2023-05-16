@@ -223,7 +223,7 @@ void BaseEnemyBehavior::areaCheck(OBJ2D* obj) const
     const VECTOR2* pos      = &obj->transform_->position_;
     const float    margin   = 600.0f;
 
-    const float leftLimit   = -size->x - margin;
+    const float leftLimit   = size->x - margin;
     const float rightLimit  = BG::WINDOW_W + size->x + margin;
     const float topLimit    = size->y - margin;
     const float bottomLimit = BG::WINDOW_H + size->y + margin;
@@ -255,7 +255,7 @@ EnemyCore01Behavior::EnemyCore01Behavior()
     // アニメーション
     param_.ANIME_WAIT    = animeCore01;
 
-    param_.SIZE          = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+    param_.SIZE          = { PARTS_OBJ_SIZE * 0.5f, PARTS_OBJ_SIZE * 0.5f };
 
     param_.HIT_BOX[0]    = { 
         -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.5f, 
@@ -286,7 +286,7 @@ EnemyCore02Behavior::EnemyCore02Behavior()
     // アニメーション
     param_.ANIME_WAIT = animeCore02;
 
-    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+    param_.SIZE = { PARTS_OBJ_SIZE * 0.5f, PARTS_OBJ_SIZE * 0.5f };
     param_.SCALE = { 2.0f,2.0f };
 
     param_.HIT_BOX[0] = {
@@ -400,7 +400,7 @@ EnemyTurret01Behavior::EnemyTurret01Behavior()
 {
     param_.ANIME_WAIT    = animeTurret01;
 
-    param_.SIZE          = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+    param_.SIZE          = { PARTS_OBJ_SIZE * 0.5f, PARTS_OBJ_SIZE * 0.5f };
 
     param_.HIT_BOX[0]    = { 
         -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.45f, 
@@ -439,7 +439,7 @@ EnemyTurret01FlipBehavior::EnemyTurret01FlipBehavior()
 {
     param_.ANIME_WAIT = animeTurret01Flip;
 
-    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+    param_.SIZE       = { PARTS_OBJ_SIZE * 0.5f, PARTS_OBJ_SIZE * 0.5f };
 
     param_.HIT_BOX[0] = {
         -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.5f,
@@ -478,7 +478,7 @@ EnemyTurret02Behavior::EnemyTurret02Behavior()
 {
     param_.ANIME_WAIT = animeTurret02;
 
-    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+    param_.SIZE       = { PARTS_OBJ_SIZE * 0.5f, PARTS_OBJ_SIZE * 0.5f };
 
     // 画像サイズ(128*64の半分)
     param_.HIT_BOX[0] = { -64, -32, 64, 32 };   // 下長方形    
@@ -519,7 +519,7 @@ EnemyTurret02FlipBehavior::EnemyTurret02FlipBehavior()
 {
     param_.ANIME_WAIT = animeTurret02Flip;
 
-    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+    param_.SIZE       = { PARTS_OBJ_SIZE * 0.5f, PARTS_OBJ_SIZE * 0.5f };
 
     // 画像サイズ(128*64の半分)
     param_.HIT_BOX[0] = { -64, -32, 64, 32 };   // 下長方形    
@@ -567,7 +567,7 @@ EnemyShield01Behavior::EnemyShield01Behavior()
 {
     param_.ANIME_WAIT    = animeShield01;
 
-    param_.SIZE          = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+    param_.SIZE          = { PARTS_OBJ_SIZE * 0.5f, PARTS_OBJ_SIZE * 0.5f };
 
     param_.HIT_BOX[0]    = {
         -PARTS_OBJ_SIZE * 0.25f, -PARTS_OBJ_SIZE * 0.5f,
@@ -596,7 +596,7 @@ EnemyBuff01Behavior::EnemyBuff01Behavior()
 {
     param_.ANIME_WAIT    = animeBuff01;
 
-    param_.SIZE          = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+    param_.SIZE          = { PARTS_OBJ_SIZE * 0.5f, PARTS_OBJ_SIZE * 0.5f };
 
     param_.HIT_BOX[0]    = {
         -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.5f,
@@ -634,7 +634,7 @@ EnemyCommon01Behavior::EnemyCommon01Behavior()
 {
     param_.ANIME_WAIT       = animeCommon01;
 
-    param_.SIZE             = { PARTS_OBJ_SIZE, COMMON_SIZE_36 };
+    param_.SIZE             = { PARTS_OBJ_SIZE * 0.5f, COMMON_SIZE_36 };
     param_.HIT_BOX[0]       = {
         -COMMON_HITBOX_64, -COMMON_HITBOX_18,
          COMMON_HITBOX_64,  COMMON_HITBOX_18,
@@ -655,7 +655,7 @@ EnemyCommon04Behavior::EnemyCommon04Behavior()
 {
     param_.ANIME_WAIT       = animeCommon01;
 
-    param_.SIZE             = { PARTS_OBJ_SIZE, COMMON_SIZE_36 };
+    param_.SIZE             = { PARTS_OBJ_SIZE * 0.5f, COMMON_SIZE_36 };
 
     param_.HIT_BOX[0]       = {
          -COMMON_HITBOX_18, -COMMON_HITBOX_64,
@@ -677,7 +677,7 @@ EnemyCommon02Behavior::EnemyCommon02Behavior()
 {
     param_.ANIME_WAIT    = animeCommon02;
 
-    param_.SIZE          = { PARTS_OBJ_SIZE, COMMON_SIZE_36 };
+    param_.SIZE          = { PARTS_OBJ_SIZE * 0.5f, COMMON_SIZE_36 };
 
     param_.HIT_BOX[0]    = {
         -COMMON_HITBOX_64, -COMMON_HITBOX_18,
@@ -699,7 +699,7 @@ EnemyCommon05Behavior::EnemyCommon05Behavior()
 {
     param_.ANIME_WAIT    = animeCommon02;
                          
-    param_.SIZE          = { PARTS_OBJ_SIZE, COMMON_SIZE_36 };
+    param_.SIZE          = { PARTS_OBJ_SIZE * 0.5f, COMMON_SIZE_36 };
     param_.HIT_BOX[0]    = {
          -COMMON_HITBOX_18, -COMMON_HITBOX_64,
           COMMON_HITBOX_18,  COMMON_HITBOX_64,
@@ -721,7 +721,7 @@ EnemyCommon03Behavior::EnemyCommon03Behavior()
 {
     param_.ANIME_WAIT    = animeCommon03;
 
-    param_.SIZE          = { PARTS_OBJ_SIZE, COMMON_SIZE_36 };
+    param_.SIZE          = { PARTS_OBJ_SIZE * 0.5f, COMMON_SIZE_36 };
     param_.HIT_BOX[0]    = {
         -COMMON_HITBOX_64, -COMMON_HITBOX_18,
          COMMON_HITBOX_64,  COMMON_HITBOX_18,
@@ -742,7 +742,7 @@ EnemyCommon06Behavior::EnemyCommon06Behavior()
 {
     param_.ANIME_WAIT     = animeCommon03;
 
-    param_.SIZE           = { PARTS_OBJ_SIZE, COMMON_SIZE_36 };
+    param_.SIZE           = { PARTS_OBJ_SIZE * 0.5f, COMMON_SIZE_36 };
 
     param_.HIT_BOX[0]     = {
          -COMMON_HITBOX_18, -COMMON_HITBOX_64,

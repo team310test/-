@@ -48,3 +48,5 @@ extern STAGE_SCRIPT stageData01[];
 extern STAGE_SCRIPT stageData02[];
 extern STAGE_SCRIPT stageData03[];
 extern STAGE_SCRIPT stageData04[];
+extern STAGE_SCRIPT stageData05[];
+extern STAGE_SCRIPT stageData06[];
