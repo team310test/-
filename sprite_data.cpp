@@ -23,27 +23,26 @@ GameLib::LoadTexture titleLoadTexture[] = {
 // ÉQÅ[ÉÄâÊëúÉfÅ[É^
 GameLib::LoadTexture gameLoadTexture[] = {
     // îwåi
-    { GAME_TEXNO::BG01, L"./Data/Images/BackGround/BackGround01.png",   1U },
-    { GAME_TEXNO::BG02, L"./Data/Images/BackGround/BackGround02.png",   1U },
-    { GAME_TEXNO::BG03, L"./Data/Images/BackGround/BackGround03.png",   1U },
-    { GAME_TEXNO::BG04, L"./Data/Images/BackGround/BackGround01.png",   1U },
-    { GAME_TEXNO::BG05, L"./Data/Images/BackGround/BackGround04.png",   1U },
-    { GAME_TEXNO::BG06, L"./Data/Images/BackGround/BackGround02.png",   1U },
-    { GAME_TEXNO::BG07, L"./Data/Images/BackGround/BackGround06.png",   1U },
-    { GAME_TEXNO::BG08, L"./Data/Images/BackGround/BackGround01.png",   1U },
-    { GAME_TEXNO::BG09, L"./Data/Images/BackGround/BackGround05(ñ¢äÆê¨).png",   1U },
-    { GAME_TEXNO::BG10, L"./Data/Images/BackGround/BackGround02.png",   1U },
-    { GAME_TEXNO::BG11, L"./Data/Images/BackGround/BackGround07.png",   1U },
-    { GAME_TEXNO::BG12, L"./Data/Images/BackGround/BackGround12.png",   1U },
-    { GAME_TEXNO::BG13, L"./Data/Images/BackGround/BackGround08.png",   1U },
-    { GAME_TEXNO::BG14, L"./Data/Images/BackGround/BackGround09.png",   1U },
-    { GAME_TEXNO::BG15, L"./Data/Images/BackGround/BackGround10.png",   1U },
-    { GAME_TEXNO::BG16, L"./Data/Images/BackGround/BackGround02.png",   1U },
-    { GAME_TEXNO::BG17, L"./Data/Images/BackGround/BackGround11.png",   1U },
+    { GAME_TEXNO::BG01, L"./Data/Images/BackGround/BackGround05.png", 1U }, // 1ëOñ (èkè¨å„ÇÕå„ñ )
+    { GAME_TEXNO::BG02, L"./Data/Images/BackGround/BackGround02.png", 1U }, // 2íÜä‘
+    { GAME_TEXNO::BG03, L"./Data/Images/BackGround/BackGround03.png", 1U }, // 2ëOñ (èkè¨å„ÇÕå„ñ )
+    { GAME_TEXNO::BG04, L"./Data/Images/BackGround/BackGround01.png", 1U }, // 3íÜä‘
+    { GAME_TEXNO::BG05, L"./Data/Images/BackGround/BackGround04.png", 1U }, // 3ëOñ (èkè¨å„ÇÕå„ñ )
+    { GAME_TEXNO::BG06, L"./Data/Images/BackGround/BackGround02.png", 1U }, // 4íÜä‘
+    { GAME_TEXNO::BG07, L"./Data/Images/BackGround/BackGround06.png", 1U }, // 4ëOñ (èkè¨å„ÇÕå„ñ )
+    { GAME_TEXNO::BG08, L"./Data/Images/BackGround/BackGround01.png", 1U }, // 5íÜä‘
+    { GAME_TEXNO::BG09, L"./Data/Images/BackGround/BackGround05.png", 1U }, // 5ëOñ (èkè¨å„ÇÕå„ñ )
+    { GAME_TEXNO::BG10, L"./Data/Images/BackGround/BackGround02.png", 1U }, // 6íÜä‘
+    { GAME_TEXNO::BG11, L"./Data/Images/BackGround/BackGround07.png", 1U }, // 6ëOñ (èkè¨å„ÇÕå„ñ )
+    { GAME_TEXNO::BG12, L"./Data/Images/BackGround/BackGround12.png", 1U }, // 7íÜä‘
+    { GAME_TEXNO::BG13, L"./Data/Images/BackGround/BackGround08.png", 1U }, // 7ëOñ (èkè¨å„ÇÕå„ñ )
+    { GAME_TEXNO::BG14, L"./Data/Images/BackGround/BackGround09.png", 1U }, // 8íÜä‘
+    { GAME_TEXNO::BG15, L"./Data/Images/BackGround/BackGround10.png", 1U }, // 8ëOñ (èkè¨å„ÇÕå„ñ )
+    { GAME_TEXNO::BG16, L"./Data/Images/BackGround/BackGround02.png", 1U }, // 9íÜä‘
+    { GAME_TEXNO::BG17, L"./Data/Images/BackGround/BackGround11.png", 1U }, // 9ëOñ (èkè¨å„ÇÕå„ñ )
 
     // UI
     { GAME_TEXNO::UI_METER_FRAME,    L"./Data/Images/UI/Meter_Frame.png",   1U },   // åväÌÇÃòg
-    { GAME_TEXNO::UI_METER_READ,     L"./Data/Images/UI/Meter_Read.png",    1U },   // åväÌÇÃñ⁄ê∑ÇË
     { GAME_TEXNO::UI_METER_NEEDLE,   L"./Data/Images/UI/Meter_Needle.png",  1U },   // åväÌÇÃêj
 
     // ÉRÉA
@@ -93,10 +92,10 @@ GameLib::LoadTexture gameLoadTexture[] = {
 
 ////////////////////////// É^ÉCÉgÉã /////////////////////////////////////////////////////////////////
 
-GameLib::SpriteData sprTitlePlayerCore  = SPRITE_CENTER(TITLE_TEXNO::TITLE_PLAYER,    0, 0, 128, 128);
-GameLib::SpriteData sprTitleCoreHeart   = SPRITE_CENTER(TITLE_TEXNO::TITLE_HEART,     0, 0, 128, 128);
-GameLib::SpriteData sprTitleCoreFrame   = SPRITE_CENTER(TITLE_TEXNO::TITLE_FRAME,     0, 0, 128, 128);
-GameLib::SpriteData sprTitleLogo        = SPRITE_CENTER(TITLE_TEXNO::TITLE_LOGO,      0, 0, 640, 128);
+GameLib::SpriteData sprTitlePlayerCore  = SPRITE_CENTER(TITLE_TEXNO::TITLE_PLAYER,    0, 0, 128,  128);
+GameLib::SpriteData sprTitleCoreHeart   = SPRITE_CENTER(TITLE_TEXNO::TITLE_HEART,     0, 0, 128,  128);
+GameLib::SpriteData sprTitleCoreFrame   = SPRITE_CENTER(TITLE_TEXNO::TITLE_FRAME,     0, 0, 128,  128);
+GameLib::SpriteData sprTitleLogo        = SPRITE_CENTER(TITLE_TEXNO::TITLE_LOGO,      0, 0, 1024, 512);
 
 GameLib::SpriteData sprTitleTrashBox01  = SPRITE_CENTER(TITLE_TEXNO::TITLE_TRASH_BOX, (128 * 0), 0, 128, 128);
 GameLib::SpriteData sprTitleTrashBox02  = SPRITE_CENTER(TITLE_TEXNO::TITLE_TRASH_BOX, (128 * 1), 0, 128, 128);

@@ -62,6 +62,7 @@ public:
 	TitleLogoObjBehavior();
 private:
 	void init(OBJ2D*) const override;
+	void update(OBJ2D* obj) const override;
 };
 EXTERN TitleLogoObjBehavior titleLogoObjBehavior;
 

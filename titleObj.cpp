@@ -199,6 +199,7 @@ void TitleEndObjBehavior::update(OBJ2D* obj) const
 TitleLogoObjBehavior::TitleLogoObjBehavior()
 {
     param_.SPR_DATA = &sprTitleLogo;
+    param_.SIZE = { 1024, 512 };
 }
 
 void TitleLogoObjBehavior::init(OBJ2D* obj) const
@@ -209,6 +210,39 @@ void TitleLogoObjBehavior::init(OBJ2D* obj) const
     obj->collider_->isDrawAttackRect_ = false;
 }
 
+void TitleLogoObjBehavior::update(OBJ2D* obj) const
+{
+    if (!Title::instance()->player()) return;
+    if (!Title::instance()->player()->performComponent_->isTrigger) return;
+    if (!Title::instance()->player()->update_) return;
+
+
+    const Transform* t = obj->transform_;
+    const Collider*  c = obj->collider_;
+    Renderer* r = obj->renderer_;
+
+    const VECTOR2& plPos = Title::instance()->player()->transform_->position_;
+
+    const float logoLeft  = t->position_.x - (c->size_.x * 0.5f);
+    const float logoRight = t->position_.x + (c->size_.x * 0.5f);
+    const float logoUp    = t->position_.y - (c->size_.y * 0.5f);
+    const float logoDown  = t->position_.y + (c->size_.y * 0.5f);
+
+    if (plPos.x > logoLeft && plPos.x < logoRight &&
+        plPos.y > logoUp   && plPos.y < logoDown)
+    {
+        r->color_.w += (-0.025f);
+
+        if (r->color_.w < 0.5f) r->color_.w = 0.5f;
+    }
+    else
+    {
+        r->color_.w += 0.025f;
+
+        if (r->color_.w > 1.0f) r->color_.w = 1.0f;
+    }
+
+}
 
 // ‘€ìà–¾[ˆÚ“®]
 TitleHintMoveObjBehavior::TitleHintMoveObjBehavior()
