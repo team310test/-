@@ -791,10 +791,10 @@ PlayerBuff01Behavior::PlayerBuff01Behavior()
          PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.5f
     };
     param_.ATTACK_BOX[0] = { 
-        -PARTS_OBJ_SIZE * 0.5f * BUFF_MALTIPLY_VALUE, 
-        -PARTS_OBJ_SIZE * 0.5f * BUFF_MALTIPLY_VALUE,
-         PARTS_OBJ_SIZE * 0.5f * BUFF_MALTIPLY_VALUE,  
-         PARTS_OBJ_SIZE * 0.5f * BUFF_MALTIPLY_VALUE,
+        -PARTS_OBJ_SIZE * 0.6f, 
+        -PARTS_OBJ_SIZE * 0.6f,
+         PARTS_OBJ_SIZE * 0.6f,  
+         PARTS_OBJ_SIZE * 0.6f,
     };
 
     param_.ATTACK_POWER  = PL_BUFF01_ATK;

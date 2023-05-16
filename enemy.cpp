@@ -223,7 +223,7 @@ void BaseEnemyBehavior::areaCheck(OBJ2D* obj) const
     const VECTOR2* pos      = &obj->transform_->position_;
     const float    margin   = 600.0f;
 
-    const float leftLimit   = size->x - margin;
+    const float leftLimit   = -size->x - margin;
     const float rightLimit  = BG::WINDOW_W + size->x + margin;
     const float topLimit    = size->y - margin;
     const float bottomLimit = BG::WINDOW_H + size->y + margin;
@@ -403,8 +403,8 @@ EnemyTurret01Behavior::EnemyTurret01Behavior()
     param_.SIZE          = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
 
     param_.HIT_BOX[0]    = { 
-        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.5f, 
-         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.5f
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.45f, 
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.45f
     };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 
@@ -486,6 +486,9 @@ EnemyTurret02Behavior::EnemyTurret02Behavior()
 
     param_.ROTATION = ToRadian(ENM_TURRET02_ANGLE);
 
+    param_.HP = ENM_TURRET02_HP;
+    param_.ATTACK_POWER = ENM_TURRET02_ATK;
+
     // 次のBehavior・Eraser（ドロップアイテム）
     param_.NEXT_BEHAVIOR = &dropTurret02Behavior;
     param_.NEXT_ERASER = &eraseDropParts;
@@ -523,6 +526,9 @@ EnemyTurret02FlipBehavior::EnemyTurret02FlipBehavior()
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];   // 下長方形
 
     param_.ROTATION = ToRadian(-ENM_TURRET02_ANGLE);
+
+    param_.HP = ENM_TURRET02_HP;
+    param_.ATTACK_POWER = ENM_TURRET02_ATK;
 
     // 次のBehavior・Eraser（ドロップアイテム）
     param_.NEXT_BEHAVIOR = &dropTurret02FlipBehavior;
@@ -596,7 +602,10 @@ EnemyBuff01Behavior::EnemyBuff01Behavior()
         -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.5f,
          PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.5f,
     };
-    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+    param_.ATTACK_BOX[0] = {
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.5f,
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.5f,
+    };
 
     param_.HP           = ENM_BUFF01_HP;
     param_.ATTACK_POWER = ENM_BUFF01_ATK;

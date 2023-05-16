@@ -205,7 +205,7 @@ void Title::changeSceneGame()
     userHintShot();
 
     static bool isAnime = false;
-    const  int  pushMax = 4;
+    const  int  pushMax = 5;
     static int  shotCoolTimer   = 0;  // 射撃クールタイマー
     const  int  setShotCoolTime = 30; // 射撃クールタイム設定
     static bool  isAutoAddAlpha  = false;

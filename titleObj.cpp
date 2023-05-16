@@ -311,7 +311,7 @@ TitlePlayerCoreHeartBehavior::TitlePlayerCoreHeartBehavior()
 
     param_.SIZE = VECTOR2(42.0f, 37.0f);
     param_.SCALE = { 2.0f,2.0f };
-    param_.HIT_BOX[0] = { -10, -10, 10, 10 };
+    param_.HIT_BOX[0] = { -20, -20, 20, 20 };
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
 }
 
