@@ -80,8 +80,8 @@ bool objToul::Enlarge(OBJ2D* obj, const VECTOR2& targetScale, const float& enlar
 
     // 目標スケール未満ならdrawScale.x(y) + enlargeSpeedを代入
     // それ以上ならtargetScale.x(y)を代入
-    drawScale.x = std::min(drawScale.x + enlargeSpeed, targetScale.x);
-    drawScale.y = std::min(drawScale.y + enlargeSpeed, targetScale.y);
+    drawScale.x = std::min(targetScale.x, drawScale.x + enlargeSpeed);
+    drawScale.y = std::min(targetScale.y, drawScale.y + enlargeSpeed);
 
     // 目標に達したらtrue
     if (drawScale == targetScale) return true;
@@ -92,7 +92,7 @@ bool objToul::Enlarge(OBJ2D* obj, const VECTOR2& targetScale, const float& enlar
 
 bool objToul::ContactPos(OBJ2D* obj, const VECTOR2& targetPos, const float& contactSpeed)
 {
-    Transform*& t = obj->transform_;
+    Transform* t = obj->transform_;
 
     // 目標と位置が同じならtrueを返す
     if (t->position_ == targetPos) return true;
@@ -109,10 +109,10 @@ bool objToul::ContactPos(OBJ2D* obj, const VECTOR2& targetPos, const float& cont
     t->position_ += t->velocity_;
 
     // 目標の位置範囲内に収まったらtrueを返す
-    if (t->position_.x <= targetPos.x + 3.0f && 
-        t->position_.x >= targetPos.x - 3.0f && 
-        t->position_.y <= targetPos.y + 3.0f && 
-        t->position_.y >= targetPos.y - 3.0f)
+    if (t->position_.x >= targetPos.x - 10.0f && 
+        t->position_.x <= targetPos.x + 10.0f &&          
+        t->position_.y >= targetPos.y - 10.0f && 
+        t->position_.y <= targetPos.y + 10.0f)
     {
         t->position_ = targetPos;
         t->velocity_ = {};

@@ -13,9 +13,11 @@ private:
     bool            isGameOver_;
     int             gameOverState_;  
 
+public:
     int             gameClearState_;
 
 public:
+
     OBJ2D*          player_;
     OBJ2D*          playerFrame_;
     OBJ2D*          playerHeart_;
@@ -39,7 +41,7 @@ public:
     void draw() override;
 
     bool isGameOver()  const { return (player_ && player_->performComponent_->isTrigger); }
-    bool isGameClear() const { return (!isGameOver() && isBossDied_); } // クリアしたか
+    bool isGameClear() const { return isBossDied_; } // クリアしたか
 
 private:
     Game()

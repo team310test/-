@@ -353,7 +353,7 @@ void BasePlayerBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
     if (dstA->hp_ > 0)
     {
         // ‘Šè‚ğ—h‚ç‚·
-        dstA->isQuake_ = true;
+        dst->isQuake_ = true;
         // ‘Šè‚ğ“_–Å‚³‚¹‚é–³“GŠÔ
         dstA->damageTimer_ = DMG_TIME;
     }
@@ -390,7 +390,7 @@ void BasePlayerBehavior::damageProc(OBJ2D* obj) const
         }
     }
 
-    if (!obj->actorComponent_->isQuake_) return;
+    if (!obj->isQuake_) return;
 
     // —h‚ç‚·
     static Quake quake;
@@ -428,6 +428,8 @@ void PlayerCoreBehavior::attack(OBJ2D* obj) const
 {
     // ‘Ì—Í‚ª0‚È‚çreturn
     if (!obj->actorComponent_->isAlive()) return;
+
+    if (Game::instance()->isGameClear()) return;
 
     // UŒ‚ƒN[ƒ‹ƒ^ƒCƒ€Œ¸­
     if (obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;

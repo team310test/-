@@ -2,16 +2,6 @@
 
 Game Game::instance_;
 
-// ゲームクリアのstate番号
-enum GAMECLEAR_STATE
-{
-    INIT = 0,
-    PLAY_EFFECT,
-    RESULT,
-    ADD_ALPHA_RESULT_BACK,
-    OBJ_CLEAR,
-};
-
 
 OBJ2D* setGameObj(OBJ2DManager* obj2dManager, Behavior* behavior, VECTOR2 pos)
 {
@@ -131,7 +121,7 @@ void Game::update()
         //////// 通常時の処理 ////////
         
         // objが縮小していなくて
-        if (!Behavior::isObjShrink() && !isGameOver())
+        if (!Behavior::isObjShrink() && !isGameOver() && !isGameClear())
         {
             // ソフトリセット
             if ((GameLib::input::STATE(0) & GameLib::input::PAD_SELECT) &&  // 0コンのセレクトボタンが押されている状態で
@@ -336,8 +326,8 @@ void Game::draw()
         UI::drawLetterBox();
     }
 
-    // TODO: ゲームクリアしていてgameClearStateがGAMECLEAR_STATE::RESULTならリザルト画面のバック描画
-    if (isGameClear() && gameClearState_ >= GAMECLEAR_STATE::RESULT)
+    // TODO: ゲームクリアしていてgameClearStateが2以上ならリザルト画面のバック描画
+    if (isGameClear() && gameClearState_ >= 2)
     {
         // リザルト画面のバック描画
         UI::drawResultBack();
@@ -376,7 +366,7 @@ void Game::judge()
 // 画面中央に移動する
 bool MoveToCenter(OBJ2D* obj)
 {
-    bool contact = objToul::instance().ContactPos(obj, { BG::WINDOW_W_F * 0.5f, BG::WINDOW_H_F * 0.5f }, 2.5f);
+    bool contact = objToul::instance().ContactPos(obj, { BG::WINDOW_W_F * 0.5f, BG::WINDOW_H_F * 0.5f }, 7.0f);
     bool enlarge = objToul::instance().Enlarge(obj, { GAME_OVER_SCALE, GAME_OVER_SCALE }, 0.04f);
 
     if (contact && enlarge) return true;
@@ -418,7 +408,7 @@ void Game::gameOverProc()
     case 1:
         //--< 爆発エフェクト >--
 
-        if (!player_->actorComponent_->isQuake_) player_->actorComponent_->isQuake_ = true; // 爆破中は振動させる
+        if (!player_->isQuake_) player_->isQuake_ = true; // 爆破中は振動させる
         if (ChainEffect(player_)) ++gameOverState_;
         break;
     case 2:
@@ -466,7 +456,7 @@ void Game::gameOverProc()
         //--< 自機フレーム・ハートの生成 >--
 
         playerFrame_ = setGameObj(obj2dManager(), &gamePlayerFrameObjBehavior, player_->transform_->position_);
-        playerHeart_ = setGameObj(obj2dManager(), &gamePlayerHheartObjBehavior,
+        playerHeart_ = setGameObj(obj2dManager(), &gamePlayerHeartObjBehavior,
             { player_->transform_->position_.x - 7.0f * GAME_OVER_SCALE,player_->transform_->position_.y + 28.0f * GAME_OVER_SCALE }); 
 
         ++gameOverState_;
@@ -480,25 +470,77 @@ void Game::gameOverProc()
     }
 }
 
+
+struct ResultTextData
+{
+    int       spawnTime;
+    Behavior* behavior;
+    VECTOR2   pos;
+    GameLib::SpriteData spriteData;
+
+};
+
+// リザルトテキスト生成
+bool spawnResultText()
+{
+    // 順番にテキストを生成
+    ResultTextData resultTextData[] =
+    {
+        //{  0, &baseGameResultText, {    0.0f,    0.0f }, &sprResultJunks },
+        //{ 20, &baseGameResultText, { -100.0f, -100.0f }, &sprResultTime },
+        //{ 40, &baseGameResultText, {  100.0f, -100.0f }, &sprResultRank },
+        //{ 60, &baseGameResultText, { -100.0f,  100.0f }, &sprResultJunk },
+        //{ 80, &baseGameResultText, {  100.0f,  100.0f }, &sprResultJunk },
+
+        { 0, nullptr, { 0.0f,0.0f } },
+    };
+
+    static int currentSpawnTimer = 0;
+    static ResultTextData* currentData = nullptr;
+    if (!currentData) currentData = resultTextData;
+
+
+    if (currentData->behavior && currentData->spawnTime == currentSpawnTimer)
+    {
+        OBJ2D* resultText = setGameObj(
+            Game::instance()->obj2dManager(), currentData->behavior, currentData->pos
+        );
+        resultText->renderer_->data_ = &currentData->spriteData; // 画像セット
+        resultText->isQuake_ = true; // 揺らす
+        ++currentData;
+    }
+    ++currentSpawnTimer;
+
+    // behaviorがnullptrなら
+    if (!currentData->behavior)
+    {
+        currentSpawnTimer = 0;
+        currentData = nullptr;
+        return true; // 生成し終わったのでtrue
+    }
+
+    return false;
+}
+
+
 void Game::gameClearProc()
 {
     if (!boss_) return;
 
-    Transform*&      bossT = boss_->transform_;
-    ActorComponent*& bossA = boss_->actorComponent_;
-
-    static int timer = 0;
+    Transform*      bossT = boss_->transform_;
+    ActorComponent* bossA = boss_->actorComponent_;
 
     switch (gameClearState_)
     {
-    case GAMECLEAR_STATE::INIT: // 初期設定
-
+    case 0: // 初期設定
         // judgeを行わないようにする
         player_->collider_->judgeFlag_ = false;
 
         // 操作できなくする
         boss_->update_ = nullptr;
         bossT->velocity_ = {};
+        // アニメーション終了
+        bossA->objAnimeAlways_ = nullptr;
 
         // ゲーム・ボス戦BGMフェードアウト
         Audio::fade(BGM_GAME, 2.0f, 0.0f);
@@ -506,24 +548,22 @@ void Game::gameClearProc()
 
         ++gameClearState_;
         /*fallthrough*/
-    case GAMECLEAR_STATE::PLAY_EFFECT:
+    case 1:
         // 連鎖爆発エフェクト
-        if (!bossA->isQuake_) bossA->isQuake_ = true; // 爆破中は振動させる
+        if (!boss_->isQuake_) boss_->isQuake_ = true; // 爆破中は振動させる
         ChainEffect(boss_);
 
-        ++timer;
-        if (timer >= 120)
+        if (wait(120))
         {
-            // 操作できなくする
-            player_->update_ = nullptr;
-            player_->transform_->velocity_ = {};
-
-            timer = 0;
             ++gameClearState_;
             break;
         }
+
         break;
-    case GAMECLEAR_STATE::RESULT: // リザルト画面
+    case 2: // リザルト画面
+        // 連鎖爆発エフェクト
+        if (!boss_->isQuake_) boss_->isQuake_ = true; // 爆破中は振動させる
+        ChainEffect(boss_);
 
         // リザルト画面のバックのアニメ処理
         if (UI::resultBackAnimeTimer_ < 99) ++UI::resultBackAnimeTimer_;
@@ -534,36 +574,48 @@ void Game::gameClearProc()
             );
         }
 
+        // リザルトテキスト生成が終わっていて指定のボタンを押したら次に進む
+        if ( ((GameLib::input::TRG(0) & GameLib::input::PAD_TRG1) ||
+              (GameLib::input::TRG(0) & GameLib::input::PAD_TRG2) ||
+              (GameLib::input::TRG(0) & GameLib::input::PAD_TRG3) ||
+              (GameLib::input::TRG(0) & GameLib::input::PAD_TRG4)) &&
+            spawnResultText())
+        {
+            ++gameClearState_;
+            break;
+        }
+
+        break;
+    case 3: // リザルト画面のバックの不透明度を下げる
         // 連鎖爆発エフェクト
-        if (!bossA->isQuake_) bossA->isQuake_ = true; // 爆破中は振動させる
+        if (!boss_->isQuake_) boss_->isQuake_ = true; // 爆破中は振動させる
         ChainEffect(boss_);
 
-        // 指定のボタンを押したら次に進む
-        if ((GameLib::input::TRG(0) & GameLib::input::PAD_TRG1) ||
-            (GameLib::input::TRG(0) & GameLib::input::PAD_TRG2) ||
-            (GameLib::input::TRG(0) & GameLib::input::PAD_TRG3) ||
-            (GameLib::input::TRG(0) & GameLib::input::PAD_TRG4) &&
-            UI::resultBackTexPosX_ == 1920.0f * 3.0f)
-        {
-            ++gameClearState_;
-            break;
-        }
-        break;
-    case GAMECLEAR_STATE::ADD_ALPHA_RESULT_BACK: // リザルト画面のバックの不透明度を下げる
-
         UI::resultBackColorW_ = std::max(-0.5f, UI::resultBackColorW_ - 0.025f);
-
         if (UI::resultBackColorW_ == -0.5f)
         {
-            // 弾を打てないようにする
-            player_->actorComponent_->attackTimer_ = 9999;
-
             ++gameClearState_;
             break;
         }
 
         break;
-    case GAMECLEAR_STATE::OBJ_CLEAR: // player本体・ボス以外を消去
+    case 4: // エフェクトの再生終了待ち
+        if (!objToul::instance().isObjType(obj2dManager(), OBJ_TYPE::EFFECT))
+        {
+            ++gameClearState_;
+            break;
+        }
+
+        break;
+    case 5: // ウェイト
+        if (wait(10))
+        {
+            ++gameClearState_;
+            break;
+        }
+
+        break;
+    case 6: // player本体・ボス以外を消去
 
         for (auto& obj : *obj2dManager_->getList())
         {
@@ -578,8 +630,57 @@ void Game::gameClearProc()
 
         // 背景を白にする
         FADE::getInstance2()->SetAlpha(1.0f);
+
         ++gameClearState_;
         break;
+    case 7: // ウェイト
+        if (wait(30))
+        {
+            ++gameClearState_;
+            break;
+        }
 
+        break;
+    case 8: // 画面中心に移動
+        if (MoveToCenter(boss_))
+        {
+            ++gameClearState_;
+            break;
+        }
+
+        break;
+    case 9: // ウェイト
+        if (wait(30))
+        {
+            ++gameClearState_;
+            break;
+        }
+
+        break;
+    case 10: // 自機フレーム・ハートの生成
+        playerFrame_ = setGameObj(
+            obj2dManager(), &gamePlayerFrameObjBehavior, bossT->position_
+        );
+        playerFrame_->renderer_->Xflip(); // 反転
+
+        playerHeart_ = setGameObj(
+            obj2dManager(), &gamePlayerHeartObjBehavior, 
+            { bossT->position_.x + 7.0f  * GAME_OVER_SCALE,
+              bossT->position_.y + 28.0f * GAME_OVER_SCALE }
+            );           
+        playerHeart_->renderer_->Xflip(); // 反転
+
+        ++gameClearState_;
+        break;
+    case 11: // ハートの落下後タイトルへ遷移
+        boss_->renderer_->color_.w = 0.0f;
+
+        if (playerHeart_->performComponent_->isTrigger)
+        {
+            changeScene(Title::instance());
+            return;
+        }
+
+        break;
     }
 }

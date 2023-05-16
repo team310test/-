@@ -42,6 +42,9 @@ void BaseGameObjBehavior::move(OBJ2D* obj) const
     case 1:
         //////// 通常時 ////////
 
+        // 揺れる処理（任意で設定）
+        updateQuake(obj);
+
         break;
     }
 
@@ -92,7 +95,7 @@ void GamePlayerHheartObjBehavior::init(OBJ2D* obj) const
     obj->collider_->isDrawHitRect_ = false;
     obj->collider_->isDrawAttackRect_ = false;
 
-    obj->transform_->velocity_ = { GAME_OVER_Initial_SPEED_X,GAME_OVER_Initial_SPEED_Y };
+    obj->transform_->velocity_ = { GAME_OVER_Initial_SPEED_X, GAME_OVER_Initial_SPEED_Y };
 }
 
 void GamePlayerHheartObjBehavior::areaCheck(OBJ2D* obj) const
@@ -113,4 +116,17 @@ void GamePlayerHheartObjBehavior::areaCheck(OBJ2D* obj) const
         obj->performComponent_->isTrigger = true; // 画面外に行ったらTriggerをtrue(タイトル画面へ遷移)
         return;
     }
+}
+
+BaseGameResultText::BaseGameResultText()
+{
+    param_.SIZE = { 640,128 };
+}
+
+void BaseGameResultText::updateQuake(OBJ2D* obj) const
+{
+    if (!obj->isQuake_) return;
+
+    static Quake quake;
+    quake.quakeDamage(obj);
 }

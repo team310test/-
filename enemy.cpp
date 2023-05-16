@@ -165,7 +165,7 @@ void BaseEnemyBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
     if (dstA->hp_ > 0)
     {
         // ‘ŠŽè‚ð—h‚ç‚·
-        dstA->isQuake_ = true;
+        dst->isQuake_ = true;
         // ‘ŠŽè‚ð“_–Å‚³‚¹‚é–³“GŽžŠÔ
         dstA->damageTimer_ = DMG_TIME;
 
@@ -209,7 +209,7 @@ void BaseEnemyBehavior::damageProc(OBJ2D* obj) const
     }
 
 
-    if (!obj->actorComponent_->isQuake_) return;
+    if (!obj->isQuake_) return;
 
     // —h‚ç‚·
     static Quake quake;

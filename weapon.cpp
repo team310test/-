@@ -68,7 +68,7 @@ void BaseShotBehavior::hit(OBJ2D* src, OBJ2D* dst) const
         }
 
         // ‘ŠŽè‚ð—h‚ç‚·
-        dstA->isQuake_ = true;
+        dst->isQuake_ = true;
         // ‘ŠŽè‚ð“_–Å‚³‚¹‚é–³“GŽžŠÔ
         dstA->damageTimer_ = DMG_TIME;
     }

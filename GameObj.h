@@ -21,6 +21,9 @@ protected:
 		int BOX_NUM = 1;
 	} param_;
 	const Param* getParam() const { return &param_; }
+
+	virtual void updateQuake(OBJ2D*) const {};
+
 public:
 	void move(OBJ2D* obj) const override;
 	OBJ_TYPE getType() const override { return OBJ_TYPE::NONE; }
@@ -52,4 +55,16 @@ public:
 	void init(OBJ2D* obj) const override;
 	void areaCheck(OBJ2D*) const override;
 };
-EXTERN GamePlayerHheartObjBehavior gamePlayerHheartObjBehavior;
+EXTERN GamePlayerHheartObjBehavior gamePlayerHeartObjBehavior;
+
+
+
+ // ベースリザルトテキスト
+class BaseGameResultText : public BaseGameObjBehavior
+{
+public:
+	BaseGameResultText();
+private:
+	void updateQuake(OBJ2D* obj) const override;
+};
+EXTERN BaseGameResultText baseGameResultText;

@@ -3,7 +3,7 @@
 // ダメージを受けた時の揺れる演出を行う
 void Quake::quakeDamage(OBJ2D* obj)
 {
-    if (!obj->actorComponent_->isQuake_) return;
+    if (!obj->isQuake_) return;
 
     Transform* t = obj->transform_;
 
@@ -45,7 +45,7 @@ void Quake::quakeDamage(OBJ2D* obj)
         // quake終了
         state_ = 0;
         loop_  = 0;
-        obj->actorComponent_->isQuake_ = false;
+        obj->isQuake_ = false;
         break;
     }
 
