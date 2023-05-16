@@ -107,6 +107,16 @@ private:
 };
 EXTERN PlayerTurret02FlipBehavior playerTurret02FlipBehavior;
 
+// Turret03(ä—í íeÅj
+class PlayerTurret03Behavior : public PlayerPartsBehavior
+{
+public:
+    PlayerTurret03Behavior();
+private:
+    void attack(OBJ2D* obj) const override;
+};
+EXTERN PlayerTurret03Behavior playerTurret03Behavior;
+
 
 //******************************************************************************
 // 

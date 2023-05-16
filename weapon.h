@@ -185,6 +185,16 @@ private:
 };
 EXTERN PlPenetrateShotBehavior plPenetrateShotBehavior;
 
+// エネミー
+class EnmPenetrateShotBehavior : public BaseEnemyShotBehavior
+{
+public:
+    EnmPenetrateShotBehavior();
+private:
+    void update(OBJ2D* obj) const override;
+};
+EXTERN EnmPenetrateShotBehavior enmPenetrateShotBehavior;
+
 
 //******************************************************************************
 //

@@ -39,6 +39,12 @@ namespace
         { nullptr, -1 },// 終了フラグ
     };
 
+    // タレット03
+    GameLib::AnimeData animeTurret03[] = {
+        { &sprPartsTurret03, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
+
     // シールド01
     GameLib::AnimeData animeShield01[] = {
     { &sprPartsShield01, 10 },
@@ -555,6 +561,45 @@ void EnemyTurret02FlipBehavior::attack(OBJ2D* obj) const
     obj->actorComponent_->attackTimer_ = 120;
 }
 
+// Turret03(貫通弾）
+EnemyTurret03Behavior::EnemyTurret03Behavior()
+{
+    param_.ANIME_WAIT = animeTurret03;
+
+    param_.SIZE = { PARTS_OBJ_SIZE * 0.5f, PARTS_OBJ_SIZE * 0.5f };
+
+    // 画像サイズ(128*64の半分)
+    param_.HIT_BOX[0] = { -64, -32, 64, 32 };   // 下長方形    
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];   // 下長方形
+
+    param_.HP = ENM_TURRET03_HP;
+    param_.ATTACK_POWER = ENM_TURRET03_ATK;
+
+    // 次のBehavior・Eraser（ドロップアイテム）
+    param_.NEXT_BEHAVIOR = &dropTurret03FlipBehavior;
+    param_.NEXT_ERASER = &eraseDropParts;
+}
+
+void EnemyTurret03Behavior::attack(OBJ2D* obj) const
+{
+    // 攻撃クールタイム減少
+    if (obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
+
+    // 攻撃クールタイムが終わっていなければreturn
+    if (obj->actorComponent_->attackTimer_ > 0) return;
+
+    VECTOR2 pos = obj->transform_->position_;
+    pos -= {obj->collider_->size_.x, 0.0f};
+
+    // 弾を追加
+    AddObj::addShot(obj, &enmPenetrateShotBehavior, obj->transform_->position_);
+
+    // 弾発射SE再生
+    Audio::play(SE_SHOT, false);
+
+    // 攻撃クールタイム設定
+    obj->actorComponent_->attackTimer_ = ENM_TURRET01_ATK_TIME;
+}
 
 //******************************************************************************
 //

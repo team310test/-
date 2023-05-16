@@ -27,6 +27,12 @@ namespace
         { nullptr, -1 },// 終了フラグ
     };
 
+    // タレット03
+    GameLib::AnimeData animeTurret03[] = {
+        { &sprPartsTurret03, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
+
     // シールド01
     GameLib::AnimeData animeShield01[] = {
     { &sprPartsShield01, 10 },
@@ -179,7 +185,7 @@ DropTurret02Behavior::DropTurret02Behavior()
     param_.NEXT_BEHAVIOR = &playerTurret02Behavior;
     param_.NEXT_ERASER = &erasePlayer;
 
-    param_.NEXT_HP = DROP_TURRET03_NEXT_HP;
+    param_.NEXT_HP = DROP_TURRET02_NEXT_HP;
 }
 
 DropTurret02FlipBehavior::DropTurret02FlipBehavior()
@@ -196,6 +202,26 @@ DropTurret02FlipBehavior::DropTurret02FlipBehavior()
 
     // 次のbehavior・eraser（プレイヤー）
     param_.NEXT_BEHAVIOR = &playerTurret02FlipBehavior;
+    param_.NEXT_ERASER = &erasePlayer;
+
+    param_.NEXT_HP = DROP_TURRET02_NEXT_HP;
+}
+
+// Turret03(貫通弾）
+DropTurret03FlipBehavior::DropTurret03FlipBehavior()
+{
+    param_.ANIME_WAIT = animeTurret03;
+
+    param_.SIZE = { PARTS_OBJ_SIZE * 0.5f, PARTS_OBJ_SIZE * 0.5f };
+
+    param_.HIT_BOX[0] = {
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.25f,
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.25f
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    // 次のbehavior・eraser（プレイヤー）
+    param_.NEXT_BEHAVIOR = &playerTurret03Behavior;
     param_.NEXT_ERASER = &erasePlayer;
 
     param_.NEXT_HP = DROP_TURRET03_NEXT_HP;
@@ -511,3 +537,5 @@ void DROP_PARTS_UPDATE(OBJ2D* obj)
     t->velocity_.y = 0;
     t->position_ += t->velocity_;
 }
+
+

@@ -57,6 +57,14 @@ public:
 };
 EXTERN DropTurret02FlipBehavior dropTurret02FlipBehavior;
 
+// Turret03(貫通弾）
+class DropTurret03FlipBehavior : public BaseDropPartsBehavior
+{
+public:
+    DropTurret03FlipBehavior();
+};
+EXTERN DropTurret03FlipBehavior dropTurret03FlipBehavior;
+
 //******************************************************************************
 // 
 //      Shield(防御パーツ)

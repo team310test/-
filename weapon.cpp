@@ -449,6 +449,53 @@ void PlPenetrateShotBehavior::update(OBJ2D* obj) const
     };
 }
 
+EnmPenetrateShotBehavior::EnmPenetrateShotBehavior()
+{
+    param_.SPR_WEAPON = &sprShot_NormalShot;
+    param_.ERASER = &plShotEraser;
+
+    param_.SPEED_X = PENETRATE_SHOT_SPEED;
+    param_.ATTACK_POWER = PENETRATE_SHOT_ATK;
+
+    param_.ATTACK_BOX[0] = {
+        -SHOT_HITBOX, -SHOT_HITBOX,
+         SHOT_HITBOX,  SHOT_HITBOX
+    };
+
+}
+
+void EnmPenetrateShotBehavior::update(OBJ2D* obj) const
+{
+    Transform* transform = obj->transform_;
+
+    switch (obj->act_)
+    {
+    case 0: // X速度を落とす
+        transform->velocity_.x *= 0.8f;
+
+        // 弾がほぼ止まった状態になったら
+        if (transform->velocity_.x <= 0.05f)
+        {
+            // 速度を代入
+            transform->velocity_.x += param_.SPEED_X / transform->scale_.x;  // scaleに挙動を合わせる  
+            ++obj->act_;
+            break;
+        }
+        break;
+
+    case 1: // 高速移動
+
+        break;
+    }
+
+    //transform->position_ += transform->velocity_; // 位置に速度を足す
+    transform->position_ -=
+    {
+        transform->velocity_.x* obj->transform_->scale_.x, // 位置に速度を足す
+            transform->velocity_.y* obj->transform_->scale_.y, // 位置に速度を足す
+    };
+}
+
 
 //******************************************************************************
 //

@@ -39,6 +39,13 @@ namespace
         { &sprPartsTurret02Flip, 10 },
         { nullptr, -1 },// 終了フラグ
     };
+
+    // タレット03
+    GameLib::AnimeData animeTurret03[] = {
+        { &sprPartsTurret03, 10 },
+        //{ &sprPlayer_test, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
     
     // シールド01
     GameLib::AnimeData animeShield01[] = {
@@ -748,6 +755,51 @@ void PlayerTurret02FlipBehavior::attack(OBJ2D* obj) const
     obj->actorComponent_->attackTimer_ = PL_PARTS_ATK_TIME;
 
 }
+
+// Turret03(貫通弾）
+PlayerTurret03Behavior::PlayerTurret03Behavior()
+{
+    param_.ANIME_WAIT = animeTurret03;
+
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+
+    param_.HIT_BOX[0] = {
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.25f,
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.25f
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    param_.ATTACK_POWER = PL_TURRET03_ATK;
+}
+
+void PlayerTurret03Behavior::attack(OBJ2D* obj) const
+{
+    // 攻撃クールタイム減少
+    // （バラバラに打たせるために指定ボタン(Space,A,B,X,Y)を押しているときだけ減らす）
+    if ((obj->actorComponent_->padState_ & GameLib::input::PAD_TRG1 ||
+        obj->actorComponent_->padState_ & GameLib::input::PAD_TRG2 ||
+        obj->actorComponent_->padState_ & GameLib::input::PAD_TRG3 ||
+        obj->actorComponent_->padState_ & GameLib::input::PAD_TRG4) &&
+        obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
+
+    // 指定ボタン(Space,A,B,X,Y)が押されていない、または攻撃クールタイムが終わっていなければreturn
+    if ((!(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG1) &&
+        !(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG2) &&
+        !(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG3) &&
+        !(obj->actorComponent_->padState_ & GameLib::input::PAD_TRG4)) ||
+        obj->actorComponent_->attackTimer_ > 0) return;
+
+    // 弾を追加
+    AddObj::addShot(obj, &plPenetrateShotBehavior, obj->transform_->position_);
+
+    // 弾発射SE再生
+    Audio::play(SE_SHOT, false);
+
+    setXAxisScaleAnime(obj);
+    obj->actorComponent_->attackTimer_ = PL_PARTS_ATK_TIME;
+
+}
+
 
 //******************************************************************************
 // 

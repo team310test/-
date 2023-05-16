@@ -225,8 +225,10 @@ void Title::changeSceneGame()
         // フェードアウト
         const bool endFadeOut  = objToul::instance().FadeOut(endCommand_, 0.03f);
         const bool logoFadeOut = objToul::instance().FadeOut(titleLogo_,  0.03f);
-        const bool HintShotFadeOut = objToul::instance().FadeOut(userHintShot_,  0.03f);
+        const bool HintShotFadeOut = userHintShot_ ? 
+            objToul::instance().FadeOut(userHintShot_,  0.03f) : true;
 
+        //const bool HintShotFadeOut = true;
         //const bool shrink      = objToul::instance().Shrink(player_);      // 縮小
         Game::instance()->isStartFirstShrink_ = true; // 縮小
 

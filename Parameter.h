@@ -79,6 +79,7 @@ namespace
             #define PL_TURRET01_ATK     (1)     // 攻撃力(体当たりダメージ)
             #define PL_TURRET02_ATK     (1)     // 攻撃力(体当たりダメージ)
             #define PL_TURRET03_ATK     (1)     // 攻撃力(体当たりダメージ)
+            #define PL_TURRET03_ATK     (1)     // 攻撃力(体当たりダメージ)
             #define PL_SHIELD01_ATK     (1)     // 攻撃力(体当たりダメージ)
 
             #define PL_BUFF01_ATK       (1)     // 攻撃力(体当たりダメージ)
@@ -127,6 +128,8 @@ namespace
         #define ENM_TURRET02_ANGLE      (45.0f)     // タレットの角度
         #define ENM_TURRET02_HP         (4)         // 体力
         #define ENM_TURRET02_ATK        (2)         // 攻撃力(体当たりダメージ)
+        #define ENM_TURRET03_HP         (4)         // 体力
+        #define ENM_TURRET03_ATK        (2)         // 攻撃力(体当たりダメージ)
     }
 
     // EnemyBuff
