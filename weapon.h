@@ -138,6 +138,16 @@ private:
 };
 EXTERN PlCurveShotBehavior plCurveShotBehavior;
 
+// プレイヤー(Y軸反転)
+class PlCurveShotFlipBehavior : public BasePlayerShotBehavior
+{
+public:
+    PlCurveShotFlipBehavior();
+private:
+    void update(OBJ2D* obj) const override;
+};
+EXTERN PlCurveShotFlipBehavior plCurveShotFlipBehavior;
+
 // エネミー
 class EnmCurveShotBehavior : public BaseEnemyShotBehavior
 {
@@ -147,6 +157,16 @@ private:
     void update(OBJ2D* obj) const override;
 };
 EXTERN EnmCurveShotBehavior enmCurveShotBehavior;
+
+// エネミー(Y軸反転)
+class EnmCurveShotFlirpBehavior : public BaseEnemyShotBehavior
+{
+public:
+    EnmCurveShotFlirpBehavior();
+private:
+    void update(OBJ2D* obj) const override;
+};
+EXTERN EnmCurveShotFlirpBehavior enmCurveShotFlipBehavior;
 
 
 //******************************************************************************

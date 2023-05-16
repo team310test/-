@@ -9,17 +9,33 @@ namespace
         { nullptr, -1 },// 終了フラグ
     };
 
+    //  コア02(ボス)
+    GameLib::AnimeData animeCore02[] = {
+        { &sprEnemyCore02, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
+
     // タレット01
     GameLib::AnimeData animeTurret01[] = {
         { &sprPartsTurret01, 10 },
-        //{ &sprPlayer_test, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
+
+    // タレット01(反転)
+    GameLib::AnimeData animeTurret01Flip[] = {
+        { &sprPartsTurret01Flip, 10 },
         { nullptr, -1 },// 終了フラグ
     };
 
     // タレット02
     GameLib::AnimeData animeTurret02[] = {
         { &sprPartsTurret02, 10 },
-        //{ &sprPlayer_test, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
+
+    // タレット02(反転)
+    GameLib::AnimeData animeTurret02Flip[] = {
+        { &sprPartsTurret02Flip, 10 },
         { nullptr, -1 },// 終了フラグ
     };
 
@@ -260,6 +276,36 @@ EnemyCore01Behavior::EnemyCore01Behavior()
 }
 
 
+//******************************************************************************
+//
+//      EnemyCore02(ボス)
+//
+//******************************************************************************
+EnemyCore02Behavior::EnemyCore02Behavior()
+{
+    // アニメーション
+    param_.ANIME_WAIT = animeCore02;
+
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+    param_.SCALE = { 2.0f,2.0f };
+
+    param_.HIT_BOX[0] = {
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.5f,
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.5f
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    param_.HP = ENM_CORE02_HP;
+    param_.ATTACK_POWER = ENM_CORE02_ATK;
+
+    // 次のBehaviorなし
+    param_.NEXT_BEHAVIOR = nullptr;
+    param_.NEXT_ERASER = nullptr;
+
+    // アニメーションのパラメータ
+    param_.OBJ_ANIME = &scaleAnime;
+}
+
 
 //******************************************************************************
 // 
@@ -388,7 +434,46 @@ void EnemyTurret01Behavior::attack(OBJ2D* obj) const
     obj->actorComponent_->attackTimer_ = ENM_TURRET01_ATK_TIME;
 }
 
-// Turret02([01]のy軸反転)
+// Turret01Flip
+EnemyTurret01FlipBehavior::EnemyTurret01FlipBehavior()
+{
+    param_.ANIME_WAIT = animeTurret01Flip;
+
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+
+    param_.HIT_BOX[0] = {
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.5f,
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.5f
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    param_.HP = ENM_TURRET01_HP;
+    param_.ATTACK_POWER = ENM_TURRET01_ATK;
+
+    // 次のBehavior・Eraser（ドロップアイテム）
+    param_.NEXT_BEHAVIOR = &dropTurret01FlipBehavior;
+    param_.NEXT_ERASER = &eraseDropParts;
+}
+
+void EnemyTurret01FlipBehavior::attack(OBJ2D* obj) const
+{
+    // 攻撃クールタイム減少
+    if (obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
+
+    // 攻撃クールタイムが終わっていなければreturn
+    if (obj->actorComponent_->attackTimer_ > 0) return;
+
+    // 弾を追加
+    AddObj::addShot(obj, &enmAimShotBehavior, obj->transform_->position_);
+
+    // 弾発射SE再生
+    Audio::play(SE_SHOT, false);
+
+    // 攻撃クールタイム設定
+    obj->actorComponent_->attackTimer_ = ENM_TURRET01_ATK_TIME;
+}
+
+// Turret02(CurveShot)
 EnemyTurret02Behavior::EnemyTurret02Behavior()
 {
     param_.ANIME_WAIT = animeTurret02;
@@ -399,28 +484,14 @@ EnemyTurret02Behavior::EnemyTurret02Behavior()
     param_.HIT_BOX[0] = { -64, -32, 64, 32 };   // 下長方形    
     param_.ATTACK_BOX[0] = param_.HIT_BOX[0];   // 下長方形
 
+    param_.ROTATION = ToRadian(ENM_TURRET02_ANGLE);
+
     // 次のBehavior・Eraser（ドロップアイテム）
-    param_.NEXT_BEHAVIOR = &dropTurret01Behavior;
+    param_.NEXT_BEHAVIOR = &dropTurret02Behavior;
     param_.NEXT_ERASER = &eraseDropParts;
 }
 
-// Turret01(CurveShot)
-EnemyTurret03Behavior::EnemyTurret03Behavior()
-{
-    param_.ANIME_WAIT = animeTurret01;
-
-    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
-
-    // 画像サイズ(128*64の半分)
-    param_.HIT_BOX[0] = { -64, -32, 64, 32 };   // 下長方形    
-    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];   // 下長方形
-
-    // 次のBehavior・Eraser（ドロップアイテム）
-    param_.NEXT_BEHAVIOR = &dropTurret01Behavior;
-    param_.NEXT_ERASER = &eraseDropParts;
-}
-
-void EnemyTurret03Behavior::attack(OBJ2D* obj) const
+void EnemyTurret02Behavior::attack(OBJ2D* obj) const
 {
     // 攻撃クールタイム減少
     if (obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
@@ -429,7 +500,51 @@ void EnemyTurret03Behavior::attack(OBJ2D* obj) const
     if (obj->actorComponent_->attackTimer_ > 0) return;
 
     // 弾を追加
-    AddObj::addShot(obj, &enmCurveShotBehavior, obj->transform_->position_);
+    const float radius = obj->collider_->size_.x * 0.5f;
+    const float angle = obj->transform_->rotation_;
+    VECTOR2 pos = obj->transform_->position_;
+    pos.x -= cosf(angle) * radius;
+    pos.y -= sinf(angle) * radius;
+
+    AddObj::addShot(obj, &enmCurveShotBehavior, pos);
+
+    obj->actorComponent_->attackTimer_ = 120;
+}
+
+// Turret02Flip
+EnemyTurret02FlipBehavior::EnemyTurret02FlipBehavior()
+{
+    param_.ANIME_WAIT = animeTurret02Flip;
+
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+
+    // 画像サイズ(128*64の半分)
+    param_.HIT_BOX[0] = { -64, -32, 64, 32 };   // 下長方形    
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];   // 下長方形
+
+    param_.ROTATION = ToRadian(-ENM_TURRET02_ANGLE);
+
+    // 次のBehavior・Eraser（ドロップアイテム）
+    param_.NEXT_BEHAVIOR = &dropTurret02FlipBehavior;
+    param_.NEXT_ERASER = &eraseDropParts;
+}
+
+void EnemyTurret02FlipBehavior::attack(OBJ2D* obj) const
+{
+    // 攻撃クールタイム減少
+    if (obj->actorComponent_->attackTimer_ > 0) --obj->actorComponent_->attackTimer_;
+
+    // 攻撃クールタイムが終わっていなければreturn
+    if (obj->actorComponent_->attackTimer_ > 0) return;
+
+    // 弾を追加
+    const float radius = obj->collider_->size_.x * 0.5f;
+    const float angle = obj->transform_->rotation_;
+    VECTOR2 pos = obj->transform_->position_;
+    pos.x -= cosf(angle) * radius;
+    pos.y -= sinf(angle) * radius;
+
+    AddObj::addShot(obj, &enmCurveShotFlipBehavior, pos);
 
     obj->actorComponent_->attackTimer_ = 120;
 }
@@ -495,7 +610,7 @@ EnemyBuff01Behavior::EnemyBuff01Behavior()
 void EnemyBuff01Behavior::hit(OBJ2D*, OBJ2D* dst) const
 {
     // 攻撃クールタイムを減少（弾速上昇）
-    dst->actorComponent_->attackTimer_ += BUFF_SUB_ATK_TIMER;
+    dst->actorComponent_->attackTimer_ -= BUFF_SUB_ATK_TIMER;
 }
 
 
@@ -758,6 +873,7 @@ void EraseEnemy::erase(OBJ2D* obj) const
 
     a->hp_ = 0;                             // HPを0にする
     obj->renderer_->Xflip();                // 反転させる
+    obj->transform_->rotation_ *= -1;       // 角度反転
 
     obj->isBlink_ = true;                   // 明滅させる
 

@@ -33,6 +33,29 @@ public:
 };
 EXTERN DropTurret01Behavior dropTurret01Behavior;
 
+// Turret01(”½“])
+class DropTurret01FlipBehavior : public BaseDropPartsBehavior
+{
+public:
+    DropTurret01FlipBehavior();
+};
+EXTERN DropTurret01FlipBehavior dropTurret01FlipBehavior;
+
+// Turret02(CurveShot)
+class DropTurret02Behavior : public BaseDropPartsBehavior
+{
+public:
+    DropTurret02Behavior();
+};
+EXTERN DropTurret02Behavior dropTurret02Behavior;
+
+// Turret02Flip
+class DropTurret02FlipBehavior : public BaseDropPartsBehavior
+{
+public:
+    DropTurret02FlipBehavior();
+};
+EXTERN DropTurret02FlipBehavior dropTurret02FlipBehavior;
 
 //******************************************************************************
 // 

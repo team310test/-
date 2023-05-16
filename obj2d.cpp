@@ -60,10 +60,10 @@ void OBJ2D::move()
 void Renderer::draw()
 {
 
-    VECTOR2 scale = drawXFlip_ 
-                  ? VECTOR2( -obj_->renderer_->drawScale_.x, obj_->renderer_->drawScale_.y)
-                  : obj_->renderer_->drawScale_;
-    
+    VECTOR2 scale = drawXFlip_
+        ? VECTOR2{-obj_->renderer_->drawScale_.x, obj_->renderer_->drawScale_.y} 
+        : obj_->renderer_->drawScale_;
+
     if (data_)
     {
         data_->draw(obj_->transform_->position_,
@@ -187,6 +187,8 @@ bool predFunc(OBJ2D* obj1, OBJ2D* obj2)
 
 void OBJ2DManager::draw()
 {
+    GameLib::debug::setString("obj:%d", objList_.size());
+
     constexpr float LIMIT = 256.0f;
 
     this->getList()->sort([](OBJ2D* obj1, OBJ2D* obj2)->bool {

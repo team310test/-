@@ -72,7 +72,10 @@ namespace
         namespace
         {
             #define PL_TURRET01_ATK     (1)     // 攻撃力(体当たりダメージ)
-                                                 
+            #define PL_TURRET02_ATK     (1)     // 攻撃力(体当たりダメージ)
+            #define PL_TURRET03_ATK     (1)     // 攻撃力(体当たりダメージ)
+            #define PL_TURRET03_ATK     (1)     // 攻撃力(体当たりダメージ)                 
+
             #define PL_SHIELD01_ATK     (1)     // 攻撃力(体当たりダメージ)
 
             #define PL_BUFF01_ATK       (0)     // 攻撃力(体当たりダメージ)
@@ -103,6 +106,8 @@ namespace
         #define ENM_CORE01_HP           (1)         // 体力
         #define ENM_CORE01_ATK          (1)         // 攻撃力(体当たりダメージ)
         #define ENM_CORE01_ROT_SPEED    (-0.05f)    // 回転速度
+        #define ENM_CORE02_HP           (1)         // 体力
+        #define ENM_CORE02_ATK          (1)         // 攻撃力(体当たりダメージ)
     }
 
     // EnemyTurret
@@ -111,6 +116,8 @@ namespace
         #define ENM_TURRET01_HP         (1)         // 体力
         #define ENM_TURRET01_ATK        (1)         // 攻撃力(体当たりダメージ)
         #define ENM_TURRET01_ATK_TIME   (120)       // 攻撃間隔時間
+        #define ENM_TURRET02_ANGLE      (45.0f)     // タレットの角度
+        //#define ENM_TURRET03_ANGLE      (45.0f)     // タレットの角度
     }    
     
     // EnemyShield
@@ -168,6 +175,8 @@ namespace
     namespace
     {
         #define DROP_TURRET01_NEXT_HP   (1)     // プレイヤーになるときの体力
+        #define DROP_TURRET02_NEXT_HP   (1)     // プレイヤーになるときの体力
+        #define DROP_TURRET03_NEXT_HP   (1)     // プレイヤーになるときの体力
         #define DROP_SHIELD01_NEXT_HP   (15)    // プレイヤーになるときの体力
         #define DROP_BUFF01_NEXT_HP     (1)     // プレイヤーになるときの体力
         #define DROP_TRASH01_NEXT_HP    (3)     // プレイヤーになるときの体力
@@ -225,8 +234,8 @@ namespace
     // カーブ弾（上カーブ）
     namespace
     {
-        #define CURVE_SHOT_SPEED_X          (-20.0f)
-        #define CURVE_SHOT_SPEED_Y          (-25.0f)
+        #define CURVE_SHOT_SPEED_X          (-25.0f)
+        #define CURVE_SHOT_SPEED_Y          (-20.0f)
         #define CURVE_SHOT_ACCEL_X          (1.4f)   // X速度に足すX加速度
         #define CURVE_SHOT_ACCEL_Y          (0.9f)   // Y速度に足すY加速度
         #define CURVE_SHOT_ATK              (1)

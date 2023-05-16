@@ -9,6 +9,24 @@ namespace
         { nullptr, -1 },// 終了フラグ
     };
 
+    // タレット01(反転)
+    GameLib::AnimeData animeTurret01Flip[] = {
+        { &sprPartsTurret01Flip, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
+
+    // タレット02
+    GameLib::AnimeData animeTurret02[] = {
+        { &sprPartsTurret02, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
+
+    // タレット02(反転)
+    GameLib::AnimeData animeTurret02Flip[] = {
+        { &sprPartsTurret02Flip, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
+
     // シールド01
     GameLib::AnimeData animeShield01[] = {
     { &sprPartsShield01, 10 },
@@ -81,9 +99,19 @@ bool BaseDropPartsBehavior::isAlive(OBJ2D* /*obj*/) const
 
 void BaseDropPartsBehavior::areaCheck(OBJ2D* obj) const
 {
-    if (obj->transform_->position_.x < 0) // 画面右に行ったら
+    const VECTOR2* pos = &obj->transform_->position_;
+    const VECTOR2* size = &obj->collider_->size_;
+
+    const float leftLimit = size->x;
+    const float rightLimit = BG::WINDOW_W + size->x;
+    const float topLimit = size->y;
+    const float bottomLimit = BG::WINDOW_H + size->y;
+
+    if (pos->x < leftLimit || pos->x > rightLimit ||
+        pos->y < topLimit || pos->y > bottomLimit)
     {
-        obj->behavior_ = nullptr; // 消去
+        obj->behavior_ = nullptr; // 画面外に行ったら消去
+        return;
     }
 }
 
@@ -114,6 +142,64 @@ DropTurret01Behavior::DropTurret01Behavior()
     param_.NEXT_HP       = DROP_TURRET01_NEXT_HP;
 }
 
+// Turret01(反転)
+DropTurret01FlipBehavior::DropTurret01FlipBehavior()
+{
+    param_.ANIME_WAIT = animeTurret01Flip;
+
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+
+    param_.HIT_BOX[0] = {
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.25f,
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.25f
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    // 次のbehavior・eraser（プレイヤー）
+    param_.NEXT_BEHAVIOR = &playerTurret01FlipBehavior;
+    param_.NEXT_ERASER = &erasePlayer;
+
+    param_.NEXT_HP = DROP_TURRET01_NEXT_HP;
+}
+
+// Turret02(CurveShot)
+DropTurret02Behavior::DropTurret02Behavior()
+{
+    param_.ANIME_WAIT = animeTurret02;
+
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+
+    param_.HIT_BOX[0] = {
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.25f,
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.25f
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    // 次のbehavior・eraser（プレイヤー）
+    param_.NEXT_BEHAVIOR = &playerTurret02Behavior;
+    param_.NEXT_ERASER = &erasePlayer;
+
+    param_.NEXT_HP = DROP_TURRET03_NEXT_HP;
+}
+
+DropTurret02FlipBehavior::DropTurret02FlipBehavior()
+{
+    param_.ANIME_WAIT = animeTurret02Flip;
+
+    param_.SIZE = { PARTS_OBJ_SIZE, PARTS_OBJ_SIZE };
+
+    param_.HIT_BOX[0] = {
+        -PARTS_OBJ_SIZE * 0.5f, -PARTS_OBJ_SIZE * 0.25f,
+         PARTS_OBJ_SIZE * 0.5f,  PARTS_OBJ_SIZE * 0.25f
+    };
+    param_.ATTACK_BOX[0] = param_.HIT_BOX[0];
+
+    // 次のbehavior・eraser（プレイヤー）
+    param_.NEXT_BEHAVIOR = &playerTurret02FlipBehavior;
+    param_.NEXT_ERASER = &erasePlayer;
+
+    param_.NEXT_HP = DROP_TURRET03_NEXT_HP;
+}
 
 //******************************************************************************
 // 

@@ -82,15 +82,42 @@ EnemyData enemy05[] =
     CORE(&enemyCore01Behavior,3,PARENT_NO::PARENT0)
     ,{&enemyCommon04Behavior,{0.0f,-128.0f},3,PARENT_NO::PARENT1,PARENT_NO::PARENT0}
     ,{&enemyCommon05Behavior,{0.0f,-256.0f},3,PARENT_NO::PARENT2,PARENT_NO::PARENT1}
-    ,{&enemyTurret02Behavior,{-53.0f,-360.0f},3,PARENT_NO::NOT,PARENT_NO::PARENT2}
+    ,{&enemyTurret01FlipBehavior,{-53.0f,-360.0f},3,PARENT_NO::NOT,PARENT_NO::PARENT2}
     ,END
 };
 
-// エネミー06[途中]
+// エネミー06
 EnemyData enemy06[] =
 {
     CORE(&enemyCore01Behavior,3,PARENT_NO::PARENT0)
     ,{&enemyCommon04Behavior,{0.0f,-128.0f},3,PARENT_NO::PARENT1,PARENT_NO::PARENT0}
-    ,{&enemyTurret03Behavior,{0.0f,-256.0f},3,PARENT_NO::NOT,PARENT_NO::PARENT1}
+    ,{&enemyTurret02Behavior,{0.0f,-256.0f},3,PARENT_NO::NOT,PARENT_NO::PARENT1}
+    ,END
+};
+
+// エネミー07
+EnemyData enemy07[] =
+{
+    CORE(&enemyCore01Behavior,3,PARENT_NO::PARENT0)
+    ,{&enemyCommon04Behavior,{0.0f,128.0f},3,PARENT_NO::PARENT1,PARENT_NO::PARENT0}
+    ,{&enemyTurret02FlipBehavior,{0.0f,256.0f},3,PARENT_NO::NOT,PARENT_NO::PARENT1}
+    ,END
+};
+
+// エネミー08
+EnemyData enemy08[] =
+{
+    CORE(&enemyCore01Behavior,3,PARENT_NO::PARENT0)
+    ,{&enemyCommon02Behavior,{-128.0f,0.0f},3,PARENT_NO::PARENT1,PARENT_NO::PARENT0}
+    ,{&enemyBuff01Behavior,{-256.0f,0.0f},3,PARENT_NO::PARENT2,PARENT_NO::PARENT1}
+    ,{&enemyTurret01FlipBehavior,{-320.0f,-96.0f},3,PARENT_NO::NOT,PARENT_NO::PARENT2}
+    ,{&enemyTurret01Behavior,{-320.0f,96.0f},3,PARENT_NO::NOT,PARENT_NO::PARENT2}
+    , END
+};
+
+// エネミー99(ボス)
+EnemyData enemy99[] =
+{
+    CORE(&enemyCore02Behavior,3,PARENT_NO::PARENT0)
     ,END
 };

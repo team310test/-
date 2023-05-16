@@ -61,3 +61,10 @@ extern EnemyData enemy04[];
 extern EnemyData enemy05[];
 // エネミー06
 extern EnemyData enemy06[];
+// エネミー07
+extern EnemyData enemy07[];
+// エネミー08
+extern EnemyData enemy08[];
+
+// エネミー99(ボス)
+extern EnemyData enemy99[];
