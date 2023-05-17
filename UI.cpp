@@ -17,9 +17,8 @@ VECTOR2 UI::plPartsCountPos_;
 
 float   UI::letterBox_multiplySizeY_;      // 映画の黒帯の縦幅(特殊)
 
-float   UI::resultBackTexPosX_;            // リザルト画面のバックのtexPos  
-int     UI::resultBackAnimeTimer_;         // リザルト画面のバックのアニメタイマー
-float   UI::resultBackColorW_;             // リザルト画面のバックの不透明度
+bool UI::isSpawnResultJunks_;
+bool UI::isSpawnResultTimes_;
 
 // 初期設定
 void UI::init()
@@ -39,9 +38,8 @@ void UI::init()
 
     letterBox_multiplySizeY_        = 1.0f;
 
-    resultBackTexPosX_              = 0.0f;
-    resultBackAnimeTimer_           = 0;
-    resultBackColorW_               = 0.6f;
+    isSpawnResultJunks_             = false;
+    isSpawnResultTimes_             = false;
 }
 
 
@@ -326,34 +324,40 @@ void UI::drawLetterBox()
     DepthStencil::instance().set(DepthStencil::MODE::NONE);
 }
 
-
-
-// リザルト画面のバック描画
-void UI::drawResultBack()
+void UI::drawResultJunks()
 {
-    using namespace GameLib;
+    std::ostringstream ss;
+    ss << std::setw(3) << std::setfill('0') << BasePlayerBehavior::plPartsCurrentCount_;
 
+    VECTOR2 pos   = { 620,410 };
+    VECTOR2 scale = { 2.85f, 2.85f };
+    VECTOR4 color = { 1,1,1,1 };
+
+    //static int state = 0;
+    //switch(state)
+
+    GameLib::font::textOut(
+        6, ss.str(), pos, scale, color, GameLib::TEXT_ALIGN::MIDDLE_LEFT
+    );
+}
+
+void UI::drawResultTimes()
+{
     // 使いまわし変数
-    int     sprNo  = 0;
-    VECTOR2 pos    = {};
-    VECTOR2 scale  = {};
-    VECTOR2 texPos = {};
-    VECTOR2 size   = {};
-    VECTOR2 center = {};
-    float   angle  = 0.0f;
-    VECTOR4 color  = {};
+    VECTOR2 pos = {};
+    VECTOR2 scale = {};
+    VECTOR4 color = {};
 
-    // リザルト画面のバック描画
-    {
-        sprNo  = UI_RESULT_BACK;
-        scale  = { 1,1 };
-        size   = { 1920,1080 };
-        texPos = { resultBackTexPosX_, 0 };
-        color  = { 1,1,1, resultBackColorW_ };
+    int second = Game::instance()->getTimer() / 60 % 60;
+    int minute = Game::instance()->getTimer() / 3600 % 60;
+    std::ostringstream ss;
+    ss << std::setw(2) << std::setfill('0') << minute << "'" <<
+        std::setw(2) << std::setfill('0') << second;
+    pos   = { 620,560 };
+    scale = { 2.85f, 2.85f };
+    color = { 1,1,1,1 };
 
-        // 描画
-        texture::begin(sprNo);
-        texture::draw(sprNo, pos, scale, texPos, size, center, angle, color);
-        texture::end(sprNo);
-    }
+    GameLib::font::textOut(
+        6, ss.str(), pos, scale, color, GameLib::TEXT_ALIGN::MIDDLE_LEFT
+    );
 }

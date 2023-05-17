@@ -35,6 +35,8 @@ public:
     OBJ2DManager* obj2dManager()    { return obj2dManager_; }
     BG* bg()                        { return bg_; }
 
+    int getTimer() const { return timer_; }
+
     void init() override;
     void deinit() override;
     void update() override;

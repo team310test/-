@@ -326,12 +326,9 @@ void Game::draw()
         UI::drawLetterBox();
     }
 
-    // TODO: ゲームクリアしていてgameClearStateが2以上ならリザルト画面のバック描画
-    if (isGameClear() && gameClearState_ >= 2)
-    {
-        // リザルト画面のバック描画
-        UI::drawResultBack();
-    }
+    // 集めたパーツ・経過時間表示
+    if (UI::isSpawnResultJunks_) UI::drawResultJunks();
+    if (UI::isSpawnResultTimes_) UI::drawResultTimes();
 }
 
 void Game::judge()
@@ -426,6 +423,7 @@ void Game::gameOverProc()
 
         for (auto& obj : *obj2dManager_->getList())
         {
+            if (!obj->behavior_) continue;
             // 自機本体なら飛ばす
             if (obj == player_)continue;
 
@@ -471,50 +469,97 @@ void Game::gameOverProc()
 }
 
 
-struct ResultTextData
+enum RANK
 {
-    int       spawnTime;
-    Behavior* behavior;
-    VECTOR2   pos;
-    GameLib::SpriteData spriteData;
-
+    S, A, B, C,
 };
 
-// リザルトテキスト生成
-bool spawnResultText()
-{
-    // 順番にテキストを生成
-    ResultTextData resultTextData[] =
-    {
-        //{  0, &baseGameResultText, {    0.0f,    0.0f }, &sprResultJunks },
-        //{ 20, &baseGameResultText, { -100.0f, -100.0f }, &sprResultTime },
-        //{ 40, &baseGameResultText, {  100.0f, -100.0f }, &sprResultRank },
-        //{ 60, &baseGameResultText, { -100.0f,  100.0f }, &sprResultJunk },
-        //{ 80, &baseGameResultText, {  100.0f,  100.0f }, &sprResultJunk },
+// ランク付けの仕方
+// { S+S=S, S+A=A, S+B=A, S+C=B }
+// { A+S=A, A+A=A, A+B=B, A+C=B }
+// { B+S=A, B+A=B, B+B=B, B+C=C }
+// { C+S=B, C+A=B, C+B=C, C+C=C }
 
+// 総合ランクを決める
+Behavior* decideRank[][4] = {
+    { &gameResult_S, &gameResult_A, &gameResult_A, &gameResult_B },
+    { &gameResult_A, &gameResult_A, &gameResult_B, &gameResult_B },
+    { &gameResult_A, &gameResult_B, &gameResult_B, &gameResult_C },
+    { &gameResult_B, &gameResult_B, &gameResult_C, &gameResult_C },
+};
+// 一言コメントを決める
+Behavior* decideText[][4] = {
+    { &gameResult_text_junkie, &gameResult_text_great, &gameResult_text_great, &gameResult_text_nice },
+    { &gameResult_text_great,  &gameResult_text_great, &gameResult_text_nice,  &gameResult_text_nice },
+    { &gameResult_text_great,  &gameResult_text_nice,  &gameResult_text_nice,  &gameResult_text_soso },
+    { &gameResult_text_nice,   &gameResult_text_nice,  &gameResult_text_soso,  &gameResult_text_soso },
+};
+
+struct ResultTextData
+{
+    int       spawnTime; // 生成時間
+    Behavior* behavior;  // Behavior
+    VECTOR2   pos;       // 生成位置
+};
+
+
+// リザルトテキスト生成
+bool spawnResultText(const int& spawnTimer)
+{
+    // TODO: ランク付けの設定
+    
+    // パーツのランク付け
+    int junkRank  = RANK::S;
+    const int partsCount = BasePlayerBehavior::plPartsCurrentCount_;
+         if (partsCount >= 50) junkRank = RANK::S; // 50個以上
+    else if (partsCount >= 30) junkRank = RANK::A; // 30~49個
+    else if (partsCount >= 20) junkRank = RANK::B; // 20~29個
+    else                       junkRank = RANK::C; // 20個未満
+
+    // クリア時間のランク付け
+    int timesRank = RANK::S;
+    const int clearTime = Game::instance()->getTimer();
+         if (clearTime <= 60 * 20) timesRank = RANK::S; // 2分以下
+    else if (clearTime <= 60 * 40) timesRank = RANK::A; // 2分~4分
+    else if (clearTime <= 60 * 60) timesRank = RANK::B; // 4分~6分
+    else                           timesRank = RANK::C; // 6分超
+
+    // 総合的なランク付け
+    Behavior* gameResultSABC = decideRank[junkRank][timesRank];
+    Behavior* gameResultText = decideText[junkRank][timesRank];
+
+
+    // 順番にテキストを生成
+    ResultTextData resultTextData[] = {
+        { 60,  &gameResult_junks,   { 390,  400 } }, // JUNK'S
+        { 120, &gameResult_times,   { 400,  550 } }, // TIME'S
+        { 180, &gameResult_rank,    { 1350, 170 } }, // RANK
+        { 210, gameResultSABC,      { 1355, 470 } }, // S・A・B・C
+        { 240, gameResultText,      { 1450, 740 } }, // ひと言
+        { 300, &gameResult_anyPush, { 575,  800 } }, // ANY PUSH
+                                                         
         { 0, nullptr, { 0.0f,0.0f } },
     };
+    if (spawnTimer == 90) UI::isSpawnResultJunks_ = true;
+    if (spawnTimer == 150) UI::isSpawnResultTimes_ = true;
 
-    static int currentSpawnTimer = 0;
     static ResultTextData* currentData = nullptr;
     if (!currentData) currentData = resultTextData;
 
 
-    if (currentData->behavior && currentData->spawnTime == currentSpawnTimer)
+    while (currentData->behavior && currentData->spawnTime == spawnTimer)
     {
         OBJ2D* resultText = setGameObj(
             Game::instance()->obj2dManager(), currentData->behavior, currentData->pos
         );
-        resultText->renderer_->data_ = &currentData->spriteData; // 画像セット
-        resultText->isQuake_ = true; // 揺らす
+        resultText->zOrder_  = 100;   // 最前面
+        resultText->isQuake_ = true; // 生成時に揺らす
         ++currentData;
     }
-    ++currentSpawnTimer;
 
     // behaviorがnullptrなら
     if (!currentData->behavior)
     {
-        currentSpawnTimer = 0;
         currentData = nullptr;
         return true; // 生成し終わったのでtrue
     }
@@ -529,6 +574,9 @@ void Game::gameClearProc()
 
     Transform*      bossT = boss_->transform_;
     ActorComponent* bossA = boss_->actorComponent_;
+
+    static OBJ2D* resultBack = nullptr; // リザルトバック
+    static int spawnTimer = 0;
 
     switch (gameClearState_)
     {
@@ -548,58 +596,93 @@ void Game::gameClearProc()
 
         ++gameClearState_;
         /*fallthrough*/
-    case 1:
+    case 1: // しばらく爆発
         // 連鎖爆発エフェクト
         if (!boss_->isQuake_) boss_->isQuake_ = true; // 爆破中は振動させる
         ChainEffect(boss_);
 
         if (wait(120))
         {
-            ++gameClearState_;
-            break;
-        }
-
-        break;
-    case 2: // リザルト画面
-        // 連鎖爆発エフェクト
-        if (!boss_->isQuake_) boss_->isQuake_ = true; // 爆破中は振動させる
-        ChainEffect(boss_);
-
-        // リザルト画面のバックのアニメ処理
-        if (UI::resultBackAnimeTimer_ < 99) ++UI::resultBackAnimeTimer_;
-        if (UI::resultBackAnimeTimer_ % 5 == 0)
-        {
-            UI::resultBackTexPosX_ = std::min(
-                1920.0f * 3.0f, UI::resultBackTexPosX_ + 1920.0f
+            // リザルトバック生成
+            resultBack = setGameObj(
+                Game::instance()->obj2dManager(), &gameResult_back,
+                { BG::WINDOW_W_F * 0.5f, BG::WINDOW_H_F * 0.5f }
             );
-        }
+            resultBack->zOrder_ = 100;
 
-        // リザルトテキスト生成が終わっていて指定のボタンを押したら次に進む
-        if ( ((GameLib::input::TRG(0) & GameLib::input::PAD_TRG1) ||
-              (GameLib::input::TRG(0) & GameLib::input::PAD_TRG2) ||
-              (GameLib::input::TRG(0) & GameLib::input::PAD_TRG3) ||
-              (GameLib::input::TRG(0) & GameLib::input::PAD_TRG4)) &&
-            spawnResultText())
-        {
             ++gameClearState_;
             break;
         }
 
         break;
-    case 3: // リザルト画面のバックの不透明度を下げる
+    case 2: // リザルト
         // 連鎖爆発エフェクト
         if (!boss_->isQuake_) boss_->isQuake_ = true; // 爆破中は振動させる
         ChainEffect(boss_);
 
-        UI::resultBackColorW_ = std::max(-0.5f, UI::resultBackColorW_ - 0.025f);
-        if (UI::resultBackColorW_ == -0.5f)
+        // リザルトバックのアニメーションが終わってsprDataに切り替わっていなければbreak
+        if (!resultBack->renderer_->data_) break;
+
+            // リザルトテキストが生成し終わっていなければbreak
+        if (!spawnResultText(spawnTimer))
+        {
+            ++spawnTimer;
+            break;
+        }
+
+        spawnTimer = 0;
+        ++gameClearState_;
+        break;      
+    case 3: // ボタンアクション待ち
+        // 連鎖爆発エフェクト
+        if (!boss_->isQuake_) boss_->isQuake_ = true; // 爆破中は振動させる
+        ChainEffect(boss_);
+
+        // 指定のボタンを押したら次に進む
+        if ((GameLib::input::TRG(0) & GameLib::input::PAD_TRG1) ||
+            (GameLib::input::TRG(0) & GameLib::input::PAD_TRG2) ||
+            (GameLib::input::TRG(0) & GameLib::input::PAD_TRG3) ||
+            (GameLib::input::TRG(0) & GameLib::input::PAD_TRG4))
+        {
+            UI::isSpawnResultJunks_ = false;
+            UI::isSpawnResultTimes_ = false;
+
+            ++gameClearState_;
+            break;
+        }
+
+        break;
+    case 4: // リザルト画面のバックの不透明度を下げる
+        // リザルトバック以外のリザルトUIを消す
+        for (auto& obj : *obj2dManager_->getList())
+        {
+            if (!obj->behavior_) continue;
+            if (obj->behavior_->getType() == OBJ_TYPE::PLAYER) continue;
+            if (obj->behavior_->getType() == OBJ_TYPE::EFFECT) continue;
+            if (obj == boss_)      continue;
+            if (obj == resultBack) continue;
+
+            obj->behavior_ = nullptr;
+        }
+
+        // 連鎖爆発エフェクト
+        if (!boss_->isQuake_) boss_->isQuake_ = true; // 爆破中は振動させる
+        ChainEffect(boss_);
+
+        // リザルトバックの不透明度を下げる
+        resultBack->renderer_->color_.w = std::max(
+            -0.5f, resultBack->renderer_->color_.w - 0.025f
+        );
+
+        // リザルトバック不透明度が下がり切ったら
+        if (resultBack->renderer_->color_.w == -0.5f)
         {
             ++gameClearState_;
             break;
         }
 
         break;
-    case 4: // エフェクトの再生終了待ち
+    case 5: // エフェクトの再生終了待ち
         if (!objToul::instance().isObjType(obj2dManager(), OBJ_TYPE::EFFECT))
         {
             ++gameClearState_;
@@ -607,7 +690,7 @@ void Game::gameClearProc()
         }
 
         break;
-    case 5: // ウェイト
+    case 6: // ウェイト
         if (wait(10))
         {
             ++gameClearState_;
@@ -615,16 +698,7 @@ void Game::gameClearProc()
         }
 
         break;
-    case 6: // player本体・ボス以外を消去
-
-        for (auto& obj : *obj2dManager_->getList())
-        {
-            if (obj == player_) continue;
-            if (obj == boss_)   continue;
-
-            obj->behavior_ = nullptr;
-        }
-
+    case 7:
         // プレイヤーを透明にする
         player_->renderer_->color_.w = 0.0f;
 
@@ -633,7 +707,7 @@ void Game::gameClearProc()
 
         ++gameClearState_;
         break;
-    case 7: // ウェイト
+    case 8: // ウェイト
         if (wait(30))
         {
             ++gameClearState_;
@@ -641,7 +715,7 @@ void Game::gameClearProc()
         }
 
         break;
-    case 8: // 画面中心に移動
+    case 9: // 画面中心に移動
         if (MoveToCenter(boss_))
         {
             ++gameClearState_;
@@ -649,7 +723,7 @@ void Game::gameClearProc()
         }
 
         break;
-    case 9: // ウェイト
+    case 10: // ウェイト
         if (wait(30))
         {
             ++gameClearState_;
@@ -657,7 +731,7 @@ void Game::gameClearProc()
         }
 
         break;
-    case 10: // 自機フレーム・ハートの生成
+    case 11: // 自機フレーム・ハートの生成
         playerFrame_ = setGameObj(
             obj2dManager(), &gamePlayerFrameObjBehavior, bossT->position_
         );
@@ -672,7 +746,7 @@ void Game::gameClearProc()
 
         ++gameClearState_;
         break;
-    case 11: // ハートの落下後タイトルへ遷移
+    case 12: // ハートの落下後タイトルへ遷移
         boss_->renderer_->color_.w = 0.0f;
 
         if (playerHeart_->performComponent_->isTrigger)

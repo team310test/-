@@ -49,6 +49,19 @@ enum GAME_TEXNO
 
     UI_RESULT_BACK,     // リザルトのバック
 
+    UI_RESULT_JUNKS,
+    UI_RESULT_TIMES,
+    UI_RESULT_RANK,
+    UI_RESULT_ANY_PUSH,
+    UI_RESULT_S,
+    UI_RESULT_A,
+    UI_RESULT_B,
+    UI_RESULT_C,
+    UI_RESULT_TEXT_JUNKIE,
+    UI_RESULT_TEXT_GREAT,
+    UI_RESULT_TEXT_NICE,
+    UI_RESULT_TEXT_SOSO,
+
     // コア
     PL_CORE01,
     ENM_CORE01,
@@ -104,14 +117,31 @@ extern GameLib::SpriteData sprTitleUserSpace;
 
 ///////////// ゲーム ////////////////////////////////////////////////
 
-// プレイヤー
-extern GameLib::SpriteData sprPlayerCore01;
+// リザルトUI
+extern GameLib::SpriteData sprResult_back01;
+extern GameLib::SpriteData sprResult_back02;
+extern GameLib::SpriteData sprResult_back03;
+extern GameLib::SpriteData sprResult_back04;
+extern GameLib::SpriteData sprResult_junks;
+extern GameLib::SpriteData sprResult_times;
+extern GameLib::SpriteData sprResult_rank;
+extern GameLib::SpriteData sprResult_anyPush;
+extern GameLib::SpriteData sprResult_S;
+extern GameLib::SpriteData sprResult_A;
+extern GameLib::SpriteData sprResult_B;
+extern GameLib::SpriteData sprResult_C;
+extern GameLib::SpriteData sprResult_textJunkie;
+extern GameLib::SpriteData sprResult_textGreat;
+extern GameLib::SpriteData sprResult_textNice;
+extern GameLib::SpriteData sprResult_textSoso;
 
-// パーツ
+// コア
+extern GameLib::SpriteData sprPlayerCore01;
 extern GameLib::SpriteData sprEnemyCore01;
 extern GameLib::SpriteData sprEnemyCore02;
 extern GameLib::SpriteData sprPartsCore02;
 
+// パーツ
 extern GameLib::SpriteData sprPartsTurret01;
 extern GameLib::SpriteData sprPartsTurret01Flip;
 extern GameLib::SpriteData sprPartsTurret02;

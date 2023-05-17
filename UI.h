@@ -9,7 +9,9 @@ public:
     static void drawShrinkValueMeter(); // 縮小カウントの計器描画
     static void drawPlPartsCurrentCount(); // プレイヤーパーツの現在数描画
     static void drawLetterBox();        // 映画の黒帯描画(マスク処理で行っている)
-    static void drawResultBack();       // リザルト画面のバック描画
+
+    static void drawResultJunks();
+    static void drawResultTimes();
 
 private:
     static const     int   DISP_METER_SHRINK_COUNT_MAX_TIME = 140;  // 最大縮小カウントを表示する時間
@@ -40,8 +42,7 @@ public:
 
     static float letterBox_multiplySizeY_;      // 映画の黒帯の縦幅(特殊)
 
-    static float resultBackTexPosX_;            // リザルト画面のバックのtexPos
-    static int   resultBackAnimeTimer_;         // リザルト画面のバックのアニメタイマー
-    static float resultBackColorW_;             // リザルト画面のバックの不透明度
+    static bool isSpawnResultJunks_;
+    static bool isSpawnResultTimes_;
 };
 
