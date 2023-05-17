@@ -123,7 +123,7 @@ EnemyData enemy09[] =
 };
 
 // エネミー(ボス)
-EnemyData enemyBos[] =
+EnemyData enemyBoss[] =
 {
     CORE(&enemyCore02Behavior,3,PARENT_NO::PARENT0)
     ,END

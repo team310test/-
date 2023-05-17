@@ -228,8 +228,6 @@ void Title::changeSceneGame()
         const bool logoFadeOut = objToul::instance().FadeOut(titleLogo_,  0.03f);
         const bool HintShotFadeOut = objToul::instance().FadeOut(userHintShot_, 0.03f);
 
-        //const bool HintShotFadeOut = true;
-        //const bool shrink      = objToul::instance().Shrink(player_);      // 縮小
         Game::instance()->isStartFirstShrink_ = true; // 縮小
 
         if (player_->transform_->position_.y > BG::WINDOW_H_F * 0.5f)
@@ -360,7 +358,7 @@ void Title::userHintMove()
         if (!userHintMove_) return;
 
         // userHintMove_がnullptrでないならフェードアウトした後nullptrにする
-        if (objToul::instance().FadeOut(userHintMove_, 0.05f))
+        if (objToul::instance().FadeOut(userHintMove_, -0.05f))
         {
             userHintMove_->behavior_ = nullptr;
             userHintMove_ = nullptr;
@@ -398,7 +396,6 @@ void Title::userHintShot()
     // フェードイン
     objToul::instance().FadeIn(userHintShot_, 0.025f);
 
-
     // 攻撃キーが入力待ちの状態
     if (isPlayerShotState_ == 0)
     {
@@ -407,16 +404,17 @@ void Title::userHintShot()
             GameLib::input::STATE(0) & GameLib::input::PAD_TRG2 ||
             GameLib::input::STATE(0) & GameLib::input::PAD_TRG3 ||
             GameLib::input::STATE(0) & GameLib::input::PAD_TRG4))
+        // userHintMove_がnullptrでないならフェードアウトした後nullptrにする
+        if (objToul::instance().FadeOut(userHintShot_, 0.05f))
         {
             ++isPlayerShotState_;
-            return;
         }
     }
     // 攻撃キーが入力済みの状態　かつ setBehaviorNo_が0の時
-    else if (isPlayerShotState_ == 1)
+    if (isPlayerShotState_ == 1)
     {
         // フェードアウト
-        if (objToul::instance().FadeOut(userHintShot_, 0.025f * 2.0f))
+        if (objToul::instance().FadeOut(userHintShot_, 0.05f))
         {
             // フェードアウト後
             userHintShot_->behavior_ = nullptr;

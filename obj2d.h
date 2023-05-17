@@ -196,7 +196,6 @@ public:
     static int playerNum;
     int No;
 
-    bool isQuake_;
     int  deathDelayTimer_; // 親が死んだときのパーツの連鎖死亡に遅延をつくりだす
 
     // 速度関連パラメータ
@@ -222,7 +221,6 @@ public:
         , obj(nullptr)
 
         , No(1)
-        , isQuake_(false)
         , deathDelayTimer_(0)
 
         // 速度関連パラメータ
@@ -313,6 +311,7 @@ public:
 
     int bgSprNo_ = 0; // 背景スプライト画像TEXNO
 
+    bool isQuake_ = false;
     bool isBlink_ = false;
 
     BG* bg_ = nullptr;

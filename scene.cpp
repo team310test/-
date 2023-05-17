@@ -68,7 +68,7 @@ void SceneManager::execute(Scene* scene)
                                 //（Releaseモードのみ）
 
     // ゲームライブラリの初期化処理
-    GameLib::init(L"2年チーム制作1回目", BG::WINDOW_W, BG::WINDOW_H, isFullScreen);
+    GameLib::init(L"Junk Chunk", BG::WINDOW_W, BG::WINDOW_H, isFullScreen);
 
 #ifndef _DEBUG
     ShowCursor(!isFullScreen);	// フルスクリーン時はカーソルを消す

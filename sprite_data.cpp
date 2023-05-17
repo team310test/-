@@ -9,14 +9,14 @@ GameLib::LoadTexture titleLoadTexture[] = {
     { TITLE_TEXNO::TITLE_HEART,      L"./Data/Images/Core/Core_Heart.png",     1U }, // プレイヤーコアのハート
     { TITLE_TEXNO::TITLE_FRAME,      L"./Data/Images/Core/Core_Frame.png",     1U }, // プレイヤーコアの枠
                                                                                      
-    { TITLE_TEXNO::TITLE_LOGO,       L"./Data/Images/UI/title_logo.png",       1U }, // ロゴ
-    { TITLE_TEXNO::TITLE_TRASH_BOX,  L"./Data/Images/UI/Title_TrashBox.png",   1U }, // ゴミ箱 
-    { TITLE_TEXNO::TITLE_USER_MOVE,  L"./Data/Images/UI/Title_User_Move.png",  1U }, // 操作方法WASD→←↓→
-    { TITLE_TEXNO::TITLE_USER_SPACE, L"./Data/Images/UI/Title_User_Space.png", 1U }, // 操作方法Space
-    { TITLE_TEXNO::TITLE_USER_HOLD, L"./Data/Images/UI/Title_Text_Hold.png", 1U },   // 操作方法Hold
+    { TITLE_TEXNO::TITLE_LOGO,       L"./Data/Images/UI/Title/Title_Logo.png",       1U }, // ロゴ
+    { TITLE_TEXNO::TITLE_TRASH_BOX,  L"./Data/Images/UI/Title/Title_TrashBox.png",   1U }, // ゴミ箱 
+    { TITLE_TEXNO::TITLE_USER_MOVE,  L"./Data/Images/UI/Title/Title_User_Move.png",  1U }, // 操作方法WASD→←↓→
+    { TITLE_TEXNO::TITLE_USER_SPACE, L"./Data/Images/UI/Title/Title_User_Space.png", 1U }, // 操作方法Space
+    { TITLE_TEXNO::TITLE_USER_HOLD, L"./Data/Images/UI/Title/Title_Text_Hold.png",   1U },   // 操作方法Hold
 
-    { TITLE_TEXNO::TITLE_TEXT_START, L"./Data/Images/UI/Title_Text_Start.png", 1U }, // Start
-    { TITLE_TEXNO::TITLE_TEXT_EXIT,  L"./Data/Images/UI/Title_Text_Exit.png",  1U }, // Exit
+    { TITLE_TEXNO::TITLE_TEXT_START, L"./Data/Images/UI/Title/Title_Text_Start.png", 1U }, // Start
+    { TITLE_TEXNO::TITLE_TEXT_EXIT,  L"./Data/Images/UI/Title/Title_Text_Exit.png",  1U }, // Exit
     
     { -1, nullptr }	// 終了フラグ
 };
@@ -24,7 +24,7 @@ GameLib::LoadTexture titleLoadTexture[] = {
 // ゲーム画像データ
 GameLib::LoadTexture gameLoadTexture[] = {
     // 背景
-    { GAME_TEXNO::BG01, L"./Data/Images/BackGround/BackGround05.png", 1U }, // 1前面(縮小後は後面)
+    { GAME_TEXNO::BG01, L"./Data/Images/BackGround/BackGround01.png", 1U }, // 1前面(縮小後は後面)
     { GAME_TEXNO::BG02, L"./Data/Images/BackGround/BackGround02.png", 1U }, // 2中間
     { GAME_TEXNO::BG03, L"./Data/Images/BackGround/BackGround03.png", 1U }, // 2前面(縮小後は後面)
     { GAME_TEXNO::BG04, L"./Data/Images/BackGround/BackGround01.png", 1U }, // 3中間
@@ -42,9 +42,24 @@ GameLib::LoadTexture gameLoadTexture[] = {
     { GAME_TEXNO::BG16, L"./Data/Images/BackGround/BackGround02.png", 1U }, // 9中間
     { GAME_TEXNO::BG17, L"./Data/Images/BackGround/BackGround11.png", 1U }, // 9前面(縮小後は後面)
 
-    // UI
-    { GAME_TEXNO::UI_METER_FRAME,    L"./Data/Images/UI/Meter_Frame.png",   1U },   // 計器の枠
-    { GAME_TEXNO::UI_METER_NEEDLE,   L"./Data/Images/UI/Meter_Needle.png",  1U },   // 計器の針
+    // メーターUI
+    { GAME_TEXNO::UI_METER_FRAME,  L"./Data/Images/UI/Game/UI_Meter_Frame.png",  1U },   // 計器の枠
+    { GAME_TEXNO::UI_METER_NEEDLE, L"./Data/Images/UI/Game/UI_Meter_Needle.png", 1U },   // 計器の針
+
+    // リザルトUI
+    { GAME_TEXNO::UI_RESULT_BACK,        L"./Data/Images/UI/Game/UI_Result_Back.png",    1U },      // リザルトのバック
+    { GAME_TEXNO::UI_RESULT_JUNKS,       L"./Data/Images/UI/Game/UI_Result_Junks.png",   1U },      // リザルトのJUNK'S
+    { GAME_TEXNO::UI_RESULT_TIMES,       L"./Data/Images/UI/Game/UI_Result_Times.png",   1U },      // リザルトのTIME'S
+    { GAME_TEXNO::UI_RESULT_RANK,        L"./Data/Images/UI/Game/UI_Result_Rank.png",    1U },      // リザルトのRANK
+    { GAME_TEXNO::UI_RESULT_ANY_PUSH,    L"./Data/Images/UI/Game/UI_Result_AnyPush.png", 1U },      // リザルトのANY PUSH
+    { GAME_TEXNO::UI_RESULT_S,           L"./Data/Images/UI/Game/UI_Result_S.png",       1U },      // リザルトのS
+    { GAME_TEXNO::UI_RESULT_A,           L"./Data/Images/UI/Game/UI_Result_A.png",       1U },      // リザルトのA
+    { GAME_TEXNO::UI_RESULT_B,           L"./Data/Images/UI/Game/UI_Result_B.png",       1U },      // リザルトのB
+    { GAME_TEXNO::UI_RESULT_C,           L"./Data/Images/UI/Game/UI_Result_C.png",       1U },      // リザルトのC
+    { GAME_TEXNO::UI_RESULT_TEXT_JUNKIE, L"./Data/Images/UI/Game/UI_Result_Text_Junkie.png",  1U }, // リザルトのテキストJUNKIE
+    { GAME_TEXNO::UI_RESULT_TEXT_GREAT,  L"./Data/Images/UI/Game/UI_Result_Text_Great.png",   1U }, // リザルトのテキストGREAT
+    { GAME_TEXNO::UI_RESULT_TEXT_NICE,   L"./Data/Images/UI/Game/UI_Result_Text_Nice.png",    1U }, // リザルトのテキストNICE
+    { GAME_TEXNO::UI_RESULT_TEXT_SOSO,   L"./Data/Images/UI/Game/UI_Result_Text_Soso.png",    1U }, // リザルトのテキストSOSO
 
     // コア
     { GAME_TEXNO::PL_CORE01,  L"./Data/Images/Core/PlayerCore01.png", 1U },
@@ -110,29 +125,47 @@ GameLib::SpriteData sprTitleUserHold    = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER_
 
 /////////////////////////// ゲーム //////////////////////////////////////////////////////////////////
 
-//------< コア>------------------------------------------------------------------
+//------< リザルトUI >------------------------------------------------------------------
+GameLib::SpriteData sprResult_back01     = SPRITE_CENTER(GAME_TEXNO::UI_RESULT_BACK, (1920 * 0), 0, 1920, 1080);
+GameLib::SpriteData sprResult_back02     = SPRITE_CENTER(GAME_TEXNO::UI_RESULT_BACK, (1920 * 1), 0, 1920, 1080);
+GameLib::SpriteData sprResult_back03     = SPRITE_CENTER(GAME_TEXNO::UI_RESULT_BACK, (1920 * 2), 0, 1920, 1080);
+GameLib::SpriteData sprResult_back04     = SPRITE_CENTER(GAME_TEXNO::UI_RESULT_BACK, (1920 * 3), 0, 1920, 1080);
+GameLib::SpriteData sprResult_junks      = SPRITE_CENTER(GAME_TEXNO::UI_RESULT_JUNKS,       0, 0, 640, 128);
+GameLib::SpriteData sprResult_times      = SPRITE_CENTER(GAME_TEXNO::UI_RESULT_TIMES,       0, 0, 640, 128);
+GameLib::SpriteData sprResult_rank       = SPRITE_CENTER(GAME_TEXNO::UI_RESULT_RANK,        0, 0, 640, 128);
+GameLib::SpriteData sprResult_anyPush    = SPRITE_CENTER(GAME_TEXNO::UI_RESULT_ANY_PUSH,    0, 0, 640, 128);
+GameLib::SpriteData sprResult_S          = SPRITE_CENTER(GAME_TEXNO::UI_RESULT_S,           0, 0, 384, 384);
+GameLib::SpriteData sprResult_A          = SPRITE_CENTER(GAME_TEXNO::UI_RESULT_A,           0, 0, 384, 384);
+GameLib::SpriteData sprResult_B          = SPRITE_CENTER(GAME_TEXNO::UI_RESULT_B,           0, 0, 384, 384);
+GameLib::SpriteData sprResult_C          = SPRITE_CENTER(GAME_TEXNO::UI_RESULT_C,           0, 0, 384, 384);
+GameLib::SpriteData sprResult_textJunkie = SPRITE_CENTER(GAME_TEXNO::UI_RESULT_TEXT_JUNKIE, 0, 0, 640, 128);
+GameLib::SpriteData sprResult_textGreat  = SPRITE_CENTER(GAME_TEXNO::UI_RESULT_TEXT_GREAT,  0, 0, 640, 128);
+GameLib::SpriteData sprResult_textNice   = SPRITE_CENTER(GAME_TEXNO::UI_RESULT_TEXT_NICE,   0, 0, 640, 128);
+GameLib::SpriteData sprResult_textSoso   = SPRITE_CENTER(GAME_TEXNO::UI_RESULT_TEXT_SOSO,   0, 0, 640, 128);
+
+//------< コア >------------------------------------------------------------------
 GameLib::SpriteData sprPlayerCore01     = SPRITE_CENTER(GAME_TEXNO::PL_CORE01,   0, 0, 128, 128);
 GameLib::SpriteData sprEnemyCore01      = SPRITE_CENTER(GAME_TEXNO::ENM_CORE01,  0, 0, 128, 128);
 GameLib::SpriteData sprEnemyCore02      = SPRITE_CENTER(GAME_TEXNO::ENM_CORE02,  0, 0, 128, 128);
 
 //------< パーツ >------------------------------------------------------------------
-GameLib::SpriteData sprPartsTurret01    = SPRITE_CENTER(GAME_TEXNO::TURRET01, 0, 0, 128, 128);
-GameLib::SpriteData sprPartsTurret01Flip= SPRITE_CENTER(GAME_TEXNO::TURRET01FLIP, 0, 0, 128, 128);
-GameLib::SpriteData sprPartsTurret02    = SPRITE_CENTER(GAME_TEXNO::TURRET02, 0, 0, 128, 128);
-GameLib::SpriteData sprPartsTurret02Flip= SPRITE_CENTER(GAME_TEXNO::TURRET02FLIP, 0, 0, 128, 128);
-GameLib::SpriteData sprPartsTurret03    = SPRITE_CENTER(GAME_TEXNO::TURRET03, 0, 0, 128, 128);
-GameLib::SpriteData sprPartsTurret04    = SPRITE_CENTER(GAME_TEXNO::TURRET04, 0, 0, 128, 128);
-
-GameLib::SpriteData sprPartsShield01    = SPRITE_CENTER(GAME_TEXNO::SHIELD01, 0, 0, 128, 128);
-GameLib::SpriteData sprPartsBuff01      = SPRITE_CENTER(GAME_TEXNO::BUFF01,   0, 0, 128, 128);
-
-GameLib::SpriteData sprPartsTrash01     = SPRITE_CENTER(GAME_TEXNO::TRASH01,  0, 0, 128, 128);
-GameLib::SpriteData sprPartsTrash02     = SPRITE_CENTER(GAME_TEXNO::TRASH02,  0, 0, 128, 128);
-GameLib::SpriteData sprPartsTrash03     = SPRITE_CENTER(GAME_TEXNO::TRASH03,  0, 0, 128, 128);
-
-GameLib::SpriteData sprPartsCommon01    = SPRITE_CENTER(GAME_TEXNO::COMMON01, 0, 0, 128, 128);
-GameLib::SpriteData sprPartsCommon02    = SPRITE_CENTER(GAME_TEXNO::COMMON02, 0, 0, 128, 128);
-GameLib::SpriteData sprPartsCommon03    = SPRITE_CENTER(GAME_TEXNO::COMMON03, 0, 0, 128, 128);
+GameLib::SpriteData sprPartsTurret01     = SPRITE_CENTER(GAME_TEXNO::TURRET01, 0, 0, 128, 128);
+GameLib::SpriteData sprPartsTurret01Flip = SPRITE_CENTER(GAME_TEXNO::TURRET01FLIP, 0, 0, 128, 128);
+GameLib::SpriteData sprPartsTurret02     = SPRITE_CENTER(GAME_TEXNO::TURRET02, 0, 0, 128, 128);
+GameLib::SpriteData sprPartsTurret02Flip = SPRITE_CENTER(GAME_TEXNO::TURRET02FLIP, 0, 0, 128, 128);
+GameLib::SpriteData sprPartsTurret03     = SPRITE_CENTER(GAME_TEXNO::TURRET03, 0, 0, 128, 128);
+GameLib::SpriteData sprPartsTurret04     = SPRITE_CENTER(GAME_TEXNO::TURRET04, 0, 0, 128, 128);
+                                         
+GameLib::SpriteData sprPartsShield01     = SPRITE_CENTER(GAME_TEXNO::SHIELD01, 0, 0, 128, 128);
+GameLib::SpriteData sprPartsBuff01       = SPRITE_CENTER(GAME_TEXNO::BUFF01,   0, 0, 128, 128);
+                                         
+GameLib::SpriteData sprPartsTrash01      = SPRITE_CENTER(GAME_TEXNO::TRASH01,  0, 0, 128, 128);
+GameLib::SpriteData sprPartsTrash02      = SPRITE_CENTER(GAME_TEXNO::TRASH02,  0, 0, 128, 128);
+GameLib::SpriteData sprPartsTrash03      = SPRITE_CENTER(GAME_TEXNO::TRASH03,  0, 0, 128, 128);
+                                         
+GameLib::SpriteData sprPartsCommon01     = SPRITE_CENTER(GAME_TEXNO::COMMON01, 0, 0, 128, 128);
+GameLib::SpriteData sprPartsCommon02     = SPRITE_CENTER(GAME_TEXNO::COMMON02, 0, 0, 128, 128);
+GameLib::SpriteData sprPartsCommon03     = SPRITE_CENTER(GAME_TEXNO::COMMON03, 0, 0, 128, 128);
 
 //------< 弾 >----------------------------------------------------------------
 GameLib::SpriteData sprShot_NormalShot  = SPRITE_CENTER(GAME_TEXNO::BULLET01, 0, 0, 64, 64);

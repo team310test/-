@@ -69,4 +69,4 @@ extern EnemyData enemy08[];
 extern EnemyData enemy09[];
 
 // エネミー99(ボス)
-extern EnemyData enemyBos[];
+extern EnemyData enemyBoss[];
