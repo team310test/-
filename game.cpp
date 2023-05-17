@@ -578,6 +578,8 @@ void Game::gameClearProc()
     static OBJ2D* resultBack = nullptr; // リザルトバック
     static int spawnTimer = 0;
 
+    bool isChainEffect = false;
+
     switch (gameClearState_)
     {
     case 0: // 初期設定
@@ -667,7 +669,8 @@ void Game::gameClearProc()
 
         // 連鎖爆発エフェクト
         if (!boss_->isQuake_) boss_->isQuake_ = true; // 爆破中は振動させる
-        ChainEffect(boss_);
+        
+        isChainEffect = ChainEffect(boss_);
 
         // リザルトバックの不透明度を下げる
         resultBack->renderer_->color_.w = std::max(
@@ -675,7 +678,7 @@ void Game::gameClearProc()
         );
 
         // リザルトバック不透明度が下がり切ったら
-        if (resultBack->renderer_->color_.w == -0.5f)
+        if (resultBack->renderer_->color_.w == -0.5f && isChainEffect)
         {
             ++gameClearState_;
             break;
