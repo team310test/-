@@ -26,7 +26,7 @@ void Title::init()
 
     // 変数の初期化
     isStartPerform_ = true;
-    setBehaviorNo_ = 0;
+    isPlayerShotState_ = 0;
     oldTimer_ = 0;
     //pushCount_ = 0;
 
@@ -81,6 +81,7 @@ void Title::update()
         startCommand_   = setTitleObj(obj2dManager(), &titleStartObjBehavior, { 475, 800 } );
         endCommand_     = setTitleObj(obj2dManager(), &titleEndObjBehavior,   { 1395,800 } );
         titleLogo_      = setTitleObj(obj2dManager(), &titleLogoObjBehavior,  { 960, 275 } );
+        userHintShot_   = setTitleObj(obj2dManager(), &titleHintShotObjBehavior,{ 475, 600 });
 
         bg()->init();
 
@@ -225,8 +226,7 @@ void Title::changeSceneGame()
         // フェードアウト
         const bool endFadeOut  = objToul::instance().FadeOut(endCommand_, 0.03f);
         const bool logoFadeOut = objToul::instance().FadeOut(titleLogo_,  0.03f);
-        const bool HintShotFadeOut = userHintShot_ ? 
-            objToul::instance().FadeOut(userHintShot_,  0.03f) : true;
+        const bool HintShotFadeOut = objToul::instance().FadeOut(userHintShot_, 0.03f);
 
         //const bool HintShotFadeOut = true;
         //const bool shrink      = objToul::instance().Shrink(player_);      // 縮小
@@ -266,7 +266,7 @@ void Title::changeSceneGame()
     else
     {
         // 射撃ヒント描画
-        if (!textStartColorAlpha_) userHintShot();
+        userHintShot();
 
         // 指定キー(Space,A,B,X,Y)を押すとアニメーション再生
         if ( (GameLib::input::STATE(0) & GameLib::input::PAD_TRG1 ||
@@ -395,22 +395,12 @@ void Title::userHintMove()
 
 void Title::userHintShot()
 {
-    // userHintShot_が空なら
-    if (!userHintShot_)
-    {
-        Behavior* behavior[2] = { &titleHintShotObjBehavior ,&titleHintHoldObjBehavior };
-        //VECTOR2 pos = player_->transform_->position_;
-        //pos += {0.0f, -200.0f};
-        VECTOR2 pos = { 475, 600 };
-
-        userHintShot_ = setTitleObj(obj2dManager(), behavior[setBehaviorNo_], pos);
-    }
     // フェードイン
     objToul::instance().FadeIn(userHintShot_, 0.025f);
 
 
     // 攻撃キーが入力待ちの状態
-    if (!isPlayerShot_)
+    if (isPlayerShotState_ == 0)
     {
         // PLの攻撃入力チェックする
         if ((GameLib::input::STATE(0) & GameLib::input::PAD_TRG1 ||
@@ -418,13 +408,12 @@ void Title::userHintShot()
             GameLib::input::STATE(0) & GameLib::input::PAD_TRG3 ||
             GameLib::input::STATE(0) & GameLib::input::PAD_TRG4))
         {
-            isPlayerShot_ = true;
-            oldTimer_ = 0;
+            ++isPlayerShotState_;
             return;
         }
     }
     // 攻撃キーが入力済みの状態　かつ setBehaviorNo_が0の時
-    else if (setBehaviorNo_ == 0)
+    else if (isPlayerShotState_ == 1)
     {
         // フェードアウト
         if (objToul::instance().FadeOut(userHintShot_, 0.025f * 2.0f))
@@ -432,8 +421,8 @@ void Title::userHintShot()
             // フェードアウト後
             userHintShot_->behavior_ = nullptr;
             userHintShot_ = nullptr;
-            isPlayerShot_ = false;
-            setBehaviorNo_ = 1;
+            userHintShot_ = setTitleObj(obj2dManager(), &titleHintHoldObjBehavior, { 475, 600 });
+            ++isPlayerShotState_;
         }
     }
 }
