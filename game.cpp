@@ -97,6 +97,8 @@ void Game::update()
         BasePlayerBehavior::plPartsCurrentCount_ = 0;
         Stage::resetShrinkNum();
 
+        ErasePlayer::isPartsClear = false;
+
         GameLib::setBlendMode(GameLib::Blender::BS_ALPHA);   // 通常のアルファ処理
 
         // テクスチャの読み込み
@@ -707,6 +709,9 @@ void Game::gameClearProc()
 
         // 背景を白にする
         FADE::getInstance2()->SetAlpha(1.0f);
+
+        // PLのパーツを消す
+        ErasePlayer::isPartsClear = true;
 
         ++gameClearState_;
         break;
