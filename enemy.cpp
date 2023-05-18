@@ -155,6 +155,8 @@ void BaseEnemyBehavior::init(OBJ2D* obj) const
     obj->eraser_ = &eraseEnemy;
 
     obj->renderer_->Xflip(); // ”½“]‚³‚¹‚é
+
+    obj->actorComponent_->attackTimer_ = INIT_ENM_ATK_TIME;
 }
 
 void BaseEnemyBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const

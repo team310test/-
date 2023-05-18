@@ -22,8 +22,8 @@ namespace
 
 #define OBJ_DAMAGED_BLINK           (0x02)              // ダメージを受けた時の点滅具合
 
-//#define PARTS_DEATH_DELAY_TIME      (15)                 // パーツが連鎖的に死亡するときの遅延時間
-#define PARTS_DEATH_DELAY_TIME      (10)                 // パーツが連鎖的に死亡するときの遅延時間
+//#define PARTS_DEATH_DELAY_TIME      (15)              // パーツが連鎖的に死亡するときの遅延時間
+#define PARTS_DEATH_DELAY_TIME      (10)                // パーツが連鎖的に死亡するときの遅延時間
 
     // OBJが更新・描画できる各スケール最低値（これ以下は更新・描画しない）
     namespace
@@ -104,6 +104,8 @@ namespace
 // エネミー関係のパラメータ
 namespace
 {
+    #define INIT_ENM_ATK_TIME   (60)        // 初期に設定する攻撃クールタイム（出現してすぐに弾を撃つのを防ぐ）
+
     // EnemyCore
     namespace
     {
@@ -120,12 +122,13 @@ namespace
 #define ENM_SHIELD01_HP         (15)        // 体力
 #define ENM_SHIELD01_ATK        (2)         // 攻撃力(体当たりダメージ)
     }
+
     // EnemyTurret
     namespace
     {
-#define ENM_TURRET01_HP         (4)         // 体力
+#define ENM_TURRET01_HP         (5)         // 体力
 #define ENM_TURRET01_ATK        (2)         // 攻撃力(体当たりダメージ)
-#define ENM_TURRET01_ATK_TIME   (90)       // 攻撃間隔時間
+#define ENM_TURRET01_ATK_TIME   (90)        // 攻撃間隔時間
 #define ENM_TURRET02_ANGLE      (45.0f)     // タレットの角度
 #define ENM_TURRET02_HP         (5)         // 体力
 #define ENM_TURRET02_ATK        (2)         // 攻撃力(体当たりダメージ)
