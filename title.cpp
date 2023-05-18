@@ -358,7 +358,7 @@ void Title::userHintMove()
         if (!userHintMove_) return;
 
         // userHintMove_がnullptrでないならフェードアウトした後nullptrにする
-        if (objToul::instance().FadeOut(userHintMove_, -0.05f))
+        if (objToul::instance().FadeOut(userHintMove_, 0.05f))
         {
             userHintMove_->behavior_ = nullptr;
             userHintMove_ = nullptr;
@@ -396,31 +396,40 @@ void Title::userHintShot()
     // フェードイン
     objToul::instance().FadeIn(userHintShot_, 0.025f);
 
-    // 攻撃キーが入力待ちの状態
-    if (isPlayerShotState_ == 0)
+    switch (isPlayerShotState_)
     {
+    case 0:
+        //--< 入力待ち >--
+
         // PLの攻撃入力チェックする
         if ((GameLib::input::STATE(0) & GameLib::input::PAD_TRG1 ||
             GameLib::input::STATE(0) & GameLib::input::PAD_TRG2 ||
             GameLib::input::STATE(0) & GameLib::input::PAD_TRG3 ||
             GameLib::input::STATE(0) & GameLib::input::PAD_TRG4))
-        // userHintMove_がnullptrでないならフェードアウトした後nullptrにする
+        {
+            ++isPlayerShotState_;
+        }
+
+        break;
+    case 1:
+        //--< フェードアウト >--
         if (objToul::instance().FadeOut(userHintShot_, 0.05f))
         {
             ++isPlayerShotState_;
         }
-    }
-    // 攻撃キーが入力済みの状態　かつ setBehaviorNo_が0の時
-    if (isPlayerShotState_ == 1)
-    {
-        // フェードアウト
+        break;
+    case 2:
+        //--< フェードアウト >--
         if (objToul::instance().FadeOut(userHintShot_, 0.05f))
         {
-            // フェードアウト後
+            // [長押し]のデータに変更
             userHintShot_->behavior_ = nullptr;
             userHintShot_ = nullptr;
             userHintShot_ = setTitleObj(obj2dManager(), &titleHintHoldObjBehavior, { 475, 600 });
             ++isPlayerShotState_;
         }
+        break;
+    default:
+        break;
     }
 }
