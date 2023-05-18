@@ -548,12 +548,19 @@ bool spawnResultText(const int& spawnTimer)
     static ResultTextData* currentData = nullptr;
     if (!currentData) currentData = resultTextData;
 
+    // ‚Ğ‚ÆŒ¾(gameResultText)‚Ì‚¾‚¯SE_RESULT02‚ğÄ¶
+    const int trackNo = (currentData->behavior == gameResultText) ? (int)SE_BAN : (int)SE_GATYA;
 
     while (currentData->behavior && currentData->spawnTime == spawnTimer)
     {
         OBJ2D* resultText = setGameObj(
             Game::instance()->obj2dManager(), currentData->behavior, currentData->pos
         );
+        
+        // SEÄ¶(ANY PUSH‚Ì‚ÍÄ¶‚µ‚È‚¢)
+        if (currentData->behavior != &gameResult_anyPush)
+            Audio::play(trackNo, false);
+        
         resultText->zOrder_  = 100;   // Å‘O–Ê
         resultText->isQuake_ = true; // ¶¬‚É—h‚ç‚·
         ++currentData;
