@@ -127,6 +127,9 @@ bool objToul::isObjType(OBJ2DManager* obj2dManager, const OBJ_TYPE& objType)
 {
     for (auto& obj : *obj2dManager->getList())
     {
+        if (!obj)continue;
+        if (!obj->behavior_)continue;
+
         if (obj->behavior_->getType() == objType) return true;
     }
     return false;
