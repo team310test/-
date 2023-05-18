@@ -31,4 +31,6 @@ void Audio::gameInit()
     music::load(GAME_AUDIO::SE_DEATH,   L"./Data/Musics/SE/SE_Death.wav",    5.0f);
     music::load(GAME_AUDIO::SE_COMBINE, L"./Data/Musics/SE/SE_Combine2.wav", 1.0f);
     music::load(GAME_AUDIO::SE_SHRINK,  L"./Data/Musics/SE/SE_Shrink.wav",   2.0f);
+    music::load(GAME_AUDIO::SE_GATYA,L"./Data/Musics/SE/SE_gatya.wav",   2.0f);
+    music::load(GAME_AUDIO::SE_BAN,L"./Data/Musics/SE/SE_ban.wav",   2.0f);
 }

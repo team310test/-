@@ -23,7 +23,9 @@ enum GAME_AUDIO
     SE_DMG,             // 被弾SE
     SE_DEATH,           // 死亡SE
     SE_COMBINE,         // パーツ合体SE
-    SE_SHRINK           // 画面縮小SE
+    SE_SHRINK,          // 画面縮小SE
+    SE_GATYA,           // [ガチャ]
+    SE_BAN              // [バン]
 };
 
 
