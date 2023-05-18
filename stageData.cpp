@@ -878,7 +878,7 @@ STAGE_SCRIPT stageData05[] =
 
       SET_ENEMY_TARGET_X(
         Phase51 + 360,        //出現時間
-        enemy08,                  //敵の種類
+        enemy02,                  //敵の種類
         X,Place_s,               //出現位置
         r0X * T5,r0Y * T5,        //行き　
         turn_x_m,                //目標X軸
