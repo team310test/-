@@ -111,7 +111,7 @@ namespace
 #define ENM_CORE01_ATK          (3)         // 攻撃力(体当たりダメージ)
 #define ENM_CORE01_ROT_SPEED    (-0.05f)    // 回転速度
         // ボス
-#define ENM_CORE02_HP           (1)         // 体力
+#define ENM_CORE02_HP           (30)        // 体力
 #define ENM_CORE02_ATK          (1)         // 攻撃力(体当たりダメージ)
     }
     // EnemyShield
@@ -123,7 +123,7 @@ namespace
     // EnemyTurret
     namespace
     {
-#define ENM_TURRET01_HP         (5)         // 体力
+#define ENM_TURRET01_HP         (4)         // 体力
 #define ENM_TURRET01_ATK        (2)         // 攻撃力(体当たりダメージ)
 #define ENM_TURRET01_ATK_TIME   (90)       // 攻撃間隔時間
 #define ENM_TURRET02_ANGLE      (45.0f)     // タレットの角度
@@ -181,11 +181,11 @@ namespace
     namespace
     {
 
-#define DROP_TURRET01_NEXT_HP   (1) // プレイヤーになるときの体力
-#define DROP_TURRET02_NEXT_HP   (1)     // プレイヤーになるときの体力
-#define DROP_TURRET03_NEXT_HP   (1)     // プレイヤーになるときの体力
+#define DROP_TURRET01_NEXT_HP   (2) // プレイヤーになるときの体力
+#define DROP_TURRET02_NEXT_HP   (2)     // プレイヤーになるときの体力
+#define DROP_TURRET03_NEXT_HP   (2)     // プレイヤーになるときの体力
 #define DROP_SHIELD01_NEXT_HP   (15)
-#define DROP_BUFF01_NEXT_HP     (1) // プレイヤーになるときの体力
+#define DROP_BUFF01_NEXT_HP     (2) // プレイヤーになるときの体力
 #define DROP_TRASH01_NEXT_HP    (2) // プレイヤーになるときの体力
 #define DROP_TRASH02_NEXT_HP    (2)     // プレイヤーになるときの体力
 #define DROP_TRASH03_NEXT_HP    (2)     // プレイヤーになるときの体力

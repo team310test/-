@@ -331,6 +331,7 @@ void Game::draw()
     // 集めたパーツ・経過時間表示
     if (UI::isSpawnResultJunks_) UI::drawResultJunks();
     if (UI::isSpawnResultTimes_) UI::drawResultTimes();
+
 }
 
 void Game::judge()
@@ -513,6 +514,7 @@ bool spawnResultText(const int& spawnTimer)
     // パーツのランク付け
     int junkRank  = RANK::S;
     const int partsCount = BasePlayerBehavior::plPartsCurrentCount_;
+
          if (partsCount >= 40) junkRank = RANK::S; // 40個以上
     else if (partsCount >= 30) junkRank = RANK::A; // 30~39個
     else if (partsCount >= 20) junkRank = RANK::B; // 20~29個
@@ -521,10 +523,11 @@ bool spawnResultText(const int& spawnTimer)
     // クリア時間のランク付け
     int timesRank = RANK::S;
     const int clearTime = Game::instance()->getTimer();
-         if (clearTime <= 210) timesRank = RANK::S; // 3分半以下
-    else if (clearTime <= 300) timesRank = RANK::A; // 5分以下
-    else if (clearTime <= 360) timesRank = RANK::B; // 6分
-    else                       timesRank = RANK::C; // 6分超
+
+         if (clearTime <= (3600 * 3) + 1800) timesRank = RANK::S; // 3分半以下
+    else if (clearTime <= (3600 * 5))        timesRank = RANK::A; // 5分以下
+    else if (clearTime <= (3600 * 6))        timesRank = RANK::B; // 6分以下
+    else                                     timesRank = RANK::C; // 6分超
 
     // 総合的なランク付け
     Behavior* gameResultSABC = decideRank[junkRank][timesRank];
@@ -594,6 +597,7 @@ void Game::gameClearProc()
     case 0: // 初期設定
         // judgeを行わないようにする
         player_->collider_->judgeFlag_ = false;
+        boss_->collider_->judgeFlag_   = false;
 
         // 操作できなくする
         boss_->update_ = nullptr;

@@ -6,6 +6,9 @@ enum TITLE_AUDIO
     BGM_TITLE,          // タイトルBGM
 
     // SE
+    SE_START,       // スタート
+    SE_EXIT,        // EXIT
+
     SE_HEART_BEAT       // 心臓鼓動SE
 };
 

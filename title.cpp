@@ -306,9 +306,6 @@ void Title::endGame()
     // 自機が接触したら
     if (endCommand_ && endCommand_->performComponent_->isTrigger)
     {
-        // タイトルBGMフェードアウト
-        Audio::fade(BGM_TITLE, 2.0f, 0.0f);
-
         // 画面が暗転したらゲーム終了
         if (FADE::getInstance()->fadeOut(0.025f))
         {

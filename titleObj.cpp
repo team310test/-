@@ -82,6 +82,9 @@ TitleStartObjBehavior::TitleStartObjBehavior()
 
 void TitleStartObjBehavior::hit(OBJ2D* src, OBJ2D* dst) const
 {
+    // STARTのSE再生
+    Audio::play(SE_START, false);
+
     static bool wait = false;
 
     // 画像が切り替わる前のplayerをframeと重なる位置に変更する
@@ -154,6 +157,12 @@ TitleEndObjBehavior::TitleEndObjBehavior()
 
 void TitleEndObjBehavior::hit(OBJ2D* src, OBJ2D* dst) const
 {
+    // EXITのSE再生
+    Audio::play(SE_EXIT, false);
+
+    // タイトルBGMフェードアウト
+    Audio::fade(BGM_TITLE, 2.0f, 0.0f);
+
     // コアのある位置に自機の座標を変更
     //dst->transform_->position_ = src->transform_->position_;
 
