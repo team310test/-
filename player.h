@@ -244,6 +244,9 @@ EXTERN PlayerCommon03_2Behavior playerCommon03_2Behavior;
 //==============================================================================
 class ErasePlayer : public Eraser
 {
+public:
+    static bool isPartsClear;   //  PL以外を消すフラグ(ゲームクリアの処理で使用)
+private:
     void erase(OBJ2D* obj) const override;
 };
 EXTERN ErasePlayer erasePlayer;

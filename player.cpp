@@ -1029,6 +1029,7 @@ PlayerCommon03_2Behavior::PlayerCommon03_2Behavior()
 // 親探し(ナシだと壊れた時の爽快感がある)
 #define USE_FIND_PARENT
 
+bool ErasePlayer::isPartsClear = false;
 
 void ErasePlayer::erase(OBJ2D* obj) const
 {
@@ -1037,6 +1038,8 @@ void ErasePlayer::erase(OBJ2D* obj) const
 
     ActorComponent* a = obj->actorComponent_;
 
+    //  PL以外を消す(ゲームクリアの処理で使用)
+    if (isPartsClear && obj != a->parent_) obj->behavior_ = nullptr;
 
     // HPが0以下になるか、GameOverなら
     if (!a->isAlive() || Game::instance()->isGameOver())

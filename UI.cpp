@@ -57,7 +57,7 @@ void UI::update()
         Transform* t = p->transform_;
 
         // プレイヤーパーツカウントの範囲チェック
-        if (t->position_.x >= 0 && t->position_.x <= 300 &&
+        if (t->position_.x >= 0 && t->position_.x <= 350 &&
             t->position_.y >= 0 && t->position_.y <= 175)
         {
             isInAreaPlPartsCount_ = true;

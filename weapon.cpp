@@ -61,7 +61,7 @@ void BaseShotBehavior::hit(OBJ2D* src, OBJ2D* dst) const
     // プレイヤーなら専用被弾SEを再生
     if (dst == Game::instance()->player_)
     {
-        Audio::play(SE_DMG, false);
+        Audio::play(SE_PL_CORE_ALERT, false);
     }
 
     // 相手がまだ生きている場合

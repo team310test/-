@@ -301,6 +301,8 @@ public:
     // Šî–{“I‚Èƒƒ“ƒo
     int state_ = 0;
     int act_ = 0;
+    int quakeState_ = 0;
+    int quakeLoop_ = 0;
     int timer_ = 0;
     int zOrder_ = 0;
     Behavior* behavior_     = nullptr;
