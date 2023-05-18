@@ -1,7 +1,7 @@
 #pragma once
 
 // debug::setStringを表示させる
-#define DEBUG_MODE
+// #define DEBUG_MODE
 
 //******************************************************************************
 // 
@@ -22,7 +22,8 @@ namespace
 
 #define OBJ_DAMAGED_BLINK           (0x02)              // ダメージを受けた時の点滅具合
 
-#define PARTS_DEATH_DELAY_TIME      (15)                 // パーツが連鎖的に死亡するときの遅延時間
+//#define PARTS_DEATH_DELAY_TIME      (15)                 // パーツが連鎖的に死亡するときの遅延時間
+#define PARTS_DEATH_DELAY_TIME      (10)                 // パーツが連鎖的に死亡するときの遅延時間
 
     // OBJが更新・描画できる各スケール最低値（これ以下は更新・描画しない）
     namespace
@@ -109,6 +110,7 @@ namespace
 #define ENM_CORE01_HP           (1)         // 体力
 #define ENM_CORE01_ATK          (3)         // 攻撃力(体当たりダメージ)
 #define ENM_CORE01_ROT_SPEED    (-0.05f)    // 回転速度
+        // ボス
 #define ENM_CORE02_HP           (1)         // 体力
 #define ENM_CORE02_ATK          (1)         // 攻撃力(体当たりダメージ)
     }
@@ -184,9 +186,9 @@ namespace
 #define DROP_TURRET03_NEXT_HP   (1)     // プレイヤーになるときの体力
 #define DROP_SHIELD01_NEXT_HP   (15)
 #define DROP_BUFF01_NEXT_HP     (1) // プレイヤーになるときの体力
-#define DROP_TRASH01_NEXT_HP    (1) // プレイヤーになるときの体力
-#define DROP_TRASH02_NEXT_HP    (1)     // プレイヤーになるときの体力
-#define DROP_TRASH03_NEXT_HP    (1)     // プレイヤーになるときの体力
+#define DROP_TRASH01_NEXT_HP    (2) // プレイヤーになるときの体力
+#define DROP_TRASH02_NEXT_HP    (2)     // プレイヤーになるときの体力
+#define DROP_TRASH03_NEXT_HP    (2)     // プレイヤーになるときの体力
 
 #define DROP_COMMON01_NEXT_HP   (1) // プレイヤーになるときの体力                                          
 #define DROP_COMMON02_NEXT_HP   (1) // プレイヤーになるときの体力

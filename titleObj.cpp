@@ -298,7 +298,7 @@ void TitleHintHoldObjBehavior::init(OBJ2D* obj) const
 //******************************************************************************
 OBJ2D* setTitlePlayer(OBJ2DManager* obj2dManager, BG* bg)
 {
-    const VECTOR2 pos = { BG::WINDOW_W * 0.5f - 215.0f,-250.0f };
+    const VECTOR2 pos = { BG::WINDOW_W * 0.5f - 250.0f,-250.0f };
 
     OBJ2D* player = new OBJ2D(
         new Renderer,

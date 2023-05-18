@@ -513,18 +513,18 @@ bool spawnResultText(const int& spawnTimer)
     // パーツのランク付け
     int junkRank  = RANK::S;
     const int partsCount = BasePlayerBehavior::plPartsCurrentCount_;
-         if (partsCount >= 50) junkRank = RANK::S; // 50個以上
-    else if (partsCount >= 30) junkRank = RANK::A; // 30~49個
+         if (partsCount >= 40) junkRank = RANK::S; // 40個以上
+    else if (partsCount >= 30) junkRank = RANK::A; // 30~39個
     else if (partsCount >= 20) junkRank = RANK::B; // 20~29個
     else                       junkRank = RANK::C; // 20個未満
 
     // クリア時間のランク付け
     int timesRank = RANK::S;
     const int clearTime = Game::instance()->getTimer();
-         if (clearTime <= 60 * 20) timesRank = RANK::S; // 2分以下
-    else if (clearTime <= 60 * 40) timesRank = RANK::A; // 2分~4分
-    else if (clearTime <= 60 * 60) timesRank = RANK::B; // 4分~6分
-    else                           timesRank = RANK::C; // 6分超
+         if (clearTime <= 210) timesRank = RANK::S; // 3分半以下
+    else if (clearTime <= 300) timesRank = RANK::A; // 5分以下
+    else if (clearTime <= 360) timesRank = RANK::B; // 6分
+    else                       timesRank = RANK::C; // 6分超
 
     // 総合的なランク付け
     Behavior* gameResultSABC = decideRank[junkRank][timesRank];
