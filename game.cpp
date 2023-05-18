@@ -594,6 +594,7 @@ void Game::gameClearProc()
     case 0: // ‰ŠúÝ’è
         // judge‚ðs‚í‚È‚¢‚æ‚¤‚É‚·‚é
         player_->collider_->judgeFlag_ = false;
+        boss_->collider_->judgeFlag_ = false;
 
         // ‘€ì‚Å‚«‚È‚­‚·‚é
         boss_->update_ = nullptr;

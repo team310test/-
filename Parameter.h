@@ -181,9 +181,9 @@ namespace
     namespace
     {
 
-#define DROP_TURRET01_NEXT_HP   (1) // プレイヤーになるときの体力
-#define DROP_TURRET02_NEXT_HP   (1)     // プレイヤーになるときの体力
-#define DROP_TURRET03_NEXT_HP   (1)     // プレイヤーになるときの体力
+#define DROP_TURRET01_NEXT_HP   (2)     // プレイヤーになるときの体力
+#define DROP_TURRET02_NEXT_HP   (2)     // プレイヤーになるときの体力
+#define DROP_TURRET03_NEXT_HP   (2)     // プレイヤーになるときの体力
 #define DROP_SHIELD01_NEXT_HP   (15)
 #define DROP_BUFF01_NEXT_HP     (1) // プレイヤーになるときの体力
 #define DROP_TRASH01_NEXT_HP    (2) // プレイヤーになるときの体力
