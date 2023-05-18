@@ -19,7 +19,7 @@ public:
 private:
     static const int BG_ARRAY_MAX = 12;                     // 背景配列の最大数
 
-    static constexpr float DEFAULT_ALPHA_COLOR = 0.2f;      // 初期透明度
+    static constexpr float DEFAULT_ALPHA_COLOR = 0.125f;      // 初期透明度
 
     static constexpr float DISP_BG_SCALE_MIN = 0.011f;      // この値より背景のscaleが小さい場合は更新・描画しない(縮小5回分)
     static constexpr float DISP_BG_SCALE_MAX = 10.0f;       // この値より背景のscaleが大きい場合は更新・描画しない

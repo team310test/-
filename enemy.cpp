@@ -167,6 +167,13 @@ void BaseEnemyBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
     // 被弾SEを再生
     Audio::play(SE_DMG, false);
 
+
+    // プレイヤーコアなら専用被弾SEを再生
+    if (dst == Game::instance()->player_)
+    {
+        Audio::play(SE_PL_CORE_ALERT, false);
+    }
+
     // 相手がまだ生きている場合
     if (dstA->hp_ > 0)
     {
@@ -174,12 +181,6 @@ void BaseEnemyBehavior::hit(OBJ2D* /*src*/, OBJ2D* dst) const
         dst->isQuake_ = true;
         // 相手を点滅させる無敵時間
         dstA->damageTimer_ = DMG_TIME;
-
-        // プレイヤーコアなら専用被弾SEを再生
-        if (dst == Game::instance()->player_)
-        {
-            Audio::play(SE_PL_CORE_ALERT, false);
-        }
     }
 }
 

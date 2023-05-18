@@ -4,7 +4,7 @@ class Stage
 {
 public:
     static constexpr float ENEMY_SPAWN_POS_X = (BG::WINDOW_W + 256.0f);
-    static const int STAGE_MAX = 2;
+    static const int STAGE_MAX = 6;
 
 private:
     int timer_;

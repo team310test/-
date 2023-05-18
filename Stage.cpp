@@ -2,12 +2,12 @@
 
 STAGE_SCRIPT* STAGE_DATA[] =
 {
-    //stageData01,
-    //stageData02,
-    //stageData03,
-    stageDataBoss,
+    stageData01,
+    stageData02,
+    stageData03,
     stageData04,
-    //stageData05,
+    stageData05,
+    stageDataBoss,
     nullptr
 };
 
