@@ -300,8 +300,9 @@ void drawblink()
 void Game::draw()
 {
     // 画面クリア
-    GameLib::clear(VECTOR4(0.75f, 0.45f, 0.3f, 1));
     //GameLib::clear(VECTOR4(1,1,1,1));
+    //GameLib::clear(VECTOR4(0.75f, 0.45f, 0.3f, 1));
+    GameLib::clear(VECTOR4(0.85f, 0.5f, 0.3f, 1));
 
     // 背景の描画
     bg()->drawBack();
@@ -321,8 +322,8 @@ void Game::draw()
         // 縮小カウントメーターの描画
         UI::drawShrinkValueMeter();
 
-        // 現在のプレイヤーパーツ数描画
-        UI::drawPlPartsCurrentCount();
+        //// 現在のプレイヤーパーツ数描画
+        //UI::drawPlPartsCurrentCount();
 
         // 映画の黒帯の描画
         UI::drawLetterBox();

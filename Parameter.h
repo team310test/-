@@ -18,7 +18,7 @@ namespace
 {
 #define PARTS_OBJ_SIZE              (128.0f)            // サイズ
 
-#define DMG_TIME   (0)
+#define DMG_TIME                    (30)                // ダメージを受けた時の点滅時間
 
 #define OBJ_DAMAGED_BLINK           (0x02)              // ダメージを受けた時の点滅具合
 
@@ -68,7 +68,7 @@ namespace
     // 体力はドロップパーツの方で設定(NEXT_HP)
     namespace
     {
-#define COMBINE_DMG_TIME   (30)        // くっついた直後の無敵時間 
+#define COMBINE_DMG_TIME   (30)        // くっついた直後の点滅時間 
 
 #define TO_CORE_SPEED       (-0.14f * 4) // プレイヤー本体へ向かう初期速度
 

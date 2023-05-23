@@ -110,7 +110,8 @@ void Title::draw()
 {
     // ‰æ–ÊƒNƒŠƒA
     //GameLib::clear(VECTOR4(1.0f, 1.0f, 1.0f, 1));
-    GameLib::clear(VECTOR4(0.75f, 0.45f, 0.3f, 1));
+    //GameLib::clear(VECTOR4(0.75f, 0.45f, 0.3f, 1));
+    GameLib::clear(VECTOR4(0.85f, 0.5f, 0.3f, 1));
 
     FADE::getInstance2()->draw();
 

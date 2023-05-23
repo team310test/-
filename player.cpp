@@ -584,6 +584,8 @@ PlayerTurret01Behavior::PlayerTurret01Behavior()
 
 void PlayerTurret01Behavior::attack(OBJ2D* obj) const
 {
+    if (Game::instance()->isGameClear()) return;
+
     // 攻撃クールタイム減少
     // （バラバラに打たせるために指定ボタン(Space,A,B,X,Y)を押しているときだけ減らす）
     if ( (obj->actorComponent_->padState_ & GameLib::input::PAD_TRG1 ||
@@ -628,6 +630,8 @@ PlayerTurret01FlipBehavior::PlayerTurret01FlipBehavior()
 
 void PlayerTurret01FlipBehavior::attack(OBJ2D* obj) const
 {
+    if (Game::instance()->isGameClear()) return;
+
     // 攻撃クールタイム減少
     // （バラバラに打たせるために指定ボタン(Space,A,B,X,Y)を押しているときだけ減らす）
     if ((obj->actorComponent_->padState_ & GameLib::input::PAD_TRG1 ||
@@ -674,6 +678,8 @@ PlayerTurret02Behavior::PlayerTurret02Behavior()
 
 void PlayerTurret02Behavior::attack(OBJ2D* obj) const
 {
+    if (Game::instance()->isGameClear()) return;
+
     // 攻撃クールタイム減少
     // （バラバラに打たせるために指定ボタン(Space,A,B,X,Y)を押しているときだけ減らす）
     if ((obj->actorComponent_->padState_ & GameLib::input::PAD_TRG1 ||
@@ -726,6 +732,8 @@ PlayerTurret02FlipBehavior::PlayerTurret02FlipBehavior()
 
 void PlayerTurret02FlipBehavior::attack(OBJ2D* obj) const
 {
+    if (Game::instance()->isGameClear()) return;
+
     // 攻撃クールタイム減少
     // （バラバラに打たせるために指定ボタン(Space,A,B,X,Y)を押しているときだけ減らす）
     if ((obj->actorComponent_->padState_ & GameLib::input::PAD_TRG1 ||
@@ -776,6 +784,8 @@ PlayerTurret03Behavior::PlayerTurret03Behavior()
 
 void PlayerTurret03Behavior::attack(OBJ2D* obj) const
 {
+    if (Game::instance()->isGameClear()) return;
+
     // 攻撃クールタイム減少
     // （バラバラに打たせるために指定ボタン(Space,A,B,X,Y)を押しているときだけ減らす）
     if ((obj->actorComponent_->padState_ & GameLib::input::PAD_TRG1 ||
