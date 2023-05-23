@@ -9,8 +9,10 @@ namespace {
 #define yoko_2 1280
 #define yoko_3 960
 
-#define ue -256
-#define sita 1080+256
+    //#define ue -256
+#define ue -370
+//#define sita 1080 + 256
+#define sita 1080 + 370
 }
 
 //　Y場所
@@ -94,7 +96,8 @@ namespace {
 namespace {
 #define goma_tp -7
 #define goma_tps -14
-#define goma_move 0.1f
+    //#define goma_move 0.1f
+#define goma_move 0.075f
 }
 
 //ターンポイント
