@@ -6,8 +6,9 @@ protected:
 	struct Param
 	{
 		// 画像
-		//GameLib::AnimeData* ANIME_WAIT = nullptr;
 		GameLib::SpriteData* SPR_DATA = nullptr;
+		// アニメーション
+		GameLib::AnimeData* ANIME = nullptr;
 		// サイズ
 		VECTOR2 SIZE = { 0, 0 };
 		VECTOR2 SCALE = { 1, 1 };
@@ -66,25 +67,45 @@ private:
 };
 EXTERN TitleLogoObjBehavior titleLogoObjBehavior;
 
-// 操作説明[移動]
-class TitleHintMoveObjBehavior :public BaseTitleObjBehavior
+// 操作説明[移動](キーボード)
+class TitleHintKeyboardMoveObjBehavior :public BaseTitleObjBehavior
 {
 public:
-	TitleHintMoveObjBehavior();
+	TitleHintKeyboardMoveObjBehavior();
 private:
 	void init(OBJ2D*) const override;
 };
-EXTERN TitleHintMoveObjBehavior titleHintMoveObjBehavior;
+EXTERN TitleHintKeyboardMoveObjBehavior titleHintKeyboardMoveObjBehavior;
 
-// 操作説明[攻撃]
-class TitleHintShotObjBehavior :public BaseTitleObjBehavior
+// 操作説明[移動](コントローラー)
+class TitleHintControllerMoveObjBehavior :public BaseTitleObjBehavior
 {
 public:
-	TitleHintShotObjBehavior();
+	TitleHintControllerMoveObjBehavior();
 private:
 	void init(OBJ2D*) const override;
 };
-EXTERN TitleHintShotObjBehavior titleHintShotObjBehavior;
+EXTERN TitleHintControllerMoveObjBehavior titleHintControllerMoveObjBehavior;
+
+// 操作説明[攻撃](キーボード)
+class TitleHintKeyboardShotObjBehavior :public BaseTitleObjBehavior
+{
+public:
+	TitleHintKeyboardShotObjBehavior();
+private:
+	void init(OBJ2D*) const override;
+};
+EXTERN TitleHintKeyboardShotObjBehavior titleHintKeyboardShotObjBehavior;
+
+// 操作説明[攻撃](コントローラー)
+class TitleHintControllerShotObjBehavior :public BaseTitleObjBehavior
+{
+public:
+	TitleHintControllerShotObjBehavior();
+private:
+	void init(OBJ2D*) const override;
+};
+EXTERN TitleHintControllerShotObjBehavior titleHintControllerShotObjBehavior;
 
 // 操作説明[長押し]
 class TitleHintHoldObjBehavior :public BaseTitleObjBehavior
