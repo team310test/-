@@ -15,6 +15,15 @@ namespace
         {&sprTitleCoreHeart,10},
         {nullptr,-1},// 終了フラグ
     };
+
+    // 移動操作説明(コントローラー)
+    GameLib::AnimeData animeTitleHintControllerMove[] = {
+        { &sprTitleUserControllerMove_01, 10 },
+        { &sprTitleUserControllerMove_02, 10 },
+        { &sprTitleUserControllerMove_03, 10 },
+        { &sprTitleUserControllerMove_02, 10 },
+        { nullptr, -1 },// 終了フラグ
+    };
 }
 
 //******************************************************************************
@@ -38,6 +47,7 @@ void BaseTitleObjBehavior::move(OBJ2D* obj) const
         };
         obj->renderer_->color_ = getParam()->COLOR;
         obj->renderer_->data_ = getParam()->SPR_DATA;
+        obj->renderer_->animeData_ = getParam()->ANIME;
 
         init(obj);
 
@@ -56,6 +66,11 @@ void BaseTitleObjBehavior::move(OBJ2D* obj) const
 
     for (int i = 0; i < Collider::boxMax; ++i)
         obj->collider_->calcAttackBox(getParam()->ATTACK_BOX[i], i);
+
+    // アニメーション更新
+    obj->renderer_->animeData_ = getParam()->ANIME;
+    if (obj->renderer_->animeData_)
+        obj->renderer_->animeUpdate();
 }
 
 void BaseTitleObjBehavior::init(OBJ2D* obj) const
@@ -253,13 +268,13 @@ void TitleLogoObjBehavior::update(OBJ2D* obj) const
 
 }
 
-// 操作説明[移動]
-TitleHintMoveObjBehavior::TitleHintMoveObjBehavior()
+// 操作説明[移動](キーボード)
+TitleHintKeyboardMoveObjBehavior::TitleHintKeyboardMoveObjBehavior()
 {
-    param_.SPR_DATA = &sprTitleUserMove;
+    param_.SPR_DATA = &sprTitleUserKeyboardMove;
 }
 
-void TitleHintMoveObjBehavior::init(OBJ2D* obj) const
+void TitleHintKeyboardMoveObjBehavior::init(OBJ2D* obj) const
 {
     // 描画以外の判定を行わない
     obj->collider_->judgeFlag_ = false;
@@ -267,15 +282,43 @@ void TitleHintMoveObjBehavior::init(OBJ2D* obj) const
     obj->collider_->isDrawAttackRect_ = false;
 }
 
+// 操作説明[移動](コントローラー)
+TitleHintControllerMoveObjBehavior::TitleHintControllerMoveObjBehavior()
+{
+    param_.ANIME = animeTitleHintControllerMove;
+}
 
-// 操作説明[攻撃]
-TitleHintShotObjBehavior::TitleHintShotObjBehavior()
+void TitleHintControllerMoveObjBehavior::init(OBJ2D* obj) const
+{
+    // 描画以外の判定を行わない
+    obj->collider_->judgeFlag_ = false;
+    obj->collider_->isDrawHitRect_ = false;
+    obj->collider_->isDrawAttackRect_ = false;
+}
+
+// 操作説明[攻撃](キーボード)
+TitleHintKeyboardShotObjBehavior::TitleHintKeyboardShotObjBehavior()
 {
     param_.SPR_DATA = &sprTitleUserSpace;
     param_.SCALE    = { 0.75f, 0.75f };
 }
 
-void TitleHintShotObjBehavior::init(OBJ2D* obj) const
+void TitleHintKeyboardShotObjBehavior::init(OBJ2D* obj) const
+{
+    // 描画以外の判定を行わない
+    obj->collider_->judgeFlag_ = false;
+    obj->collider_->isDrawHitRect_ = false;
+    obj->collider_->isDrawAttackRect_ = false;
+}
+
+// 操作説明[攻撃](コントローラー)
+TitleHintControllerShotObjBehavior::TitleHintControllerShotObjBehavior()
+{
+    param_.SPR_DATA = &sprTitleUserAbxy;
+    param_.SCALE = { 1.0f, 1.0f };
+}
+
+void TitleHintControllerShotObjBehavior::init(OBJ2D* obj) const
 {
     // 描画以外の判定を行わない
     obj->collider_->judgeFlag_ = false;

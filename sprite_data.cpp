@@ -5,18 +5,20 @@
 
 // タイトル画像データ
 GameLib::LoadTexture titleLoadTexture[] = {
-    { TITLE_TEXNO::TITLE_PLAYER,     L"./Data/Images/Core/PlayerCore01.png",   1U }, // プレイヤーコア
-    { TITLE_TEXNO::TITLE_HEART,      L"./Data/Images/Core/Core_Heart.png",     1U }, // プレイヤーコアのハート
-    { TITLE_TEXNO::TITLE_FRAME,      L"./Data/Images/Core/Core_Frame.png",     1U }, // プレイヤーコアの枠
+    { TITLE_TEXNO::TITLE_PLAYER,     L"./Data/Images/Core/PlayerCore01.png",   1U },                        // プレイヤーコア
+    { TITLE_TEXNO::TITLE_HEART,      L"./Data/Images/Core/Core_Heart.png",     1U },                        // プレイヤーコアのハート
+    { TITLE_TEXNO::TITLE_FRAME,      L"./Data/Images/Core/Core_Frame.png",     1U },                        // プレイヤーコアの枠
                                                                                      
-    { TITLE_TEXNO::TITLE_LOGO,       L"./Data/Images/UI/Title/Title_Logo.png",       1U }, // ロゴ
-    { TITLE_TEXNO::TITLE_TRASH_BOX,  L"./Data/Images/UI/Title/Title_TrashBox.png",   1U }, // ゴミ箱 
-    { TITLE_TEXNO::TITLE_USER_MOVE,  L"./Data/Images/UI/Title/Title_User_Move.png",  1U }, // 操作方法WASD→←↓→
-    { TITLE_TEXNO::TITLE_USER_SPACE, L"./Data/Images/UI/Title/Title_User_Space.png", 1U }, // 操作方法Space
-    { TITLE_TEXNO::TITLE_USER_HOLD, L"./Data/Images/UI/Title/Title_Text_Hold.png",   1U },   // 操作方法Hold
+    { TITLE_TEXNO::TITLE_LOGO,       L"./Data/Images/UI/Title/Title_Logo.png",       1U },                  // ロゴ
+    { TITLE_TEXNO::TITLE_TRASH_BOX,  L"./Data/Images/UI/Title/Title_TrashBox.png",   1U },                  // ゴミ箱 
+    { TITLE_TEXNO::TITLE_USER_KEYBOARD_MOVE,  L"./Data/Images/UI/Title/Title_User_Move.png",  1U },         // 操作方法WASD→←↓→(キーボード)
+    { TITLE_TEXNO::TITLE_USER_CONTROLLER_MOVE, L"./Data/Images/UI/Title/Title_User_Move_Stick.png",  1U },  // 操作方法WASD→←↓→(コントローラー)
+    { TITLE_TEXNO::TITLE_USER_SPACE, L"./Data/Images/UI/Title/Title_User_Space.png", 1U },                  // 操作方法Space(キーボード)
+    { TITLE_TEXNO::TITLE_USER_ABXY, L"./Data/Images/UI/Title/Title_User_ABXY.png", 1U },                    // 操作方法Abxy(コントローラー)
+    { TITLE_TEXNO::TITLE_USER_HOLD, L"./Data/Images/UI/Title/Title_Text_Hold.png",   1U },                  // 操作方法Hold
 
-    { TITLE_TEXNO::TITLE_TEXT_START, L"./Data/Images/UI/Title/Title_Text_Start.png", 1U }, // Start
-    { TITLE_TEXNO::TITLE_TEXT_EXIT,  L"./Data/Images/UI/Title/Title_Text_Exit.png",  1U }, // Exit
+    { TITLE_TEXNO::TITLE_TEXT_START, L"./Data/Images/UI/Title/Title_Text_Start.png", 1U },                  // Start
+    { TITLE_TEXNO::TITLE_TEXT_EXIT,  L"./Data/Images/UI/Title/Title_Text_Exit.png",  1U },                  // Exit
     
     { -1, nullptr }	// 終了フラグ
 };
@@ -118,9 +120,13 @@ GameLib::SpriteData sprTitleLogo        = SPRITE_CENTER(TITLE_TEXNO::TITLE_LOGO,
 GameLib::SpriteData sprTitleTrashBox01  = SPRITE_CENTER(TITLE_TEXNO::TITLE_TRASH_BOX, (128 * 0), 0, 128, 128);
 GameLib::SpriteData sprTitleTrashBox02  = SPRITE_CENTER(TITLE_TEXNO::TITLE_TRASH_BOX, (128 * 1), 0, 128, 128);
 
-GameLib::SpriteData sprTitleUserMove    = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER_MOVE,  0, 0, 512, 128);
-GameLib::SpriteData sprTitleUserSpace   = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER_SPACE, 0, 0, 384, 128);
-GameLib::SpriteData sprTitleUserHold    = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER_HOLD, 0, 0, 384, 128);
+GameLib::SpriteData sprTitleUserKeyboardMove        = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER_KEYBOARD_MOVE,  0, 0, 512, 128);
+GameLib::SpriteData sprTitleUserControllerMove_01   = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER_CONTROLLER_MOVE, 128 * 0, 0, 128, 128);
+GameLib::SpriteData sprTitleUserControllerMove_02   = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER_CONTROLLER_MOVE, 128 * 1, 0, 128, 128);
+GameLib::SpriteData sprTitleUserControllerMove_03   = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER_CONTROLLER_MOVE, 128 * 2, 0, 128, 128);
+GameLib::SpriteData sprTitleUserSpace               = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER_SPACE, 0, 0, 384, 128);
+GameLib::SpriteData sprTitleUserAbxy                = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER_ABXY, 0, 0, 128, 128);
+GameLib::SpriteData sprTitleUserHold                = SPRITE_CENTER(TITLE_TEXNO::TITLE_USER_HOLD, 0, 0, 384, 128);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 

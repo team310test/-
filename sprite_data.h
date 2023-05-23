@@ -7,18 +7,20 @@
 // タイトル
 enum TITLE_TEXNO
 {
-    TITLE_PLAYER,       // プレイヤーコア
-    TITLE_HEART,        // プレイヤーコアのハート
-    TITLE_FRAME,        // プレイヤーコアの枠
+    TITLE_PLAYER,               // プレイヤーコア
+    TITLE_HEART,                // プレイヤーコアのハート
+    TITLE_FRAME,                // プレイヤーコアの枠
 
-    TITLE_LOGO,         // ロゴ
-    TITLE_TRASH_BOX,    // ゴミ箱
-    TITLE_USER_MOVE,    // 操作方法WASD→←↓→
-    TITLE_USER_SPACE,   // 操作方法Space
-    TITLE_USER_HOLD,    // 操作方法長押し
+    TITLE_LOGO,                 // ロゴ
+    TITLE_TRASH_BOX,            // ゴミ箱
+    TITLE_USER_KEYBOARD_MOVE,   // 操作方法WASD→←↓→(キーボード)
+    TITLE_USER_CONTROLLER_MOVE, // 操作方法WASD→←↓→(コントローラー)
+    TITLE_USER_SPACE,           // 操作方法Space
+    TITLE_USER_ABXY,            // 操作方法abxy
+    TITLE_USER_HOLD,            // 操作方法長押し
 
-    TITLE_TEXT_START,        // Start
-    TITLE_TEXT_EXIT,         // Exit
+    TITLE_TEXT_START,           // Start
+    TITLE_TEXT_EXIT,            // Exit
 };
 
 // ゲーム
@@ -112,8 +114,12 @@ extern GameLib::SpriteData sprTitleCoreHeart;
 extern GameLib::SpriteData sprTitleLogo;
 extern GameLib::SpriteData sprTitleTrashBox01;
 extern GameLib::SpriteData sprTitleTrashBox02;
-extern GameLib::SpriteData sprTitleUserMove;
+extern GameLib::SpriteData sprTitleUserKeyboardMove;
+extern GameLib::SpriteData sprTitleUserControllerMove_01;
+extern GameLib::SpriteData sprTitleUserControllerMove_02;
+extern GameLib::SpriteData sprTitleUserControllerMove_03;
 extern GameLib::SpriteData sprTitleUserSpace;
+extern GameLib::SpriteData sprTitleUserAbxy;
 extern GameLib::SpriteData sprTitleUserHold;
 
 

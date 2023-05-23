@@ -81,8 +81,8 @@ void Title::update()
         startCommand_   = setTitleObj(obj2dManager(), &titleStartObjBehavior, { 475, 800 } );
         endCommand_     = setTitleObj(obj2dManager(), &titleEndObjBehavior,   { 1395,800 } );
         titleLogo_      = setTitleObj(obj2dManager(), &titleLogoObjBehavior,  { 960, 275 } );
-        userHintShot_   = setTitleObj(obj2dManager(), &titleHintShotObjBehavior,{ 475, 600 });
-
+        userHintShot_   = setTitleObj(obj2dManager(), &titleHintControllerShotObjBehavior,{ 275, 600 });
+        
         bg()->init();
 
         ++state_;                                   // ‰Šú‰»ˆ—‚ÌI—¹
@@ -382,7 +382,7 @@ void Title::userHintMove()
         {
             VECTOR2 pos = player_->transform_->position_;
             pos += {0.0f, -100.0f};
-            userHintMove_ = setTitleObj(obj2dManager(), &titleHintMoveObjBehavior, pos);
+            userHintMove_ = setTitleObj(obj2dManager(), &titleHintControllerMoveObjBehavior, pos);
         }
         objToul::instance().FadeIn(userHintMove_, 0.025f);
     }
