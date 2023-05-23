@@ -288,8 +288,10 @@ namespace
     // ‰f‰æ‚Ì•‘Ñ(LetterBox)
     namespace
     {
-#define LETTER_BOX_ADD_SPEED    (0.015f)   // ‰ÁŽZ(•‘Ñ‚ªã‚ª‚é‘¬“x)					 
-#define LETTER_BOX_SUB_SPEED    (-0.005f)  // Œ¸ŽZ(•‘Ñ‚ª~‚è‚é‘¬“x)				   	 
+//#define LETTER_BOX_ADD_SPEED    (0.015f)   // ‰ÁŽZ(•‘Ñ‚ªã‚ª‚é‘¬“x)					 
+#define LETTER_BOX_ADD_SPEED    (0.0175f)   // ‰ÁŽZ(•‘Ñ‚ªã‚ª‚é‘¬“x)					 
+//#define LETTER_BOX_SUB_SPEED    (-0.005f)  // Œ¸ŽZ(•‘Ñ‚ª~‚è‚é‘¬“x)				   	 
+#define LETTER_BOX_SUB_SPEED    (-0.0075f)  // Œ¸ŽZ(•‘Ñ‚ª~‚è‚é‘¬“x)				   	 
     }
 
 }

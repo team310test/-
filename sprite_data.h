@@ -48,8 +48,17 @@ enum GAME_TEXNO
     UI_METER_FRAME,     // 計器の枠
     UI_METER_NEEDLE,    // 計器の針
 
-    UI_RESULT_BACK,     // リザルトのバック
+    // ロードマップステージUI
+    UI_STAGE,
+    UI_STAGE1,
+    UI_STAGE2,
+    UI_STAGE3,
+    UI_STAGE4,
+    UI_STAGE5,
+    UI_STAGE6,
+    UI_STAGE_MAX,
 
+    UI_RESULT_BACK,     // リザルトのバック
     UI_RESULT_JUNKS,
     UI_RESULT_TIMES,
     UI_RESULT_RANK,

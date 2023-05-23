@@ -165,6 +165,8 @@ void Game::update()
 
                 stage_->addSrinkNum();              // shrinkNum加算
                    
+                ++UI::UIstageNum_;
+
                 //BasePlayerBehavior::plShrinkCountMax_ += 1; // 縮小するまでのパーツの必要数を増加
 
                 Collider::isAllShrink_ = true;      // Shrinkを開始
@@ -204,7 +206,7 @@ void Game::update()
                 0.5f, UI::meterAlphaColor_ += (-0.05f)
             );
 
-            UI::letterBox_multiplySizeY_ = std::max(0.7f, UI::letterBox_multiplySizeY_ + LETTER_BOX_SUB_SPEED); // 0.0fより小さければ0.0fに修正
+            UI::letterBox_multiplySizeY_ = std::max(0.65f, UI::letterBox_multiplySizeY_ + LETTER_BOX_SUB_SPEED);
         }
         else // すべてのobjが縮小していなければ
         {   

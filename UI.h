@@ -44,5 +44,7 @@ public:
 
     static bool isSpawnResultJunks_;
     static bool isSpawnResultTimes_;
+
+    static int  UIstageNum_;                    
 };
 

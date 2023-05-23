@@ -17,8 +17,11 @@ VECTOR2 UI::plPartsCountPos_;
 
 float   UI::letterBox_multiplySizeY_;      // 映画の黒帯の縦幅(特殊)
 
-bool UI::isSpawnResultJunks_;
-bool UI::isSpawnResultTimes_;
+bool    UI::isSpawnResultJunks_;
+bool    UI::isSpawnResultTimes_;
+
+int     UI::UIstageNum_;
+
 
 // 初期設定
 void UI::init()
@@ -40,6 +43,8 @@ void UI::init()
 
     isSpawnResultJunks_             = false;
     isSpawnResultTimes_             = false;
+
+    UIstageNum_                     = 0;
 }
 
 
@@ -284,6 +289,8 @@ void UI::drawPlPartsCurrentCount()
 // 映画の黒帯描画(マスク処理で行っている)
 void UI::drawLetterBox()
 {
+    using namespace GameLib;
+
     // 使いまわし変数
     VECTOR2 pos     = {};
     VECTOR2 size    = {};
@@ -306,23 +313,77 @@ void UI::drawLetterBox()
     }
     
     // マスクで消される方
+    
+    // 少し薄い黒矩形
     {
         DepthStencil::instance().set(DepthStencil::MODE::EXCLUSIVE);
 
         // 使いまわし変数セット
-        pos     = {};
-        size    = { BG::WINDOW_W, BG::WINDOW_H };
-        center  = {};
-        angle   = 0;
-        color   = { 0, 0, 0, 0.8f };
+        pos = {};
+        size = { BG::WINDOW_W, BG::WINDOW_H };
+        center = {};
+        angle = 0;
+        color = { 0, 0, 0, 0.65f };
 
         GameLib::primitive::rect(pos, size, center, angle, color);
     }
+
+    // ステージUI描画
+    // ステージUI使いまわし変数
+    int sprNo = 0;
+    const VECTOR2 scale  = { 1,1 };
+    const VECTOR2 texPos = {};
+
+    pos    = { BG::WINDOW_W_F * 0.5f, 90 };
+    size   = { 768,128 };
+    center = size * 0.5f;
+    angle  = 0.0f;
+    color  = { 1,1,1,1 };
+
+
+    // ステージ描画
+    {
+        sprNo = UI_STAGE;
+
+        // ステージUI描画
+        texture::begin(sprNo);
+        texture::draw(sprNo, pos, scale, texPos, size, center, angle, color);
+        texture::end(sprNo);
+    }
+
+    // 現在のステージ番号描画
+    {
+        const int sprUIStageNums[] = {
+            UI_STAGE1,
+            UI_STAGE2,
+            UI_STAGE3,
+            UI_STAGE4,
+            UI_STAGE5,
+            UI_STAGE6,
+        };
+        sprNo = sprUIStageNums[UIstageNum_];
+
+        // ステージUI描画
+        texture::begin(sprNo);
+        texture::draw(sprNo, pos, scale, texPos, size, center, angle, color);
+        texture::end(sprNo);
+    }
+
+    // 最大ステージ番号描画
+    {
+        sprNo = UI_STAGE_MAX;
+
+        // ステージUI描画
+        texture::begin(sprNo);
+        texture::draw(sprNo, pos, scale, texPos, size, center, angle, color);
+        texture::end(sprNo);
+    }        
 
     // ステンシルをリセット
     DepthStencil::instance().clear();
     DepthStencil::instance().set(DepthStencil::MODE::NONE);
 }
+
 
 void UI::drawResultJunks()
 {

@@ -45,23 +45,33 @@ GameLib::LoadTexture gameLoadTexture[] = {
     { GAME_TEXNO::BG17, L"./Data/Images/BackGround/BackGround11.png", 1U }, // 9前面(縮小後は後面)
 
     // メーターUI
-    { GAME_TEXNO::UI_METER_FRAME,  L"./Data/Images/UI/Game/UI_Meter_Frame.png",  1U },   // 計器の枠
-    { GAME_TEXNO::UI_METER_NEEDLE, L"./Data/Images/UI/Game/UI_Meter_Needle.png", 1U },   // 計器の針
+    { GAME_TEXNO::UI_METER_FRAME,  L"./Data/Images/UI/Game/Meter/UI_Meter_Frame.png",  1U },   // 計器の枠
+    { GAME_TEXNO::UI_METER_NEEDLE, L"./Data/Images/UI/Game/Meter/UI_Meter_Needle.png", 1U },   // 計器の針
+
+    // ロードマップステージUI
+    { GAME_TEXNO::UI_STAGE,     L"./Data/Images/UI/Game/Stage/UI_Stage.png",     1U },   
+    { GAME_TEXNO::UI_STAGE1,    L"./Data/Images/UI/Game/Stage/UI_Stage_1.png",   1U },   
+    { GAME_TEXNO::UI_STAGE2,    L"./Data/Images/UI/Game/Stage/UI_Stage_2.png",   1U },   
+    { GAME_TEXNO::UI_STAGE3,    L"./Data/Images/UI/Game/Stage/UI_Stage_3.png",   1U },   
+    { GAME_TEXNO::UI_STAGE4,    L"./Data/Images/UI/Game/Stage/UI_Stage_4.png",   1U },   
+    { GAME_TEXNO::UI_STAGE5,    L"./Data/Images/UI/Game/Stage/UI_Stage_5.png",   1U },   
+    { GAME_TEXNO::UI_STAGE6,    L"./Data/Images/UI/Game/Stage/UI_Stage_6.png",   1U },   
+    { GAME_TEXNO::UI_STAGE_MAX, L"./Data/Images/UI/Game/Stage/UI_Stage_Max.png", 1U },   
 
     // リザルトUI
-    { GAME_TEXNO::UI_RESULT_BACK,        L"./Data/Images/UI/Game/UI_Result_Back.png",    1U },      // リザルトのバック
-    { GAME_TEXNO::UI_RESULT_JUNKS,       L"./Data/Images/UI/Game/UI_Result_Junks.png",   1U },      // リザルトのJUNK'S
-    { GAME_TEXNO::UI_RESULT_TIMES,       L"./Data/Images/UI/Game/UI_Result_Times.png",   1U },      // リザルトのTIME'S
-    { GAME_TEXNO::UI_RESULT_RANK,        L"./Data/Images/UI/Game/UI_Result_Rank.png",    1U },      // リザルトのRANK
-    { GAME_TEXNO::UI_RESULT_ANY_PUSH,    L"./Data/Images/UI/Game/UI_Result_AnyPush.png", 1U },      // リザルトのANY PUSH
-    { GAME_TEXNO::UI_RESULT_S,           L"./Data/Images/UI/Game/UI_Result_S.png",       1U },      // リザルトのS
-    { GAME_TEXNO::UI_RESULT_A,           L"./Data/Images/UI/Game/UI_Result_A.png",       1U },      // リザルトのA
-    { GAME_TEXNO::UI_RESULT_B,           L"./Data/Images/UI/Game/UI_Result_B.png",       1U },      // リザルトのB
-    { GAME_TEXNO::UI_RESULT_C,           L"./Data/Images/UI/Game/UI_Result_C.png",       1U },      // リザルトのC
-    { GAME_TEXNO::UI_RESULT_TEXT_JUNKIE, L"./Data/Images/UI/Game/UI_Result_Text_Junkie.png",  1U }, // リザルトのテキストJUNKIE
-    { GAME_TEXNO::UI_RESULT_TEXT_GREAT,  L"./Data/Images/UI/Game/UI_Result_Text_Great.png",   1U }, // リザルトのテキストGREAT
-    { GAME_TEXNO::UI_RESULT_TEXT_NICE,   L"./Data/Images/UI/Game/UI_Result_Text_Nice.png",    1U }, // リザルトのテキストNICE
-    { GAME_TEXNO::UI_RESULT_TEXT_SOSO,   L"./Data/Images/UI/Game/UI_Result_Text_Soso.png",    1U }, // リザルトのテキストSOSO
+    { GAME_TEXNO::UI_RESULT_BACK,        L"./Data/Images/UI/Game/Result/UI_Result_Back.png",    1U },      // リザルトのバック
+    { GAME_TEXNO::UI_RESULT_JUNKS,       L"./Data/Images/UI/Game/Result/UI_Result_Junks.png",   1U },      // リザルトのJUNK'S
+    { GAME_TEXNO::UI_RESULT_TIMES,       L"./Data/Images/UI/Game/Result/UI_Result_Times.png",   1U },      // リザルトのTIME'S
+    { GAME_TEXNO::UI_RESULT_RANK,        L"./Data/Images/UI/Game/Result/UI_Result_Rank.png",    1U },      // リザルトのRANK
+    { GAME_TEXNO::UI_RESULT_ANY_PUSH,    L"./Data/Images/UI/Game/Result/UI_Result_AnyPush.png", 1U },      // リザルトのANY PUSH
+    { GAME_TEXNO::UI_RESULT_S,           L"./Data/Images/UI/Game/Result/UI_Result_S.png",       1U },      // リザルトのS
+    { GAME_TEXNO::UI_RESULT_A,           L"./Data/Images/UI/Game/Result/UI_Result_A.png",       1U },      // リザルトのA
+    { GAME_TEXNO::UI_RESULT_B,           L"./Data/Images/UI/Game/Result/UI_Result_B.png",       1U },      // リザルトのB
+    { GAME_TEXNO::UI_RESULT_C,           L"./Data/Images/UI/Game/Result/UI_Result_C.png",       1U },      // リザルトのC
+    { GAME_TEXNO::UI_RESULT_TEXT_JUNKIE, L"./Data/Images/UI/Game/Result/UI_Result_Text_Junkie.png",  1U }, // リザルトのテキストJUNKIE
+    { GAME_TEXNO::UI_RESULT_TEXT_GREAT,  L"./Data/Images/UI/Game/Result/UI_Result_Text_Great.png",   1U }, // リザルトのテキストGREAT
+    { GAME_TEXNO::UI_RESULT_TEXT_NICE,   L"./Data/Images/UI/Game/Result/UI_Result_Text_Nice.png",    1U }, // リザルトのテキストNICE
+    { GAME_TEXNO::UI_RESULT_TEXT_SOSO,   L"./Data/Images/UI/Game/Result/UI_Result_Text_Soso.png",    1U }, // リザルトのテキストSOSO
 
     // コア
     { GAME_TEXNO::PL_CORE01,  L"./Data/Images/Core/PlayerCore01.png", 1U },
