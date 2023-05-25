@@ -81,7 +81,7 @@ void Title::update()
         startCommand_   = setTitleObj(obj2dManager(), &titleStartObjBehavior, { 475, 800 } );
         endCommand_     = setTitleObj(obj2dManager(), &titleEndObjBehavior,   { 1395,800 } );
         titleLogo_      = setTitleObj(obj2dManager(), &titleLogoObjBehavior,  { 960, 275 } );
-        userHintShot_   = setTitleObj(obj2dManager(), &titleHintControllerShotObjBehavior,{ 275, 600 });
+        userHintShot_   = setTitleObj(obj2dManager(), &titleHintControllerShotObjBehavior,{ 475, 600 });
         
         bg()->init();
 
