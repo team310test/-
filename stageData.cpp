@@ -464,7 +464,7 @@ STAGE_SCRIPT stageData03[] =
     SET_ENEMY_TARGET_X(
         Phase31 + sec * 6,        //出現時間
          enemy03,                 //敵の種類
-        X,Place_u,               //出現位置
+        X2,Place_u,               //出現位置
         r0X * T3,r0Y * T3,        //行き　
         turn_x_mm,               //目標X軸
         r180hX * T3,r180hY * T3),  //帰り
@@ -496,7 +496,7 @@ STAGE_SCRIPT stageData03[] =
     SET_ENEMY_TARGET_X(
         Phase31 + sec * 11,        //出現時間
         enemy03,                 //敵の種類
-        X,Place_uu,               //出現位置
+        X2,Place_uu,               //出現位置
         r0X * T3,r0Y * T3,        //行き　
         turn_x_mm,               //目標X軸
         r180hX * T3,r180hY * T3),  //帰り
@@ -573,7 +573,7 @@ STAGE_SCRIPT stageData03[] =
   SET_ENEMY_TARGET_X(
         Phase33 + sec * 0,        //出現時間
         enemy03,                 //敵の種類
-        X,Place_u,               //出現位置
+        X2,Place_u,               //出現位置
         r0X * T3,r0Y * T3,        //行き　
         turn_x_mm,               //目標X軸
         0 * T3,0 * T3),  //帰り 
@@ -581,7 +581,7 @@ STAGE_SCRIPT stageData03[] =
   SET_ENEMY_TARGET_X(
         Phase33 + sec * 3,        //出現時間
         enemy03,                 //敵の種類
-        X,Place_m,               //出現位置
+        X2,Place_m,               //出現位置
         r0X * T3,r0Y * T3,        //行き　
         turn_x_mm,               //目標X軸
         r90X * T3,r90Y * T3),   //帰り
@@ -599,7 +599,7 @@ STAGE_SCRIPT stageData03[] =
 SET_ENEMY_TARGET_X(
         Phase34 + sec * 0,        //出現時間
         enemy03,                 //敵の種類
-        X,Place_s,               //出現位置
+        X2,Place_s,               //出現位置
         r0X * T3,r0Y * T3,        //行き　
         turn_x_mm,               //目標X軸
         0 * T3, 0 * T3),  //帰り 
@@ -607,7 +607,7 @@ SET_ENEMY_TARGET_X(
   SET_ENEMY_TARGET_X(
         Phase34 + sec * 3,        //出現時間
         enemy03,                 //敵の種類
-        X,Place_ss,               //出現位置
+        X2,Place_ss,               //出現位置
         r0X * T3,r0Y * T3,        //行き　
         turn_x_mm,               //目標X軸
         r90X * T3,r90Y * T3),  //帰り
@@ -794,7 +794,7 @@ STAGE_SCRIPT stageData04[] =
     SET_ENEMY_TARGET_X(
       Phase44 + sec * 0,     //出現時間
       enemy03,               //敵の種類
-      X,Place_uu ,           //出現位置
+      X2,Place_uu ,           //出現位置
       r0X * T4, r0Y * T4,     //行き
       turn_x_mmm + goma_tp,              //チェックポイント
       0 * T4, 0 * T4),  //帰り  
@@ -810,7 +810,7 @@ STAGE_SCRIPT stageData04[] =
    SET_ENEMY_TARGET_X(
       Phase44 + sec * 0,     //出現時間
       enemy03,               //敵の種類
-      X,Place_ss ,           //出現位置
+      X2,Place_ss ,           //出現位置
       r0X * T4, r0Y * T4,     //行き
       turn_x_mmm + goma_tp,              //チェックポイント
       0 * T4, 0 * T4),  //帰り  
@@ -842,7 +842,7 @@ STAGE_SCRIPT stageData05[] =
       SET_ENEMY_TARGET_X(
         Phase51 + 135,        //出現時間
         enemy03,                  //敵の種類
-        X,Place_u,               //出現位置
+        X2,Place_u,               //出現位置
         r0X * T5,r0Y * T5,        //行き　
         turn_x_m,                //目標X軸
         r135X * T5,r135Y * T5),  //帰り  
