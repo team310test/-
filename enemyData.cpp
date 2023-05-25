@@ -62,7 +62,7 @@ EnemyData enemy03[] =
     CORE(&enemyCore01Behavior,3,PARENT_NO::PARENT0)
     ,{&enemyCommon02Behavior,{-128.0f,0.0f},3,PARENT_NO::PARENT1,PARENT_NO::PARENT0}
     ,{&enemyCommon01Behavior,{-256.0f,0.0f},3,PARENT_NO::PARENT2,PARENT_NO::PARENT1}
-    ,{&enemyTurret01Behavior,{-328.0f,0.0f},3,PARENT_NO::NOT,PARENT_NO::PARENT2}
+    ,{&enemyTurret01Behavior,{-384.0f,0.0f},3,PARENT_NO::NOT,PARENT_NO::PARENT2}
     ,END
 };
 
