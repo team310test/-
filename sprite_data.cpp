@@ -40,11 +40,11 @@ GameLib::LoadTexture gameLoadTexture[] = {
     { GAME_TEXNO::BG12, L"./Data/Images/BackGround/BackGround08.png",   1U }, // 7中間
 
     // 使われない
-    { GAME_TEXNO::BG13, L"./Data/Images/BackGround/BackGround08.png", 1U }, // 7前面(縮小後は後面)
-    { GAME_TEXNO::BG14, L"./Data/Images/BackGround/BackGround09.png", 1U }, // 8中間
-    { GAME_TEXNO::BG15, L"./Data/Images/BackGround/BackGround10.png", 1U }, // 8前面(縮小後は後面)
-    { GAME_TEXNO::BG16, L"./Data/Images/BackGround/BackGround02.png", 1U }, // 9中間
-    { GAME_TEXNO::BG17, L"./Data/Images/BackGround/BackGround11.png", 1U }, // 9前面(縮小後は後面)
+    { GAME_TEXNO::BG13, L"./Data/Images/BackGround/BackGround01.png", 1U }, // 7前面(縮小後は後面)
+    { GAME_TEXNO::BG14, L"./Data/Images/BackGround/BackGround01.png", 1U }, // 8中間
+    { GAME_TEXNO::BG15, L"./Data/Images/BackGround/BackGround01.png", 1U }, // 8前面(縮小後は後面)
+    { GAME_TEXNO::BG16, L"./Data/Images/BackGround/BackGround01.png", 1U }, // 9中間
+    { GAME_TEXNO::BG17, L"./Data/Images/BackGround/BackGround01.png", 1U }, // 9前面(縮小後は後面)
 
     // メーターUI
     { GAME_TEXNO::UI_METER_FRAME,  L"./Data/Images/UI/Game/Meter/UI_Meter_Frame.png",  1U },   // 計器の枠

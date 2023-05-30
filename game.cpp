@@ -404,7 +404,7 @@ void Game::gameOverProc()
 
         // ゲーム・ボス戦BGMフェードアウト
         Audio::fade(BGM_GAME, 2.0f, 0.0f);
-        Audio::fade(BGM_BOSS, 2.0f, 0.0f);
+        //Audio::fade(BGM_BOSS, 2.0f, 0.0f);
 
         ++gameOverState_;
         break;

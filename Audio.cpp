@@ -21,7 +21,7 @@ void Audio::gameInit()
 
     // BGM
     music::load(GAME_AUDIO::BGM_GAME, L"./Data/Musics/BGM/BGM_Game.wav", 0.0f);
-    music::load(GAME_AUDIO::BGM_BOSS, L"./Data/Musics/BGM/BGM_Boss.wav", 1.0f);
+    //music::load(GAME_AUDIO::BGM_BOSS, L"./Data/Musics/BGM/BGM_Boss.wav", 1.0f);
 
     // SE
     music::load(GAME_AUDIO::SE_PL_CORE_ALERT,  L"./Data/Musics/SE/SE_PlayerCoreAlert.wav", 1.0f);
