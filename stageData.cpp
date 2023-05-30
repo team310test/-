@@ -9,7 +9,7 @@ namespace {
 #define yoko_2 1280
 #define yoko_3 960
 
-//#define ue -256
+    //#define ue -256
 #define ue -370
 //#define sita 1080 + 256
 #define sita 1080 + 370
@@ -96,7 +96,7 @@ namespace {
 namespace {
 #define goma_tp -7
 #define goma_tps -14
-//#define goma_move 0.1f
+    //#define goma_move 0.1f
 #define goma_move 0.075f
 }
 
@@ -114,20 +114,26 @@ namespace {
 namespace {
 #define Stage_Start_Delay sec*2 
 #define Phase1 Stage_Start_Delay
-#define Phase2 Phase1  +sec*(22+1)            
-#define Phase3 Phase2 +sec*(8+4)    
+#define Phase2 Phase1  +sec*(22+2)            
+#define Phase3 Phase2 +sec*(8+6)    
 
 #define Stage2_Start_Delay sec*2 
 #define Phase21 Stage2_Start_Delay+0
-#define Phase22 Phase21  +sec*(9+3)           
-#define Phase23 Phase22  +sec*(17+3)     
-#define Phase24 Phase23  +sec*21  
+#define Phase22 Phase21  +sec*(9+4)           
+#define Phase23 Phase22  +sec*(17+4)     
+#define Phase24 Phase23  +sec*22  
 
 #define Stage3_Start_Delay sec*2 
 #define Phase31 Stage3_Start_Delay+0
-#define Phase32 Phase31  +sec*(11+1)         
-#define Phase33 Phase32  +sec*(7+2)     
-#define Phase34 Phase33  +sec*(6+2) 
+#define Phase32 Phase31  +sec*(11+5)         
+#define Phase33 Phase32  +sec*(7+6)     
+#define Phase34 Phase33  +sec*(6+6) 
+
+#define Stage4_Start_Delay sec*3 
+#define Phase41 Stage4_Start_Delay+0
+#define Phase42 Phase41  +sec*(7+8)          
+#define Phase43 Phase42  +sec*(10+9)    
+#define Phase44 Phase43  +sec*(4+9)   
 
 #define Stage5_Start_Delay sec*0 
 #define Phase51 Stage5_Start_Delay+0
@@ -141,12 +147,6 @@ namespace {
 #define Phase63 Phase62  +sec*(0)    
 #define Phase64 Phase63  +sec*(0)
 }
-
-#define Stage4_Start_Delay sec*1 
-#define Phase41 Stage4_Start_Delay+0
-#define Phase42 Phase41  +sec*(7+1)          
-#define Phase43 Phase42  +sec*(10+3)    
-#define Phase44 Phase43  +sec*(4+3)   
 
 STAGE_SCRIPT stageData01[] =
 {
@@ -162,7 +162,7 @@ STAGE_SCRIPT stageData01[] =
 
     SET_ENEMY_TARGET_X(
      Phase1 + sec * 6,//出現F
-    enemy01,//敵の種類
+    enemy02,//敵の種類
     X,Place_s,//出現位置
     r0X * T1,r0Y * T1,//スピード　
     turn_x_m,//目標のX軸
@@ -170,7 +170,7 @@ STAGE_SCRIPT stageData01[] =
 
     SET_ENEMY_TARGET_X(
      Phase1 + sec * 10,//出現F
-    enemy01,//敵の種類
+    enemy02,//敵の種類
     X,Place_m,//出現位置
     r0X * T1,r0Y * T1,//スピード　
     turn_x_m,//目標のX軸
@@ -178,7 +178,7 @@ STAGE_SCRIPT stageData01[] =
 
     SET_ENEMY_TARGET_X(
      Phase1 + sec * 14,//出現F
-    enemy02,//敵の種類
+    enemy01,//敵の種類
     yoko_1,ue,//出現位置
     r315sX * T1,r315sY * T1,//スピード　
     turn_x_m,//目標のX軸
@@ -240,7 +240,7 @@ STAGE_SCRIPT stageData01[] =
 
      SET_ENEMY_TARGET_X(
         Phase3 + sec * 0,       //出現時間
-        enemy01,                //敵の種類
+        enemy02,                //敵の種類
         X,Place_ss,             //出現位置
         r0X * T1,r0Y * T1,          //行き
         turn_x_m,               //チェックポイント
@@ -790,7 +790,7 @@ STAGE_SCRIPT stageData04[] =
       turn_x_mm + goma_tp,              //チェックポイント
       r0X * T4, r0Y * T4),  //帰り  
 
- //Phase3////////////////////////////////////////////////////////////////////////////////
+ //Phase4////////////////////////////////////////////////////////////////////////////////
     SET_ENEMY_TARGET_X(
       Phase44 + sec * 0,     //出現時間
       enemy03,               //敵の種類
@@ -931,6 +931,7 @@ STAGE_SCRIPT stageDataBoss[] =
         1600,Place_m,               //出現位置
         0 * T5,0 * T5,        //行き　
         turn_x_m,                //目標X軸
-        0 * T5,0 * T5),  //帰り  
+        0 * T5,0 * T5),  //帰り   
+
     SET_ENEMY_END
 };
