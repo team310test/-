@@ -28,8 +28,8 @@ void Title::init()
     isStartPerform_ = true;
     isPlayerShotState_ = 0;
     oldTimer_ = 0;
-    //pushCount_ = 0;
-
+    pushCount_ = 0;
+    isPlayerMove_ = false;
     isDispTextStart_ = false;
     isDispTextExit_  = false;
     textStartColorAlpha_ = 0.0f;
@@ -81,7 +81,7 @@ void Title::update()
         startCommand_   = setTitleObj(obj2dManager(), &titleStartObjBehavior, { 475, 800 } );
         endCommand_     = setTitleObj(obj2dManager(), &titleEndObjBehavior,   { 1395,800 } );
         titleLogo_      = setTitleObj(obj2dManager(), &titleLogoObjBehavior,  { 960, 275 } );
-        userHintShot_   = setTitleObj(obj2dManager(), &titleHintControllerShotObjBehavior,{ 465, 600 });
+        userHintShot_   = setTitleObj(obj2dManager(), &titleHintKeyboardShotObjBehavior,{ 465, 600 });
         
         bg()->init();
 
@@ -352,16 +352,15 @@ void Title::userHintMove()
     // PLが移動したら
     if (isPlayerMove_)
     {
-        // userHintMove_がnullpyrならreturn
-        if (!userHintMove_) return;
-
         // userHintMove_がnullptrでないならフェードアウトした後nullptrにする
-        if (objToul::instance().FadeOut(userHintMove_, 0.05f))
+        if (userHintMove_ && objToul::instance().FadeOut(userHintMove_, 0.05f))
         {
             userHintMove_->behavior_ = nullptr;
             userHintMove_ = nullptr;
         }
-        return;
+
+        // スタートと接触していたら削除
+        if (startCommand_ && startCommand_->performComponent_->isTrigger) return;
     }
 
     // oldTImer_が0ならtimerの値を代入
@@ -379,11 +378,12 @@ void Title::userHintMove()
     // 一定時間立つとヒントを描画
     if (timer_ - oldTimer_ >= 40)
     {
+        isPlayerMove_ = false;
         if (!userHintMove_)
         {
             VECTOR2 pos = player_->transform_->position_;
             pos += {0.0f, -100.0f};
-            userHintMove_ = setTitleObj(obj2dManager(), &titleHintControllerMoveObjBehavior, pos);
+            userHintMove_ = setTitleObj(obj2dManager(), &titleHintKeyboardMoveObjBehavior, pos);
         }
         objToul::instance().FadeIn(userHintMove_, 0.025f);
     }
