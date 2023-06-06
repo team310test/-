@@ -28,7 +28,7 @@ void Title::init()
     isStartPerform_ = true;
     isPlayerShotState_ = 0;
     oldTimer_ = 0;
-    pushCount_ = 0;
+    //pushCount_ = 0;
     isPlayerMove_ = false;
     isDispTextStart_ = false;
     isDispTextExit_  = false;
@@ -242,11 +242,11 @@ void Title::changeSceneGame()
         }
 
         //@2‰ñ–ÚˆÈ~‚Í©“®‚Å“§–¾“x‚ğİ’è
-        //if (isAutoAddAlpha)
-        //{
-        //    addAlpha -= 0.03f;
-        //    FADE::getInstance2()->SetAlpha(addAlpha);
-        //}
+        if (isAutoAddAlpha)
+        {
+            addAlpha -= 0.03f;
+            FADE::getInstance2()->SetAlpha(addAlpha);
+        }
 
         // —¼•û‚Ìˆ—‚ªŠ®—¹‚µ‚½‚ç‰æ–Ê‚ğ‘JˆÚ‚·‚é
         if (endFadeOut && logoFadeOut/* && shrink*/ && HintShotFadeOut &&
